@@ -32,6 +32,7 @@ DrawFuncHelper::TextureRender::TextureRender(const DrawFuncData::DrawCallData& a
 DrawFuncHelper::TextureRender::TextureRender()
 {
 	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteShader());
+
 }
 
 void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData& rhs)
@@ -52,7 +53,9 @@ void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, co
 	//テクスチャのサイズに割合をかける
 	transform.scale *= m_textureSize;
 	DrawFunc::DrawTextureIn2D(m_drawCommand, transform, m_textureBuffer, arg_addColor);
-	arg_rasterize.ObjectRender(m_drawCommand);
+
+	m_drawCommand.renderTargetHandle = -1;
+	arg_rasterize.UIRender(m_drawCommand);
 }
 
 void DrawFuncHelper::TextureRender::Draw2D(const KazMath::Transform2D& arg_trasform2D, const KazMath::Color& arg_addColor)
@@ -77,7 +80,7 @@ void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, co
 	arg_rasterize.ObjectRender(m_drawCommand);
 }
 
-void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, const KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor)
+void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor)
 {
 	Error();
 
@@ -86,9 +89,10 @@ void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, co
 	transform.scale *= {m_textureSize.x, -m_textureSize.y, 1.0f};
 	DrawFunc::DrawTextureIn3D(m_drawCommand, transform, m_textureBuffer, arg_addColor);
 	arg_rasterize.ObjectRender(m_drawCommand);
+	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
-void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, const KazMath::Transform3D& arg_trasform3D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor)
+void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor)
 {
 	KazMath::Transform3D transform(arg_trasform3D);
 	m_textureSize.x = static_cast<float>(arg_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
@@ -99,9 +103,10 @@ void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, co
 	transform.scale.y *= m_textureSize.y;
 	DrawFunc::DrawTextureIn3D(m_drawCommand, transform, arg_textureBuffer, arg_addColor);
 	arg_rasterize.ObjectRender(m_drawCommand);
+	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
-void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rasterize, const KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor)
+void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor)
 {
 	Error();
 
@@ -110,9 +115,10 @@ void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rast
 	transform.scale *= {m_textureSize.x, -m_textureSize.y, 1.0f};
 	DrawFunc::DrawTextureIn3DBillBoard(m_drawCommand, transform, m_textureBuffer, arg_addColor);
 	arg_rasterize.ObjectRender(m_drawCommand);
+	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
-void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rasterize, const KazMath::Transform3D& arg_trasform3D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor)
+void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor)
 {
 	KazMath::Transform3D transform(arg_trasform3D);
 	m_textureSize.x = static_cast<float>(arg_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
@@ -123,6 +129,7 @@ void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rast
 	transform.scale.y *= m_textureSize.y;
 	DrawFunc::DrawTextureIn3DBillBoard(m_drawCommand, transform, arg_textureBuffer, arg_addColor);
 	arg_rasterize.ObjectRender(m_drawCommand);
+	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
 void DrawFuncHelper::TextureRender::DrawGaussian(DrawingByRasterize& arg_rasterize, const KazMath::Transform2D& arg_trasform2D)
@@ -158,11 +165,19 @@ void DrawFuncHelper::TextureRender::Error()
 		m_textureSize.x = static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
 		m_textureSize.y = static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Height);
 	}
-};
+}
+void DrawFuncHelper::TextureRender::StackOnBlas(Raytracing::BlasVector& arg_blasVec, const DirectX::XMMATRIX& arg_worldMat)
+{
+	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
+	{
+		arg_blasVec.Add(obj, arg_worldMat);
+	}
+}
 
 DrawFuncHelper::ModelRender::ModelRender(const std::string& arg_fileDir, const std::string& arg_filePass)
 {
 	Load(arg_fileDir, arg_filePass);
+	m_drawCommand.SetupRaytracing(true);
 }
 
 DrawFuncHelper::ModelRender::ModelRender(const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
@@ -170,10 +185,12 @@ DrawFuncHelper::ModelRender::ModelRender(const std::shared_ptr<ModelInfomation>&
 	m_modelInfo = arg_modelInfomation;
 	LoadAnimation();
 	m_drawCommand = arg_drawCall;
+	m_drawCommand.SetupRaytracing(true);
 }
 
 DrawFuncHelper::ModelRender::ModelRender()
 {
+	m_drawCommand.SetupRaytracing(true);
 }
 
 void DrawFuncHelper::ModelRender::Load(const std::string& arg_fileDir, const std::string& arg_filePass)
@@ -214,7 +231,7 @@ bool DrawFuncHelper::ModelRender::LoadAnimation()
 	}
 }
 
-void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize& arg_rasterize, KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor, float arg_timeScale)
+void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor, float arg_timeScale)
 {
 	if (m_animator)
 	{
@@ -225,7 +242,13 @@ void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize& arg_rasterize, KazMat
 	{
 		DrawFunc::DrawModel(m_drawCommand, arg_trasform3D, arg_addColor);
 	}
+	//ラスタライザ描画命令
 	arg_rasterize.ObjectRender(m_drawCommand);
+	//レイトレ描画命令
+	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
+	{
+		arg_blasVec.Add(obj, arg_trasform3D.GetMat());
+	}
 }
 
 void DrawFuncHelper::ModelRender::Error()

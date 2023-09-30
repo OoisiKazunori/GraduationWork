@@ -90,9 +90,9 @@ void DemoScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 {
 	//•`‰æ–½—ß”­s
 	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-	m_3DSprite.m_tex.Draw3D(arg_rasterize, m_3DSpriteTransform);
-	m_modelAnimationRender.m_model.Draw(arg_rasterize, m_modelAnimationTransform);
-	m_modelRender.m_model.Draw(arg_rasterize, m_modelTransform);
+	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
+	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
+	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 
 	////‰º‚Ìˆ—‚ÍDrawFuncHelper–³‚µ‚Å•`‰æ‚µ‚½
 	////ƒOƒŠƒbƒh‚Ì•`‰æ--------------------------

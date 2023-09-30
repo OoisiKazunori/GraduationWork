@@ -465,7 +465,6 @@ void DrawingByRasterize::Render()
 	{
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(preRenderTargetHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-		RenderTargetStatus::Instance()->ClearDoubuleBuffer(DirectX::XMFLOAT3(0, 0, 0));
 	}
 }
 
