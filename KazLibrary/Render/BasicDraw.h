@@ -12,7 +12,7 @@ namespace BasicDraw
 
 	struct BasicModelRender
 	{
-		BasicModelRender(const std::string& arg_fileDir, const std::string& arg_fileName);
+		BasicModelRender(const std::string& arg_fileDir, const std::string& arg_fileName, DrawingByRasterize& arg_rasterize);
 		BasicModelRender();
 
 		void Load(const std::string& arg_fileDir, const std::string& arg_fileName);
@@ -20,8 +20,8 @@ namespace BasicDraw
 	};
 	struct BasicTextureRender
 	{
-		BasicTextureRender(const std::string& arg_filePass);
-		BasicTextureRender();
+		BasicTextureRender(const std::string& arg_filePass, DrawingByRasterize& arg_rasterize);
+		BasicTextureRender(DrawingByRasterize& arg_rasterize);
 		DrawFuncHelper::TextureRender m_tex;
 	};
 

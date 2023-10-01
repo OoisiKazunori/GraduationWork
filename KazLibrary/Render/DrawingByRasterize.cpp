@@ -552,11 +552,11 @@ void DrawingByRasterize::RenderAfterBackBuffer()
 	piplineBufferMgr.Update();
 }
 
-const std::unique_ptr<DrawFuncData::DrawData>& DrawingByRasterize::SetPipeline(const DrawFuncData::DrawCallData& arg_drawData)
+const DrawFuncData::DrawData* DrawingByRasterize::SetPipeline(const DrawFuncData::DrawCallData& arg_drawData)
 {
 	m_drawCallStackDataArray.emplace_back(arg_drawData);
 	m_drawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>());
-	return m_drawCallArray.back();
+	return m_drawCallArray.back().get();
 }
 
 void DrawingByRasterize::GeneratePipeline()

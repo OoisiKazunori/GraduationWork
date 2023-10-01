@@ -10,6 +10,7 @@ namespace DrawFuncHelper
 	struct TextureRender
 	{
 		DrawFuncData::DrawCallData m_drawCommand;
+		const DrawFuncData::DrawData* m_drawCommandData;
 		KazBufferHelper::BufferData m_textureBuffer;
 		KazMath::Vec2<float> m_textureSize;
 

@@ -23,10 +23,10 @@ DrawFuncData::DrawCallData BasicDraw::SetTex()
 	return DrawFuncData::SetSpriteAlphaData(lData);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender(const std::string& arg_fileDir, const std::string& arg_fileName) :
+BasicDraw::BasicModelRender::BasicModelRender(const std::string& arg_fileDir, const std::string& arg_fileName, DrawingByRasterize& arg_rasterize) :
 	m_model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
-
+	arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
 BasicDraw::BasicModelRender::BasicModelRender()
@@ -39,13 +39,15 @@ void BasicDraw::BasicModelRender::Load(const std::string& arg_fileDir, const std
 	m_model.Load(model, BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender(const std::string& arg_filePass) :
+BasicDraw::BasicTextureRender::BasicTextureRender(const std::string& arg_filePass, DrawingByRasterize& arg_rasterize) :
 	m_tex(arg_filePass, BasicDraw::SetTex())
 {
 	m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	m_tex.m_drawCommandData = arg_rasterize.SetPipeline(m_tex.m_drawCommand);
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender() :m_tex(BasicDraw::SetTex())
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize) :m_tex(BasicDraw::SetTex())
 {
 	m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	m_tex.m_drawCommandData = arg_rasterize.SetPipeline(m_tex.m_drawCommand);
 }

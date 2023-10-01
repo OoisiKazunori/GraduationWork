@@ -55,7 +55,7 @@ void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, co
 	DrawFunc::DrawTextureIn2D(m_drawCommand, transform, m_textureBuffer, arg_addColor);
 
 	m_drawCommand.renderTargetHandle = -1;
-	arg_rasterize.UIRender(m_drawCommand);
+	arg_rasterize.UIRender(m_drawCommandData);
 }
 
 void DrawFuncHelper::TextureRender::Draw2D(const KazMath::Transform2D& arg_trasform2D, const KazMath::Color& arg_addColor)
@@ -77,7 +77,7 @@ void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, co
 	//テクスチャのサイズに割合をかける
 	transform.scale *= m_textureSize;
 	DrawFunc::DrawTextureIn2D(m_drawCommand, transform, arg_textureBuffer, arg_addColor);
-	arg_rasterize.ObjectRender(m_drawCommand);
+	arg_rasterize.ObjectRender(m_drawCommandData);
 }
 
 void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor)
