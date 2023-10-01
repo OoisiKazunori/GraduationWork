@@ -1,14 +1,14 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
 #include"../Scene/SceneBase.h"
-#include"../Game/Scene/GameScene.h"
 #include"../Scene/SceneChange.h"
 #include"../RenderTarget/RenderTargetStatus.h"
 #include<memory>
 #include"../KazLibrary/Render/DrawingByRasterize.h"
 #include "../KazLibrary/Sound/SoundManager.h"
 #include "../KazLibrary/Raytracing/RayPipeline.h"
-
+#include"../Game/Scene/GameScene.h"
+#include"../Game/Scene/DemoScene.h"
 
 class SceneManager
 {
@@ -20,9 +20,9 @@ public:
 
 	bool endGameFlag;
 private:
-	std::vector<std::unique_ptr<SceneBase>> scene;
-	std::unique_ptr<ChangeScene::SceneChange> change;
-	int nowScene, nextScene;
+	std::shared_ptr<SceneBase>m_nowScene;
+	std::unique_ptr<ChangeScene::SceneChange> m_sceneChange;
+	int m_nowSceneNumber, m_nextSceneNumber;
 	bool initGameFlag;
 
 	bool sceneChangeFlag;
@@ -99,4 +99,22 @@ private:
 	//レイトレ用パイプライン
 	std::vector<Raytracing::RayPipelineShaderData> m_pipelineShaders;
 	std::unique_ptr<Raytracing::RayPipeline> m_rayPipeline;
+
+	std::shared_ptr<SceneBase>GetScene(int arg_sceneNum)
+	{
+		switch (arg_sceneNum)
+		{
+		case 0:
+			return std::make_shared<GameScene>(m_rasterize);
+			break;
+		case 1:
+			return std::make_shared<DemoScene>(m_rasterize);
+			break;
+		case 2:
+			break;
+		default:
+			break;
+		}
+		return std::make_shared<DemoScene>(m_rasterize);
+	}
 };

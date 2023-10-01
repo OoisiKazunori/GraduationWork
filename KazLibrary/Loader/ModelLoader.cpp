@@ -9,11 +9,19 @@ ModelLoader::ModelLoader()
 std::shared_ptr<ModelInfomation> ModelLoader::Load(std::string arg_fileDir, std::string arg_fileName)
 {
 	//多重ロード防止
-	for (int i = 0; i < m_modelNameArray.size(); ++i)
+	bool isAnimationFlag = false;
+	for (int i = 0; i < m_modelCacheArray.size(); ++i)
 	{
-		if (m_modelNameArray[i] == arg_fileDir + arg_fileName)
+		const bool IS_SAME_FLAG = m_modelCacheArray[i].m_fileName == arg_fileDir + arg_fileName;
+		//アニメーションが入っているモデルはレイトレの描画の都合上重複は許す
+		if (IS_SAME_FLAG && !m_modelCacheArray[i].m_hasAnimationFlag)
 		{
 			return m_modelArray[i];
+		}
+		//読み込み対象がすでに読み込まれていてアニメーション付きなら、その後のキャッシュ名追加しないようにする
+		if (IS_SAME_FLAG && m_modelCacheArray[i].m_hasAnimationFlag)
+		{
+			isAnimationFlag = true;
 		}
 	}
 
@@ -31,8 +39,10 @@ std::shared_ptr<ModelInfomation> ModelLoader::Load(std::string arg_fileDir, std:
 	SucceedCheck(arg_fileDir + arg_fileName + "の読み込みに成功しました\n");
 
 	//多重ロード防止用にモデルの名前登録
-	m_modelNameArray.emplace_back(arg_fileDir + arg_fileName);
-
+	if (!isAnimationFlag)
+	{
+		m_modelCacheArray.emplace_back(ModelCacheData(arg_fileDir + arg_fileName, 4 <= skelton->bones.size()));
+	}
 
 	std::vector<VertexAndIndexGenerateData> vertArray;
 	m_modelVertexDataArray.emplace_back();

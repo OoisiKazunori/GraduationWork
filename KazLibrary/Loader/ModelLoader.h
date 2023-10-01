@@ -171,7 +171,15 @@ private:
 		std::vector<std::vector<VertexBufferAnimationData>>m_vertexAnimationDataArray;
 	};
 	std::vector<MeshVertex>m_modelVertexDataArray;
-	std::vector<std::string> m_modelNameArray;
+	struct ModelCacheData
+	{
+		std::string m_fileName;
+		bool m_hasAnimationFlag;
+		ModelCacheData(std::string arg_fileName, bool arg_animationFlag) :
+			m_fileName(arg_fileName), m_hasAnimationFlag(arg_animationFlag)
+		{}
+	};
+	std::vector<ModelCacheData> m_modelCacheArray;
 };
 
 class StreamReader : public Microsoft::glTF::IStreamReader

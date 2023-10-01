@@ -5,8 +5,6 @@
 #include"../Helper/ResourceFilePass.h"
 #include"../Buffer/DescriptorHeapMgr.h"
 #include"../Fps/FPSManager.h"
-#include"../Game/Scene/GameScene.h"
-#include"../Game/Scene/DemoScene.h"
 #include"../KazLibrary/Input/KeyBoradInputManager.h"
 #include"../Game/Effect/ShakeMgr.h"
 #include"../Scene/ModelToolScene.h"
@@ -20,14 +18,14 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	SoundManager::Instance()->SettingSoundManager();
 
 	//デモ用のゲームシーンを設定。
-	scene.emplace_back(std::make_unique<DemoScene>(m_rasterize));
+	m_nowScene = GetScene(1);
 
 	//シーン遷移を設定
-	change = std::make_unique<ChangeScene::SceneChange>();
+	m_sceneChange = std::make_unique<ChangeScene::SceneChange>();
 
 	//シーン番号、遷移に関するパラメーターを設定。
-	nowScene = 0;
-	nextScene = 0;
+	m_nowSceneNumber = 0;
+	m_nextSceneNumber = 0;
 	itisInArrayFlag = true;
 	endGameFlag = false;
 	initGameFlag = false;
@@ -138,75 +136,41 @@ void SceneManager::Update()
 	ShakeMgr::Instance()->Update();
 
 	//シーン遷移の開始
-	if (nextScene != nowScene)
+	if (m_nextSceneNumber != m_nowSceneNumber)
 	{
-		change->Start();
-	}
-
-	if (!gameFirstInitFlag)
-	{
-		scene[nowScene]->Init();
-		gameFirstInitFlag = true;
-		initGameFlag = false;
+		m_sceneChange->Start();
 	}
 	const int RESTART_NUM = -2;
 
-	//画面が完全に隠れてから1F分ずらす
-	if (initGameFlag)
-	{
-		if (KazHelper::IsitInAnArray(nowScene, scene.size()))
-		{
-			scene[nowScene]->Init();
-			itisInArrayFlag = true;
-		}
-		else
-		{
-			itisInArrayFlag = false;
-		}
-		initGameFlag = false;
-	}
-
 	//ゲーム画面が隠された判定
-	if (change->AllHiden())
+	if (m_sceneChange->AllHiden())
 	{
-		scene[nowScene]->Finalize();
+		//シーンの破棄
+		m_nowScene.reset();
+		//シーンの生成
+		m_nowScene = GetScene(m_nextSceneNumber);
 
-		if (nextScene != RESTART_NUM)
+		if (m_nextSceneNumber != RESTART_NUM)
 		{
-			nowScene = nextScene;
+			m_nowSceneNumber = m_nextSceneNumber;
 		}
-		else if (nextScene == RESTART_NUM)
+		else if (m_nextSceneNumber == RESTART_NUM)
 		{
-			nextScene = nowScene;
+			m_nextSceneNumber = m_nowSceneNumber;
 		}
-
-		if (!scene[nextScene]->firstGenerateFlag)
+		if (!m_nowScene->firstGenerateFlag)
 		{
-			scene[nextScene]->PreInit();
+			m_nowScene->PreInit();
 		}
-		scene[nextScene]->firstGenerateFlag = false;
-		initGameFlag = true;
+		m_nowScene->firstGenerateFlag = false;
 	}
 
 	//更新処理
-	if (itisInArrayFlag && !initGameFlag)
-	{
-		scene[nowScene]->Input();
-		scene[nowScene]->Update();
+	m_nowScene->Input();
+	m_nowScene->Update();
+	m_nextSceneNumber = m_nowScene->SceneChange();
 
-		int sceneNum = scene[nowScene]->SceneChange();
-		if (sceneNum != SCENE_NONE)
-		{
-			nextScene = sceneNum;
-		}
-
-		if (scene[nowScene]->endGameFlag)
-		{
-			endGameFlag = true;
-		}
-	}
-
-	change->Update();
+	m_sceneChange->Update();
 
 	m_blasVector.Update();
 
@@ -239,15 +203,12 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
-	change->Draw(m_rasterize);
+	m_sceneChange->Draw(m_rasterize);
 
 
 	//UIを描画
 	//OptionUI::Instance()->Draw(m_rasterize, m_debugRaytracingParam.m_sliderRate);
-	if (itisInArrayFlag)
-	{
-		scene[nowScene]->Draw(m_rasterize, m_blasVector);
-	}
+	m_nowScene->Draw(m_rasterize, m_blasVector);
 
 	m_rasterize.Sort();
 	m_rasterize.Render();
