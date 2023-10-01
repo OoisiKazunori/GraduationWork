@@ -469,12 +469,7 @@ DirectX::XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D& TRANSFORM, cons
 	baseMatWorldData.matScale = KazMath::CaluScaleMatrix(TRANSFORM.scale);
 	baseMatWorldData.matTrans = KazMath::CaluTransMatrix(TRANSFORM.pos);
 	//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
-	if (0 < fabs(TRANSFORM.quaternion.m128_f32[3])) {
-		baseMatWorldData.matRota = DirectX::XMMatrixRotationQuaternion(TRANSFORM.quaternion);
-	}
-	else {
-		baseMatWorldData.matRota = KazMath::CaluRotaMatrix(TRANSFORM.rotation);
-	}
+	baseMatWorldData.matRota = DirectX::XMMatrixRotationQuaternion(TRANSFORM.quaternion);
 	//ワールド行列の計算
 	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 	baseMatWorldData.matWorld *= baseMatWorldData.matScale;
@@ -514,12 +509,7 @@ DirectX::XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D& TRANSFORM, cons
 	baseMatWorldData.matScale = KazMath::CaluScaleMatrix(TRANSFORM.scale);
 	baseMatWorldData.matTrans = KazMath::CaluTransMatrix(TRANSFORM.pos);
 	//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
-	if (0 < fabs(TRANSFORM.quaternion.m128_f32[3])) {
-		baseMatWorldData.matRota = DirectX::XMMatrixRotationQuaternion(TRANSFORM.quaternion);
-	}
-	else {
-		baseMatWorldData.matRota = KazMath::CaluRotaMatrix(TRANSFORM.rotation);
-	}
+	baseMatWorldData.matRota = DirectX::XMMatrixRotationQuaternion(TRANSFORM.quaternion);
 	//ワールド行列の計算
 	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 	baseMatWorldData.matWorld *= baseMatWorldData.matScale;
