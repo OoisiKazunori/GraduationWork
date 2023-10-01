@@ -849,6 +849,86 @@ void DrawingByRasterize::SortAndRender()
 	}
 }
 
+void DrawingByRasterize::UISortAndRender()
+{
+	RESOURCE_HANDLE preRenderTargetHandle = -1;
+	RESOURCE_HANDLE preDepthHandle = -1;
+	for (auto& renderData : m_uiStackDataArray)
+	{
+		//前回と違うハンドルが出たらレンダーターゲットを切り替える
+		if (renderData->renderTargetHandle != preRenderTargetHandle && renderData->depthHandle == -1)
+		{
+			RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderData->renderTargetHandle, preRenderTargetHandle);
+			RenderTargetStatus::Instance()->ClearRenderTarget(renderData->renderTargetHandle);
+		}
+		//レンダーターゲット切り替えずにデプスに書き込む
+		if (renderData->depthHandle != preDepthHandle)
+		{
+			RenderTargetStatus::Instance()->SetDepth(renderData->renderTargetHandle);
+		}
+		preDepthHandle = renderData->depthHandle;
+		preRenderTargetHandle = renderData->renderTargetHandle;
+
+
+		RESOURCE_HANDLE pipelineHandle = renderData->pipelineHandle;
+		RESOURCE_HANDLE rootSignatureHandle = -1;
+		//通常の描画
+		if (renderData->drawCommandType != DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX)
+		{
+			rootSignatureHandle = renderData->m_rootsignatureHandle;
+
+			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
+				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
+			);
+			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
+				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
+			);
+			SetBufferOnCmdList(renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+		}
+		//ExcuteIndirectの使用
+		else
+		{
+			rootSignatureHandle = renderData->m_rootsignatureHandle;
+
+			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
+				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
+			);
+			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
+				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
+			);
+			//SetBufferOnCmdList(renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+		}
+
+		//描画コマンド実行
+		switch (renderData->drawCommandType)
+		{
+		case DrawFuncData::VERT_TYPE::INDEX:
+			DrawIndexInstanceCommand(renderData->drawIndexInstanceCommandData);
+			break;
+		case DrawFuncData::VERT_TYPE::INSTANCE:
+			DrawInstanceCommand(renderData->drawInstanceCommandData);
+			break;
+		case DrawFuncData::VERT_TYPE::MULTI_MESHED:
+			MultiMeshedDrawIndexInstanceCommand(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->materialBuffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+			break;
+		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX:
+			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
+			break;
+		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INSTANCE:
+			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (preRenderTargetHandle != -1)
+	{
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(preRenderTargetHandle);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	}
+}
+
 void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::BufferData>& BUFFER_ARRAY, std::vector<RootSignatureParameter> ROOT_PARAM)
 {
 	for (int i = 0; i < BUFFER_ARRAY.size(); ++i)

@@ -19,6 +19,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 
 	//デモ用のゲームシーンを設定。
 	m_nowScene = GetScene(1);
+	m_rasterize.GeneratePipeline();
 
 	//シーン遷移を設定
 	m_sceneChange = std::make_unique<ChangeScene::SceneChange>();
@@ -145,32 +146,36 @@ void SceneManager::Update()
 	//ゲーム画面が隠された判定
 	if (m_sceneChange->AllHiden())
 	{
-		//シーンの破棄
-		m_nowScene.reset();
-		//シーンの生成
-		m_nowScene = GetScene(m_nextSceneNumber);
-
-		if (m_nextSceneNumber != RESTART_NUM)
-		{
-			m_nowSceneNumber = m_nextSceneNumber;
-		}
-		else if (m_nextSceneNumber == RESTART_NUM)
+		//リスタート用の処理
+		if (m_nextSceneNumber == RESTART_NUM)
 		{
 			m_nextSceneNumber = m_nowSceneNumber;
+			m_nowScene->Init();
 		}
-		if (!m_nowScene->firstGenerateFlag)
+		//シーン切り替え
+		else
 		{
-			m_nowScene->PreInit();
+			m_nowSceneNumber = m_nextSceneNumber;
+			//シーンの破棄
+			m_nowScene.reset();
+			//シーンの生成
+			m_nowScene = GetScene(m_nextSceneNumber);
+			//コンストラクタで用意された描画パイプラインの生成
+			m_rasterize.GeneratePipeline();
+			m_nowScene->Init();
 		}
-		m_nowScene->firstGenerateFlag = false;
 	}
 
 	//更新処理
 	m_nowScene->Input();
 	m_nowScene->Update();
 	m_nextSceneNumber = m_nowScene->SceneChange();
-
 	m_sceneChange->Update();
+	//Scene内での描画情報で生成された場合の生成
+	if (m_nowScene->GeneratePipeline())
+	{
+		m_rasterize.GeneratePipeline();
+	}
 
 	m_blasVector.Update();
 
@@ -205,13 +210,9 @@ void SceneManager::Draw()
 {
 	m_sceneChange->Draw(m_rasterize);
 
-
-	//UIを描画
-	//OptionUI::Instance()->Draw(m_rasterize, m_debugRaytracingParam.m_sliderRate);
 	m_nowScene->Draw(m_rasterize, m_blasVector);
-
-	m_rasterize.Sort();
-	m_rasterize.Render();
+	//ラスタライザ描画
+	m_rasterize.SortAndRender();
 
 	//Tlasを構築 or 再構築する。
 	m_tlas.Build(m_blasVector);
@@ -221,8 +222,6 @@ void SceneManager::Draw()
 	{
 		m_rayPipeline->TraceRay(m_tlas);
 	}
-
-	m_rasterize.UISort();
-	m_rasterize.RenderAfterBackBuffer();
-
+	//UI用の描画
+	m_rasterize.UISortAndRender();
 }

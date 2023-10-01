@@ -35,6 +35,7 @@ public:
 	void UIRender(const DrawFuncData::DrawData* arg_drawData);
 
 	void SortAndRender();
+	void UISortAndRender();
 private:
 
 	//–‘O¶¬Œü‚¯-----
