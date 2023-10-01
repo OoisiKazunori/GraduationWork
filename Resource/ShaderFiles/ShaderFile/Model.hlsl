@@ -279,7 +279,7 @@ GBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput input) : S
     GBufferOutput output;
     output.albedo = texColor * color;
     output.normal = float4(normal, 1.0f);
-    output.metalnessRoughness = float4(mrColor.xyz, raytracingId);
+    output.metalnessRoughness = float4(0, 0, 0, 0);
     output.world = float4(input.worldPos, 1.0f);
     output.emissive = EmissiveTex.Sample(smp, input.uv);
     return output;
