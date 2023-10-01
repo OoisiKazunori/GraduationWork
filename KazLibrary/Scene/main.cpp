@@ -16,6 +16,7 @@
 #include<time.h>
 
 
+
 //ターゲットがデバックの時のみコンソール用のmain文を参照する
 #ifdef _DEBUG
 int main()
