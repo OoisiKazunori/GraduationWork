@@ -9,7 +9,6 @@ DemoScene::DemoScene(DrawingByRasterize& arg_rasterize) :
 	m_modelAnimationRender("Resource/Test/Virus/", "virus_cur.gltf", arg_rasterize),
 	m_modelRender("Resource/Test/Virus/", "virus_cur.gltf", arg_rasterize)
 {
-
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
 	読み込み単体の処理は下の処理になります。(多重読み込み防止あり)

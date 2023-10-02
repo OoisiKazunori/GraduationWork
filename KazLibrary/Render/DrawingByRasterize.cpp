@@ -727,9 +727,9 @@ void DrawingByRasterize::GeneratePipeline()
 		);
 		ErrorCheck(result.pipelineHandle, callData.callLocation);
 
-		++index;
 		//•`‰æî•ñ¶¬‚Ìó‚¯“n‚µ
 		*m_drawCallArray[index] = result;
+		++index;
 	}
 	m_drawCallStackDataArray.clear();
 }

@@ -40,14 +40,12 @@ void BasicDraw::BasicModelRender::Load(const std::string& arg_fileDir, const std
 }
 
 BasicDraw::BasicTextureRender::BasicTextureRender(const std::string& arg_filePass, DrawingByRasterize& arg_rasterize) :
-	m_tex(arg_filePass, BasicDraw::SetTex())
+	m_tex(arg_rasterize, arg_filePass, BasicDraw::SetTex())
 {
 	m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
-	m_tex.m_drawCommandData = arg_rasterize.SetPipeline(m_tex.m_drawCommand);
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize) :m_tex(BasicDraw::SetTex())
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize) :m_tex(arg_rasterize, BasicDraw::SetTex())
 {
 	m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
-	m_tex.m_drawCommandData = arg_rasterize.SetPipeline(m_tex.m_drawCommand);
 }
