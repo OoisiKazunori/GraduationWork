@@ -15,6 +15,7 @@
 #include"Raytracing/RayPipeline.h"
 #include<time.h>
 
+//OgawJ
 
 //ターゲットがデバックの時のみコンソール用のmain文を参照する
 #ifdef _DEBUG
