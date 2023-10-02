@@ -218,7 +218,7 @@ void ModelTool::Draw(DrawingByRasterize& render)
 		DrawFunc::DrawModelLight(m_modelInfomationArray[m_selectNum].m_drawCall, m_modelInfomationArray[m_selectNum].m_transform, m_directionalLight, KazMath::Color(255, 255, 255, 255));
 	}
 	DrawGrid(render);
-	render.ObjectRender(m_modelInfomationArray[m_selectNum].m_drawCall);
+	//render.ObjectRender(m_modelInfomationArray[m_selectNum].m_drawCall);
 
 	struct OutputData
 	{
@@ -230,7 +230,7 @@ void ModelTool::Draw(DrawingByRasterize& render)
 	memcpy(vec.data(), m_particle.bufferWrapper->GetMapAddres(), sizeof(OutputData) * 10000);
 	//memcpy(vec.data(), m_meshParticle.bufferWrapper->GetMapAddres(), 10000);
 
-	render.ObjectRender(m_particleRender);
+	//render.ObjectRender(m_particleRender);
 }
 
 void ModelTool::DrawGrid(DrawingByRasterize& render)
@@ -248,7 +248,7 @@ void ModelTool::DrawGrid(DrawingByRasterize& render)
 		posArray.emplace_back(startPos);
 		posArray.emplace_back(endPos);
 		DrawFunc::DrawLine(m_gridCallDataZ[z], posArray, m_gridCallDataZ[z].m_modelVertDataHandle, lineColor);
-		render.ObjectRender(m_gridCallDataZ[z]);
+		//render.ObjectRender(m_gridCallDataZ[z]);
 	}
 	//c‚Ìü‚ğ•À‚×‚é
 	for (int x = 0; x < m_gridCallDataZ.size(); ++x)
@@ -260,6 +260,6 @@ void ModelTool::DrawGrid(DrawingByRasterize& render)
 		posArray.emplace_back(startPos);
 		posArray.emplace_back(endPos);
 		DrawFunc::DrawLine(m_gridCallDataX[x], posArray, m_gridCallDataX[x].m_modelVertDataHandle, lineColor);
-		render.ObjectRender(m_gridCallDataX[x]);
+		//render.ObjectRender(m_gridCallDataX[x]);
 	}
 }

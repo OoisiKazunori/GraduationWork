@@ -25,8 +25,8 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	m_sceneChange = std::make_unique<ChangeScene::SceneChange>();
 
 	//シーン番号、遷移に関するパラメーターを設定。
-	m_nowSceneNumber = 0;
-	m_nextSceneNumber = 0;
+	m_nowSceneNumber = -1;
+	m_nextSceneNumber = -1;
 	itisInArrayFlag = true;
 	endGameFlag = false;
 	initGameFlag = false;
@@ -172,7 +172,7 @@ void SceneManager::Update()
 	m_nextSceneNumber = m_nowScene->SceneChange();
 	m_sceneChange->Update();
 	//Scene内での描画情報で生成された場合の生成
-	if (m_nowScene->GeneratePipeline())
+	if (m_nowScene->OrderGeneratePipeline())
 	{
 		m_rasterize.GeneratePipeline();
 	}

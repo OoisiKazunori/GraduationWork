@@ -18,7 +18,7 @@ public:
 	virtual void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec) = 0;
 
 	virtual int SceneChange() = 0;
-	virtual bool GeneratePipeline()
+	virtual bool OrderGeneratePipeline()
 	{
 		return false;
 	}

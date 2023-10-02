@@ -55,6 +55,7 @@ namespace DrawFuncHelper
 	struct ModelRender
 	{
 		DrawFuncData::DrawCallData m_drawCommand;
+		const DrawFuncData::DrawData* m_drawCommandData;
 		std::shared_ptr<ModelInfomation> m_modelInfo;
 		std::shared_ptr<ModelAnimator> m_animator;
 

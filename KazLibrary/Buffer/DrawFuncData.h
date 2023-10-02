@@ -705,7 +705,7 @@ namespace DrawFuncData
 
 
 		//その他描画に必要なバッファ情報
-		std::vector<KazBufferHelper::BufferData> buffer;
+		std::vector<KazBufferHelper::BufferData> *buffer;
 
 		//デバック情報
 		std::source_location drawCallData;

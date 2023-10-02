@@ -79,7 +79,7 @@ void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Ra
 	//テクスチャのサイズに割合をかける
 	transform.scale *= {m_textureSize.x, -m_textureSize.y, 1.0f};
 	DrawFunc::DrawTextureIn3D(m_drawCommand, transform, m_textureBuffer, arg_addColor);
-	m_drawCommandData->buffer.back() = m_textureBuffer;
+	m_drawCommand.extraBufferArray.back() = m_textureBuffer;
 	arg_rasterize.ObjectRender(m_drawCommandData);
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
@@ -142,7 +142,7 @@ void DrawFuncHelper::TextureRender::DrawGaussian(DrawingByRasterize& arg_rasteri
 	m_drawCommand.extraBufferArray[2].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 	m_drawCommand.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 	//描画命令
-	arg_rasterize.ObjectRender(m_drawCommand);
+	//arg_rasterize.ObjectRender(m_drawCommand);
 }
 
 void DrawFuncHelper::TextureRender::Error()
@@ -236,7 +236,7 @@ void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize& arg_rasterize, Raytra
 		DrawFunc::DrawModel(m_drawCommand, arg_trasform3D, arg_addColor);
 	}
 	//ラスタライザ描画命令
-	arg_rasterize.ObjectRender(m_drawCommand);
+	arg_rasterize.ObjectRender(m_drawCommandData);
 	//レイトレ描画命令
 	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
 	{
