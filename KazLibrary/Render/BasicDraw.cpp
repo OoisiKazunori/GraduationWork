@@ -23,14 +23,15 @@ DrawFuncData::DrawCallData BasicDraw::SetTex()
 	return DrawFuncData::SetSpriteAlphaData(lData);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender(const std::string& arg_fileDir, const std::string& arg_fileName, DrawingByRasterize& arg_rasterize) :
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName) :
 	m_model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
-	arg_rasterize.SetPipeline(m_model.m_drawCommand);
+	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender()
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize)
 {
+	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
 void BasicDraw::BasicModelRender::Load(const std::string& arg_fileDir, const std::string& arg_fileName)
@@ -39,7 +40,7 @@ void BasicDraw::BasicModelRender::Load(const std::string& arg_fileDir, const std
 	m_model.Load(model, BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender(const std::string& arg_filePass, DrawingByRasterize& arg_rasterize, bool arg_isUIFlag) :
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag) :
 	m_tex(arg_rasterize, arg_filePass, BasicDraw::SetTex(), arg_isUIFlag)
 {
 	if (!arg_isUIFlag)

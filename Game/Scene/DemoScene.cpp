@@ -3,11 +3,11 @@
 
 DemoScene::DemoScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
-	m_2DSprite("Resource/Test/texas.png", arg_rasterize, true),
-	m_3DSprite("Resource/Test/texas.png", arg_rasterize),
+	m_2DSprite(arg_rasterize, "Resource/Test/texas.png", true),
+	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
 	//DrawFuncHelperでのモデル読み込み
-	m_modelAnimationRender("Resource/Test/Virus/", "virus_cur.gltf", arg_rasterize),
-	m_modelRender("Resource/Test/Virus/", "virus_cur.gltf", arg_rasterize)
+	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
+	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -90,8 +90,8 @@ void DemoScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//描画命令発行
 	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-	//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
-	//m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
+	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 
 	////下の処理はDrawFuncHelper無しで描画した
 	////グリッドの描画--------------------------
