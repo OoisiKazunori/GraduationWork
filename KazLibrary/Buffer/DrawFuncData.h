@@ -1302,7 +1302,7 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCallData;
 
-		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
 		//’¸“_î•ñ
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(handle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
@@ -1329,7 +1329,7 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCallData;
 
-		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
 		//’¸“_î•ñ
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(handle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
@@ -1590,7 +1590,7 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCallData;
 
-		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
 		//’¸“_î•ñ
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(handle).index;
 		drawCallData.drawCommandType = VERT_TYPE::EXECUTEINDIRECT_INDEX;
@@ -1643,7 +1643,7 @@ namespace DrawFuncData
 	static DrawCallData SetParticleInRaytracing(const std::shared_ptr<KazBufferHelper::BufferData>& arg_buffer, const std::shared_ptr<KazBufferHelper::BufferData>& arg_indexBuffer)
 	{
 		DrawCallData drawCallData;
-		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
 		drawCallData.m_modelVertDataHandle = VertexBufferMgr::Instance()->StackVertexBuffer(arg_buffer, arg_indexBuffer);
 		drawCallData.materialBuffer.emplace_back();
 		drawCallData.materialBuffer.back().emplace_back(TextureResourceMgr::Instance()->LoadGraphBuffer(KazFilePathName::TestPath + "white1x1.png"));

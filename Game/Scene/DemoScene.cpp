@@ -18,7 +18,7 @@ DemoScene::DemoScene(DrawingByRasterize& arg_rasterize) :
 	KazBufferHelper::BufferData texture = TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/Test/texas.png");
 
 	//アニメーション再生
-	m_modelAnimationRender.m_model.m_animator->Play("繧｢繝ｼ繝槭メ繝･繧｢Action", true, false);
+	//m_modelAnimationRender.m_model.m_animator->Play("繧｢繝ｼ繝槭メ繝･繧｢Action", true, false);
 
 	//3DスプライトのTrasform調整
 	m_3DSpriteTransform.pos = { 10.0f,0.0f,0.0f };

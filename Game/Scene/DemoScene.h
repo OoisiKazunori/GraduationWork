@@ -36,6 +36,10 @@ private:
 	BasicDraw::BasicModelRender m_modelAnimationRender,m_modelRender;
 	KazMath::Transform3D m_modelAnimationTransform,m_modelTransform;
 
+
+	//‰¹--------------------------
+	SoundData m_bgmHandle,m_seHandle;
+
 	int m_sceneNum;
 };
 

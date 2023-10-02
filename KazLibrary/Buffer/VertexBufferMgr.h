@@ -82,6 +82,14 @@ public:
 	PolygonMultiMeshedIndexData GetVertexIndexBuffer(RESOURCE_HANDLE HANDLE);
 	PolygonInstanceData GetVertexBuffer(RESOURCE_HANDLE HANDLE);
 
+	RESOURCE_HANDLE GetPlaneHandle()
+	{
+		return m_planeHandle;
+	};
+	void GenerateBasicVertex()
+	{
+		m_planeHandle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+	}
 private:
 	HandleMaker m_handle;
 	HandleMaker m_vertexHandle;
@@ -94,7 +102,8 @@ private:
 	std::vector<PolygonInstanceData>m_drawDataArray;
 	int sDescHandle = 0;
 
-
 	std::vector<DirectX::XMFLOAT3>GetPlaneVertices(const KazMath::Vec2<float>& anchorPoint, const KazMath::Vec2<float>& scale, const KazMath::Vec2<int>& texSize);
 
+
+	RESOURCE_HANDLE m_planeHandle;
 };

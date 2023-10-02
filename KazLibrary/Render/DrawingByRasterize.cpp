@@ -215,6 +215,7 @@ void DrawingByRasterize::ReleasePipeline()
 		shaderBufferMgr.Release();
 	}
 	m_drawCallArray.clear();
+	m_drawCallArray.shrink_to_fit();
 }
 
 void DrawingByRasterize::ObjectRender(const DrawFuncData::DrawData* arg_drawData)

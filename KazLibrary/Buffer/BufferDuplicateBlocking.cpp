@@ -106,14 +106,13 @@ void PipelineDuplicateBlocking::Update()
 
 void PipelineDuplicateBlocking::Release()
 {
-	for (auto& obj : pipelineCount)
-	{
-		RESOURCE_HANDLE releaseHandle = obj.shaderHandle;
-		handle.DeleteHandle(releaseHandle);
-		bufferArray[releaseHandle].Reset();
-		pipelineCount[releaseHandle].Finalize();
-		duplicateDataArray[releaseHandle].Finalize();
-	}
+	handle.DeleteAllHandle();
+	pipelineCount.clear();
+	pipelineCount.shrink_to_fit();
+	bufferArray.clear();
+	bufferArray.shrink_to_fit();
+	duplicateDataArray.clear();
+	duplicateDataArray.shrink_to_fit();
 }
 
 RESOURCE_HANDLE ShaderDuplicateBlocking::GenerateShader(const ShaderOptionData &DATA)
@@ -178,14 +177,13 @@ void ShaderDuplicateBlocking::Update()
 
 void ShaderDuplicateBlocking::Release()
 {
-	for (auto& obj : shaderCount)
-	{
-		RESOURCE_HANDLE releaseHandle = obj.shaderHandle;
-		handle.DeleteHandle(releaseHandle);
-		bufferArray[releaseHandle].Reset();
-		shaderCount[releaseHandle].Finalize();
-		generateDataArray[releaseHandle].fileName = "";
-	}
+	handle.DeleteAllHandle();
+	generateDataArray.clear();
+	generateDataArray.shrink_to_fit();
+	shaderCount.clear();
+	shaderCount.shrink_to_fit();
+	bufferArray.clear();
+	bufferArray.shrink_to_fit();
 }
 
 RESOURCE_HANDLE RootSignatureDuplicateBlocking::GenerateRootSignature(const RootSignatureDataTest &DATA)
@@ -377,14 +375,11 @@ void RootSignatureDuplicateBlocking::Update()
 
 void RootSignatureDuplicateBlocking::Release()
 {
-	for (auto& obj : callDataArray)
-	{
-		RESOURCE_HANDLE releaseHandle = obj.shaderHandle;
-		handle.DeleteHandle(releaseHandle);
-		rootSignatureArray[releaseHandle].buffer.Reset();
-		rootSignatureArray[releaseHandle].rootParamDataArray.clear();
-		dataForDuplicateBlocking[releaseHandle].rangeArray.clear();
-		dataForDuplicateBlocking[releaseHandle].samplerArray.clear();
-		callDataArray[releaseHandle].Finalize();
-	}
+	handle.DeleteAllHandle();
+	rootSignatureArray.clear();
+	rootSignatureArray.shrink_to_fit();
+	dataForDuplicateBlocking.clear();
+	dataForDuplicateBlocking.shrink_to_fit();
+	callDataArray.clear();
+	callDataArray.shrink_to_fit();
 }

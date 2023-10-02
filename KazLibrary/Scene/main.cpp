@@ -39,6 +39,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		spDebugController1->SetEnableGPUBasedValidation(true);
 	}
 #endif
+
+
 	//CheckDirectXError
 	int CheckWinError = 0;
 	bool CheckMessageFlag = true;
@@ -77,6 +79,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	filter.DenyList.pSeverityList = severities;
 	infoQueue->PushStorageFilter(&filter);
 #endif 
+	//使いまわす予定の頂点情報生成
+	VertexBufferMgr::Instance()->GenerateBasicVertex();
 
 	MyImgui imgui;
 	imgui.Create(winApi.hwnd);
@@ -146,6 +150,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		lStop1FlameFlag = true;
 	}
 	winApi.UnregisterWindowClass();
+	//sm.~SceneManager();
+	//directX.~DirectX12();
+	//imgui.~MyImgui();
+
+	//debug1->QueryInterface();
 
 	ClipCursor(nullptr);
 
