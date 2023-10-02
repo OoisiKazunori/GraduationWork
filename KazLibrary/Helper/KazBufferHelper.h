@@ -243,7 +243,10 @@ namespace KazBufferHelper
 		BufferData() :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), structureSize(0), elementNum(0)
 		{
 		}
-		~BufferData() {};
+		~BufferData()
+		{
+			bool debug = false;
+		};
 
 		void GenerateCounterBuffer();
 		void CreateUAVView();

@@ -202,7 +202,6 @@ void DrawingByRasterize::GeneratePipeline()
 	{
 		m_drawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>(*obj));
 	}
-
 	m_drawCallStackDataArray.clear();
 }
 

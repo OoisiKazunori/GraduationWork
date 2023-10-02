@@ -123,9 +123,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
-		#ifdef DEBUG
+#ifdef DEBUG
 		winApi.FPS();
-		#endif
+#endif
 
 		if (lStop1FlameFlag)
 		{
@@ -150,12 +150,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		lStop1FlameFlag = true;
 	}
 	winApi.UnregisterWindowClass();
-	//sm.~SceneManager();
-	//directX.~DirectX12();
-	//imgui.~MyImgui();
-
-	//debug1->QueryInterface();
-
 	ClipCursor(nullptr);
 
 	return 0;

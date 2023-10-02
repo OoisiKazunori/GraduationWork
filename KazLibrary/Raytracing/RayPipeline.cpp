@@ -603,7 +603,7 @@ namespace Raytracing {
 
 	}
 
-	void RayPipeline::UAVBarrier(std::vector<KazBufferHelper::BufferData> arg_bufferArray)
+	void RayPipeline::UAVBarrier(const std::vector<KazBufferHelper::BufferData> &arg_bufferArray)
 	{
 		std::vector<D3D12_RESOURCE_BARRIER> barrier;
 
