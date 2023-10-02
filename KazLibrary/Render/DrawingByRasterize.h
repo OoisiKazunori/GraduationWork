@@ -36,7 +36,7 @@ private:
 	std::vector<std::unique_ptr<DrawFuncData::DrawData>>m_drawCallArray;
 	//描画命令のキュー
 	std::list<const DrawFuncData::DrawData*>m_stackDataArray;
-	std::vector<const DrawFuncData::DrawData*>m_uiStackDataArray;
+	std::list<const DrawFuncData::DrawData*>m_uiStackDataArray;
 
 
 	//パイプラインの情報----------------------------------------

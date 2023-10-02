@@ -222,9 +222,9 @@ void DrawingByRasterize::SortAndRender()
 {
 	//ソート処理
 	//レンダーターゲット順にソートをかける。
-	/*m_stackDataArray.sort([](DrawFuncData::DrawData a, DrawFuncData::DrawData b)
+	m_stackDataArray.sort([](const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
 		{
-			RESOURCE_HANDLE aHandle = a.renderTargetHandle, bHandle = b.renderTargetHandle;
+			RESOURCE_HANDLE aHandle = a->renderTargetHandle, bHandle = b->renderTargetHandle;
 			if (aHandle < bHandle)
 			{
 				return true;
@@ -237,7 +237,7 @@ void DrawingByRasterize::SortAndRender()
 			{
 				return false;
 			}
-		});*/
+		});
 
 
 	//描画命令
@@ -326,6 +326,23 @@ void DrawingByRasterize::SortAndRender()
 
 void DrawingByRasterize::UISortAndRender()
 {
+	m_uiStackDataArray.sort([](const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
+		{
+			RESOURCE_HANDLE aHandle = a->renderTargetHandle, bHandle = b->renderTargetHandle;
+			if (aHandle < bHandle)
+			{
+				return true;
+			}
+			else if (bHandle < aHandle)
+			{
+				return false;
+			}
+			else
+			{
+				return false;
+			}
+		});
+
 	RESOURCE_HANDLE preRenderTargetHandle = -1;
 	RESOURCE_HANDLE preDepthHandle = -1;
 	for (auto& renderData : m_uiStackDataArray)
