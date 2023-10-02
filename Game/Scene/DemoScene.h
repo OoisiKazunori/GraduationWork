@@ -36,10 +36,6 @@ private:
 	BasicDraw::BasicModelRender m_modelAnimationRender,m_modelRender;
 	KazMath::Transform3D m_modelAnimationTransform,m_modelTransform;
 
-	std::array<std::array<BasicDraw::BasicModelRender, 25>, 25>m_modelArray;
-
-
-
 	//‰¹--------------------------
 	SoundData m_bgmHandle,m_seHandle;
 

@@ -9,15 +9,6 @@ DemoScene::DemoScene(DrawingByRasterize& arg_rasterize) :
 	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
 {
-
-	for (auto& firstLevel : m_modelArray)
-	{
-		for (auto& secondLevel : firstLevel)
-		{
-			secondLevel.Load(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf");
-		}
-	}
-
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
 	読み込み単体の処理は下の処理になります。(多重読み込み防止あり)
@@ -85,14 +76,6 @@ void DemoScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
-
-	for (auto& firstLevel : m_modelArray)
-	{
-		for (auto& secondLevel : firstLevel)
-		{
-			secondLevel.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
-		}
-	}
 }
 
 int DemoScene::SceneChange()
