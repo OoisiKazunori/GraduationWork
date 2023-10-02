@@ -20,8 +20,8 @@ namespace BasicDraw
 	};
 	struct BasicTextureRender
 	{
-		BasicTextureRender(const std::string& arg_filePass, DrawingByRasterize& arg_rasterize);
-		BasicTextureRender(DrawingByRasterize& arg_rasterize);
+		BasicTextureRender(const std::string& arg_filePass, DrawingByRasterize& arg_rasterize, bool arg_isUIFlag = false);
+		BasicTextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag = false);
 		DrawFuncHelper::TextureRender m_tex;
 	};
 

@@ -3,7 +3,7 @@
 
 DemoScene::DemoScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
-	m_2DSprite("Resource/Test/texas.png", arg_rasterize),
+	m_2DSprite("Resource/Test/texas.png", arg_rasterize, true),
 	m_3DSprite("Resource/Test/texas.png", arg_rasterize),
 	//DrawFuncHelperでのモデル読み込み
 	m_modelAnimationRender("Resource/Test/Virus/", "virus_cur.gltf", arg_rasterize),

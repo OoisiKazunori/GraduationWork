@@ -19,15 +19,15 @@ namespace DrawFuncHelper
 		/// </summary>
 		/// <param name="arg_textureFilePass">テクスチャのファイルパス</param>
 		/// <param name="arg_alphaFlag">透過有り無し</param>
-		TextureRender(DrawingByRasterize& arg_rasterize,const std::string& arg_textureFilePass);
+		TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag);
 		/// <summary>
 		/// テクスチャ読み込みと描画情報の設定
 		/// </summary>
 		/// <param name="arg_textureFilePass">テクスチャのファイルパス</param>
 		/// <param name="arg_drawCall">描画情報の生成</param>
-		TextureRender(DrawingByRasterize& arg_rasterize,const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall);
-		TextureRender(DrawingByRasterize& arg_rasterize,const DrawFuncData::DrawCallData& arg_drawCall);
-		TextureRender(DrawingByRasterize& arg_rasterize);
+		TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag);
+		TextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag);
+		TextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag);
 
 
 		void operator=(const KazBufferHelper::BufferData& rhs);

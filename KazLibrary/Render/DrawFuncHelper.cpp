@@ -1,7 +1,11 @@
 #include "DrawFuncHelper.h"
 
-DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag)
 {
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
 	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaShader());
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
@@ -13,8 +17,12 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, 
 	};
 }
 
-DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag)
 {
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
 	m_drawCommand = arg_drawCall;
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
@@ -26,14 +34,22 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, 
 	};
 }
 
-DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag)
 {
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
 	m_drawCommand = arg_drawCall;
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 }
 
-DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag)
 {
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
 	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteShader());
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 }
@@ -79,7 +95,6 @@ void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Ra
 	//テクスチャのサイズに割合をかける
 	transform.scale *= {m_textureSize.x, -m_textureSize.y, 1.0f};
 	DrawFunc::DrawTextureIn3D(m_drawCommand, transform, m_textureBuffer, arg_addColor);
-	m_drawCommand.extraBufferArray.back() = m_textureBuffer;
 	arg_rasterize.ObjectRender(m_drawCommandData);
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }

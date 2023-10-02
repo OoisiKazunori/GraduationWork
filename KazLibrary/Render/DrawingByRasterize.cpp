@@ -321,6 +321,7 @@ void DrawingByRasterize::SortAndRender()
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 		RenderTargetStatus::Instance()->ClearDoubuleBuffer(DirectX::XMFLOAT3(0, 0, 0));
 	}
+	m_stackDataArray.clear();
 }
 
 void DrawingByRasterize::UISortAndRender()
@@ -401,6 +402,7 @@ void DrawingByRasterize::UISortAndRender()
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(preRenderTargetHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
+	m_uiStackDataArray.clear();
 }
 
 void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::BufferData>& BUFFER_ARRAY, std::vector<RootSignatureParameter> ROOT_PARAM)
