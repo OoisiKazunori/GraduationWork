@@ -35,23 +35,15 @@ const DrawFuncData::DrawData* DrawingByRasterize::SetPipeline(DrawFuncData::Draw
 
 void DrawingByRasterize::GeneratePipeline()
 {
-	//レンダーターゲット順にソートをかける。
-	m_drawCallStackDataArray.sort([](DrawFuncData::DrawCallData* a, DrawFuncData::DrawCallData* b)
+	std::vector<std::unique_ptr<DrawFuncData::DrawData>> tmpDrawCallArray;
+	//シーン内で生成する際に残し続ける描画命令をスタックさせ、新規の後で渡す
+	for (auto& obj : m_drawCallArray)
+	{
+		if (obj->generateFlag)
 		{
-			RESOURCE_HANDLE lAHandle = a->renderTargetHandle, lBHandle = b->renderTargetHandle;
-			if (lAHandle < lBHandle)
-			{
-				return true;
-			}
-			else if (lBHandle < lAHandle)
-			{
-				return false;
-			}
-			else
-			{
-				return false;
-			}
-		});
+			tmpDrawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>(*obj));
+		}
+	}
 
 	int index = 0;
 	//ソートが終わったらDirectX12のコマンドリストに命令出来るように描画情報を生成する。
@@ -205,7 +197,24 @@ void DrawingByRasterize::GeneratePipeline()
 		*m_drawCallArray[index] = result;
 		++index;
 	}
+	//残した描画命令を入れる
+	for (auto& obj : tmpDrawCallArray)
+	{
+		m_drawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>(*obj));
+	}
+
 	m_drawCallStackDataArray.clear();
+}
+
+void DrawingByRasterize::ReleasePipeline()
+{
+	if (m_drawCallArray.size() != 0)
+	{
+		piplineBufferMgr.Release();
+		rootSignatureBufferMgr.Release();
+		shaderBufferMgr.Release();
+	}
+	m_drawCallArray.clear();
 }
 
 void DrawingByRasterize::ObjectRender(const DrawFuncData::DrawData* arg_drawData)

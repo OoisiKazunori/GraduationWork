@@ -36,12 +36,6 @@ private:
 	BasicDraw::BasicModelRender m_modelAnimationRender,m_modelRender;
 	KazMath::Transform3D m_modelAnimationTransform,m_modelTransform;
 
-
-	//‰¹--------------------------
-	SoundData m_bgmHandle,m_seHandle;
-
-	//ƒOƒŠƒbƒh•`‰æ--------------------------
-	std::array<DrawFuncData::DrawCallData, 11> m_gridCallDataX;
-	std::array<DrawFuncData::DrawCallData, 11> m_gridCallDataZ;
+	int m_sceneNum;
 };
 

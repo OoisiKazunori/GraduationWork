@@ -96,6 +96,8 @@ public:
 
 	void Update();
 
+	void Release();
+
 private:
 	HandleMaker handle;
 	std::vector<Microsoft::WRL::ComPtr<ID3D12PipelineState>> bufferArray;
@@ -116,7 +118,7 @@ public:
 	Microsoft::WRL::ComPtr<IDxcBlob> GetBuffer(RESOURCE_HANDLE HANDLE);
 
 	void Update();
-
+	void Release();
 private:
 
 	HandleMaker handle;
@@ -154,6 +156,7 @@ public:
 
 	void Update();
 
+	void Release();
 private:
 	HandleMaker handle;
 

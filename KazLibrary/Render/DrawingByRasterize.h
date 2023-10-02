@@ -21,6 +21,10 @@ public:
 	/// スタックされた描画情報の生成(マルチスレッド対応の為に一括で生成する処理)
 	/// </summary>
 	void GeneratePipeline();
+	/// <summary>
+	/// 前シーンの描画命令破棄
+	/// </summary>
+	void ReleasePipeline();
 
 	void ObjectRender(const DrawFuncData::DrawData* arg_drawData);
 	void UIRender(const DrawFuncData::DrawData* arg_drawData);

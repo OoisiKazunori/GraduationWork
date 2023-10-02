@@ -158,6 +158,8 @@ void SceneManager::Update()
 			m_nowSceneNumber = m_nextSceneNumber;
 			//シーンの破棄
 			m_nowScene.reset();
+			//前シーンの描画命令破棄
+			m_rasterize.ReleasePipeline();
 			//シーンの生成
 			m_nowScene = GetScene(m_nextSceneNumber);
 			//コンストラクタで用意された描画パイプラインの生成
@@ -169,7 +171,12 @@ void SceneManager::Update()
 	//更新処理
 	m_nowScene->Input();
 	m_nowScene->Update();
-	m_nextSceneNumber = m_nowScene->SceneChange();
+	//シーン切り替えのトリガー
+	int sceneNum = m_nowScene->SceneChange();
+	if (sceneNum != SCENE_NONE)
+	{
+		m_nextSceneNumber = sceneNum;
+	}
 	m_sceneChange->Update();
 	//Scene内での描画情報で生成された場合の生成
 	if (m_nowScene->OrderGeneratePipeline())

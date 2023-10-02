@@ -20,28 +20,12 @@ DemoScene::DemoScene(DrawingByRasterize& arg_rasterize) :
 	//アニメーション再生
 	m_modelAnimationRender.m_model.m_animator->Play("繧｢繝ｼ繝槭メ繝･繧｢Action", true, false);
 
-	//音声再生
-	//SoundManager::Instance()->SoundPlayerWave(SoundDataManager::GetSoundName(SoundName::BGM_TITLE_SCENE), true);
-
-	//グリッドの描画の情報生成--------------------------
-	for (int z = 0; z < m_gridCallDataX.size(); ++z)
-	{
-		std::vector<KazMath::Vec3<float>>posArray(2);
-		VertexGenerateData bufferData(posArray.data(), sizeof(DirectX::XMFLOAT3), posArray.size(), sizeof(DirectX::XMFLOAT3));
-		m_gridCallDataX[z] = DrawFuncData::SetLine(VertexBufferMgr::Instance()->GenerateBuffer(bufferData, false));
-	}
-	for (int y = 0; y < m_gridCallDataZ.size(); ++y)
-	{
-		std::vector<KazMath::Vec3<float>>posArray(2);
-		VertexGenerateData bufferData(posArray.data(), sizeof(DirectX::XMFLOAT3), posArray.size(), sizeof(DirectX::XMFLOAT3));
-		m_gridCallDataZ[y] = DrawFuncData::SetLine(VertexBufferMgr::Instance()->GenerateBuffer(bufferData, false));
-	}
-
 	//3DスプライトのTrasform調整
 	m_3DSpriteTransform.pos = { 10.0f,0.0f,0.0f };
 	m_3DSpriteTransform.scale = { 0.1f,0.1f,1.0f };
 	//アニメーション再生無しモデルの位置調整
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
+	m_sceneNum = SCENE_NONE;
 }
 
 DemoScene::~DemoScene()
@@ -50,6 +34,7 @@ DemoScene::~DemoScene()
 
 void DemoScene::Init()
 {
+	m_sceneNum = SCENE_NONE;
 }
 
 void DemoScene::PreInit()
@@ -69,8 +54,7 @@ void DemoScene::Input()
 	*/
 	if (Input::Instance()->Done())
 	{
-		//音声再生
-		//SoundManager::Instance()->SoundPlayerWave(SoundDataManager::GetSoundName(SoundName::SE_PLAYER_DASH), false);
+		m_sceneNum = 0;
 	}
 }
 
@@ -92,44 +76,15 @@ void DemoScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
-
-	////下の処理はDrawFuncHelper無しで描画した
-	////グリッドの描画--------------------------
-
-	//const float height = -5.0f;
-	//const float range = 50.0f;
-	//const KazMath::Color lineColor(49, 187, 134, 255);
-
-	////横の線を並べる
-	//for (int z = 0; z < m_gridCallDataX.size(); ++z)
-	//{
-	//	float zLine = static_cast<float>(z) * 10.0f - (range);
-	//	KazMath::Vec3<float>startPos(-range, height, zLine), endPos(range, height, zLine);
-	//	std::vector<KazMath::Vec3<float>>posArray;
-	//	posArray.emplace_back(startPos);
-	//	posArray.emplace_back(endPos);
-	//	//DrawLineの描画情報を設定する
-	//	DrawFunc::DrawLine(m_gridCallDataZ[z], posArray, m_gridCallDataZ[z].m_modelVertDataHandle, lineColor);
-	//	//描画命令発行
-	//	arg_rasterize.ObjectRender(m_gridCallDataZ[z]);
-	//}
-	////縦の線を並べる
-	//for (int x = 0; x < m_gridCallDataZ.size(); ++x)
-	//{
-	//	float xLine = static_cast<float>(x) * 10.0f - (range);
-	//	KazMath::Vec3<float>startPos(xLine, height, -range), endPos(xLine, height, range);
-
-	//	std::vector<KazMath::Vec3<float>>posArray;
-	//	posArray.emplace_back(startPos);
-	//	posArray.emplace_back(endPos);
-	//	//DrawLineの描画情報を設定する
-	//	DrawFunc::DrawLine(m_gridCallDataX[x], posArray, m_gridCallDataX[x].m_modelVertDataHandle, lineColor);
-	//	//描画命令発行
-	//	arg_rasterize.ObjectRender(m_gridCallDataX[x]);
-	//}
 }
 
 int DemoScene::SceneChange()
 {
+	if (m_sceneNum != SCENE_NONE)
+	{
+		int tmp = m_sceneNum;
+		m_sceneNum = SCENE_NONE;
+		return tmp;
+	}
 	return SCENE_NONE;
 }

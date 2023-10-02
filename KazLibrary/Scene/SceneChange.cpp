@@ -56,6 +56,7 @@ void SceneChange::Update()
 		if (1.0 <= startOutInT[1])
 		{
 			startFlag = false;
+			initFlag = false;
 		}
 	}
 	else

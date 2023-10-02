@@ -104,6 +104,18 @@ void PipelineDuplicateBlocking::Update()
 	}
 }
 
+void PipelineDuplicateBlocking::Release()
+{
+	for (auto& obj : pipelineCount)
+	{
+		RESOURCE_HANDLE releaseHandle = obj.shaderHandle;
+		handle.DeleteHandle(releaseHandle);
+		bufferArray[releaseHandle].Reset();
+		pipelineCount[releaseHandle].Finalize();
+		duplicateDataArray[releaseHandle].Finalize();
+	}
+}
+
 RESOURCE_HANDLE ShaderDuplicateBlocking::GenerateShader(const ShaderOptionData &DATA)
 {
 	//èdï°ämîF
@@ -161,6 +173,18 @@ void ShaderDuplicateBlocking::Update()
 			generateDataArray[releaseHandle].fileName = "";
 		}
 		obj.Reset();
+	}
+}
+
+void ShaderDuplicateBlocking::Release()
+{
+	for (auto& obj : shaderCount)
+	{
+		RESOURCE_HANDLE releaseHandle = obj.shaderHandle;
+		handle.DeleteHandle(releaseHandle);
+		bufferArray[releaseHandle].Reset();
+		shaderCount[releaseHandle].Finalize();
+		generateDataArray[releaseHandle].fileName = "";
 	}
 }
 
@@ -348,5 +372,19 @@ void RootSignatureDuplicateBlocking::Update()
 			callDataArray[releaseHandle].Finalize();
 		}
 		obj.Reset();
+	}
+}
+
+void RootSignatureDuplicateBlocking::Release()
+{
+	for (auto& obj : callDataArray)
+	{
+		RESOURCE_HANDLE releaseHandle = obj.shaderHandle;
+		handle.DeleteHandle(releaseHandle);
+		rootSignatureArray[releaseHandle].buffer.Reset();
+		rootSignatureArray[releaseHandle].rootParamDataArray.clear();
+		dataForDuplicateBlocking[releaseHandle].rangeArray.clear();
+		dataForDuplicateBlocking[releaseHandle].samplerArray.clear();
+		callDataArray[releaseHandle].Finalize();
 	}
 }

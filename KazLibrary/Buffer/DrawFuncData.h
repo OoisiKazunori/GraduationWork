@@ -679,7 +679,7 @@ namespace DrawFuncData
 	//描画命令の発行を行うデータ
 	struct DrawData
 	{
-		bool generateFlag;
+		bool generateFlag = false;
 
 		//頂点情報
 		KazRenderHelper::MultipleMeshesDrawIndexInstanceCommandData drawMultiMeshesIndexInstanceCommandData;
@@ -705,7 +705,7 @@ namespace DrawFuncData
 
 
 		//その他描画に必要なバッファ情報
-		std::vector<KazBufferHelper::BufferData> *buffer;
+		std::vector<KazBufferHelper::BufferData>* buffer;
 
 		//デバック情報
 		std::source_location drawCallData;
@@ -1404,7 +1404,7 @@ namespace DrawFuncData
 
 		return drawCall;
 	};
-	
+
 	static DrawCallData SetDefferdRenderingInstanceModel(std::shared_ptr<ModelInfomation>arg_model, std::vector<ShaderOptionData>arg_shader)
 	{
 		DrawCallData drawCall;
