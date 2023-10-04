@@ -18,7 +18,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	SoundManager::Instance()->SettingSoundManager();
 
 	//デモ用のゲームシーンを設定。
-	m_nowScene = GetScene(1);
+	m_nowScene = GetScene(0);
 	m_rasterize.GeneratePipeline();
 
 	//シーン遷移を設定

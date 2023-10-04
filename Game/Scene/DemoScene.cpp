@@ -56,6 +56,7 @@ void DemoScene::Input()
 	{
 		m_sceneNum = 0;
 	}
+
 }
 
 void DemoScene::Update()
