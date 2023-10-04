@@ -124,6 +124,7 @@
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="Game\Tool\SplineRail.cpp" />
     <ClCompile Include="Game\Tool\ModelTool.cpp" />
+    <ClCompile Include="Game\UI\EenemyReactionUI.cpp" />
     <ClCompile Include="KazLibrary\Animation\AnimationData.cpp" />
     <ClCompile Include="KazLibrary\Animation\AnimationInRaytracing.cpp" />
     <ClCompile Include="KazLibrary\Buffer\BufferDuplicateBlocking.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="KazLibrary\Helper\RegisterNameWithData.cpp" />
     <ClCompile Include="KazLibrary\Helper\ResouceBufferHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\Select.cpp" />
+    <ClCompile Include="KazLibrary\Helper\Timer.cpp" />
     <ClCompile Include="KazLibrary\Imgui\imgui.cpp" />
     <ClCompile Include="KazLibrary\Imgui\imgui_demo.cpp" />
     <ClCompile Include="KazLibrary\Imgui\imgui_draw.cpp" />
@@ -223,6 +225,7 @@
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Tool\SplineRail.h" />
     <ClInclude Include="Game\Tool\ModelTool.h" />
+    <ClInclude Include="Game\UI\EenemyReactionUI.h" />
     <ClInclude Include="KazLibrary\Animation\AnimationData.h" />
     <ClInclude Include="KazLibrary\Animation\AnimationInRaytracing.h" />
     <ClInclude Include="KazLibrary\Buffer\BufferDuplicateBlocking.h" />
@@ -261,6 +264,7 @@
     <ClInclude Include="KazLibrary\Helper\ResouceBufferHelper.h" />
     <ClInclude Include="KazLibrary\Helper\ResourceFilePass.h" />
     <ClInclude Include="KazLibrary\Helper\Select.h" />
+    <ClInclude Include="KazLibrary\Helper\Timer.h" />
     <ClInclude Include="KazLibrary\Imgui\imconfig.h" />
     <ClInclude Include="KazLibrary\Imgui\imgui.h" />
     <ClInclude Include="KazLibrary\Imgui\imgui_impl_dx12.h" />

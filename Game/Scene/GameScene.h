@@ -7,6 +7,7 @@
 #include"../KazLibrary/Render/DrawFuncHelper.h"
 #include"../Game/Debug/DebugCamera.h"
 #include"../KazLibrary/Render/BasicDraw.h"
+#include"../Game/UI/EenemyReactionUI.h"
 
 class Player;
 class Camera;
@@ -63,4 +64,6 @@ private:
 
 	BasicDraw::BasicLineRender m_line;
 	BasicDraw::BasicModelRender m_stage;
+
+	EenemyReactionUI m_reactionUI;
 };
