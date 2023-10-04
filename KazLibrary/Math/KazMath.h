@@ -176,7 +176,7 @@ namespace KazMath
 
 		bool operator<(const Vec2<T>& rhs)
 		{
-			return x < rhs.x && y < rhs.y;
+			return x < rhs.x&& y < rhs.y;
 		}
 #pragma endregion
 	};
@@ -564,7 +564,7 @@ namespace KazMath
 				static_cast<float>(color.y) / 255.0f,
 				static_cast<float>(color.z) / 255.0f,
 				static_cast<float>(color.a) / 255.0f
-			);
+				);
 		};
 
 
@@ -590,7 +590,7 @@ namespace KazMath
 				static_cast<float>(color.y),
 				static_cast<float>(color.z),
 				static_cast<float>(color.a)
-			);
+				);
 		};
 		DirtyFlag<KazMath::Vec4<int>> dirtyFlag;
 	};
@@ -614,7 +614,7 @@ namespace KazMath
 			scaleDirtyFlag(DirtyFlag<Vec3<float>>(&scale)),
 			pos(Vec3<float>(0.0f, 0.0f, 0.0f)),
 			scale(Vec3<float>(1.0f, 1.0f, 1.0f)),
-			quaternion({ 0,0,0,0 })
+			quaternion(DirectX::XMQuaternionIdentity())
 		{
 		};
 		Transform3D(const Vec3<float>& POS) :
@@ -622,7 +622,7 @@ namespace KazMath
 			scaleDirtyFlag(DirtyFlag<Vec3<float>>(&scale)),
 			pos(POS),
 			scale(Vec3<float>(1.0f, 1.0f, 1.0f)),
-			quaternion({ 0,0,0,0 })
+			quaternion(DirectX::XMQuaternionIdentity())
 		{
 		};
 		Transform3D(const Vec3<float>& POS, const Vec3<float>& SCALE) :
@@ -630,9 +630,24 @@ namespace KazMath
 			scaleDirtyFlag(DirtyFlag<Vec3<float>>(&scale)),
 			pos(POS),
 			scale(SCALE),
-			quaternion({ 0,0,0,0 })
+			quaternion(DirectX::XMQuaternionIdentity())
 		{
 		};
+
+		//XMVECTORをVec3<float>に変換
+		Vec3<float> TransformVec3(DirectX::XMVECTOR arg_input) {
+			return Vec3<float>(arg_input.m128_f32[0], arg_input.m128_f32[1], arg_input.m128_f32[2]);
+		}
+
+		//姿勢から各方向ベクトルを取得
+		Vec3<float> GetRight() { return TransformVec3(DirectX::XMVector3Transform({ 1,0,0 }, DirectX::XMMatrixRotationQuaternion(quaternion))); }
+		Vec3<float> GetUp() { return TransformVec3(DirectX::XMVector3Transform({ 0,1,0 }, DirectX::XMMatrixRotationQuaternion(quaternion))); }
+		Vec3<float> GetFront() { return TransformVec3(DirectX::XMVector3Transform({ 0,0,1 }, DirectX::XMMatrixRotationQuaternion(quaternion))); }
+
+		//姿勢に任意のベクトル軸の回転をかける。(加算する感じ)
+		void Rotation(Vec3<float> arg_axis, float arg_radian) {
+			quaternion = DirectX::XMQuaternionMultiply(quaternion, DirectX::XMQuaternionRotationAxis(arg_axis.ConvertXMVECTOR(), arg_radian));
+		}
 
 		bool Dirty()
 		{
