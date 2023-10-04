@@ -59,12 +59,8 @@ namespace DrawFunc
 		transData.m_view = CameraMgr::Instance()->GetViewMatrix();
 
 		//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
-		if (0 < fabs(arg_transform.quaternion.m128_f32[3])) {
-			transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
-		}
-		else {
-			transData.m_rotaion = KazMath::CaluRotaMatrix(arg_transform.rotation);
-		}
+		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
+
 
 		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
 		//ID
@@ -81,12 +77,7 @@ namespace DrawFunc
 		transData.m_view = CameraMgr::Instance()->GetViewMatrix();
 
 		//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
-		if (0 < fabs(arg_transform.quaternion.m128_f32[3])) {
-			transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
-		}
-		else {
-			transData.m_rotaion = KazMath::CaluRotaMatrix(arg_transform.rotation);
-		}
+		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
 
 	}
 
@@ -99,12 +90,7 @@ namespace DrawFunc
 		transData.m_view = CameraMgr::Instance()->GetViewMatrix();
 
 		//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
-		if (0 < fabs(arg_transform.quaternion.m128_f32[3])) {
-			transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
-		}
-		else {
-			transData.m_rotaion = KazMath::CaluRotaMatrix(arg_transform.rotation);
-		}
+		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
 
 		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
 		//ID
@@ -127,18 +113,13 @@ namespace DrawFunc
 		transData.m_view = CameraMgr::Instance()->GetViewMatrix();
 
 		//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
-		if (0 < fabs(arg_transform.quaternion.m128_f32[3])) {
-			transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
-		}
-		else {
-			transData.m_rotaion = KazMath::CaluRotaMatrix(arg_transform.rotation);
-		}
+		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
 
 		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
 
 		arg_callData.extraBufferArray[2].bufferWrapper->TransData(&arg_color.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
 	}
-	
+
 	static void DrawModelDisolve(DrawFuncData::DrawCallData& arg_callData, KazMath::Transform3D& arg_transform, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255))
 	{
 		//行列情報
@@ -148,12 +129,7 @@ namespace DrawFunc
 		transData.m_view = CameraMgr::Instance()->GetViewMatrix();
 
 		//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
-		if (0 < fabs(arg_transform.quaternion.m128_f32[3])) {
-			transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
-		}
-		else {
-			transData.m_rotaion = KazMath::CaluRotaMatrix(arg_transform.rotation);
-		}
+		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
 
 		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
 
@@ -169,12 +145,8 @@ namespace DrawFunc
 		transData.m_view = CameraMgr::Instance()->GetViewMatrix();
 
 		//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
-		if (0 < fabs(arg_transform.quaternion.m128_f32[3])) {
-			transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
-		}
-		else {
-			transData.m_rotaion = KazMath::CaluRotaMatrix(arg_transform.rotation);
-		}
+		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
+		
 
 		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
 

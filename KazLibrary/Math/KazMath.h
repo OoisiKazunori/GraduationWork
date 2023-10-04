@@ -607,49 +607,41 @@ namespace KazMath
 	{
 		Vec3<float> pos;
 		Vec3<float> scale;
-		Vec3<float> rotation;
 		DirectX::XMVECTOR quaternion;
 
 		Transform3D() :
 			positionDirtyFlag(DirtyFlag<Vec3<float>>(&pos)),
 			scaleDirtyFlag(DirtyFlag<Vec3<float>>(&scale)),
-			rotationDirtyFlag(DirtyFlag<Vec3<float>>(&rotation)),
 			pos(Vec3<float>(0.0f, 0.0f, 0.0f)),
 			scale(Vec3<float>(1.0f, 1.0f, 1.0f)),
-			rotation(Vec3<float>(0.0f, 0.0f, 0.0f)),
 			quaternion({ 0,0,0,0 })
 		{
 		};
 		Transform3D(const Vec3<float>& POS) :
 			positionDirtyFlag(DirtyFlag<Vec3<float>>(&pos)),
 			scaleDirtyFlag(DirtyFlag<Vec3<float>>(&scale)),
-			rotationDirtyFlag(DirtyFlag<Vec3<float>>(&rotation)),
 			pos(POS),
 			scale(Vec3<float>(1.0f, 1.0f, 1.0f)),
-			rotation(Vec3<float>(0.0f, 0.0f, 0.0f)),
 			quaternion({ 0,0,0,0 })
 		{
 		};
-		Transform3D(const Vec3<float>& POS, const Vec3<float>& SCALE, const Vec3<float>& ROTATION) :
+		Transform3D(const Vec3<float>& POS, const Vec3<float>& SCALE) :
 			positionDirtyFlag(DirtyFlag<Vec3<float>>(&pos)),
 			scaleDirtyFlag(DirtyFlag<Vec3<float>>(&scale)),
-			rotationDirtyFlag(DirtyFlag<Vec3<float>>(&rotation)),
 			pos(POS),
 			scale(SCALE),
-			rotation(ROTATION),
 			quaternion({ 0,0,0,0 })
 		{
 		};
 
 		bool Dirty()
 		{
-			return positionDirtyFlag.Dirty() || scaleDirtyFlag.Dirty() || rotationDirtyFlag.Dirty();
+			return positionDirtyFlag.Dirty() || scaleDirtyFlag.Dirty();
 		};
 		void Record()
 		{
 			positionDirtyFlag.Record();
 			scaleDirtyFlag.Record();
-			rotationDirtyFlag.Record();
 		};
 		const DirectX::XMMATRIX& GetMat(const Vec3<float>& Y_VEC = { 0.0f,1.0f,0.0f }, const Vec3<float>& Z_VEC = { 0.0f,0.0f,1.0f })
 		{
@@ -678,11 +670,9 @@ namespace KazMath
 		{
 			pos = OBJ.pos;
 			scale = OBJ.scale;
-			rotation = OBJ.rotation;
 		}
 		DirtyFlag<Vec3<float>>positionDirtyFlag;
 		DirtyFlag<Vec3<float>>scaleDirtyFlag;
-		DirtyFlag<Vec3<float>>rotationDirtyFlag;
 
 
 	private:

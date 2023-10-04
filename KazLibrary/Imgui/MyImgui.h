@@ -67,13 +67,6 @@ namespace KazImGuiHelper
 		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->scale.y);
 		lLabel = NAME + "_ScaleZ";
 		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->scale.z);
-
-		lLabel = NAME + "_RotationX";
-		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->rotation.x);
-		lLabel = NAME + "_RotationY";
-		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->rotation.y);
-		lLabel = NAME + "_RotationZ";
-		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->rotation.z);
 	};
 
 	inline void InputTransform2D(const std::string &NAME, KazMath::Transform2D *TRANSFORM)

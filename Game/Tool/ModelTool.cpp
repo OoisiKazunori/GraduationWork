@@ -182,11 +182,10 @@ void ModelTool::Draw(DrawingByRasterize& render)
 			{
 				m_modelInfomationArray[m_selectNum].m_transform.pos = {};
 				m_modelInfomationArray[m_selectNum].m_transform.scale = { 1.0f,1.0f,1.0f };
-				m_modelInfomationArray[m_selectNum].m_transform.rotation = {};
+				m_modelInfomationArray[m_selectNum].m_transform.quaternion = {};
 			}
 			//âÒì]èàóù
 			ImGui::DragFloat("Scale", &m_modelInfomationArray[m_selectNum].m_transform.scale.x);
-			KazImGuiHelper::InputVec3("Rotation", &m_modelInfomationArray[m_selectNum].m_transform.rotation);
 			m_modelInfomationArray[m_selectNum].m_transform.scale.y = m_modelInfomationArray[m_selectNum].m_transform.scale.x;
 			m_modelInfomationArray[m_selectNum].m_transform.scale.z = m_modelInfomationArray[m_selectNum].m_transform.scale.x;
 			ImGui::TreePop();
