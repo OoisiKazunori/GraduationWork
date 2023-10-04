@@ -64,7 +64,7 @@ public:
 	*/
 	std::map<std::string, ModelAnimation>animations;
 
-	void CreateBoneTree(const DirectX::XMMATRIX &CoordinateSysConvertMat);
+	void CreateBoneTree(const DirectX::XMMATRIX& CoordinateSysConvertMat);
 	int GetIndex(const std::string& BoneName);
 };
 
@@ -121,37 +121,9 @@ struct ModelInfomation
 
 class ModelAnimator
 {
-	static const int MAX_BONE_NUM = 256;
-
-	//対応するスケルトンの参照
-	std::weak_ptr<Skeleton>attachSkelton;
-	//ボーンのローカル行列
-	KazBufferHelper::BufferData boneBuff;
-	//ボーン行列（GPU送信用）
-	std::array<DirectX::XMMATRIX, MAX_BONE_NUM>boneMatricies;
-	//各ボーンのTransform
-	std::vector<KazMath::Transform3D>m_boneTransform;
-
-	struct PlayAnimation
-	{
-		std::string name;	//アニメーション名
-		float past = 0.0f;
-		bool loop = false;
-		bool finish = false;
-
-		PlayAnimation(const std::string& Name, const bool& Loop) :name(Name), loop(Loop) {}
-	};
-
-	std::list<PlayAnimation>playAnimations;
-
-	//ComputeShader computeAnimation;
-
-
-	//ボーンTransform一括計算
-	void CalculateTransform(KazMath::Transform3D& BoneTransform, const Skeleton::BoneAnimation& BoneAnim, const float& Frame, bool& FinishFlg);
-	void BoneMatrixRecursive(const int& BoneIdx, const float& Past, bool* Finish, Skeleton::ModelAnimation& Anim);
-
 public:
+
+	static const int MAX_BONE_NUM = 256;
 	ModelAnimator() {}
 	ModelAnimator(std::weak_ptr<ModelInfomation>Model);
 	void Attach(std::weak_ptr<ModelInfomation>Model);
@@ -191,4 +163,52 @@ public:
 
 	const KazBufferHelper::BufferData& GetBoneMatBuff() { return boneBuff; }
 	KazMath::Transform3D& GetBoneTransform(const std::string& BoneName);
+private:
+
+	//対応するスケルトンの参照
+	std::weak_ptr<Skeleton>attachSkelton;
+	//ボーンのローカル行列
+	KazBufferHelper::BufferData boneBuff;
+	//ボーン行列（GPU送信用）
+	std::array<DirectX::XMMATRIX, MAX_BONE_NUM>boneMatricies;
+	//各ボーンのTransform
+	std::vector<KazMath::Transform3D>m_boneTransform;
+
+	struct PlayAnimation
+	{
+		std::string name;	//アニメーション名
+		float past = 0.0f;
+		bool loop = false;
+		bool finish = false;
+
+		PlayAnimation(const std::string& Name, const bool& Loop) :name(Name), loop(Loop) {}
+	};
+
+	std::list<PlayAnimation>playAnimations;
+
+	//ComputeShader computeAnimation;
+
+
+	//ボーンTransform一括計算
+	void CalculateTransform(KazMath::Transform3D& BoneTransform, const Skeleton::BoneAnimation& BoneAnim, const float& Frame, bool& FinishFlg);
+	void BoneMatrixRecursive(const int& BoneIdx, const float& Past, bool* Finish, Skeleton::ModelAnimation& Anim);
+
+};
+
+class InitAnimationData :public ISingleton<InitAnimationData>
+{
+public:
+	InitAnimationData()
+	{
+		m_initBoneBuffer = KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX) * ModelAnimator::MAX_BONE_NUM);
+		m_initBoneBuffer.rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+	};
+
+	const KazBufferHelper::BufferData& GetBoneInitBuffer(GraphicsRootParamType arg_rootParam)
+	{
+		m_initBoneBuffer.rootParamType = arg_rootParam;
+		return m_initBoneBuffer;
+	}
+private:
+	KazBufferHelper::BufferData m_initBoneBuffer;
 };

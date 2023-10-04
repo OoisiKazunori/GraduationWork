@@ -16,7 +16,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのモデル読み込み
 	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
-	m_line(arg_rasterize)
+	m_line(arg_rasterize),
+	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf")
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -60,10 +61,6 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	if (Input::Instance()->Done())
-	{
-		m_sceneNum = 1;
-	}
 }
 
 void GameScene::Update()
@@ -92,7 +89,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-
+	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
 }
 
 int GameScene::SceneChange()

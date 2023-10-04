@@ -191,8 +191,8 @@ DrawFuncHelper::ModelRender::ModelRender(const std::string& arg_fileDir, const s
 DrawFuncHelper::ModelRender::ModelRender(const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
 {
 	m_modelInfo = arg_modelInfomation;
-	LoadAnimation();
 	m_drawCommand = arg_drawCall;
+	LoadAnimation();
 	m_drawCommand.SetupRaytracing(true);
 }
 
@@ -235,6 +235,7 @@ bool DrawFuncHelper::ModelRender::LoadAnimation()
 	}
 	else
 	{
+		m_drawCommand.extraBufferArray.back() = InitAnimationData::Instance()->GetBoneInitBuffer(GRAPHICS_PRAMTYPE_DATA4);
 		return false;
 	}
 }

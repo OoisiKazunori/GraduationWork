@@ -62,4 +62,5 @@ private:
 	}
 
 	BasicDraw::BasicLineRender m_line;
+	BasicDraw::BasicModelRender m_stage;
 };
