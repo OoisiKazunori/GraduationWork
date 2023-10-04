@@ -10,7 +10,9 @@ private:
 	KazMath::Vec3<float> m_prevPos;
 
 	//移動速度
-	const float MOVE_SPEED = 0.5f;
+	const float MOVE_SPEED_STAND = 0.5f;
+	const float MOVE_SPEED_SQUAT = 0.3f;
+	const float MOVE_SPEED_CREEPING = 0.15f;
 
 	//姿勢のステータス
 	enum class PlayerAttitude {
@@ -35,5 +37,6 @@ private:
 
 	void Input(KazMath::Transform3D arg_cameraQuaternion);
 	void Rotate();
+	float GetMoveSpeed();
 
 };

@@ -27,6 +27,28 @@ void Player::Update(KazMath::Transform3D arg_cameraQuaternion)
 	//動いた方向に回転させる。
 	Rotate();
 
+	//現在の姿勢のステータスによってモデルのスケール量をいじる。アニメーションとかモデルを置き変える処理の代替処理。
+	switch (m_playerAttitude)
+	{
+	case Player::PlayerAttitude::STAND:
+		m_transform.scale.x += (1.0f - m_transform.scale.x) / 5.0f;
+		m_transform.scale.y += (1.0f - m_transform.scale.y) / 5.0f;
+		m_transform.scale.z += (1.0f - m_transform.scale.z) / 5.0f;
+		break;
+	case Player::PlayerAttitude::SQUAT:
+		m_transform.scale.x += (1.0f - m_transform.scale.x) / 5.0f;
+		m_transform.scale.y += (0.5f - m_transform.scale.y) / 5.0f;
+		m_transform.scale.z += (1.0f - m_transform.scale.z) / 5.0f;
+		break;
+	case Player::PlayerAttitude::CREEPING:
+		m_transform.scale.x += (1.0f - m_transform.scale.x) / 5.0f;
+		m_transform.scale.y += (0.2f - m_transform.scale.y) / 5.0f;
+		m_transform.scale.z += (3.0f - m_transform.scale.z) / 5.0f;
+		break;
+	default:
+		break;
+	}
+
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -46,18 +68,36 @@ void Player::Input(KazMath::Transform3D arg_cameraQuaternion)
 	//前後左右に移動する。
 	KazMath::Vec3<float> inputMoveVec = {};
 	if (KeyBoradInputManager::Instance()->InputState(DIK_W)) {
-		inputMoveVec += frontVec * MOVE_SPEED;
+		inputMoveVec += frontVec;
 	}
 	if (KeyBoradInputManager::Instance()->InputState(DIK_S)) {
-		inputMoveVec -= frontVec * MOVE_SPEED;
+		inputMoveVec -= frontVec;
 	}
 	if (KeyBoradInputManager::Instance()->InputState(DIK_A)) {
-		inputMoveVec -= rightVec * MOVE_SPEED;
+		inputMoveVec -= rightVec;
 	}
 	if (KeyBoradInputManager::Instance()->InputState(DIK_D)) {
-		inputMoveVec += rightVec * MOVE_SPEED;
+		inputMoveVec += rightVec;
 	}
-	m_transform.pos += inputMoveVec.GetNormal() * MOVE_SPEED;
+	m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed();
+
+	//CTRLが押されたらステータスを切り返る。
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LCONTROL)) {
+		switch (m_playerAttitude)
+		{
+		case Player::PlayerAttitude::STAND:
+			m_playerAttitude = PlayerAttitude::SQUAT;
+			break;
+		case Player::PlayerAttitude::SQUAT:
+			m_playerAttitude = PlayerAttitude::CREEPING;
+			break;
+		case Player::PlayerAttitude::CREEPING:
+			m_playerAttitude = PlayerAttitude::STAND;
+			break;
+		default:
+			break;
+		}
+	}
 
 }
 
@@ -85,4 +125,23 @@ void Player::Rotate()
 
 	}
 
+}
+
+float Player::GetMoveSpeed()
+{
+	switch (m_playerAttitude)
+	{
+	case Player::PlayerAttitude::STAND:
+		return MOVE_SPEED_STAND;
+		break;
+	case Player::PlayerAttitude::SQUAT:
+		return MOVE_SPEED_SQUAT;
+		break;
+	case Player::PlayerAttitude::CREEPING:
+		return MOVE_SPEED_CREEPING;
+		break;
+	default:
+		break;
+	}
+	return MOVE_SPEED_STAND;
 }
