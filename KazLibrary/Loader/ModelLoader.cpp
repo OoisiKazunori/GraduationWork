@@ -14,7 +14,7 @@ std::shared_ptr<ModelInfomation> ModelLoader::Load(std::string arg_fileDir, std:
 	{
 		const bool IS_SAME_FLAG = m_modelCacheArray[i].m_fileName == arg_fileDir + arg_fileName;
 		//アニメーションが入っているモデルはレイトレの描画の都合上重複は許す
-		if (IS_SAME_FLAG && !m_modelCacheArray[i].m_hasAnimationFlag)
+		if (IS_SAME_FLAG)
 		{
 			return m_modelArray[i];
 		}

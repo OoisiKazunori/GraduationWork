@@ -10,6 +10,7 @@ namespace DrawFuncHelper
 	struct TextureRender
 	{
 		DrawFuncData::DrawCallData m_drawCommand;
+		const DrawFuncData::DrawData* m_drawCommandData;
 		KazBufferHelper::BufferData m_textureBuffer;
 		KazMath::Vec2<float> m_textureSize;
 
@@ -18,15 +19,15 @@ namespace DrawFuncHelper
 		/// </summary>
 		/// <param name="arg_textureFilePass">テクスチャのファイルパス</param>
 		/// <param name="arg_alphaFlag">透過有り無し</param>
-		TextureRender(const std::string& arg_textureFilePass);
+		TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag);
 		/// <summary>
 		/// テクスチャ読み込みと描画情報の設定
 		/// </summary>
 		/// <param name="arg_textureFilePass">テクスチャのファイルパス</param>
 		/// <param name="arg_drawCall">描画情報の生成</param>
-		TextureRender(const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall);
-		TextureRender(const DrawFuncData::DrawCallData& arg_drawCall);
-		TextureRender();
+		TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag);
+		TextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag);
+		TextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag);
 
 
 		void operator=(const KazBufferHelper::BufferData& rhs);
@@ -35,7 +36,6 @@ namespace DrawFuncHelper
 		/// スプライト2D描画
 		/// </summary>
 		void Draw2D(DrawingByRasterize& arg_rasterize, const KazMath::Transform2D& arg_trasform2D, const KazMath::Color& arg_addColor = KazMath::Color(255, 255, 255, 255));
-		void Draw2D(const KazMath::Transform2D& arg_trasform2D, const KazMath::Color& arg_addColor = KazMath::Color(255, 255, 255, 255));
 		void Draw2D(DrawingByRasterize& arg_rasterize, const KazMath::Transform2D& arg_trasform2D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor = KazMath::Color(255, 255, 255, 255));
 		/// <summary>
 		/// スプライト3D描画
@@ -55,6 +55,7 @@ namespace DrawFuncHelper
 	struct ModelRender
 	{
 		DrawFuncData::DrawCallData m_drawCommand;
+		const DrawFuncData::DrawData* m_drawCommandData;
 		std::shared_ptr<ModelInfomation> m_modelInfo;
 		std::shared_ptr<ModelAnimator> m_animator;
 

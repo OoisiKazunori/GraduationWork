@@ -679,7 +679,7 @@ namespace DrawFuncData
 	//描画命令の発行を行うデータ
 	struct DrawData
 	{
-		bool generateFlag;
+		bool generateFlag = false;
 
 		//頂点情報
 		KazRenderHelper::MultipleMeshesDrawIndexInstanceCommandData drawMultiMeshesIndexInstanceCommandData;
@@ -705,7 +705,7 @@ namespace DrawFuncData
 
 
 		//その他描画に必要なバッファ情報
-		std::vector<KazBufferHelper::BufferData> buffer;
+		std::vector<KazBufferHelper::BufferData>* buffer;
 
 		//デバック情報
 		std::source_location drawCallData;
@@ -1302,7 +1302,7 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCallData;
 
-		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
 		//頂点情報
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(handle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
@@ -1329,7 +1329,7 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCallData;
 
-		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
 		//頂点情報
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(handle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
@@ -1404,7 +1404,7 @@ namespace DrawFuncData
 
 		return drawCall;
 	};
-	
+
 	static DrawCallData SetDefferdRenderingInstanceModel(std::shared_ptr<ModelInfomation>arg_model, std::vector<ShaderOptionData>arg_shader)
 	{
 		DrawCallData drawCall;
@@ -1590,7 +1590,7 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCallData;
 
-		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
 		//頂点情報
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(handle).index;
 		drawCallData.drawCommandType = VERT_TYPE::EXECUTEINDIRECT_INDEX;
@@ -1643,7 +1643,7 @@ namespace DrawFuncData
 	static DrawCallData SetParticleInRaytracing(const std::shared_ptr<KazBufferHelper::BufferData>& arg_buffer, const std::shared_ptr<KazBufferHelper::BufferData>& arg_indexBuffer)
 	{
 		DrawCallData drawCallData;
-		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
 		drawCallData.m_modelVertDataHandle = VertexBufferMgr::Instance()->StackVertexBuffer(arg_buffer, arg_indexBuffer);
 		drawCallData.materialBuffer.emplace_back();
 		drawCallData.materialBuffer.back().emplace_back(TextureResourceMgr::Instance()->LoadGraphBuffer(KazFilePathName::TestPath + "white1x1.png"));

@@ -18,7 +18,7 @@ BoundingBox::BoundingBox(const ResouceBufferHelper::BufferData &VERT_DATA, UINT 
 		GRAPHICS_RANGE_TYPE_CBV_VIEW, 
 		GRAPHICS_PRAMTYPE_DATA3, 1
 	);
-	DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
+	DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
 
 	CommonData lData;
 	lData.scaleRotaMat = lMat;

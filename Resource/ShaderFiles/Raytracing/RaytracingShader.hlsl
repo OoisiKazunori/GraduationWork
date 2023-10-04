@@ -45,11 +45,11 @@ void mainRayGen()
     {
         bright += length(emissiveColor.xyz);
     }
-    ////反射屈折するオブジェクトのライティングは切る。
-    //else if (MATERIAL_REFLECT == materialInfo.y || MATERIAL_REFRACT == materialInfo.y)
-    //{
-    //    bright = 1.0f;
-    //}
+    //反射屈折するオブジェクトのライティングは切る。
+    else if (MATERIAL_REFLECT == materialInfo.y || MATERIAL_REFRACT == materialInfo.y)
+    {
+        bright = 1.0f;
+    }
     //ライティングを行う。
     else
     {
@@ -58,111 +58,8 @@ void mainRayGen()
         
     }
     
-    ////輝度が一定以上だったらレンズフレア用のテクスチャに書きこむ。
-    //const float LENSFLARE_DEADLINE = 0.3f;
-    //float deadline = step(LENSFLARE_DEADLINE, bright);
-    //float lensflareBright = (deadline * bright);
-    //lensFlareTexture[launchIndex.xy] = saturate(float4(albedoColor.xyz * lensflareBright * 0.1f, 1.0f) + emissiveColor * 0.45f);
-    //lensFlareTexture[launchIndex.xy] = float4(0,0,0,0);
-    
-    //夜のときのディレクショナルライトのY 絶対値
-    const float NIGHT_DIRLIGHT_Y = 0.4472f;
-    //昼のときのディレクショナルライトのY 絶対値
-    const float DAY_DIRLIGHT_Y = 0.894f;
-    const float DIRLIGHT_Y_CHANGE_AMOUNT = abs(DAY_DIRLIGHT_Y - NIGHT_DIRLIGHT_Y);
-    
-    //夜を基準とした時の現在の昼の割合
-    float dayRate = (abs(lightData.m_dirLight.m_dir.y) - NIGHT_DIRLIGHT_Y) / DIRLIGHT_Y_CHANGE_AMOUNT;
-    
-    //ポイントライトの色
-    float3 pointLightColor = float3(0.93f, 0.67f, 0.64f) * (pointlightBright);
-    
-    //ライトの明るさが0だったら影の色をアルベドに設定。
-    float3 nonLightAlbedo = albedoColor.xyz;
-    const float3 NIGHT_LIGHT_COLOR = float3(0.18f, 0.30f, 0.42f);
-    const float3 DAY_GROUND_COLOR = float3(0.45f, 0.60f, 0.44f);
-    //カスの色
-    if (abs(nonLightAlbedo.x - 0.24f) <= 0.2f && worldColor.y < 1.0f)
-    {
-        
-        const float3 NIGHT_SHADOW_COLOR = float3(0.10f, 0.12f, 0.18f);
-        const float3 DAY_SHADOW_COLOR = float3(0.24f, 0.15f, 0.17f);
-        albedoColor.xyz = DAY_SHADOW_COLOR * dayRate + NIGHT_SHADOW_COLOR * (1.0f - dayRate);
-        nonLightAlbedo = albedoColor.xyz;
-        
-    }
-    else if (bright <= 0.0f)
-    {
-        
-        
-        const float3 NIGHT_SHADOW_COLOR = float3(0.10f, 0.12f, 0.18f);
-        const float3 DAY_SHADOW_COLOR = float3(0.24f, 0.15f, 0.17f);
-        albedoColor.xyz = DAY_SHADOW_COLOR * dayRate + NIGHT_SHADOW_COLOR * (1.0f - dayRate);
-        
-        //地面だったら色を固定にする。
-        bool isGround = worldColor.y < 1.0f;
-        if (isGround)
-        {
-            
-            nonLightAlbedo = albedoColor.xyz;
-            
-        }
-        
-        
-    }
-    else
-    {
-        
-        //地面だったら色を固定にする。
-        bool isGround = worldColor.y < 1.0f;
-        if (isGround)
-        {
-            
-            albedoColor.xyz = (DAY_GROUND_COLOR) * dayRate + (NIGHT_LIGHT_COLOR * nonLightAlbedo) * (1.0f - dayRate);
-            nonLightAlbedo = albedoColor.xyz;
-            
-        }
-        else
-        {
-        
-            //アルベドにライトの色をかける。
-            float3 lightColor = float3(1, 1, 1) * dayRate + NIGHT_LIGHT_COLOR * (1.0f - dayRate);
-            albedoColor.xyz *= lightColor * clamp(bright, 0.0f, 1.0f);
-            
-        }
-    }
-    
-    //ポイントライトの明るさを足す。
-    if (0 < pointlightBright)
-    {
-        
-        albedoColor.xyz += nonLightAlbedo * pointLightColor;
-        
-    }
-        
-    
-    //上向きの面だったら、プレイヤーの落下地点を表示する用のレイを飛ばす。
-    bool isFloor = 0.5f < normalColor.y;
-    if (isFloor)
-    {
-            
-        //上方向にレイを飛ばす。
-        Payload payloadData;
-        payloadData.m_emissive = float3(0.0f, 0.0f, 0.0f);
-        payloadData.m_color = float3(0.0f, 0.0f, 0.0f); //色を真っ黒にしておく。レイを飛ばしてどこにもあたらなかった時に呼ばれるMissShaderが呼ばれたらそこで1を書きこむ。
-        payloadData.m_rayID = 3;
-        
-        //レイを撃つ
-        CastRay(payloadData, worldColor.xyz + normalColor.xyz, float3(0, 1, 0), 100.0f, MISS_LIGHTING, RAY_FLAG_NONE, gRtScene, 0x01);
-                
-        if (payloadData.m_color.x <= 0.9f)
-        {
-                
-            albedoColor = float4(0.76f, 0.24f, 0.25f, 1);
-                
-        }
-
-    }
+    //通常ライティング
+    albedoColor.xyz *= clamp(bright, 0.3f, 1.0f);
     
     
     //マテリアルのIDをもとに、反射屈折のレイを飛ばす。
@@ -170,31 +67,31 @@ void mainRayGen()
     //SecondaryPass(dir, emissiveColor, worldColor, materialInfo, normalColor, albedoColor, gRtScene, cameraEyePos, final);
     final = albedoColor;
     
-    float4 reflectColor = float4(0, 0, 0, 0);
-    if (materialInfo.a == 1)
-    {
+    //float4 reflectColor = float4(0, 0, 0, 0);
+    //if (materialInfo.a == 1)
+    //{
         
-        //レイの方向を決める。
-        float3 cameraDir = normalize(worldColor.xyz - cameraEyePos.m_eye);
-        float3 reflectDir = reflect(cameraDir, normalColor.xyz);
+    //    //レイの方向を決める。
+    //    float3 cameraDir = normalize(worldColor.xyz - cameraEyePos.m_eye);
+    //    float3 reflectDir = reflect(cameraDir, normalColor.xyz);
         
-        //レイを打つ。
-        Payload reflectPayload;
-        reflectPayload.m_color = float3(0, 0, 0);
-        reflectPayload.m_rayID = 0;
-        CastRay(reflectPayload, worldColor.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+    //    //レイを打つ。
+    //    Payload reflectPayload;
+    //    reflectPayload.m_color = float3(0, 0, 0);
+    //    reflectPayload.m_rayID = 0;
+    //    CastRay(reflectPayload, worldColor.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
         
-        if (reflectPayload.m_color.x != -1.0f)
-        {
+    //    if (reflectPayload.m_color.x != -1.0f)
+    //    {
             
-            final.xyz = reflectPayload.m_color;
+    //        final.xyz = reflectPayload.m_color;
             
-        }
+    //    }
         
-    }
+    //}
     
     //合成の結果を入れる。
-    finalColor[launchIndex.xy] = final;
+    finalColor[launchIndex.xy] = albedoColor;
     emissiveTexture[launchIndex.xy] = emissiveColor;
     lensFlareTexture[launchIndex.xy] = emissiveColor / 8.0f;
   

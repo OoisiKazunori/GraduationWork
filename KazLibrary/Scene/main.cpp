@@ -15,7 +15,7 @@
 #include"Raytracing/RayPipeline.h"
 #include<time.h>
 
-
+//OgawJ
 
 
 //ターゲットがデバックの時のみコンソール用のmain文を参照する
@@ -40,6 +40,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		spDebugController1->SetEnableGPUBasedValidation(true);
 	}
 #endif
+
+
 	//CheckDirectXError
 	int CheckWinError = 0;
 	bool CheckMessageFlag = true;
@@ -78,6 +80,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	filter.DenyList.pSeverityList = severities;
 	infoQueue->PushStorageFilter(&filter);
 #endif 
+	//使いまわす予定の頂点情報生成
+	VertexBufferMgr::Instance()->GenerateBasicVertex();
 
 	MyImgui imgui;
 	imgui.Create(winApi.hwnd);
@@ -120,9 +124,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
-		#ifdef DEBUG
+#ifdef DEBUG
 		winApi.FPS();
-		#endif
+#endif
 
 		if (lStop1FlameFlag)
 		{
@@ -147,7 +151,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		lStop1FlameFlag = true;
 	}
 	winApi.UnregisterWindowClass();
-
 	ClipCursor(nullptr);
 
 	return 0;

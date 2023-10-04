@@ -199,7 +199,7 @@ namespace Raytracing {
 		Microsoft::WRL::ComPtr<ID3D12Resource> CreateBuffer(size_t arg_size, D3D12_RESOURCE_FLAGS arg_flags, D3D12_RESOURCE_STATES arg_initialState, D3D12_HEAP_TYPE arg_heapType, const wchar_t* arg_name = nullptr);
 
 		//UAVにリソースバリアをかける。
-		void UAVBarrier(std::vector<KazBufferHelper::BufferData> arg_bufferArray);
+		void UAVBarrier(const std::vector<KazBufferHelper::BufferData> &arg_bufferArray);
 
 		//バッファの状態を遷移させる。
 		void BufferStatesTransition(ID3D12Resource* arg_resource, D3D12_RESOURCE_STATES arg_before, D3D12_RESOURCE_STATES arg_after);

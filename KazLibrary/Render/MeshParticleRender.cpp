@@ -458,7 +458,7 @@ void MeshParticleRender::Compute(DrawingByRasterize& arg_rasterize)
 	m_meshParticleVertexBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_COMMON);
 
 	//•`‰æˆ—---------------------------------------
-	arg_rasterize.ObjectRender(m_executeIndirect);
+	//arg_rasterize.ObjectRender(m_executeIndirect);
 	//•`‰æˆ—---------------------------------------
 
 }

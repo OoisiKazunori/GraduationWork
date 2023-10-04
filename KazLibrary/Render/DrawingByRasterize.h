@@ -15,36 +15,32 @@ class DrawingByRasterize
 public:
 	DrawingByRasterize();
 
-
-	//新システムでの描画命令
-	void ObjectRender(const DrawFuncData::DrawCallData& DRAW_DATA);
-	void UIRender(const DrawFuncData::DrawCallData& DRAW_DATA);
-	void UISort();
-	void Sort();
-	void Render();
-	void RenderAfterBackBuffer();
-
 	//描画情報の生成命令を積む
-	const std::unique_ptr<DrawFuncData::DrawData>& SetPipeline(const DrawFuncData::DrawCallData& arg_drawData);
+	const DrawFuncData::DrawData* SetPipeline(DrawFuncData::DrawCallData& arg_drawData);
 	/// <summary>
 	/// スタックされた描画情報の生成(マルチスレッド対応の為に一括で生成する処理)
 	/// </summary>
 	void GeneratePipeline();
+	/// <summary>
+	/// 前シーンの描画命令破棄
+	/// </summary>
+	void ReleasePipeline();
 
 	void ObjectRender(const DrawFuncData::DrawData* arg_drawData);
 	void UIRender(const DrawFuncData::DrawData* arg_drawData);
 
 	void SortAndRender();
+	void UISortAndRender();
 private:
 
 	//事前生成向け-----
 	//描画生成命令のキュー
-	std::list<DrawFuncData::DrawCallData>m_drawCallStackDataArray;
+	std::list<DrawFuncData::DrawCallData*>m_drawCallStackDataArray;
 	//描画命令のデータ
 	std::vector<std::unique_ptr<DrawFuncData::DrawData>>m_drawCallArray;
 	//描画命令のキュー
 	std::list<const DrawFuncData::DrawData*>m_stackDataArray;
-	std::vector<const DrawFuncData::DrawData*>m_uiStackDataArray;
+	std::list<const DrawFuncData::DrawData*>m_uiStackDataArray;
 
 
 	//パイプラインの情報----------------------------------------

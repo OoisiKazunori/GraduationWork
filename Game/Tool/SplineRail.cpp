@@ -73,7 +73,7 @@ void SplineRail::DebugDraw(DrawingByRasterize& arg_rasterize)
 		Export();
 	}
 	DrawFunc::DrawLine(m_splineDrawCall, m_splineRailPosArray, m_vertexBufferHandle);
-	arg_rasterize.ObjectRender(m_splineDrawCall);
+	//arg_rasterize.ObjectRender(m_splineDrawCall);
 }
 
 bool SplineRail::IsEnd()

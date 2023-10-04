@@ -24,6 +24,7 @@ public:
 	int SceneChange();
 
 private:
+	int m_sceneNum;
 
 	int GetDigits(int arg_value, int arg_m, int arg_n) {
 		int mod_value;

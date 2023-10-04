@@ -23,29 +23,41 @@ DrawFuncData::DrawCallData BasicDraw::SetTex()
 	return DrawFuncData::SetSpriteAlphaData(lData);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender(const std::string& arg_fileDir, const std::string& arg_fileName) :
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName) :
 	m_model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
+	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
+}
 
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize)
+{
+	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
 BasicDraw::BasicModelRender::BasicModelRender()
 {
 }
 
-void BasicDraw::BasicModelRender::Load(const std::string& arg_fileDir, const std::string& arg_fileName)
+void BasicDraw::BasicModelRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName)
 {
 	std::shared_ptr<ModelInfomation>model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName));
 	m_model.Load(model, BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
+	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender(const std::string& arg_filePass) :
-	m_tex(arg_filePass, BasicDraw::SetTex())
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag) :
+	m_tex(arg_rasterize, arg_filePass, BasicDraw::SetTex(), arg_isUIFlag)
 {
-	m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	if (!arg_isUIFlag)
+	{
+		m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	}
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender() :m_tex(BasicDraw::SetTex())
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag) :m_tex(arg_rasterize, BasicDraw::SetTex(), arg_isUIFlag)
 {
-	m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	if (!arg_isUIFlag)
+	{
+		m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	}
 }

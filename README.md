@@ -1,2 +1,2 @@
-# Mineral
+# GraduationWork
 卒制の開発リポジトリです

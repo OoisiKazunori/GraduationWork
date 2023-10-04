@@ -1,8 +1,13 @@
 #include "DrawFuncHelper.h"
 
-DrawFuncHelper::TextureRender::TextureRender(const std::string& arg_textureFilePass)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag)
 {
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
 	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaShader());
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
 	Error();
 	m_textureSize =
@@ -12,9 +17,14 @@ DrawFuncHelper::TextureRender::TextureRender(const std::string& arg_textureFileP
 	};
 }
 
-DrawFuncHelper::TextureRender::TextureRender(const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag)
 {
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
 	m_drawCommand = arg_drawCall;
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
 	Error();
 	m_textureSize =
@@ -24,15 +34,24 @@ DrawFuncHelper::TextureRender::TextureRender(const std::string& arg_textureFileP
 	};
 }
 
-DrawFuncHelper::TextureRender::TextureRender(const DrawFuncData::DrawCallData& arg_drawCall)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag)
 {
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
 	m_drawCommand = arg_drawCall;
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 }
 
-DrawFuncHelper::TextureRender::TextureRender()
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag)
 {
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
 	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteShader());
-
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 }
 
 void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData& rhs)
@@ -53,19 +72,7 @@ void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, co
 	//テクスチャのサイズに割合をかける
 	transform.scale *= m_textureSize;
 	DrawFunc::DrawTextureIn2D(m_drawCommand, transform, m_textureBuffer, arg_addColor);
-
-	m_drawCommand.renderTargetHandle = -1;
-	arg_rasterize.UIRender(m_drawCommand);
-}
-
-void DrawFuncHelper::TextureRender::Draw2D(const KazMath::Transform2D& arg_trasform2D, const KazMath::Color& arg_addColor)
-{
-	Error();
-
-	KazMath::Transform2D transform(arg_trasform2D);
-	//テクスチャのサイズに割合をかける
-	transform.scale *= m_textureSize;
-	DrawFunc::DrawTextureIn2D(m_drawCommand, transform, m_textureBuffer, arg_addColor);
+	arg_rasterize.UIRender(m_drawCommandData);
 }
 
 void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, const KazMath::Transform2D& arg_trasform2D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor)
@@ -77,7 +84,7 @@ void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, co
 	//テクスチャのサイズに割合をかける
 	transform.scale *= m_textureSize;
 	DrawFunc::DrawTextureIn2D(m_drawCommand, transform, arg_textureBuffer, arg_addColor);
-	arg_rasterize.ObjectRender(m_drawCommand);
+	arg_rasterize.UIRender(m_drawCommandData);
 }
 
 void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor)
@@ -88,7 +95,7 @@ void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Ra
 	//テクスチャのサイズに割合をかける
 	transform.scale *= {m_textureSize.x, -m_textureSize.y, 1.0f};
 	DrawFunc::DrawTextureIn3D(m_drawCommand, transform, m_textureBuffer, arg_addColor);
-	arg_rasterize.ObjectRender(m_drawCommand);
+	arg_rasterize.ObjectRender(m_drawCommandData);
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
@@ -102,7 +109,7 @@ void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Ra
 	transform.scale.x *= m_textureSize.x;
 	transform.scale.y *= m_textureSize.y;
 	DrawFunc::DrawTextureIn3D(m_drawCommand, transform, arg_textureBuffer, arg_addColor);
-	arg_rasterize.ObjectRender(m_drawCommand);
+	arg_rasterize.ObjectRender(m_drawCommandData);
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
@@ -114,7 +121,7 @@ void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rast
 	//テクスチャのサイズに割合をかける
 	transform.scale *= {m_textureSize.x, -m_textureSize.y, 1.0f};
 	DrawFunc::DrawTextureIn3DBillBoard(m_drawCommand, transform, m_textureBuffer, arg_addColor);
-	arg_rasterize.ObjectRender(m_drawCommand);
+	arg_rasterize.ObjectRender(m_drawCommandData);
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
@@ -128,7 +135,7 @@ void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rast
 	transform.scale.x *= m_textureSize.x;
 	transform.scale.y *= m_textureSize.y;
 	DrawFunc::DrawTextureIn3DBillBoard(m_drawCommand, transform, arg_textureBuffer, arg_addColor);
-	arg_rasterize.ObjectRender(m_drawCommand);
+	arg_rasterize.ObjectRender(m_drawCommandData);
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
@@ -150,7 +157,7 @@ void DrawFuncHelper::TextureRender::DrawGaussian(DrawingByRasterize& arg_rasteri
 	m_drawCommand.extraBufferArray[2].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 	m_drawCommand.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 	//描画命令
-	arg_rasterize.ObjectRender(m_drawCommand);
+	//arg_rasterize.ObjectRender(m_drawCommand);
 }
 
 void DrawFuncHelper::TextureRender::Error()
@@ -166,6 +173,7 @@ void DrawFuncHelper::TextureRender::Error()
 		m_textureSize.y = static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Height);
 	}
 }
+
 void DrawFuncHelper::TextureRender::StackOnBlas(Raytracing::BlasVector& arg_blasVec, const DirectX::XMMATRIX& arg_worldMat)
 {
 	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
@@ -243,7 +251,7 @@ void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize& arg_rasterize, Raytra
 		DrawFunc::DrawModel(m_drawCommand, arg_trasform3D, arg_addColor);
 	}
 	//ラスタライザ描画命令
-	arg_rasterize.ObjectRender(m_drawCommand);
+	arg_rasterize.ObjectRender(m_drawCommandData);
 	//レイトレ描画命令
 	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
 	{
