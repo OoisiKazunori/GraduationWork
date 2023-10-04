@@ -95,6 +95,8 @@
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="KazLibrary\Render\BasicDraw.cpp" />
+    <ClCompile Include="Game\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -208,6 +210,8 @@
     <ClInclude Include="Game\Scene\DemoScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="KazLibrary\Render\BasicDraw.h" />
+    <ClInclude Include="Game\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Enemy\EnemyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

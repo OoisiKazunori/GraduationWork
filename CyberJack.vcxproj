@@ -117,6 +117,8 @@
     <ClCompile Include="Game\Debug\DebugCamera.cpp" />
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
+    <ClCompile Include="Game\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
@@ -214,6 +216,8 @@
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
+    <ClInclude Include="Game\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Input\Input.h" />
     <ClInclude Include="Game\Scene\DemoScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
