@@ -72,15 +72,18 @@ CameraMgr::Instance()->Camera({}, {}, {});
 */
 //デバック用のカメラワーク(操作はBlenderと同じ)
 	m_camera.Update();
+
+	m_player->Update();
+
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	//描画命令発行
-	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
-	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
+	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
+	//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
+	//m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
