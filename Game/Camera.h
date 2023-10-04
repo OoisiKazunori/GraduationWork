@@ -24,6 +24,8 @@ public:
 
 	void Update(KazMath::Vec3<float> arg_playerPos);
 
+	KazMath::Transform3D GetCameraPosQaternion();
+
 private:
 
 	void Input();

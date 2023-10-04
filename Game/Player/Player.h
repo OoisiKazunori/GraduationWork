@@ -17,7 +17,7 @@ public:
 
 	void Init();
 
-	void Update();
+	void Update(KazMath::Transform3D arg_cameraQuaternion);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
@@ -25,6 +25,6 @@ public:
 
 private:
 
-	void Input();
+	void Input(KazMath::Transform3D arg_cameraQuaternion);
 
 };

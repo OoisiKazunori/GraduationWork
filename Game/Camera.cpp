@@ -29,22 +29,25 @@ void Camera::Update(KazMath::Vec3<float> arg_playerPos)
 
 }
 
+KazMath::Transform3D Camera::GetCameraPosQaternion()
+{
+	KazMath::Transform3D cameraTransform = m_cameraPosQuaternion;
+	cameraTransform.Rotation({ 1,0,0 }, m_cameraXAngle);
+	return cameraTransform;
+}
+
 void Camera::Input()
 {
 
 	//¶‰E‚ÌƒJƒƒ‰‘€ì
-	m_cameraPosQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * 0.005f);
+	m_cameraPosQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * 0.001f);
 
 	//ã‰º‚ÌƒJƒƒ‰‘€ì
-	m_cameraXAngle = std::clamp(m_cameraXAngle - KeyBoradInputManager::Instance()->GetMouseVel().y * 0.005f, -1.0f, 1.0f);
+	m_cameraXAngle = std::clamp(m_cameraXAngle - KeyBoradInputManager::Instance()->GetMouseVel().y * 0.001f, -1.0f, 1.0f);
 
 }
 
 KazMath::Vec3<float> Camera::GetCameraVec()
 {
-
-	KazMath::Transform3D cameraTransform = m_cameraPosQuaternion;
-	cameraTransform.Rotation({ 1,0,0 }, m_cameraXAngle);
-
-	return -TransformVec3(DirectX::XMVector3Transform({ 0,0,1 }, DirectX::XMMatrixRotationQuaternion(cameraTransform.quaternion)));
+	return -TransformVec3(DirectX::XMVector3Transform({ 0,0,1 }, DirectX::XMMatrixRotationQuaternion(GetCameraPosQaternion().quaternion)));
 }
