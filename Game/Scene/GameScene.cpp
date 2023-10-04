@@ -6,6 +6,7 @@
 #include"../Game/Debug/ParameterMgr.h"
 #include"Math/KazMath.h"
 #include"../Game/Input/Input.h"
+#include"../Game/Player/Player.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
@@ -31,6 +32,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSpriteTransform.scale = { 0.1f,0.1f,1.0f };
 	//アニメーション再生無しモデルの位置調整
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
+
+	m_player = std::make_shared<Player>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
 }
@@ -78,6 +81,9 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+
+	m_player->Draw(arg_rasterize, arg_blasVec);
+
 }
 
 int GameScene::SceneChange()

@@ -8,6 +8,8 @@
 #include"../Game/Debug/DebugCamera.h"
 #include"../KazLibrary/Render/BasicDraw.h"
 
+class Player;
+
 class GameScene :public SceneBase
 {
 private:
@@ -39,6 +41,8 @@ private:
 
 	//‰¹--------------------------
 	SoundData m_bgmHandle, m_seHandle;
+
+	std::shared_ptr<Player> m_player;
 
 	int m_sceneNum;
 
