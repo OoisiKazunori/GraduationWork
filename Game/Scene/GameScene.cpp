@@ -15,7 +15,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
 	//DrawFuncHelperでのモデル読み込み
 	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
-	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
+	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
+	m_line(arg_rasterize)
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -82,6 +83,7 @@ CameraMgr::Instance()->Camera({}, {}, {});
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
+
 	//描画命令発行
 	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
@@ -89,6 +91,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
+	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 
 }
 

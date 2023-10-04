@@ -13,7 +13,6 @@ class Camera;
 
 class GameScene :public SceneBase
 {
-private:
 public:
 	GameScene(DrawingByRasterize& arg_rasterize);
 	~GameScene();
@@ -61,4 +60,6 @@ private:
 		return result;
 
 	}
+
+	BasicDraw::BasicLineRender m_line;
 };

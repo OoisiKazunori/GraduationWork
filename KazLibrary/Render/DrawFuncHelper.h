@@ -73,4 +73,21 @@ namespace DrawFuncHelper
 
 	};
 
+	struct LineRender
+	{
+		DrawFuncData::DrawCallData m_drawCommand;
+		const DrawFuncData::DrawData* m_drawCommandData;
+
+
+		LineRender(DrawingByRasterize& arg_rasterize,const DrawFuncData::DrawCallData& arg_drawCall);
+		LineRender();
+		void Generate(DrawingByRasterize& arg_rasterize);
+		void Generate(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall);
+		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_startPos, const KazMath::Vec3<float>& arg_endPos, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255));
+
+	private:
+		std::array<KazMath::Vec3<float>, 2>posArray;
+		RESOURCE_HANDLE m_vertexHandle;
+	};
+
 }

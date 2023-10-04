@@ -267,3 +267,60 @@ void DrawFuncHelper::ModelRender::Error()
 		assert(0);
 	}
 }
+
+DrawFuncHelper::LineRender::LineRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall)
+{
+	VertexGenerateData data(&posArray, sizeof(DirectX::XMFLOAT3), 2, sizeof(DirectX::XMFLOAT3));
+	m_drawCommand = arg_drawCall;
+	//頂点情報を用意する
+	m_drawCommand.m_modelVertDataHandle = VertexBufferMgr::Instance()->GenerateBuffer(data, false);
+	m_drawCommand.drawInstanceCommandData = VertexBufferMgr::Instance()->GetVertexBuffer(m_drawCommand.m_modelVertDataHandle).instanceData;
+	m_drawCommand.drawInstanceCommandData.topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+	m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	m_drawCommand.pipelineData.desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
+}
+
+DrawFuncHelper::LineRender::LineRender()
+{
+}
+
+void DrawFuncHelper::LineRender::Generate(DrawingByRasterize& arg_rasterize)
+{
+	VertexGenerateData data(&posArray, sizeof(DirectX::XMFLOAT3), 2, sizeof(DirectX::XMFLOAT3));
+	m_drawCommand = DrawFuncData::SetLine(DrawFuncData::GetBasicShader());
+	//頂点情報を用意する
+	m_drawCommand.m_modelVertDataHandle = VertexBufferMgr::Instance()->GenerateBuffer(data, false);
+	m_drawCommand.drawInstanceCommandData = VertexBufferMgr::Instance()->GetVertexBuffer(m_drawCommand.m_modelVertDataHandle).instanceData;
+	m_drawCommand.pipelineData.desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
+}
+
+void DrawFuncHelper::LineRender::Generate(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall)
+{
+	VertexGenerateData data(&posArray, sizeof(DirectX::XMFLOAT3), 2, sizeof(DirectX::XMFLOAT3));
+	m_drawCommand = arg_drawCall;
+	//頂点情報を用意する
+	m_drawCommand.m_modelVertDataHandle = VertexBufferMgr::Instance()->GenerateBuffer(data, false);
+	m_drawCommand.drawInstanceCommandData = VertexBufferMgr::Instance()->GetVertexBuffer(m_drawCommand.m_modelVertDataHandle).instanceData;
+	m_drawCommand.pipelineData.desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
+}
+
+void DrawFuncHelper::LineRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_startPos, const KazMath::Vec3<float>& arg_endPos, const KazMath::Color& arg_color)
+{
+	posArray[0] = arg_startPos;
+	posArray[1] = arg_endPos;
+	//座標更新
+	VertexBufferMgr::Instance()->GetVertexBuffer(m_drawCommand.m_modelVertDataHandle).vertBuffer->bufferWrapper->TransData(&posArray, sizeof(DirectX::XMFLOAT3) * 2);
+	DirectX::XMMATRIX mat(DirectX::XMMatrixIdentity() * CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection());
+	m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+	//色
+	DirectX::XMFLOAT4 color = arg_color.ConvertColorRateToXMFLOAT4();
+	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&color, sizeof(DirectX::XMFLOAT4));
+
+	arg_rasterize.ObjectRender(m_drawCommandData);
+}
