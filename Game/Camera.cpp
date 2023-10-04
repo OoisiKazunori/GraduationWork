@@ -38,7 +38,7 @@ void Camera::Update(KazMath::Vec3<float> arg_playerPos)
 KazMath::Transform3D Camera::GetCameraPosQaternion()
 {
 	KazMath::Transform3D cameraTransform = m_cameraPosQuaternion;
-	cameraTransform.Rotation({ 1,0,0 }, m_cameraXAngle);
+	cameraTransform.Rotation(cameraTransform.GetRight(), m_cameraXAngle);
 	return cameraTransform;
 }
 
