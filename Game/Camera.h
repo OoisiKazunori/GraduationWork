@@ -15,6 +15,9 @@ private:
 	//注視点から視点までの距離
 	const float EYE_TARGET_DISTANCE = 150.0f;
 
+	//カメラのX方向の回転量の初期値
+	const float CAMERA_X_ANGLE_INIT_AMOUNT = -0.72f;
+
 
 public:
 

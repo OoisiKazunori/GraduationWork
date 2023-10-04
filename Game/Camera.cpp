@@ -6,10 +6,16 @@
 
 Camera::Camera()
 {
+
+	m_cameraXAngle = CAMERA_X_ANGLE_INIT_AMOUNT;
+
 }
 
 void Camera::Init()
 {
+
+	m_cameraXAngle = CAMERA_X_ANGLE_INIT_AMOUNT;
+
 }
 
 void Camera::Update(KazMath::Vec3<float> arg_playerPos)

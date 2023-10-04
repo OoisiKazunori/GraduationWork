@@ -14,10 +14,33 @@ void Player::Init()
 void Player::Update(KazMath::Transform3D arg_cameraQuaternion)
 {
 
+	//動かす前の座標。
+	KazMath::Vec3<float> prevPos = m_transform.pos;
+
 	//入力処理
 	Input(arg_cameraQuaternion);
 
+	//動いた方向に回転させる。
+	KazMath::Vec3<float> movedVec = m_transform.pos - prevPos;
+	if (0 < movedVec.Length()) {
 
+		//動いた方向。
+		movedVec.Normalize();
+
+		//デフォルトの正面ベクトルからの回転量を求める。
+		float angle = std::acosf(KazMath::Vec3<float>(0, 0, 1).Dot(movedVec));
+
+		//クォータニオンを求める。
+		KazMath::Vec3<float> cross = KazMath::Vec3<float>(0, 0, 1).Cross(movedVec);
+		if (cross.Length() <= 0) {
+			cross = { 0,1,0 };
+		}
+		DirectX::XMVECTOR rotateQ = DirectX::XMQuaternionRotationAxis({ cross.x, cross.y, cross.z }, angle);
+
+		//回転を適応
+		m_transform.quaternion = rotateQ;
+
+	}
 
 }
 
