@@ -743,9 +743,10 @@ namespace DrawFuncData
 	struct DrawCallData
 	{
 		DrawCallData(std::source_location location = std::source_location::current()) :
-			callLocation(location), renderTargetHandle(-1), depthHandle(-1)
+			callLocation(location), renderTargetHandle(-1), depthHandle(-1), m_deleteInSceneFlag(false)
 		{
 		};
+		bool m_deleteInSceneFlag;
 		/// <summary>
 		/// レイトレーシングを準備
 		/// </summary>

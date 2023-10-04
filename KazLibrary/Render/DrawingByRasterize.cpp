@@ -26,10 +26,11 @@ DrawingByRasterize::DrawingByRasterize()
 {
 }
 
-const DrawFuncData::DrawData* DrawingByRasterize::SetPipeline(DrawFuncData::DrawCallData& arg_drawData)
+const DrawFuncData::DrawData* DrawingByRasterize::SetPipeline(DrawFuncData::DrawCallData& arg_drawData, bool arg_deleteInSceneFlag)
 {
 	m_drawCallStackDataArray.emplace_back(&arg_drawData);
 	m_drawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>());
+	m_drawCallArray.back()->generateFlag = arg_deleteInSceneFlag;
 	return m_drawCallArray.back().get();
 }
 

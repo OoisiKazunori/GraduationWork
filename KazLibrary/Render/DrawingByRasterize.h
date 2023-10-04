@@ -16,7 +16,7 @@ public:
 	DrawingByRasterize();
 
 	//描画情報の生成命令を積む
-	const DrawFuncData::DrawData* SetPipeline(DrawFuncData::DrawCallData& arg_drawData);
+	const DrawFuncData::DrawData* SetPipeline(DrawFuncData::DrawCallData& arg_drawData, bool arg_deleteInSceneFlag = false);
 	/// <summary>
 	/// スタックされた描画情報の生成(マルチスレッド対応の為に一括で生成する処理)
 	/// </summary>

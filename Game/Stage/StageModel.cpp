@@ -1,7 +1,7 @@
 #include "StageModel.h"
 
 StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName) :
-	m_stageModelRender(arg_rasterize, arg_fileDir, arg_fileName)
+	m_stageModelRender(arg_rasterize, arg_fileDir, arg_fileName, true)
 {
 }
 
