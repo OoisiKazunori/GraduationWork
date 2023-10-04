@@ -9,6 +9,7 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 
 class Player;
+class Camera;
 
 class GameScene :public SceneBase
 {
@@ -29,7 +30,8 @@ public:
 private:
 
 	//ƒJƒƒ‰--------------------------
-	DebugCamera m_camera;
+	DebugCamera m_debuCamera;
+	std::shared_ptr<Camera> m_camera;
 
 	//•`‰æ--------------------------
 	BasicDraw::BasicTextureRender m_2DSprite, m_3DSprite;

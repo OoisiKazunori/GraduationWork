@@ -21,6 +21,8 @@ public:
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
+	KazMath::Transform3D GetTransform() { return m_transform; }
+
 private:
 
 	void Input();

@@ -7,6 +7,7 @@
 #include"Math/KazMath.h"
 #include"../Game/Input/Input.h"
 #include"../Game/Player/Player.h"
+#include"../Game/Camera.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
@@ -34,6 +35,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
 
 	m_player = std::make_shared<Player>(arg_rasterize);
+	m_camera = std::make_shared<Camera>();
 
 	m_sceneNum = SCENE_NONE;
 }
@@ -71,9 +73,10 @@ void GameScene::Update()
 CameraMgr::Instance()->Camera({}, {}, {});
 */
 //デバック用のカメラワーク(操作はBlenderと同じ)
-	m_camera.Update();
+	//m_debuCamera.Update();
 
 	m_player->Update();
+	m_camera->Update(m_player->GetTransform().pos);
 
 }
 
