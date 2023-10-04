@@ -6,6 +6,7 @@
 #include"../KazLibrary/Loader/ModelLoader.h"
 #include"../KazLibrary/Render/DrawFuncHelper.h"
 #include"../Game/Debug/DebugCamera.h"
+#include"../KazLibrary/Render/BasicDraw.h"
 
 class GameScene :public SceneBase
 {
@@ -24,6 +25,21 @@ public:
 	int SceneChange();
 
 private:
+
+	//ÉJÉÅÉâ--------------------------
+	DebugCamera m_camera;
+
+	//ï`âÊ--------------------------
+	BasicDraw::BasicTextureRender m_2DSprite, m_3DSprite;
+	KazMath::Transform3D m_3DSpriteTransform;
+	KazMath::Transform2D m_2DSpriteTransform;
+
+	BasicDraw::BasicModelRender m_modelAnimationRender, m_modelRender;
+	KazMath::Transform3D m_modelAnimationTransform, m_modelTransform;
+
+	//âπ--------------------------
+	SoundData m_bgmHandle, m_seHandle;
+
 	int m_sceneNum;
 
 	int GetDigits(int arg_value, int arg_m, int arg_n) {
