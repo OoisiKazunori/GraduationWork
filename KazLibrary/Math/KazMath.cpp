@@ -440,7 +440,7 @@ DirectX::XMMATRIX KazMath::CaluMat(const KazMath::Transform3D& TRANSFORM, const 
 	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 	baseMatWorldData.matScale = KazMath::CaluScaleMatrix(TRANSFORM.scale);
 	baseMatWorldData.matTrans = KazMath::CaluTransMatrix(TRANSFORM.pos);
-	baseMatWorldData.matRota = KazMath::CaluRotaMatrix(TRANSFORM.rotation);
+	baseMatWorldData.matRota = DirectX::XMMatrixRotationQuaternion(TRANSFORM.quaternion);
 	//ワールド行列の計算
 	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 	baseMatWorldData.matWorld *= baseMatWorldData.matScale;
