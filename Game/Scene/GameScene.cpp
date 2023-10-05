@@ -6,8 +6,8 @@
 #include"../Game/Debug/ParameterMgr.h"
 #include"Math/KazMath.h"
 #include"../Game/Input/Input.h"
-#include "../MapLoader/MapLoader.h"
-
+#include"../Game/Player/Player.h"
+#include"../Game/Camera.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
@@ -15,7 +15,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
 	//DrawFuncHelperでのモデル読み込み
 	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
-	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
+	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
+	m_line(arg_rasterize),
+	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf")
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -34,10 +36,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//アニメーション再生無しモデルの位置調整
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
 
-	m_sceneNum = SCENE_NONE;
+	m_player = std::make_shared<Player>(arg_rasterize);
+	m_camera = std::make_shared<Camera>();
 
-	MapData _map;
-	_map.Init();
+	m_sceneNum = SCENE_NONE;
 }
 
 GameScene::~GameScene()
@@ -47,7 +49,6 @@ GameScene::~GameScene()
 void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
-	
 }
 
 void GameScene::PreInit()
@@ -60,10 +61,6 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	if (Input::Instance()->Done())
-	{
-		m_sceneNum = 1;
-	}
 }
 
 void GameScene::Update()
@@ -74,16 +71,25 @@ void GameScene::Update()
 CameraMgr::Instance()->Camera({}, {}, {});
 */
 //デバック用のカメラワーク(操作はBlenderと同じ)
-	m_camera.Update();
+	//m_debuCamera.Update();
+
+	m_player->Update(m_camera->GetCameraPosQaternion());
+	m_camera->Update(m_player->GetTransform().pos);
+
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
+
 	//描画命令発行
 	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+
+	m_player->Draw(arg_rasterize, arg_blasVec);
+	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
+	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
 }
 
 int GameScene::SceneChange()

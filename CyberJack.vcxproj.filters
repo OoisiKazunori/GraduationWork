@@ -96,6 +96,8 @@
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="KazLibrary\Render\BasicDraw.cpp" />
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
+    <ClCompile Include="Game\Player\Player.cpp" />
+    <ClCompile Include="Game\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -210,6 +212,8 @@
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="KazLibrary\Render\BasicDraw.h" />
     <ClInclude Include="Game\MapLoader\MapLoader.h" />
+    <ClInclude Include="Game\Player\Player.h" />
+    <ClInclude Include="Game\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
