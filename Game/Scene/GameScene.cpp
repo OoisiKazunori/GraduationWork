@@ -9,6 +9,8 @@
 #include"../Game/Player/Player.h"
 #include"../Game/Camera.h"
 
+#include"../MapLoader/MapLoader.h"
+
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
 	m_2DSprite(arg_rasterize, "Resource/Test/texas.png", true),
@@ -49,6 +51,9 @@ GameScene::~GameScene()
 void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
+
+	MapData _data;
+	_data.Init();
 }
 
 void GameScene::PreInit()

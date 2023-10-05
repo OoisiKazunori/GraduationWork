@@ -10,6 +10,7 @@
 class MapObject
 {
 public:
+	std::string m_objetName;
 	DirectX::XMFLOAT3 m_position;
 	DirectX::XMFLOAT3 m_rotition;
 	DirectX::XMFLOAT3 m_scale;
@@ -18,7 +19,7 @@ public:
 // レベルデータ
 class MapData
 {
-	std::list<MapObject> objects;
+	std::list<MapObject> m_objects;
 
 public:
 	MapData(){};

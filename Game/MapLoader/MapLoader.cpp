@@ -21,7 +21,9 @@ void MapData::Init()
 		l_obj.m_scale.y = l_mapData.doc["Objects"].GetArray()[o_counter]["transform"]["scaling"].GetArray()[1].GetFloat();
 		l_obj.m_scale.z = l_mapData.doc["Objects"].GetArray()[o_counter]["transform"]["scaling"].GetArray()[2].GetFloat();
 
-		objects.push_back(l_obj);
+		l_obj.m_objetName = l_mapData.doc["Objects"].GetArray()[o_counter]["name"].GetString();
+
+		m_objects.push_back(l_obj);
 	}
-	int a = static_cast<int>(objects.size());
+	int a = static_cast<int>(m_objects.size());
 }
