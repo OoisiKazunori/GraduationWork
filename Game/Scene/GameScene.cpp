@@ -6,6 +6,8 @@
 #include"../Game/Debug/ParameterMgr.h"
 #include"Math/KazMath.h"
 #include"../Game/Input/Input.h"
+#include "../MapLoader/MapLoader.h"
+
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
@@ -33,6 +35,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
 
 	m_sceneNum = SCENE_NONE;
+
+	MapData _map;
+	_map.Init();
 }
 
 GameScene::~GameScene()
@@ -42,6 +47,7 @@ GameScene::~GameScene()
 void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
+	
 }
 
 void GameScene::PreInit()

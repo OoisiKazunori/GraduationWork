@@ -118,6 +118,7 @@
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
+    <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="Game\Tool\SplineRail.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
     <ClInclude Include="Game\Input\Input.h" />
+    <ClInclude Include="Game\MapLoader\MapLoader.h" />
     <ClInclude Include="Game\Scene\DemoScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Tool\SplineRail.h" />
