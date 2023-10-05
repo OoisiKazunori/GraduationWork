@@ -19,6 +19,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 
 	//デモ用のゲームシーンを設定。
 	m_nowScene = GetScene(0);
+	m_nowScene->Init();
 	m_rasterize.GeneratePipeline();
 
 	//シーン遷移を設定
