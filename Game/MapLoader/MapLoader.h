@@ -7,6 +7,7 @@
 #include <DirectXMath.h>
 #include <list>
 
+//木や岩などの配置
 class MapObject
 {
 public:
@@ -16,17 +17,29 @@ public:
 	DirectX::XMFLOAT3 m_scale;
 };
 
-// レベルデータ
-class MapData
+//敵の初期スポーン位置
+class EnemySpornData
 {
-	std::list<MapObject> m_objects;
+	std::string m_enemyName;
+	DirectX::XMFLOAT3 m_position;
+	DirectX::XMFLOAT3 m_rotition;
+	DirectX::XMFLOAT3 m_scale;
+};
 
+// マップデータ
+class MapManager
+{
+	//
+	static std::list<std::list<MapObject>> m_maps;
+	//フォルダ内のファイルネームを取得
+	static bool GetFileNames(std::string f_folderPath, std::list<std::string>& f_fileNames);
 public:
-	MapData(){};
+	MapManager(){};
 	//既にjsonデータがある場合
-	MapData(ParameterMgr f_parm){};
-	MapData(int a) {};
-	void Init();
-	/*void Update();
-	void Draw();*/
+	MapManager(ParameterMgr f_parm){};
+	MapManager(int a) {};
+	static void Init();
+	static void Update();
+	//現在有効なステージ番号
+	static void Draw(int f_stageNumber);
 };

@@ -52,8 +52,7 @@ void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
 
-	MapData _data;
-	_data.Init();
+	MapManager::Init();
 }
 
 void GameScene::PreInit()
