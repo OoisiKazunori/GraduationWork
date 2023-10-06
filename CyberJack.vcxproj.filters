@@ -99,6 +99,7 @@
     <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
+    <ClCompile Include="Game\Collision\MeshCollision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Game\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Camera.h" />
+    <ClInclude Include="Game\Collision\MeshCollision.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,6 +1,7 @@
 #include "Player.h"
-#include"Input/KeyBoradInputManager.h"
-#include"Input/ControllerInputManager.h"
+#include "Input/KeyBoradInputManager.h"
+#include "Input/ControllerInputManager.h"
+#include "../Game/Collision/MeshCollision.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
@@ -10,12 +11,15 @@ Player::Player(DrawingByRasterize& arg_rasterize) :
 
 void Player::Init()
 {
-	
+
 	m_playerAttitude = PlayerAttitude::STAND;
+	m_onGround = false;
+	m_isADS = false;
+	m_gravity = 0.0f;
 
 }
 
-void Player::Update(KazMath::Transform3D arg_cameraQuaternion)
+void Player::Update(KazMath::Transform3D arg_cameraQuaternion, std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
 
 	//動かす前の座標。
@@ -23,6 +27,15 @@ void Player::Update(KazMath::Transform3D arg_cameraQuaternion)
 
 	//入力処理
 	Input(arg_cameraQuaternion);
+
+	//当たり判定
+	Collision(arg_stageMeshCollision);
+
+	//重力をかける。
+	if (!m_onGround) {
+		m_gravity -= GRAVITY;
+	}
+	m_transform.pos.y += m_gravity;
 
 	//動いた方向に回転させる。
 	Rotate();
@@ -99,12 +112,16 @@ void Player::Input(KazMath::Transform3D arg_cameraQuaternion)
 		}
 	}
 
+	//右クリックされている間はADS状態にする。
+	m_isADS = KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
+
 }
 
 void Player::Rotate()
 {
 
 	KazMath::Vec3<float> movedVec = m_transform.pos - m_prevPos;
+	movedVec.y = 0.0f;
 	if (0 < movedVec.Length()) {
 
 		//動いた方向。
@@ -122,6 +139,51 @@ void Player::Rotate()
 
 		//回転を適応
 		m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, rotateQ, 0.15f);
+
+	}
+
+}
+
+void Player::Collision(std::weak_ptr<MeshCollision> arg_meshCollision)
+{
+
+
+	const float RAY_LENGTH = 5.0f;
+
+	//地面と当たり判定を行う。
+	m_onGround = false;
+	const float GROUND_RAY_OFFSET = 5.0f;
+	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH + GROUND_RAY_OFFSET) {
+
+		//押し戻し。
+		m_transform.pos += rayResult.m_normal * (RAY_LENGTH + GROUND_RAY_OFFSET - rayResult.m_distance);
+		m_onGround = true;
+
+	}
+
+	//当たり判定を計算。
+	rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_transform.GetFront());
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		//押し戻し。
+		m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+
+	}
+	//右方向
+	rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_transform.GetRight());
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		//押し戻し。
+		m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+
+	}
+	//左方向
+	rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, -m_transform.GetRight());
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		//押し戻し。
+		m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
 
 	}
 

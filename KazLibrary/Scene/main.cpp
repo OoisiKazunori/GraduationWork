@@ -104,20 +104,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//GPUで処理させたい物をCPUで参照させたい時、コンストラクタで処理させてInitで参照するようにする為のフラグ
 	bool lStop1FlameFlag = false;
 
+	RECT wrc = { 0,0,1280,720 };
 	OutputDebugStringA("ゲームのメインループを開始します\n");
 	while (CheckMessageFlag)
 	{
-		//if (!OptionUI::Instance()->m_isDisplayUI)
-		//{
-		//	//マウス非表示
-		//	ShowCursor(false);
-		//}
-		//else
-		//{
-		//	//マウスを画面外に出す
-		//	ClipCursor(nullptr);
-		//	ShowCursor(true);
-		//}
+		if (!KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
+		{
+
+			GetWindowRect(winApi.hwnd, &wrc);
+			ClipCursor(&wrc);
+			//マウス非表示
+			ShowCursor(false);
+
+		}
+		else
+		{
+			//マウスを画面外に出す
+			ClipCursor(nullptr);
+			ShowCursor(true);
+		}
 
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();

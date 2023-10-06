@@ -8,6 +8,7 @@
 #include"../Game/Input/Input.h"
 #include"../Game/Player/Player.h"
 #include"../Game/Camera.h"
+#include"../Game/Collision/MeshCollision.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
@@ -35,6 +36,12 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSpriteTransform.scale = { 0.1f,0.1f,1.0f };
 	//アニメーション再生無しモデルの位置調整
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
+
+	m_stageTransform.pos = {0.0f, -20.0f, 0.0f};
+	m_stageTransform.scale = {8.0f, 1.0f, 8.0f};
+
+	m_stageMeshCollision = std::make_shared<MeshCollision>();
+	m_stageMeshCollision->Setting(m_stage.m_model.m_modelInfo->modelData[0].vertexData, m_stageTransform);
 
 	m_player = std::make_shared<Player>(arg_rasterize);
 	m_camera = std::make_shared<Camera>();
@@ -73,8 +80,8 @@ CameraMgr::Instance()->Camera({}, {}, {});
 //デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
-	m_player->Update(m_camera->GetCameraPosQaternion());
-	m_camera->Update(m_player->GetTransform().pos);
+	m_player->Update(m_camera->GetCameraPosQaternion(), m_stageMeshCollision);
+	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 
 }
 
@@ -89,7 +96,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
+	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 }
 
 int GameScene::SceneChange()
