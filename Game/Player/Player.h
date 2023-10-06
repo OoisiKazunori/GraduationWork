@@ -12,6 +12,7 @@ private:
 	KazMath::Vec3<float> m_prevPos;
 
 	bool m_onGround;
+	bool m_isADS;		//e‚ğ\‚¦‚Ä‚¢‚éó‘Ô‚©H
 
 	float m_gravity;
 	const float GRAVITY = 0.05f;
@@ -39,6 +40,7 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	KazMath::Transform3D GetTransform() { return m_transform; }
+	bool GetIsADS() { return m_isADS; }
 
 private:
 

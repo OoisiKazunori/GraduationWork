@@ -27,7 +27,7 @@ public:
 
 	void Init();
 
-	void Update(KazMath::Vec3<float> arg_playerPos, std::weak_ptr<MeshCollision> arg_stageMeshCollision);
+	void Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<MeshCollision> arg_stageMeshCollision, bool arg_isADS);
 
 	KazMath::Transform3D GetCameraPosQaternion();
 

@@ -14,6 +14,7 @@ void Player::Init()
 
 	m_playerAttitude = PlayerAttitude::STAND;
 	m_onGround = false;
+	m_isADS = false;
 	m_gravity = 0.0f;
 
 }
@@ -110,6 +111,9 @@ void Player::Input(KazMath::Transform3D arg_cameraQuaternion)
 			break;
 		}
 	}
+
+	//右クリックされている間はADS状態にする。
+	m_isADS = KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
 
 }
 

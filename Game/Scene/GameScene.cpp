@@ -81,7 +81,7 @@ CameraMgr::Instance()->Camera({}, {}, {});
 	//m_debuCamera.Update();
 
 	m_player->Update(m_camera->GetCameraPosQaternion(), m_stageMeshCollision);
-	m_camera->Update(m_player->GetTransform().pos, m_stageMeshCollision);
+	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 
 }
 
