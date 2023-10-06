@@ -3,7 +3,7 @@
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 
 //テスト用、パイプラインのハンドル順にソートをかける
-int int_cmpr(const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
+int int_cmpr(const DrawFuncData::DrawData *a, const DrawFuncData::DrawData *b)
 {
 	RESOURCE_HANDLE lAHandle = a->pipelineHandle, lBHandle = b->pipelineHandle;
 
@@ -26,31 +26,34 @@ DrawingByRasterize::DrawingByRasterize()
 {
 }
 
-const DrawFuncData::DrawData* DrawingByRasterize::SetPipeline(DrawFuncData::DrawCallData& arg_drawData)
+const DrawFuncData::DrawData *DrawingByRasterize::SetPipeline(DrawFuncData::DrawCallData &arg_drawData, bool arg_deleteInSceneFlag)
 {
 	m_drawCallStackDataArray.emplace_back(&arg_drawData);
-	m_drawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>());
+	//削除されたハンドルを優先的に確保する
+	if (m_deleteHandleArray.size() != 0)
+	{
+		m_drawCallArray[m_deleteHandleArray.back()] = std::make_unique<DrawFuncData::DrawData>();
+		m_drawCallArray[m_deleteHandleArray.back()]->generateFlag = arg_deleteInSceneFlag;
+		m_generateFromHandleArray.emplace_back(m_deleteHandleArray.back());
+		m_deleteHandleArray.pop_back();
+	}
+	else
+	{
+		m_drawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>());
+		m_drawCallArray.back()->generateFlag = arg_deleteInSceneFlag;
+	}
 	return m_drawCallArray.back().get();
 }
 
 void DrawingByRasterize::GeneratePipeline()
 {
-	std::vector<std::unique_ptr<DrawFuncData::DrawData>> tmpDrawCallArray;
-	//シーン内で生成する際に残し続ける描画命令をスタックさせ、新規の後で渡す
-	for (auto& obj : m_drawCallArray)
-	{
-		if (obj->generateFlag)
-		{
-			tmpDrawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>(*obj));
-		}
-	}
-
 	int index = 0;
 	//ソートが終わったらDirectX12のコマンドリストに命令出来るように描画情報を生成する。
-	for (auto& callData : m_drawCallStackDataArray)
+	for (auto &callData : m_drawCallStackDataArray)
 	{
 		DrawFuncData::DrawData result;
 
+		result.generateFlag = callData->m_deleteInSceneFlag;
 		result.drawMultiMeshesIndexInstanceCommandData = callData->drawMultiMeshesIndexInstanceCommandData;
 		result.drawInstanceCommandData = callData->drawInstanceCommandData;
 		result.drawIndexInstanceCommandData = callData->drawIndexInstanceCommandData;
@@ -193,15 +196,20 @@ void DrawingByRasterize::GeneratePipeline()
 		);
 		ErrorCheck(result.pipelineHandle, callData->callLocation);
 
-		//描画情報生成の受け渡し
-		*m_drawCallArray[index] = result;
-		++index;
+		//最後から順に削除されたパイプラインを埋めるように追加する
+		if (m_generateFromHandleArray.size() != 0)
+		{
+			*m_drawCallArray[m_generateFromHandleArray.back()] = result;
+			m_generateFromHandleArray.pop_back();
+		}
+		else
+		{
+			//描画情報生成の受け渡し
+			*m_drawCallArray[index] = result;
+			++index;
+		}
 	}
-	//残した描画命令を入れる
-	for (auto& obj : tmpDrawCallArray)
-	{
-		m_drawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>(*obj));
-	}
+
 	m_drawCallStackDataArray.clear();
 }
 
@@ -215,14 +223,32 @@ void DrawingByRasterize::ReleasePipeline()
 	}
 	m_drawCallArray.clear();
 	m_drawCallArray.shrink_to_fit();
+
+	m_deleteHandleArray.clear();
+	m_deleteHandleArray.shrink_to_fit();
 }
 
-void DrawingByRasterize::ObjectRender(const DrawFuncData::DrawData* arg_drawData)
+void DrawingByRasterize::ReleasePipelineInScene()
+{
+	//シーン内で生成する際に残し続けない物は削除する
+	int deleteIndex = 0;
+	for (auto &obj : m_drawCallArray)
+	{
+		if (obj->generateFlag)
+		{
+			obj.reset();
+			m_deleteHandleArray.emplace_back(deleteIndex);
+		}
+		++deleteIndex;
+	}
+}
+
+void DrawingByRasterize::ObjectRender(const DrawFuncData::DrawData *arg_drawData)
 {
 	m_stackDataArray.emplace_back(arg_drawData);
 }
 
-void DrawingByRasterize::UIRender(const DrawFuncData::DrawData* arg_drawData)
+void DrawingByRasterize::UIRender(const DrawFuncData::DrawData *arg_drawData)
 {
 	m_uiStackDataArray.emplace_back(arg_drawData);
 }
@@ -231,7 +257,7 @@ void DrawingByRasterize::SortAndRender()
 {
 	//ソート処理
 	//レンダーターゲット順にソートをかける。
-	m_stackDataArray.sort([](const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
+	m_stackDataArray.sort([](const DrawFuncData::DrawData *a, const DrawFuncData::DrawData *b)
 		{
 			RESOURCE_HANDLE aHandle = a->renderTargetHandle, bHandle = b->renderTargetHandle;
 			if (aHandle < bHandle)
@@ -260,7 +286,7 @@ void DrawingByRasterize::SortAndRender()
 
 void DrawingByRasterize::UISortAndRender()
 {
-	m_uiStackDataArray.sort([](const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
+	m_uiStackDataArray.sort([](const DrawFuncData::DrawData *a, const DrawFuncData::DrawData *b)
 		{
 			RESOURCE_HANDLE aHandle = a->renderTargetHandle, bHandle = b->renderTargetHandle;
 			if (aHandle < bHandle)
@@ -282,7 +308,7 @@ void DrawingByRasterize::UISortAndRender()
 	m_uiStackDataArray.clear();
 }
 
-void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::BufferData>& BUFFER_ARRAY, std::vector<RootSignatureParameter> ROOT_PARAM)
+void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::BufferData> &BUFFER_ARRAY, std::vector<RootSignatureParameter> ROOT_PARAM)
 {
 	for (int i = 0; i < BUFFER_ARRAY.size(); ++i)
 	{
@@ -317,7 +343,7 @@ void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::B
 	}
 }
 
-void DrawingByRasterize::MultiMeshedDrawIndexInstanceCommand(const KazRenderHelper::MultipleMeshesDrawIndexInstanceCommandData& DATA, const std::vector<std::vector<KazBufferHelper::BufferData>>& MATERIAL_BUFFER, std::vector<RootSignatureParameter> ROOT_PARAM)
+void DrawingByRasterize::MultiMeshedDrawIndexInstanceCommand(const KazRenderHelper::MultipleMeshesDrawIndexInstanceCommandData &DATA, const std::vector<std::vector<KazBufferHelper::BufferData>> &MATERIAL_BUFFER, std::vector<RootSignatureParameter> ROOT_PARAM)
 {
 	//描画命令-----------------------------------------------------------------------------------------------------
 	const int COMMAND_MAX_DATA = static_cast<int>(DATA.vertexBufferDrawData.size());
@@ -357,7 +383,7 @@ void DrawingByRasterize::MultiMeshedDrawIndexInstanceCommand(const KazRenderHelp
 	//描画命令-----------------------------------------------------------------------------------------------------
 }
 
-void DrawingByRasterize::DrawIndexInstanceCommand(const KazRenderHelper::DrawIndexInstanceCommandData& DATA)
+void DrawingByRasterize::DrawIndexInstanceCommand(const KazRenderHelper::DrawIndexInstanceCommandData &DATA)
 {
 	//描画命令-----------------------------------------------------------------------------------------------------
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(DATA.topology);
@@ -373,7 +399,7 @@ void DrawingByRasterize::DrawIndexInstanceCommand(const KazRenderHelper::DrawInd
 	//描画命令-----------------------------------------------------------------------------------------------------
 }
 
-void DrawingByRasterize::DrawInstanceCommand(const KazRenderHelper::DrawInstanceCommandData& DATA)
+void DrawingByRasterize::DrawInstanceCommand(const KazRenderHelper::DrawInstanceCommandData &DATA)
 {
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(DATA.topology);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(DATA.vertexBufferDrawData.slot, DATA.vertexBufferDrawData.numViews, &DATA.vertexBufferDrawData.vertexBufferView);
@@ -385,7 +411,7 @@ void DrawingByRasterize::DrawInstanceCommand(const KazRenderHelper::DrawInstance
 	);
 }
 
-void DrawingByRasterize::DrawExecuteIndirect(const KazRenderHelper::MultipleMeshesDrawIndexInstanceCommandData& DATA, const Microsoft::WRL::ComPtr<ID3D12CommandSignature>& arg_commandSignature, const DrawFuncData::ExcuteIndirectArgumentData& arg_argmentData)
+void DrawingByRasterize::DrawExecuteIndirect(const KazRenderHelper::MultipleMeshesDrawIndexInstanceCommandData &DATA, const Microsoft::WRL::ComPtr<ID3D12CommandSignature> &arg_commandSignature, const DrawFuncData::ExcuteIndirectArgumentData &arg_argmentData)
 {
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(DATA.topology);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(DATA.vertexBufferDrawData[0].slot, DATA.vertexBufferDrawData[0].numViews, &DATA.vertexBufferDrawData[0].vertexBufferView);
@@ -414,7 +440,7 @@ void DrawingByRasterize::DrawExecuteIndirect(const KazRenderHelper::MultipleMesh
 	);
 }
 
-std::string DrawingByRasterize::ErrorMail(const std::source_location& DRAW_SOURCE_LOCATION)
+std::string DrawingByRasterize::ErrorMail(const std::source_location &DRAW_SOURCE_LOCATION)
 {
 	std::string lFunctionString = DRAW_SOURCE_LOCATION.function_name();
 	std::string lFileNameString = DRAW_SOURCE_LOCATION.file_name();

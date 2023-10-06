@@ -17,6 +17,7 @@
 
 //OgawJ
 
+
 //ターゲットがデバックの時のみコンソール用のmain文を参照する
 #ifdef _DEBUG
 int main()
@@ -24,7 +25,7 @@ int main()
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif // DEBUG
 {
-#ifdef _DEBUG
+#ifdef DEBUG
 	//DebugLayer
 	Microsoft::WRL::ComPtr<ID3D12Debug1> debug1;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debug1))))
@@ -62,7 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		return 0;
 	}
 
-#ifdef _DEBUG
+#ifdef DEBUG
 	Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
 	DirectX12Device::Instance()->dev->QueryInterface(IID_PPV_ARGS(&infoQueue));
 

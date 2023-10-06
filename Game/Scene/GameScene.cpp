@@ -8,6 +8,9 @@
 #include"../Game/Input/Input.h"
 #include"../Game/Player/Player.h"
 #include"../Game/Camera.h"
+#include"../Game/Collision/MeshCollision.h"
+
+#include"../MapLoader/MapLoader.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
@@ -36,10 +39,19 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//アニメーション再生無しモデルの位置調整
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
 
+	m_stageTransform.pos = {0.0f, -20.0f, 0.0f};
+	m_stageTransform.scale = {8.0f, 1.0f, 8.0f};
+
+	m_stageMeshCollision = std::make_shared<MeshCollision>();
+	m_stageMeshCollision->Setting(m_stage.m_model.m_modelInfo->modelData[0].vertexData, m_stageTransform);
+
 	m_player = std::make_shared<Player>(arg_rasterize);
 	m_camera = std::make_shared<Camera>();
 
 	m_sceneNum = SCENE_NONE;
+
+
+	m_stageManager.Init(arg_rasterize);
 }
 
 GameScene::~GameScene()
@@ -49,6 +61,8 @@ GameScene::~GameScene()
 void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
+
+	MapManager::Init();
 }
 
 void GameScene::PreInit()
@@ -68,7 +82,7 @@ void GameScene::Input()
 	}
 }
 
-void GameScene::Update()
+void GameScene::Update(DrawingByRasterize &arg_rasterize)
 {
 	/*
 	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
@@ -78,9 +92,10 @@ void GameScene::Update()
 	//デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
-	m_player->Update(m_camera->GetCameraPosQaternion());
-	m_camera->Update(m_player->GetTransform().pos);
-
+	m_player->Update(m_camera->GetCameraPosQaternion(), m_stageMeshCollision);
+	m_camera->Update(m_player->GetTransform().pos, m_stageMeshCollision);
+	//ステージの描画
+	m_stageManager.Update(arg_rasterize);
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -95,6 +110,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
+	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 }
 
 int GameScene::SceneChange()

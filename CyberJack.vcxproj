@@ -115,14 +115,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Camera.cpp" />
+    <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Debug\DebugCamera.cpp" />
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
+    <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
+    <ClCompile Include="Game\Stage\StageManager.cpp" />
+    <ClCompile Include="Game\Stage\StageModel.cpp" />
     <ClCompile Include="Game\Tool\SplineRail.cpp" />
     <ClCompile Include="Game\Tool\ModelTool.cpp" />
     <ClCompile Include="KazLibrary\Animation\AnimationData.cpp" />
@@ -201,6 +205,7 @@
     <ClCompile Include="KazLibrary\Render\DrawFunc.cpp" />
     <ClCompile Include="KazLibrary\Render\DrawFuncHelper.cpp" />
     <ClCompile Include="KazLibrary\Render\DrawingByRasterize.cpp" />
+    <ClCompile Include="KazLibrary\Render\GenerateRender.cpp" />
     <ClCompile Include="KazLibrary\Render\MeshParticleRender.cpp" />
     <ClCompile Include="KazLibrary\Scene\main.cpp" />
     <ClCompile Include="KazLibrary\Scene\ModelToolScene.cpp" />
@@ -214,15 +219,19 @@
   <ItemGroup>
     <ClInclude Include="..\Mineral\Game\Effect\ChromaticAberration.h" />
     <ClInclude Include="Game\Camera.h" />
+    <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Debug\DebugCamera.h" />
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
     <ClInclude Include="Game\Input\Input.h" />
+    <ClInclude Include="Game\MapLoader\MapLoader.h" />
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Scene\DemoScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
+    <ClInclude Include="Game\Stage\StageManager.h" />
+    <ClInclude Include="Game\Stage\StageModel.h" />
     <ClInclude Include="Game\Tool\SplineRail.h" />
     <ClInclude Include="Game\Tool\ModelTool.h" />
     <ClInclude Include="KazLibrary\Animation\AnimationData.h" />
@@ -309,6 +318,7 @@
     <ClInclude Include="KazLibrary\Render\DrawFunc.h" />
     <ClInclude Include="KazLibrary\Render\DrawFuncHelper.h" />
     <ClInclude Include="KazLibrary\Render\DrawingByRasterize.h" />
+    <ClInclude Include="KazLibrary\Render\GenerateRender.h" />
     <ClInclude Include="KazLibrary\Render\KazExcuteIndirect.h" />
     <ClInclude Include="KazLibrary\Render\MeshParticleRender.h" />
     <ClInclude Include="KazLibrary\Render\RenderData.h" />

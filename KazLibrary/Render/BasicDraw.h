@@ -12,15 +12,15 @@ namespace BasicDraw
 
 	struct BasicModelRender
 	{
-		BasicModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName);
-		BasicModelRender(DrawingByRasterize& arg_rasterize);
+		BasicModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deleteInSceneFlag = false);
+		BasicModelRender(DrawingByRasterize& arg_rasterize,bool arg_deleteInSceneFlag = false);
 		BasicModelRender();
-		void Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName);
+		void Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deleteInSceneFlag);
 		DrawFuncHelper::ModelRender m_model;
 	};
 	struct BasicTextureRender
 	{
-		BasicTextureRender(DrawingByRasterize& arg_rasterize,const std::string& arg_filePass, bool arg_isUIFlag = false);
+		BasicTextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag = false);
 		BasicTextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag = false);
 		DrawFuncHelper::TextureRender m_tex;
 	};

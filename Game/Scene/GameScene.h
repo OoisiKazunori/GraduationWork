@@ -7,9 +7,11 @@
 #include"../KazLibrary/Render/DrawFuncHelper.h"
 #include"../Game/Debug/DebugCamera.h"
 #include"../KazLibrary/Render/BasicDraw.h"
+#include"../Stage/StageManager.h"
 
 class Player;
 class Camera;
+class MeshCollision;
 
 class GameScene :public SceneBase
 {
@@ -21,10 +23,15 @@ public:
 	void PreInit();
 	void Finalize();
 	void Input();
-	void Update();
+	void Update(DrawingByRasterize &arg_rasterize);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	int SceneChange();
+
+	bool OrderGeneratePipeline()
+	{
+		return m_stageManager.ChangeSceneTrigger();
+	}
 
 private:
 
@@ -40,10 +47,13 @@ private:
 	BasicDraw::BasicModelRender m_modelAnimationRender, m_modelRender;
 	KazMath::Transform3D m_modelAnimationTransform, m_modelTransform;
 
+	KazMath::Transform3D m_stageTransform;
+
 	//‰¹--------------------------
 	SoundData m_bgmHandle, m_seHandle;
 
 	std::shared_ptr<Player> m_player;
+	std::shared_ptr<MeshCollision> m_stageMeshCollision;
 
 	int m_sceneNum;
 
@@ -63,4 +73,6 @@ private:
 
 	BasicDraw::BasicLineRender m_line;
 	BasicDraw::BasicModelRender m_stage;
+
+	StageManager m_stageManager;
 };

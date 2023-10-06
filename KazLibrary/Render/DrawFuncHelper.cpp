@@ -182,13 +182,13 @@ void DrawFuncHelper::TextureRender::StackOnBlas(Raytracing::BlasVector& arg_blas
 	}
 }
 
-DrawFuncHelper::ModelRender::ModelRender(const std::string& arg_fileDir, const std::string& arg_filePass)
+DrawFuncHelper::ModelRender::ModelRender(const std::string& arg_fileDir, const std::string& arg_filePass, bool arg_deletePipelineInScene)
 {
 	Load(arg_fileDir, arg_filePass);
 	m_drawCommand.SetupRaytracing(true);
 }
 
-DrawFuncHelper::ModelRender::ModelRender(const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
+DrawFuncHelper::ModelRender::ModelRender(const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_deletePipelineInScene)
 {
 	m_modelInfo = arg_modelInfomation;
 	m_drawCommand = arg_drawCall;
