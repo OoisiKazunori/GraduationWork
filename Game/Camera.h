@@ -1,6 +1,8 @@
 #pragma once
 #include "../KazLibrary/Math/KazMath.h"
 
+class MeshCollision;
+
 class Camera {
 
 private:
@@ -25,7 +27,7 @@ public:
 
 	void Init();
 
-	void Update(KazMath::Vec3<float> arg_playerPos);
+	void Update(KazMath::Vec3<float> arg_playerPos, std::weak_ptr<MeshCollision> arg_stageMeshCollision);
 
 	KazMath::Transform3D GetCameraPosQaternion();
 
