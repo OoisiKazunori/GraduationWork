@@ -20,10 +20,10 @@ void StageManager::Update(DrawingByRasterize &arg_rasterize)
 	//if (m_nowStageNumber != m_nextStageNumber)
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_4))
 	{
-		arg_rasterize.ReleasePipelineInScene();
+		ChangeScene(arg_rasterize);
+		//ステージの切り替え処理
 		m_stage.reset();
 		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf");
-		m_changeSceneTriggerFlag = true;
 	}
 
 	//ステージの切り替え処理
@@ -44,4 +44,10 @@ bool StageManager::ChangeSceneTrigger()
 		return tmpFlag;
 	}
 	return false;
+}
+
+void StageManager::ChangeScene(DrawingByRasterize &arg_rasterize)
+{
+	arg_rasterize.ReleasePipelineInScene();
+	m_changeSceneTriggerFlag = true;
 }

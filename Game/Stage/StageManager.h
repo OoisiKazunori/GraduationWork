@@ -21,5 +21,8 @@ private:
 	std::unique_ptr<StageModel>m_stage;
 
 	//その他木等の外部オブジェクトモデル--------------------------------
+
+	//ステージ切り替え前に必ず呼び出してください
+	void ChangeScene(DrawingByRasterize&arg_rasterize);
 };
 
