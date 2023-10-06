@@ -45,8 +45,10 @@ private:
 	//描画命令のキュー
 	std::list<const DrawFuncData::DrawData*>m_stackDataArray;
 	std::list<const DrawFuncData::DrawData*>m_uiStackDataArray;
-	//削除されたパイプラインのハンドル
+	//削除された描画情報のハンドル
 	std::vector<int>m_deleteHandleArray;
+	//削除されたハンドルから描画パイプライン生成ハンドル
+	std::vector<int>m_generateFromHandleArray;
 
 
 	//パイプラインの情報----------------------------------------

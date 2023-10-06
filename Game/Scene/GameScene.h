@@ -28,6 +28,11 @@ public:
 
 	int SceneChange();
 
+	bool OrderGeneratePipeline()
+	{
+		return m_stageManager.ChangeSceneTrigger();
+	}
+
 private:
 
 	//ƒJƒƒ‰--------------------------
