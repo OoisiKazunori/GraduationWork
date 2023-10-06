@@ -9,6 +9,7 @@
 #include"../Game/Player/Player.h"
 #include"../Game/Camera.h"
 #include"../Game/Collision/MeshCollision.h"
+#include"../Bullet/BulletMgr.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
@@ -45,6 +46,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 
 	m_player = std::make_shared<Player>(arg_rasterize);
 	m_camera = std::make_shared<Camera>();
+	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
 }
@@ -56,6 +58,7 @@ GameScene::~GameScene()
 void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
+	m_bulletMgr->Init();
 }
 
 void GameScene::PreInit()
@@ -80,8 +83,9 @@ CameraMgr::Instance()->Camera({}, {}, {});
 //デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
-	m_player->Update(m_camera->GetCameraPosQaternion(), m_stageMeshCollision);
+	m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr);
 	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+	m_bulletMgr->Update(m_stageMeshCollision);
 
 }
 
@@ -97,6 +101,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 }
 
 int GameScene::SceneChange()

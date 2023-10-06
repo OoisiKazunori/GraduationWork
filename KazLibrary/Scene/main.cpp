@@ -112,6 +112,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 
 			GetWindowRect(winApi.hwnd, &wrc);
+
+			//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
+			const LONG OFFSET = 5;
+			wrc.left += OFFSET;
+			wrc.right -= OFFSET;
+			wrc.bottom -= OFFSET;
+			wrc.top += OFFSET;
+
 			ClipCursor(&wrc);
 			//マウス非表示
 			ShowCursor(false);

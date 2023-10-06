@@ -2,6 +2,8 @@
 #include "Input/KeyBoradInputManager.h"
 #include "Input/ControllerInputManager.h"
 #include "../Game/Collision/MeshCollision.h"
+#include "../Bullet/BulletMgr.h"
+#include "../Camera.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
@@ -19,14 +21,14 @@ void Player::Init()
 
 }
 
-void Player::Update(KazMath::Transform3D arg_cameraQuaternion, std::weak_ptr<MeshCollision> arg_stageMeshCollision)
+void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr)
 {
 
 	//動かす前の座標。
 	m_prevPos = m_transform.pos;
 
 	//入力処理
-	Input(arg_cameraQuaternion);
+	Input(arg_camera, arg_bulletMgr);
 
 	//当たり判定
 	Collision(arg_stageMeshCollision);
@@ -38,7 +40,7 @@ void Player::Update(KazMath::Transform3D arg_cameraQuaternion, std::weak_ptr<Mes
 	m_transform.pos.y += m_gravity;
 
 	//動いた方向に回転させる。
-	Rotate();
+	Rotate(arg_camera);
 
 	//現在の姿勢のステータスによってモデルのスケール量をいじる。アニメーションとかモデルを置き変える処理の代替処理。
 	switch (m_playerAttitude)
@@ -69,13 +71,15 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
 }
 
-void Player::Input(KazMath::Transform3D arg_cameraQuaternion)
+void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr)
 {
 
+	KazMath::Transform3D cameraTransform = arg_camera.lock()->GetShotQuaternion();
+
 	//前方向と右方向のベクトルを取得。 -をつけているのは、arg_cameraQuaternionがプレイヤーから見たカメラの方向だから。
-	KazMath::Vec3<float> frontVec = -arg_cameraQuaternion.GetFront();
+	KazMath::Vec3<float> frontVec = -cameraTransform.GetFront();
 	frontVec.y = 0;
-	KazMath::Vec3<float> rightVec = -arg_cameraQuaternion.GetRight();
+	KazMath::Vec3<float> rightVec = -cameraTransform.GetRight();
 	rightVec.y = 0;
 
 	//前後左右に移動する。
@@ -115,9 +119,16 @@ void Player::Input(KazMath::Transform3D arg_cameraQuaternion)
 	//右クリックされている間はADS状態にする。
 	m_isADS = KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
 
+	//弾をうつ入力も受け付ける。
+	if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
+
+		arg_bulletMgr.lock()->Genrate(m_transform.pos, -arg_camera.lock()->GetShotQuaternion().GetFront());
+
+	}
+
 }
 
-void Player::Rotate()
+void Player::Rotate(std::weak_ptr<Camera> arg_camera)
 {
 
 	KazMath::Vec3<float> movedVec = m_transform.pos - m_prevPos;
@@ -139,6 +150,13 @@ void Player::Rotate()
 
 		//回転を適応
 		m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, rotateQ, 0.15f);
+
+	}
+
+	//ADSしていたらカメラと同じ方向を向く。
+	if (m_isADS) {
+
+		m_transform.quaternion = arg_camera.lock()->GetCameraQuaternion().quaternion;
 
 	}
 
