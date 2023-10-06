@@ -61,16 +61,21 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
+	//ゲームシーンへ
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	{
+		m_sceneNum = 0;
+	}
 }
 
 void GameScene::Update()
 {
 	/*
-カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
-計算結果は描画情報に渡ります。
-CameraMgr::Instance()->Camera({}, {}, {});
-*/
-//デバック用のカメラワーク(操作はBlenderと同じ)
+	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
+	計算結果は描画情報に渡ります。
+	CameraMgr::Instance()->Camera({}, {}, {});
+	*/
+	//デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
 	m_player->Update(m_camera->GetCameraPosQaternion());

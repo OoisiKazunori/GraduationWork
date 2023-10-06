@@ -1,16 +1,24 @@
 #pragma once
-#include"DirectXCommon/Base.h"
-#include"../Scene/SceneBase.h"
-#include"../KazLibrary/RenderTarget/GaussianBuler.h"
-#include"../KazLibrary/Helper/Select.h"
-#include"../KazLibrary/Render/KazRender.h"
+#include"../KazLibrary/Scene/SceneBase.h"
+#include"../KazLibrary/Buffer/DrawFuncData.h"
+#include"../KazLibrary/Render/DrawFunc.h"
+#include"../KazLibrary/Sound/SoundManager.h"
+#include"../KazLibrary/Loader/ModelLoader.h"
+#include"../KazLibrary/Render/DrawFuncHelper.h"
+#include"../Game/Debug/DebugCamera.h"
+#include"../KazLibrary/Render/BasicDraw.h"
+
+class Player;
+class Camera;
 
 class TitleScene :public SceneBase
 {
 public:
-	TitleScene();
+	TitleScene(DrawingByRasterize& arg_rasterize);
+	~TitleScene();
 
 	void Init();
+	void PreInit();
 	void Finalize();
 	void Input();
 	void Update();
@@ -19,6 +27,14 @@ public:
 	int SceneChange();
 
 private:
+		//•`‰æ--------------------------
+	BasicDraw::BasicTextureRender m_2DSprite;
+	KazMath::Transform2D m_2DSpriteTransform;
+
+
+	std::shared_ptr<Player> m_player;
 
 	int m_sceneNum;
+
+
 };

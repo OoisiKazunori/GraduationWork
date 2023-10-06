@@ -7,15 +7,9 @@
 
 using namespace ChangeScene;
 
-SceneChange::SceneChange() :allHidenFlag(false), startFlag(false)
+SceneChange::SceneChange(DrawingByRasterize& arg_rasterize) :allHidenFlag(false), startFlag(false),
+m_render(arg_rasterize, "Resource/SceneUI/SceneChange/SceneChange.png", true)
 {
-	//texBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(KazFilePathName::SceneChangePath + "SceneChange.png");
-	/*transform.scale = {
-		static_cast<float>(texBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Width),
-		static_cast<float>(texBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Height)
-	};
-	transform.pos.y = WIN_Y / 2.0f;*/
-	sceneTex = DrawFuncData::SetTexPlaneData(DrawFuncData::GetSpriteShader());
 }
 
 void SceneChange::Init()
@@ -70,8 +64,7 @@ void SceneChange::Update()
 
 void SceneChange::Draw(DrawingByRasterize& arg_rasterize)
 {
-	//DrawFunc::DrawTextureIn2D(sceneTex, transform, texBuffer);
-	//arg_rasterize.ObjectRender(sceneTex);
+	m_render.m_tex.Draw2D(arg_rasterize, transform);
 }
 
 void SceneChange::Start()
