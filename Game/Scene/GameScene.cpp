@@ -13,7 +13,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
 	//DrawFuncHelperでのモデル読み込み
 	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
-	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
+	m_modelRender(arg_rasterize, "Resource/cubeFrame/", "cubeFrame.gltf")
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -63,11 +63,11 @@ void GameScene::Input()
 void GameScene::Update()
 {
 	/*
-カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
-計算結果は描画情報に渡ります。
-CameraMgr::Instance()->Camera({}, {}, {});
-*/
-//デバック用のカメラワーク(操作はBlenderと同じ)
+	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
+	計算結果は描画情報に渡ります。
+	CameraMgr::Instance()->Camera({}, {}, {});
+	*/
+	//デバック用のカメラワーク(操作はBlenderと同じ)
 	m_camera.Update();
 }
 
