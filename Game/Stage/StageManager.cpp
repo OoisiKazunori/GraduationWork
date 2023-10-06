@@ -12,22 +12,24 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize)
 	m_changeSceneTriggerFlag = false;
 }
 
-void StageManager::Update()
+void StageManager::Update(DrawingByRasterize &arg_rasterize)
 {
+	//ステージの切り替え処理
+	if (m_nowStageNumber != m_nextStageNumber)
+	{
+		arg_rasterize.ReleasePipelineInScene();
+
+		m_stage.reset();
+		m_stage = std::make_unique<StageModel>(arg_rasterize, "", "");
+		m_changeSceneTriggerFlag = true;
+	}
+
 	//ステージの切り替え処理
 	m_stage->Update();
 }
 
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	//ステージの切り替え処理
-	if (m_nowStageNumber != m_nextStageNumber)
-	{
-		m_stage.reset();
-		m_stage = std::make_unique<StageModel>(arg_rasterize, "", "");
-		m_changeSceneTriggerFlag = true;
-	}
-
 	m_stage->Draw(arg_rasterize, arg_blasVec);
 }
 

@@ -10,7 +10,7 @@ public:
 	StageManager();
 
 	void Init(DrawingByRasterize& arg_rasterize);
-	void Update();
+	void Update(DrawingByRasterize &arg_rasterize);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	//ステージが切り替わったトリガー
 	bool ChangeSceneTrigger();
