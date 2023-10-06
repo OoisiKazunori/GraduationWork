@@ -13,7 +13,7 @@ private:
 	float m_cameraXAngle;		//上下方向のカメラの角度。上限と下限を切り替えるために切り分けました。
 
 	//注視点から視点までの距離
-	const float EYE_TARGET_DISTANCE = 250.0f;
+	const float EYE_TARGET_DISTANCE = 50.0f;
 
 	//カメラのX方向の回転量の初期値
 	const float CAMERA_X_ANGLE_INIT_AMOUNT = -0.72f;

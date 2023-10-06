@@ -10,6 +10,7 @@
 
 class Player;
 class Camera;
+class MeshCollision;
 
 class GameScene :public SceneBase
 {
@@ -40,10 +41,13 @@ private:
 	BasicDraw::BasicModelRender m_modelAnimationRender, m_modelRender;
 	KazMath::Transform3D m_modelAnimationTransform, m_modelTransform;
 
+	KazMath::Transform3D m_stageTransform;
+
 	//‰¹--------------------------
 	SoundData m_bgmHandle, m_seHandle;
 
 	std::shared_ptr<Player> m_player;
+	std::shared_ptr<MeshCollision> m_stageMeshCollision;
 
 	int m_sceneNum;
 
