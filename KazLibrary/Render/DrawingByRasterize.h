@@ -31,6 +31,7 @@ public:
 
 	void SortAndRender();
 	void UISortAndRender();
+
 private:
 
 	//éñëOê∂ê¨å¸ÇØ-----
@@ -96,4 +97,6 @@ private:
 	}
 
 	std::string ErrorMail(const std::source_location& DRAW_SOURCE_LOCATION);
+
+	void DrawCall(const std::list<const DrawFuncData::DrawData*> arg_drawCall);
 };
