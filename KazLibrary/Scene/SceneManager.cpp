@@ -171,7 +171,7 @@ void SceneManager::Update()
 
 	//更新処理
 	m_nowScene->Input();
-	m_nowScene->Update();
+	m_nowScene->Update(m_rasterize);
 	//シーン切り替えのトリガー
 	int sceneNum = m_nowScene->SceneChange();
 	if (sceneNum != SCENE_NONE)

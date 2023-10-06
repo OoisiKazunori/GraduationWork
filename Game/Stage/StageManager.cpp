@@ -1,4 +1,5 @@
 #include "StageManager.h"
+#include"Input/KeyBoradInputManager.h"
 
 StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
@@ -16,7 +17,8 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize)
 void StageManager::Update(DrawingByRasterize &arg_rasterize)
 {
 	//ステージの切り替え処理
-	if (m_nowStageNumber != m_nextStageNumber)
+	//if (m_nowStageNumber != m_nextStageNumber)
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_4))
 	{
 		arg_rasterize.ReleasePipelineInScene();
 		m_stage.reset();

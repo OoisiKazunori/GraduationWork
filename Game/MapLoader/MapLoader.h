@@ -42,4 +42,15 @@ public:
 	static void Update();
 	//現在有効なステージ番号
 	static void Draw(int f_stageNumber);
+
+	//ステージ番号を入れるとトランスフォームのリストが帰ってくる
+	static std::list<MapObject> GetStageData(int f_stageNum)
+	{
+		std::list<std::list<MapObject>>::iterator l_itr;
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		return *l_itr;
+	};
 };

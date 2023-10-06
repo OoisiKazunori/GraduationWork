@@ -14,7 +14,7 @@ public:
 	virtual void PreInit() {};
 	virtual void Finalize() = 0;
 	virtual void Input() = 0;
-	virtual void Update() = 0;
+	virtual void Update(DrawingByRasterize &arg_rasterize) = 0;
 	virtual void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec) = 0;
 
 	virtual int SceneChange() = 0;
