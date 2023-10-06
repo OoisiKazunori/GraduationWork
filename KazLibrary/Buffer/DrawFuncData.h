@@ -1586,6 +1586,34 @@ namespace DrawFuncData
 		return drawCallData;
 	}
 
+	static DrawCallData SetLine(const DrawFuncData::PipelineGenerateData& arg_pipeline)
+	{
+		DrawFuncData::PipelineGenerateData lData(arg_pipeline);
+
+		DrawCallData drawCallData;
+		//í∏ì_èÓïÒ
+		drawCallData.drawCommandType = VERT_TYPE::INSTANCE;
+
+		//çsóÒèÓïÒ
+		drawCallData.extraBufferArray.emplace_back(
+			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX))
+		);
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMMATRIX);
+		//êFèÓïÒ
+		drawCallData.extraBufferArray.emplace_back(
+			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMFLOAT4))
+		);
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMFLOAT4);
+
+		drawCallData.pipelineData = lData;
+		drawCallData.drawInstanceCommandData.topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+		return drawCallData;
+	}
+
 	static DrawCallData SetExecuteIndirect(const PipelineGenerateData& PIPELINE_DATA, const D3D12_GPU_VIRTUAL_ADDRESS& arg_address, UINT arg_maxCountNum, UINT arg_indexNum = -1)
 	{
 		DrawCallData drawCallData;
@@ -1776,6 +1804,22 @@ namespace DrawFuncData
 		lData.desc.NumRenderTargets = 1;
 		lData.desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		lData.desc.SampleDesc.Count = 1;
+		return lData;
+	};
+
+	static DrawFuncData::PipelineGenerateData GetBasicGBufferShader()
+	{
+		DrawFuncData::PipelineGenerateData lData;
+		lData.desc = DrawFuncPipelineData::SetPos();
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "GBufferVSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "GBufferPSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		//ÇªÇÃëºê›íË
+		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
 		return lData;
 	};
 

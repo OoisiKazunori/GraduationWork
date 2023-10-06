@@ -114,12 +114,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Debug\DebugCamera.cpp" />
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
+    <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="Game\Tool\SplineRail.cpp" />
@@ -212,6 +214,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Mineral\Game\Effect\ChromaticAberration.h" />
+    <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Debug\DebugCamera.h" />
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
@@ -219,6 +222,7 @@
     <ClInclude Include="Game\Enemy\Enemy.h" />
     <ClInclude Include="Game\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Input\Input.h" />
+    <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Scene\DemoScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Tool\SplineRail.h" />

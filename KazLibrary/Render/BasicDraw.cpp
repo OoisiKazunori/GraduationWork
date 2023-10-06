@@ -61,3 +61,8 @@ BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_raster
 		m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 	}
 }
+
+BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize& arg_rasterize) :
+	m_render(arg_rasterize, DrawFuncData::SetLine(DrawFuncData::GetBasicGBufferShader()))
+{
+}

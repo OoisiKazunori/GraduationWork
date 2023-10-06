@@ -8,9 +8,11 @@
 #include"../Game/Debug/DebugCamera.h"
 #include"../KazLibrary/Render/BasicDraw.h"
 
+class Player;
+class Camera;
+
 class GameScene :public SceneBase
 {
-private:
 public:
 	GameScene(DrawingByRasterize& arg_rasterize);
 	~GameScene();
@@ -27,7 +29,8 @@ public:
 private:
 
 	//ÉJÉÅÉâ--------------------------
-	DebugCamera m_camera;
+	DebugCamera m_debuCamera;
+	std::shared_ptr<Camera> m_camera;
 
 	//ï`âÊ--------------------------
 	BasicDraw::BasicTextureRender m_2DSprite, m_3DSprite;
@@ -39,6 +42,8 @@ private:
 
 	//âπ--------------------------
 	SoundData m_bgmHandle, m_seHandle;
+
+	std::shared_ptr<Player> m_player;
 
 	int m_sceneNum;
 
@@ -55,4 +60,7 @@ private:
 		return result;
 
 	}
+
+	BasicDraw::BasicLineRender m_line;
+	BasicDraw::BasicModelRender m_stage;
 };

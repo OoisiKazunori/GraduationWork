@@ -25,4 +25,10 @@ namespace BasicDraw
 		DrawFuncHelper::TextureRender m_tex;
 	};
 
+	struct BasicLineRender
+	{
+		BasicLineRender(DrawingByRasterize& arg_rasterize);
+		DrawFuncHelper::LineRender m_render;
+	};
+
 };
