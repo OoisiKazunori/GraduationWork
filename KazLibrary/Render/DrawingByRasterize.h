@@ -25,6 +25,10 @@ public:
 	/// 前シーンの描画命令破棄
 	/// </summary>
 	void ReleasePipeline();
+	/// <summary>
+	/// シーン内で描画命令破棄
+	/// </summary>
+	void ReleasePipelineInScene();
 
 	void ObjectRender(const DrawFuncData::DrawData* arg_drawData);
 	void UIRender(const DrawFuncData::DrawData* arg_drawData);
@@ -41,6 +45,8 @@ private:
 	//描画命令のキュー
 	std::list<const DrawFuncData::DrawData*>m_stackDataArray;
 	std::list<const DrawFuncData::DrawData*>m_uiStackDataArray;
+	//削除されたパイプラインのハンドル
+	std::vector<int>m_deleteHandleArray;
 
 
 	//パイプラインの情報----------------------------------------

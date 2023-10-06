@@ -36,16 +36,6 @@ const DrawFuncData::DrawData* DrawingByRasterize::SetPipeline(DrawFuncData::Draw
 
 void DrawingByRasterize::GeneratePipeline()
 {
-	std::vector<std::unique_ptr<DrawFuncData::DrawData>> tmpDrawCallArray;
-	//シーン内で生成する際に残し続ける描画命令をスタックさせ、新規の後で渡す
-	for (auto& obj : m_drawCallArray)
-	{
-		if (obj->generateFlag)
-		{
-			tmpDrawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>(*obj));
-		}
-	}
-
 	int index = 0;
 	//ソートが終わったらDirectX12のコマンドリストに命令出来るように描画情報を生成する。
 	for (auto& callData : m_drawCallStackDataArray)
@@ -194,15 +184,20 @@ void DrawingByRasterize::GeneratePipeline()
 		);
 		ErrorCheck(result.pipelineHandle, callData->callLocation);
 
-		//描画情報生成の受け渡し
-		*m_drawCallArray[index] = result;
-		++index;
+		//最後から順に削除されたパイプラインを埋めるように追加する
+		if (m_deleteHandleArray.size() != 0)
+		{
+			*m_drawCallArray[m_deleteHandleArray.back()] = result;
+			m_deleteHandleArray.pop_back();
+		}
+		else
+		{
+			//描画情報生成の受け渡し
+			*m_drawCallArray[index] = result;
+			++index;
+		}
 	}
-	//残した描画命令を入れる
-	for (auto& obj : tmpDrawCallArray)
-	{
-		m_drawCallArray.emplace_back(std::make_unique<DrawFuncData::DrawData>(*obj));
-	}
+
 	m_drawCallStackDataArray.clear();
 }
 
@@ -216,6 +211,24 @@ void DrawingByRasterize::ReleasePipeline()
 	}
 	m_drawCallArray.clear();
 	m_drawCallArray.shrink_to_fit();
+
+	m_deleteHandleArray.clear();
+	m_deleteHandleArray.shrink_to_fit();
+}
+
+void DrawingByRasterize::ReleasePipelineInScene()
+{
+	//シーン内で生成する際に残し続けない物は削除する
+	int deleteIndex = 0;
+	for (auto &obj : m_drawCallArray)
+	{
+		if (obj->generateFlag)
+		{
+			obj.reset();
+			m_deleteHandleArray.emplace_back(deleteIndex);
+			++deleteIndex;
+		}
+	}
 }
 
 void DrawingByRasterize::ObjectRender(const DrawFuncData::DrawData* arg_drawData)
