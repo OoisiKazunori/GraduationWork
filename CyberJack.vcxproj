@@ -203,6 +203,7 @@
     <ClCompile Include="KazLibrary\Render\DrawFunc.cpp" />
     <ClCompile Include="KazLibrary\Render\DrawFuncHelper.cpp" />
     <ClCompile Include="KazLibrary\Render\DrawingByRasterize.cpp" />
+    <ClCompile Include="KazLibrary\Render\GenerateRender.cpp" />
     <ClCompile Include="KazLibrary\Render\MeshParticleRender.cpp" />
     <ClCompile Include="KazLibrary\Scene\main.cpp" />
     <ClCompile Include="KazLibrary\Scene\ModelToolScene.cpp" />
@@ -313,6 +314,7 @@
     <ClInclude Include="KazLibrary\Render\DrawFunc.h" />
     <ClInclude Include="KazLibrary\Render\DrawFuncHelper.h" />
     <ClInclude Include="KazLibrary\Render\DrawingByRasterize.h" />
+    <ClInclude Include="KazLibrary\Render\GenerateRender.h" />
     <ClInclude Include="KazLibrary\Render\KazExcuteIndirect.h" />
     <ClInclude Include="KazLibrary\Render\MeshParticleRender.h" />
     <ClInclude Include="KazLibrary\Render\RenderData.h" />

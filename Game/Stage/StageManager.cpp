@@ -2,7 +2,6 @@
 
 StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
-	//最初のステージはこちらで読み込む
 }
 
 void StageManager::Init(DrawingByRasterize& arg_rasterize)
@@ -10,6 +9,8 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize)
 	m_nowStageNumber = 0;
 	m_nextStageNumber = 0;
 	m_changeSceneTriggerFlag = false;
+	//最初のステージはこちらで読み込む
+	m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf");
 }
 
 void StageManager::Update(DrawingByRasterize &arg_rasterize)
@@ -18,9 +19,8 @@ void StageManager::Update(DrawingByRasterize &arg_rasterize)
 	if (m_nowStageNumber != m_nextStageNumber)
 	{
 		arg_rasterize.ReleasePipelineInScene();
-
 		m_stage.reset();
-		m_stage = std::make_unique<StageModel>(arg_rasterize, "", "");
+		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf");
 		m_changeSceneTriggerFlag = true;
 	}
 
