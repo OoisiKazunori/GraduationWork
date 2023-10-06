@@ -21,7 +21,7 @@ public:
 	void PreInit();
 	void Finalize();
 	void Input();
-	void Update();
+	void Update(DrawingByRasterize& arg_rasterize);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	int SceneChange();

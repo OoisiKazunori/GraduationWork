@@ -7,9 +7,15 @@
 
 using namespace ChangeScene;
 
-SceneChange::SceneChange(DrawingByRasterize& arg_rasterize) :allHidenFlag(false), startFlag(false),
-m_render(arg_rasterize, "Resource/SceneUI/SceneChange/SceneChange.png", true)
+SceneChange::SceneChange(DrawingByRasterize& arg_rasterize) :allHidenFlag(false), startFlag(false)
 {
+	m_render = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaDepthAlwaysShader());
+	texBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/SceneUI/SceneChange/SceneChange.png");
+	DrawFunc::DrawTextureIn2D(m_render, m_transform, texBuffer, KazMath::Color(255, 255, 255, 255));
+	m_renderCallData = arg_rasterize.GenerateSceneChangePipeline(&m_render);
+
+	m_transform.pos.y = WIN_Y / 2.0f;
+	m_transform.scale = { 1280.0f, 720.0f };
 }
 
 void SceneChange::Init()
@@ -30,8 +36,8 @@ void SceneChange::Update()
 		if (startOutInT[0] < 1.0f)
 		{
 			Rate(&startOutInT[0], 0.03f, 1.0f);
-			transform.pos.x = WIN_X + (WIN_X / 2) + EasingMaker(Out, Cubic, startOutInT[0]) * -WIN_X;
-			tmp = transform.pos.x;
+			m_transform.pos.x = WIN_X + (WIN_X / 2) + EasingMaker(Out, Cubic, startOutInT[0]) * -WIN_X;
+			tmp = m_transform.pos.x;
 		}
 		//I‚í‚è
 		else
@@ -44,13 +50,12 @@ void SceneChange::Update()
 			}
 
 			Rate(&startOutInT[1], 0.03f, 1.0f);
-			transform.pos.x = tmp + EasingMaker(In, Cubic, startOutInT[1]) * static_cast<float>(-WIN_X);
+			m_transform.pos.x = tmp + EasingMaker(In, Cubic, startOutInT[1]) * static_cast<float>(-WIN_X);
 		}
 
 		if (1.0 <= startOutInT[1])
 		{
 			startFlag = false;
-			initFlag = false;
 		}
 	}
 	else
@@ -58,13 +63,14 @@ void SceneChange::Update()
 		initFlag = false;
 		startOutInT[0] = 0;
 		startOutInT[1] = 0;
-		transform.pos.x = WIN_X + (WIN_X / 2);
+		m_transform.pos.x = WIN_X + (WIN_X / 2);
 	}
 }
 
 void SceneChange::Draw(DrawingByRasterize& arg_rasterize)
 {
-	m_render.m_tex.Draw2D(arg_rasterize, transform);
+	DrawFunc::DrawTextureIn2D(m_render, m_transform, texBuffer, KazMath::Color(255, 255, 255, 255));
+	arg_rasterize.UIRender(m_renderCallData);
 }
 
 void SceneChange::Start()

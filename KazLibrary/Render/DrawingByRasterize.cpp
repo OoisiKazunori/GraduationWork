@@ -308,6 +308,163 @@ void DrawingByRasterize::UISortAndRender()
 	m_uiStackDataArray.clear();
 }
 
+const DrawFuncData::DrawData* DrawingByRasterize::GenerateSceneChangePipeline(DrawFuncData::DrawCallData* arg_drawCall)
+{
+	int index = 0;
+	//ソートが終わったらDirectX12のコマンドリストに命令出来るように描画情報を生成する。
+	auto& callData = arg_drawCall;
+	{
+		DrawFuncData::DrawData result;
+
+		result.generateFlag = callData->m_deleteInSceneFlag;
+		result.drawMultiMeshesIndexInstanceCommandData = callData->drawMultiMeshesIndexInstanceCommandData;
+		result.drawInstanceCommandData = callData->drawInstanceCommandData;
+		result.drawIndexInstanceCommandData = callData->drawIndexInstanceCommandData;
+		result.m_executeIndirectGenerateData = callData->m_executeIndirectGenerateData;
+		result.drawCommandType = callData->drawCommandType;
+
+		result.materialBuffer = callData->materialBuffer;
+		result.buffer = &callData->extraBufferArray;
+		result.renderTargetHandle = callData->renderTargetHandle;
+		result.depthHandle = callData->depthHandle;
+
+		result.pipelineData = callData->pipelineData.desc;
+
+		result.m_executeIndirectGenerateData.m_uavArgumentBuffer = callData->m_executeIndirectGenerateData.m_uavArgumentBuffer;
+
+
+		if (result.drawCommandType == DrawFuncData::VERT_TYPE::MULTI_MESHED)
+		{
+			bool debug = false;
+		}
+
+		//ExecuteIndirectの発行
+		if (callData->drawCommandType == DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX ||
+			callData->drawCommandType == DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INSTANCE)
+		{
+			RootSignatureDataTest rootSignatureGenerateData;
+			for (int i = 0; i < callData->m_executeIndirectGenerateData.m_desc.size(); ++i)
+			{
+				switch (callData->m_executeIndirectGenerateData.m_desc[i].Type)
+				{
+				case D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW:
+					rootSignatureGenerateData.rangeArray.emplace_back(
+						GRAPHICS_RANGE_TYPE_CBV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
+					);
+					break;
+				case D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW:
+					rootSignatureGenerateData.rangeArray.emplace_back(
+						GRAPHICS_RANGE_TYPE_SRV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
+					);
+					break;
+				case D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW:
+					rootSignatureGenerateData.rangeArray.emplace_back(
+						GRAPHICS_RANGE_TYPE_UAV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
+					);
+					break;
+				default:
+					break;
+				}
+			}
+			//ルートシグネチャー
+			result.m_commandRootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
+
+			//コマンドシグネチャ生成
+			ExecuteIndirectData::GenerateCommandSignature(
+				result.m_commandSignature,
+				rootSignatureBufferMgr.GetBuffer(result.m_commandRootsignatureHandle),
+				callData->m_executeIndirectGenerateData.m_desc
+			);
+		}
+
+		for (UINT i = 0; i < result.pipelineData.NumRenderTargets; ++i)
+		{
+			switch (callData->pipelineData.blendMode)
+			{
+			case DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA:
+				result.pipelineData.BlendState.RenderTarget[i] = DrawFuncPipelineData::SetAlphaBlend();
+				break;
+			case DrawFuncPipelineData::PipelineBlendModeEnum::ADD:
+				result.pipelineData.BlendState.RenderTarget[i] = DrawFuncPipelineData::SetAddBlend();
+				break;
+			case DrawFuncPipelineData::PipelineBlendModeEnum::SUB:
+				result.pipelineData.BlendState.RenderTarget[i] = DrawFuncPipelineData::SetSubBlend();
+				break;
+			case DrawFuncPipelineData::PipelineBlendModeEnum::NONE:
+				result.pipelineData.BlendState.RenderTarget[i].BlendEnable = false;
+				break;
+			default:
+				break;
+			}
+		}
+
+
+		//シェーダーのコンパイル
+		for (int i = 0; i < callData->pipelineData.shaderDataArray.size(); ++i)
+		{
+			RESOURCE_HANDLE lShaderHandle = shaderBufferMgr.GenerateShader(callData->pipelineData.shaderDataArray[i]);
+			ErrorCheck(lShaderHandle, callData->callLocation);
+
+			result.shaderHandleArray.emplace_back(lShaderHandle);
+			D3D12_SHADER_BYTECODE shaderByteCode = CD3DX12_SHADER_BYTECODE(shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferPointer(), shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferSize());
+			switch (callData->pipelineData.shaderDataArray[i].shaderType)
+			{
+			case SHADER_TYPE_VERTEX:
+				result.pipelineData.VS = shaderByteCode;
+				break;
+			case SHADER_TYPE_PIXEL:
+				result.pipelineData.PS = shaderByteCode;
+				break;
+			case SHADER_TYPE_GEOMETORY:
+				result.pipelineData.GS = shaderByteCode;
+				break;
+			default:
+				break;
+			}
+		}
+
+		RootSignatureDataTest rootSignatureGenerateData;
+		if (callData->materialBuffer.size() != 0)
+		{
+			const int FIRST_MESH_INDEX = 0;
+			//マテリアルバッファを見てルートシグネチャーの情報詰め込み
+			//全メッシュ共通で入るマテリアル情報のスタックを見てルートシグネチャーの最初に積める
+			for (int i = 0; i < MATERIAL_TEXTURE_MAX; ++i)
+			{
+				rootSignatureGenerateData.rangeArray.emplace_back
+				(
+					GRAPHICS_RANGE_TYPE_SRV_DESC,
+					callData->materialBuffer[FIRST_MESH_INDEX][i].rootParamType
+				);
+			}
+		}
+		//その他バッファを見てルートシグネチャーの情報詰め込み
+		for (int i = 0; i < callData->extraBufferArray.size(); ++i)
+		{
+			rootSignatureGenerateData.rangeArray.emplace_back
+			(
+				callData->extraBufferArray[i].rangeType,
+				callData->extraBufferArray[i].rootParamType
+			);
+		}
+		result.m_rootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
+
+		//パイプラインの生成
+		result.pipelineData.pRootSignature = rootSignatureBufferMgr.GetBuffer(result.m_rootsignatureHandle).Get();
+		result.pipelineHandle = piplineBufferMgr.GeneratePipeline(
+			result.pipelineData,
+			PipelineDuplicateBlocking::PipelineDuplicateData(
+				rootSignatureGenerateData, callData->pipelineData.shaderDataArray, callData->pipelineData.blendMode
+			)
+		);
+		ErrorCheck(result.pipelineHandle, callData->callLocation);
+
+		m_sceneChange = std::make_unique<DrawFuncData::DrawData>();
+		*m_sceneChange = result;
+	}
+	return m_sceneChange.get();
+}
+
 void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::BufferData> &BUFFER_ARRAY, std::vector<RootSignatureParameter> ROOT_PARAM)
 {
 	for (int i = 0; i < BUFFER_ARRAY.size(); ++i)

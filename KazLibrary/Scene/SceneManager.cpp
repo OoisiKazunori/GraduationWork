@@ -213,7 +213,7 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
-	//m_sceneChange->Draw(m_rasterize);
+	m_sceneChange->Draw(m_rasterize);
 
 	m_nowScene->Draw(m_rasterize, m_blasVector);
 	//ラスタライザ描画
@@ -225,7 +225,7 @@ void SceneManager::Draw()
 	m_rayPipeline->BuildShaderTable(m_blasVector);
 	if (m_blasVector.GetBlasRefCount() != 0)
 	{
-		m_rayPipeline->TraceRay(m_tlas);
+		//m_rayPipeline->TraceRay(m_tlas);
 	}
 	//UI用の描画
 	m_rasterize.UISortAndRender();

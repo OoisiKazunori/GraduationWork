@@ -100,7 +100,6 @@ void GameScene::Update(DrawingByRasterize &arg_rasterize)
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
 	//描画命令発行
 	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);

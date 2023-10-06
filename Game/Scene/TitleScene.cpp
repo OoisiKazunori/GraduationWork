@@ -34,8 +34,9 @@ void TitleScene::Input()
 	}
 }
 
-void TitleScene::Update()
+void TitleScene::Update(DrawingByRasterize& arg_rasterize)
 {
+	CameraMgr::Instance()->Camera({0.0f,0.0f,0.0f}, {0.0f,0.0f,5.0f}, {0.0f,1.0f,0.0f});
 }
 
 void TitleScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)

@@ -37,8 +37,9 @@ namespace ChangeScene {
 		float tmp;
 		float startOutInT[2];
 
-		KazMath::Transform2D transform;
-		BasicDraw::BasicTextureRender m_render;
+		KazMath::Transform2D m_transform;
+		DrawFuncData::DrawCallData m_render;
+		const DrawFuncData::DrawData *m_renderCallData;
 		KazBufferHelper::BufferData texBuffer;
 	};
 }
