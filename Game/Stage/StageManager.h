@@ -18,7 +18,10 @@ private:
 	int m_nowStageNumber, m_nextStageNumber;
 	bool m_changeSceneTriggerFlag;
 	//地形のモデル
-	std::unique_ptr<StageModel>m_stage;
+	std::unique_ptr<StageModel> m_stage;
+
+	std::list<std::unique_ptr<StageModel>> m_tree;
+	std::list<std::unique_ptr<StageModel>> m_stone;
 
 	//その他木等の外部オブジェクトモデル--------------------------------
 

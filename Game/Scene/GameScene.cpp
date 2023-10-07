@@ -50,7 +50,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 
 	m_sceneNum = SCENE_NONE;
 
-
+	MapManager::Init();
 	m_stageManager.Init(arg_rasterize);
 }
 
@@ -62,7 +62,7 @@ void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
 
-	MapManager::Init();
+	//MapManager::Init();
 }
 
 void GameScene::PreInit()
@@ -97,14 +97,14 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 {
 
 	//描画命令発行
-	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
-	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
+	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
+	//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
+	//m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 
-	m_player->Draw(arg_rasterize, arg_blasVec);
-	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
+	//m_player->Draw(arg_rasterize, arg_blasVec);
+	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
+	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 }
 

@@ -46,7 +46,7 @@ public:
 	//ステージ番号を入れるとトランスフォームのリストが帰ってくる
 	static std::list<MapObject> GetStageData(int f_stageNum)
 	{
-		std::list<std::list<MapObject>>::iterator l_itr;
+		std::list<std::list<MapObject>>::iterator l_itr = m_maps.begin();
 		for (int i = 0; i < f_stageNum; i++)
 		{
 			l_itr++;
