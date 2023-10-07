@@ -15,14 +15,15 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize)
 	std::list<MapObject> l_map = MapManager::GetStageData(2);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
-		/*if (std::equal("tree", "tree", l_mapItr->m_objetName))
+		if (l_mapItr->m_objetName.starts_with("tree") == true)
 		{
-			m_tree.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/tree/", "tree.gltf"));
+			m_tree.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/tree/", "tree2.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
-		else*/ if (l_mapItr->m_objetName.starts_with("stone") == true)
+		else if (l_mapItr->m_objetName.starts_with("stone") == true)
 		{
 			m_stone.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/stone/", "stone.gltf",
-			l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 		else if (l_mapItr->m_objetName.starts_with("stage") == true)
 		{
@@ -30,6 +31,8 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize)
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 	}
+	//playerのポジションが取れることを確認
+	auto hoge = MapManager::GetPlayerStartPosition(2);
 }
 
 void StageManager::Update(DrawingByRasterize& arg_rasterize)
@@ -45,6 +48,10 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 
 	//ステージの切り替え処理
 	m_stage->Update();
+	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
+	{
+		(*l_treeItr)->Update();
+	}
 	for (auto l_stoneItr = m_stone.begin(); l_stoneItr != m_stone.end(); ++l_stoneItr)
 	{
 		(*l_stoneItr)->Update();
@@ -54,6 +61,10 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	m_stage->Draw(arg_rasterize, arg_blasVec);
+	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
+	{
+		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
+	}
 	for (auto l_stoneItr = m_stone.begin(); l_stoneItr != m_stone.end(); ++l_stoneItr)
 	{
 		(*l_stoneItr)->Draw(arg_rasterize, arg_blasVec);

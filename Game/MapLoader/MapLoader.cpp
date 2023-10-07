@@ -1,6 +1,7 @@
 #include "MapLoader.h"
 #include <filesystem>
 
+
 std::list<std::list<MapObject>> MapManager::m_maps;
 
 void MapManager::Init()
@@ -65,4 +66,22 @@ bool MapManager::GetFileNames(std::string f_folderPath, std::list<std::string>& 
 		return false;
 	}
 	return true;
+}
+
+KazMath::Transform3D MapManager::GetPlayerStartPosition(int f_stageNum)
+{
+	KazMath::Transform3D l_result;
+	auto l_map = MapManager::GetStageData(2);
+	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
+	{
+		if (l_mapItr->m_objetName.starts_with("player") == true)
+		{
+			l_result = KazMath::Transform3D({ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
+				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
+			//ローテーションも後で適応する
+			l_mapItr->m_rotition;
+		}
+	}
+
+	return l_result;
 }

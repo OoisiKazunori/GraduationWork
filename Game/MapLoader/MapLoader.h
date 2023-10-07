@@ -6,6 +6,8 @@
 #include "../Debug/ParameterMgr.h"
 #include <DirectXMath.h>
 #include <list>
+#include"../KazLibrary/Loader/ModelLoader.h"
+#include"../KazLibrary/Render/BasicDraw.h"
 
 //–Ø‚âŠâ‚È‚Ç‚Ì”z’u
 class MapObject
@@ -53,4 +55,5 @@ public:
 		}
 		return *l_itr;
 	};
+	static KazMath::Transform3D GetPlayerStartPosition(int f_stageNum);
 };

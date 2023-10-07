@@ -6,6 +6,9 @@ StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg
 	m_stageModelRender(arg_rasterize, arg_fileDir, arg_fileName, true)
 {
 	m_transform = KazMath::Transform3D({pos.x, pos.y, pos.z}, {scale.x, scale.y, scale.z});
+	KazMath::Vec3<float> l_rot = { KazMath::AngleToRadian(rot.x), 
+	KazMath::AngleToRadian(rot.y), KazMath::AngleToRadian(rot.z) };
+	m_transform.quaternion = l_rot.ConvertXMVECTOR();
 }
 
 void StageModel::Update()
