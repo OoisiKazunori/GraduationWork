@@ -27,7 +27,7 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize)
 		}
 		else if (l_mapItr->m_objetName.starts_with("stage") == true)
 		{
-			m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/", "Stage.gltf",
+			m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/", "StageBase.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 	}
@@ -43,7 +43,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 		ChangeScene(arg_rasterize);
 		//ステージの切り替え処理
 		m_stage.reset();
-		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/", "Stage.gltf");
+		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/", "StageBase.gltf");
 	}
 
 	//ステージの切り替え処理

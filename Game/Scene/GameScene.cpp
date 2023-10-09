@@ -9,6 +9,7 @@
 #include"../Game/Player/Player.h"
 #include"../Game/Camera.h"
 #include"../Game/Collision/MeshCollision.h"
+#include"../Bullet/BulletMgr.h"
 
 #include"../MapLoader/MapLoader.h"
 
@@ -20,7 +21,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_line(arg_rasterize),
-	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf")
+	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
+	m_uiManager(arg_rasterize)
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -47,11 +49,13 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 
 	m_player = std::make_shared<Player>(arg_rasterize);
 	m_camera = std::make_shared<Camera>();
+	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
 
 	MapManager::Init();
 	m_stageManager.Init(arg_rasterize);
+
 }
 
 GameScene::~GameScene()
@@ -61,8 +65,7 @@ GameScene::~GameScene()
 void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
-
-	//MapManager::Init();
+	m_bulletMgr->Init();
 }
 
 void GameScene::PreInit()
@@ -87,8 +90,10 @@ CameraMgr::Instance()->Camera({}, {}, {});
 //デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
-	m_player->Update(m_camera->GetCameraPosQaternion(), m_stageMeshCollision);
-	m_camera->Update(m_player->GetTransform().pos, m_stageMeshCollision);
+	m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr);
+	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+	m_bulletMgr->Update(m_stageMeshCollision);
+
 	//ステージの描画
 	m_stageManager.Update(arg_rasterize);
 }
@@ -98,14 +103,18 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//描画命令発行
 	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-	//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
-	//m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
+	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
+	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 
-	//m_player->Draw(arg_rasterize, arg_blasVec);
-	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
+	m_player->Draw(arg_rasterize, arg_blasVec);
+	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
+	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
+
+	//m_weponUIManager.Draw(arg_rasterize);
+	m_uiManager.Draw(arg_rasterize);
 }
 
 int GameScene::SceneChange()

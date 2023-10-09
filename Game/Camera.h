@@ -11,11 +11,14 @@ private:
 	KazMath::Vec3<float> m_target;
 
 	//プレイヤー中心でカメラの位置を決めるための姿勢。
-	KazMath::Transform3D m_cameraPosQuaternion;
+	KazMath::Transform3D m_shotQuaternion;
 	float m_cameraXAngle;		//上下方向のカメラの角度。上限と下限を切り替えるために切り分けました。
+	bool m_isOldADS;
+	float m_ADSEasingTimer;
+	const float ADS_EASING_TIMER = 10.0f;
 
 	//注視点から視点までの距離
-	const float EYE_TARGET_DISTANCE = 50.0f;
+	const float EYE_TARGET_DISTANCE = 20.0f;
 
 	//カメラのX方向の回転量の初期値
 	const float CAMERA_X_ANGLE_INIT_AMOUNT = -0.72f;
@@ -27,9 +30,10 @@ public:
 
 	void Init();
 
-	void Update(KazMath::Vec3<float> arg_playerPos, std::weak_ptr<MeshCollision> arg_stageMeshCollision);
+	void Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<MeshCollision> arg_stageMeshCollision, bool arg_isADS);
 
-	KazMath::Transform3D GetCameraPosQaternion();
+	KazMath::Transform3D GetCameraQuaternion();
+	KazMath::Transform3D GetShotQuaternion();
 
 private:
 

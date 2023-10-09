@@ -8,67 +8,37 @@
         {
             "name" : "Scene",
             "nodes" : [
-                0,
-                1,
-                2
+                0
             ]
         }
     ],
     "nodes" : [
         {
-            "name" : "Light",
-            "rotation" : [
-                0.16907575726509094,
-                0.7558803558349609,
-                -0.27217137813568115,
-                0.570947527885437
-            ],
-            "translation" : [
-                4.076245307922363,
-                5.903861999511719,
-                -1.0054539442062378
-            ]
-        },
-        {
-            "name" : "Camera",
-            "rotation" : [
-                0.483536034822464,
-                0.33687159419059753,
-                -0.20870360732078552,
-                0.7804827094078064
-            ],
-            "translation" : [
-                7.358891487121582,
-                4.958309173583984,
-                6.925790786743164
-            ]
-        },
-        {
             "mesh" : 0,
-            "name" : "tree1",
-            "scale" : [
-                1,
-                3,
-                1
+            "name" : "stage",
+            "translation" : [
+                -20.021072387695312,
+                0,
+                -2.5481364727020264
             ]
         }
     ],
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "material.001",
+            "name" : "stageMat",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
                 },
                 "metallicFactor" : 0,
-                "roughnessFactor" : 0.7304964661598206
+                "roughnessFactor" : 0.5
             }
         }
     ],
     "meshes" : [
         {
-            "name" : "\u5186\u67f1",
+            "name" : "\u5e73\u9762",
             "primitives" : [
                 {
                     "attributes" : {
@@ -91,66 +61,66 @@
     "images" : [
         {
             "mimeType" : "image/png",
-            "name" : "tree1",
-            "uri" : "tree1.png"
+            "name" : "Stage",
+            "uri" : "Stage.png"
         }
     ],
     "accessors" : [
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 774,
+            "count" : 412,
             "max" : [
-                2.847794532775879,
-                1.055751919746399,
-                2.7091639041900635
+                28.067289352416992,
+                15,
+                28.13210105895996
             ],
             "min" : [
-                -2.852167844772339,
-                -1.4185115098953247,
-                -2.8414440155029297
+                -30.530221939086914,
+                0,
+                -30.52297592163086
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 774,
+            "count" : 412,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 774,
+            "count" : 412,
             "type" : "VEC2"
         },
         {
             "bufferView" : 3,
             "componentType" : 5123,
-            "count" : 1206,
+            "count" : 702,
             "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 9288,
+            "byteLength" : 4944,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 9288,
-            "byteOffset" : 9288
+            "byteLength" : 4944,
+            "byteOffset" : 4944
         },
         {
             "buffer" : 0,
-            "byteLength" : 6192,
-            "byteOffset" : 18576
+            "byteLength" : 3296,
+            "byteOffset" : 9888
         },
         {
             "buffer" : 0,
-            "byteLength" : 2412,
-            "byteOffset" : 24768
+            "byteLength" : 1404,
+            "byteOffset" : 13184
         }
     ],
     "samplers" : [
@@ -161,8 +131,8 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 27180,
-            "uri" : "tree2.bin"
+            "byteLength" : 14588,
+            "uri" : "StageBase.bin"
         }
     ]
 }

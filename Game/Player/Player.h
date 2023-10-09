@@ -2,6 +2,8 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 
 class MeshCollision;
+class BulletMgr;
+class Camera;
 
 class Player {
 
@@ -12,6 +14,7 @@ private:
 	KazMath::Vec3<float> m_prevPos;
 
 	bool m_onGround;
+	bool m_isADS;		//èeÇç\Ç¶ÇƒÇ¢ÇÈèÛë‘Ç©ÅH
 
 	float m_gravity;
 	const float GRAVITY = 0.05f;
@@ -34,16 +37,17 @@ public:
 
 	void Init();
 
-	void Update(KazMath::Transform3D arg_cameraQuaternion, std::weak_ptr<MeshCollision> arg_stageMeshCollision);
+	void Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	KazMath::Transform3D GetTransform() { return m_transform; }
+	bool GetIsADS() { return m_isADS; }
 
 private:
 
-	void Input(KazMath::Transform3D arg_cameraQuaternion);
-	void Rotate();
+	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr);
+	void Rotate(std::weak_ptr<Camera> arg_camera);
 	void Collision(std::weak_ptr<MeshCollision> arg_meshCollision);
 	float GetMoveSpeed();
 
