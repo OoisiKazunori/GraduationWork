@@ -33,7 +33,7 @@ void Player::Update(KazMath::Transform3D arg_cameraQuaternion, std::weak_ptr<Mes
 
 	//d—Í‚ð‚©‚¯‚éB
 	if (!m_onGround) {
-		m_gravity -= GRAVITY;
+		//m_gravity -= GRAVITY;
 	}
 	m_transform.pos.y += m_gravity;
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "EnemyPatrolData.h"
 
 class Enemy
 {
@@ -17,6 +18,8 @@ public:
 	~Enemy();
 	void Init();
 	void Update();
-	void Draw();
+	void Draw(
+		DrawingByRasterize& arg_rasterize,
+		Raytracing::BlasVector& arg_blasVec);
 };
 

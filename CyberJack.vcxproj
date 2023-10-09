@@ -121,6 +121,7 @@
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyPatrolData.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="Game\Effect\StopMgr.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
     <ClInclude Include="Game\Enemy\EnemyManager.h" />
+    <ClInclude Include="Game\Enemy\EnemyPatrolData.h" />
     <ClInclude Include="Game\Input\Input.h" />
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Scene\DemoScene.h" />

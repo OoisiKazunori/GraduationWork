@@ -7,6 +7,7 @@
 #include"Math/KazMath.h"
 #include"../Game/Input/Input.h"
 #include"../Game/Player/Player.h"
+#include "../Enemy/EnemyManager.h"
 #include"../Game/Camera.h"
 #include"../Game/Collision/MeshCollision.h"
 
@@ -44,9 +45,13 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_stageMeshCollision->Setting(m_stage.m_model.m_modelInfo->modelData[0].vertexData, m_stageTransform);
 
 	m_player = std::make_shared<Player>(arg_rasterize);
+	m_enemyManager = std::make_shared<EnemyManager>(arg_rasterize);
 	m_camera = std::make_shared<Camera>();
 
 	m_sceneNum = SCENE_NONE;
+
+	//マップデータ
+
 }
 
 GameScene::~GameScene()
@@ -55,6 +60,8 @@ GameScene::~GameScene()
 
 void GameScene::Init()
 {
+	m_enemyManager->Init();
+
 	m_sceneNum = SCENE_NONE;
 }
 
@@ -73,15 +80,16 @@ void GameScene::Input()
 void GameScene::Update()
 {
 	/*
-カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
-計算結果は描画情報に渡ります。
-CameraMgr::Instance()->Camera({}, {}, {});
-*/
-//デバック用のカメラワーク(操作はBlenderと同じ)
+	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
+	計算結果は描画情報に渡ります。
+	CameraMgr::Instance()->Camera({}, {}, {});
+	*/
+	//デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
 	m_player->Update(m_camera->GetCameraPosQaternion(), m_stageMeshCollision);
-	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+	m_enemyManager->Update();
+	m_camera->Update(m_player->GetTransform().pos, m_stageMeshCollision, m_player->GetIsADS());
 
 }
 
@@ -89,14 +97,15 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 {
 
 	//描画命令発行
-	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
+	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
+	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
+	//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
+	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
 }
 
 int GameScene::SceneChange()

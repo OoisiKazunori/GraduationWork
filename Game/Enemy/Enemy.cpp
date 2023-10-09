@@ -16,6 +16,8 @@ void Enemy::Update()
 {
 }
 
-void Enemy::Draw()
+void Enemy::Draw(
+	DrawingByRasterize& arg_rasterize,
+	Raytracing::BlasVector& arg_blasVec)
 {
 }
