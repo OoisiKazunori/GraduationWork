@@ -207,10 +207,12 @@
     <ClCompile Include="KazLibrary\Render\DrawingByRasterize.cpp" />
     <ClCompile Include="KazLibrary\Render\GenerateRender.cpp" />
     <ClCompile Include="KazLibrary\Render\MeshParticleRender.cpp" />
+    <ClCompile Include="KazLibrary\Scene\LoadScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\main.cpp" />
     <ClCompile Include="KazLibrary\Scene\ModelToolScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\SceneChange.cpp" />
     <ClCompile Include="KazLibrary\Scene\SceneManager.cpp" />
+    <ClCompile Include="KazLibrary\Singlton\LoadingBar.cpp" />
     <ClCompile Include="KazLibrary\Sound\IAXAudio2VoiceCallback.cpp" />
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
@@ -322,11 +324,13 @@
     <ClInclude Include="KazLibrary\Render\KazExcuteIndirect.h" />
     <ClInclude Include="KazLibrary\Render\MeshParticleRender.h" />
     <ClInclude Include="KazLibrary\Render\RenderData.h" />
+    <ClInclude Include="KazLibrary\Scene\LoadScene.h" />
     <ClInclude Include="KazLibrary\Scene\ModelToolScene.h" />
     <ClInclude Include="KazLibrary\Scene\SceneBase.h" />
     <ClInclude Include="KazLibrary\Scene\SceneChange.h" />
     <ClInclude Include="KazLibrary\Scene\SceneData.h" />
     <ClInclude Include="KazLibrary\Scene\SceneManager.h" />
+    <ClInclude Include="KazLibrary\Singlton\LoadingBar.h" />
     <ClInclude Include="KazLibrary\Sound\IAXAudio2VoiceCallback.h" />
     <ClInclude Include="KazLibrary\Sound\SoundManager.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />

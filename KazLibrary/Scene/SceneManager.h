@@ -9,6 +9,7 @@
 #include "../KazLibrary/Raytracing/RayPipeline.h"
 #include"../Game/Scene/GameScene.h"
 #include"../Game/Scene/DemoScene.h"
+#include"../KazLibrary/Scene/LoadScene.h"
 #include"../Game/Scene/TitleScene.h"
 
 class SceneManager
@@ -118,4 +119,11 @@ private:
 		}
 		return std::make_shared<DemoScene>(m_rasterize);
 	}
+
+	void AssetLoad();
+	void GeneratePipeline();
+
+	//ÉçÅ[ÉhâÊñ ÇÃï`âÊ
+	LoadScene m_loadScene;
+	void LoadScene();
 };

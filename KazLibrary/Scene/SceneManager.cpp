@@ -12,6 +12,11 @@
 #include <Input/ControllerInputManager.h>
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Buffer/UavViewHandleMgr.h"
+#include <cstdint>
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include"../KazLibrary/Singlton/LoadingBar.h"
 
 SceneManager::SceneManager() :gameFirstInitFlag(false)
 {
@@ -161,8 +166,17 @@ void SceneManager::Update()
 			m_rasterize.ReleasePipeline();
 			//シーンの生成
 			m_nowScene = GetScene(m_nextSceneNumber);
+
+			LoadingBar::Instance()->Init();
 			//コンストラクタで用意された描画パイプラインの生成
-			m_rasterize.GeneratePipeline();
+			std::thread th_a(&SceneManager::GeneratePipeline, this);
+			std::thread th_b(&SceneManager::AssetLoad, this);
+			std::thread th_c(&SceneManager::LoadScene, this);
+
+			th_a.join();
+			th_b.join();
+			th_c.join();
+
 			m_nowScene->Init();
 		}
 	}
@@ -229,4 +243,31 @@ void SceneManager::Draw()
 	}
 	//UI用の描画
 	m_rasterize.UISortAndRender();
+}
+
+void SceneManager::AssetLoad()
+{
+	//タスクの最大値
+	LoadingBar::Instance()->SetMaxBar(50);
+	for (int i = 0; i < 50; ++i)
+	{
+		LoadingBar::Instance()->IncreNowNum(1);
+	}
+}
+
+void SceneManager::GeneratePipeline()
+{
+	m_rasterize.GeneratePipeline();
+}
+
+void SceneManager::LoadScene()
+{
+	int num = 0;
+	while (LoadingBar::Instance()->GetNowRate() < 1.0f)
+	{
+		m_loadScene.Update();
+		m_loadScene.Draw();
+		++num;
+	}
+	bool debug = false;
 }

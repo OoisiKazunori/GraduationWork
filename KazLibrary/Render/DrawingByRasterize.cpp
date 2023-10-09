@@ -1,6 +1,7 @@
 #include "DrawingByRasterize.h"
 #include"../KazLibrary/DirectXCommon/DirectX12CmdList.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
+#include"../KazLibrary/Singlton/LoadingBar.h"
 
 //テスト用、パイプラインのハンドル順にソートをかける
 int int_cmpr(const DrawFuncData::DrawData *a, const DrawFuncData::DrawData *b)
@@ -48,6 +49,9 @@ const DrawFuncData::DrawData *DrawingByRasterize::SetPipeline(DrawFuncData::Draw
 void DrawingByRasterize::GeneratePipeline()
 {
 	int index = 0;
+	//タスクの最大値
+	LoadingBar::Instance()->SetMaxBar(static_cast<int>(m_drawCallStackDataArray.size()));
+
 	//ソートが終わったらDirectX12のコマンドリストに命令出来るように描画情報を生成する。
 	for (auto &callData : m_drawCallStackDataArray)
 	{
@@ -68,12 +72,6 @@ void DrawingByRasterize::GeneratePipeline()
 		result.pipelineData = callData->pipelineData.desc;
 
 		result.m_executeIndirectGenerateData.m_uavArgumentBuffer = callData->m_executeIndirectGenerateData.m_uavArgumentBuffer;
-
-
-		if (result.drawCommandType == DrawFuncData::VERT_TYPE::MULTI_MESHED)
-		{
-			bool debug = false;
-		}
 
 		//ExecuteIndirectの発行
 		if (callData->drawCommandType == DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX ||
@@ -208,6 +206,8 @@ void DrawingByRasterize::GeneratePipeline()
 			*m_drawCallArray[index] = result;
 			++index;
 		}
+		//一つ作ったらタスク完了を知らせる
+		LoadingBar::Instance()->IncreNowNum(1);
 	}
 
 	m_drawCallStackDataArray.clear();

@@ -102,6 +102,9 @@
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
+    <ClCompile Include="Game\Scene\TitleScene.cpp" />
+    <ClCompile Include="KazLibrary\Scene\LoadScene.cpp" />
+    <ClCompile Include="KazLibrary\Singlton\LoadingBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -222,6 +225,9 @@
     <ClInclude Include="Game\MapLoader\MapLoader.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Collision\MeshCollision.h" />
+    <ClInclude Include="Game\Scene\TitleScene.h" />
+    <ClInclude Include="KazLibrary\Scene\LoadScene.h" />
+    <ClInclude Include="KazLibrary\Singlton\LoadingBar.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
