@@ -18,7 +18,7 @@ class UI2DElement
 public:
 	UI2DElement(DrawingByRasterize& arg_rasterize, const char *f_filePath);
 	void Init(DrawingByRasterize& arg_rasterize, std::string f_filePath);
-	void Update(KazMath::Vec2<float> f_pos);
+	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 
 
@@ -42,6 +42,7 @@ class WeponUIManager
 	//選択中の武器以外を消すまでの時間
 	const int c_ShowTime = 60;
 	int m_showUITime;
+	float easeTimer = 0.0f;
 public:
 	enum WeponNumber
 	{
@@ -85,6 +86,7 @@ class GadgetUIManager
 	//選択中の武器以外を消すまでの時間
 	const int c_ShowTime = 60;
 	int m_showUITime;
+	float easeTimer = 0.0f;
 public:
 	enum GadgetNumber
 	{

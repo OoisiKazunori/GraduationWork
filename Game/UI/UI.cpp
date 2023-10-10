@@ -1,5 +1,6 @@
 #include "UI.h"
 #include "../KazLibrary/Input/KeyBoradInputManager.h"
+#include "../KazLibrary/Easing/easing.h"
 
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
 	m_2DSprite(arg_rasterize, f_filePath, true)
@@ -13,11 +14,15 @@ void UI2DElement::Init(DrawingByRasterize& arg_rasterize, std::string f_filePath
 
 }
 
-void UI2DElement::Update(KazMath::Vec2<float> f_pos)
+void UI2DElement::Update()
 {
-	m_easePosEnd = f_pos;
-	m_easePosStart = m_nowPos;
-	m_nowPos = f_pos;
+	m_easePosTimer += 0.1f;
+	if (m_easePosTimer >= 1.0f)
+	{
+		m_easePosTimer = 1.0f;
+	}
+	auto sub = m_easePosEnd - m_easePosStart;
+	m_nowPos = m_easePosStart + (sub * EasingMaker(EasingType::In, EaseInType::Quad, m_easePosTimer));
 }
 
 void UI2DElement::Draw(DrawingByRasterize& arg_rasterize)
@@ -65,15 +70,15 @@ void WeponUIManager::Init()
 			int sub = m_nowSelectWeponNumber - hoge;
 			if ((*itr).first == WeponNumber::e_NonWepon)
 			{
-				m_nonWepon.Update({ xPos - (xOffset * sub), yPos });
+				m_nonWepon.EasePosInit({ xPos - (xOffset * sub), yPos });
 			}
 			else if ((*itr).first == WeponNumber::e_Knife)
 			{
-				m_knife.Update({ xPos - (xOffset * sub), yPos });
+				m_knife.EasePosInit({ xPos - (xOffset * sub), yPos });
 			}
 			else if ((*itr).first == WeponNumber::e_Hundgun)
 			{
-				m_hundgun.Update({ xPos - (xOffset * sub), yPos });
+				m_hundgun.EasePosInit({ xPos - (xOffset * sub), yPos });
 			}
 			hoge++;
 		}
@@ -83,15 +88,15 @@ void WeponUIManager::Init()
 			int sub = m_nowSelectWeponNumber - hoge;
 			if ((*itr).first == WeponNumber::e_NonWepon)
 			{
-				m_nonWepon.Update({ xPos , yPos + (yOffset * sub) });
+				m_nonWepon.EasePosInit({ xPos , yPos + (yOffset * sub) });
 			}
 			else if ((*itr).first == WeponNumber::e_Knife)
 			{
-				m_knife.Update({ xPos , yPos + (yOffset * sub) });
+				m_knife.EasePosInit({ xPos , yPos + (yOffset * sub) });
 			}
 			else if ((*itr).first == WeponNumber::e_Hundgun)
 			{
-				m_hundgun.Update({ xPos , yPos + (yOffset * sub) });
+				m_hundgun.EasePosInit({ xPos , yPos + (yOffset * sub) });
 			}
 			hoge++;
 		}
@@ -108,21 +113,23 @@ void WeponUIManager::Update()
 	if (KeyBoradInputManager::Instance()->InputState(DIK_TAB))
 	{
 		m_showUITime = c_ShowTime;
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E))
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber < m_haveWepons.size() - 1)
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber + 1;
 				isDirty = true;
 			}
+			easeTimer = 0.0f;
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_Q))
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_Q) && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber > 0)
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber - 1;
 				isDirty = true;
 			}
+			easeTimer = 0.0f;
 		}
 	}
 	if (isDirty)
@@ -137,15 +144,15 @@ void WeponUIManager::Update()
 				int sub = m_nowSelectWeponNumber - hoge;
 				if ((*itr).first == WeponNumber::e_NonWepon)
 				{
-					m_nonWepon.Update({ xPos - (xOffset * sub), yPos });
+					m_nonWepon.EasePosInit({ xPos - (xOffset * sub), yPos });
 				}
 				else if ((*itr).first == WeponNumber::e_Knife)
 				{
-					m_knife.Update({ xPos - (xOffset * sub), yPos });
+					m_knife.EasePosInit({ xPos - (xOffset * sub), yPos });
 				}
 				else if ((*itr).first == WeponNumber::e_Hundgun)
 				{
-					m_hundgun.Update({ xPos - (xOffset * sub), yPos });
+					m_hundgun.EasePosInit({ xPos - (xOffset * sub), yPos });
 				}
 				hoge++;
 			}
@@ -155,15 +162,15 @@ void WeponUIManager::Update()
 				int sub = m_nowSelectWeponNumber - hoge;
 				if ((*itr).first == WeponNumber::e_NonWepon)
 				{
-					m_nonWepon.Update({ xPos , yPos + (yOffset * sub) });
+					m_nonWepon.EasePosInit({ xPos , yPos + (yOffset * sub) });
 				}
 				else if ((*itr).first == WeponNumber::e_Knife)
 				{
-					m_knife.Update({ xPos , yPos + (yOffset * sub) });
+					m_knife.EasePosInit({ xPos , yPos + (yOffset * sub) });
 				}
 				else if ((*itr).first == WeponNumber::e_Hundgun)
 				{
-					m_hundgun.Update({ xPos , yPos + (yOffset * sub) });
+					m_hundgun.EasePosInit({ xPos , yPos + (yOffset * sub) });
 				}
 				hoge++;
 			}
@@ -171,6 +178,22 @@ void WeponUIManager::Update()
 		}
 	}
 
+	for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
+	{
+		if ((*itr).first == WeponNumber::e_NonWepon)
+		{
+			m_nonWepon.Update();
+		}
+		else if ((*itr).first == WeponNumber::e_Knife)
+		{
+			m_knife.Update();
+		}
+		else if ((*itr).first == WeponNumber::e_Hundgun)
+		{
+			m_hundgun.Update();
+		}
+	}
+	easeTimer += 0.1f;
 }
 
 void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
@@ -246,11 +269,11 @@ void GadgetUIManager::Init()
 			int sub = m_nowSelectGadgetNumber - hoge;
 			if ((*itr).first == GadgetNumber::e_NonGadget)
 			{
-				m_nonGadget.Update({ xPos + (xOffset * sub), yPos });
+				m_nonGadget.EasePosInit({ xPos + (xOffset * sub), yPos });
 			}
 			else if ((*itr).first == GadgetNumber::e_Sonar)
 			{
-				m_sonar.Update({ xPos + (xOffset * sub), yPos });
+				m_sonar.EasePosInit({ xPos + (xOffset * sub), yPos });
 			}
 			hoge++;
 		}
@@ -260,11 +283,11 @@ void GadgetUIManager::Init()
 			int sub = m_nowSelectGadgetNumber - hoge;
 			if ((*itr).first == GadgetNumber::e_NonGadget)
 			{
-				m_nonGadget.Update({ xPos , yPos + (yOffset * sub) });
+				m_nonGadget.EasePosInit({ xPos , yPos + (yOffset * sub) });
 			}
 			else if ((*itr).first == GadgetNumber::e_Sonar)
 			{
-				m_sonar.Update({ xPos , yPos + (yOffset * sub) });
+				m_sonar.EasePosInit({ xPos , yPos + (yOffset * sub) });
 			}
 			hoge++;
 		}
@@ -281,21 +304,23 @@ void GadgetUIManager::Update()
 	if (KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
 	{
 		m_showUITime = c_ShowTime;
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E))
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
 		{
 			if (m_nowSelectGadgetNumber < m_haveGadgets.size() - 1)
 			{
 				m_nowSelectGadgetNumber = m_nowSelectGadgetNumber + 1;
 				isDirty = true;
 			}
+			easeTimer = 0.0f;
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_Q))
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_Q) && easeTimer > 0.6f)
 		{
 			if (m_nowSelectGadgetNumber > 0)
 			{
 				m_nowSelectGadgetNumber = m_nowSelectGadgetNumber - 1;
 				isDirty = true;
 			}
+			easeTimer = 0.0f;
 		}
 	}
 	if (isDirty)
@@ -310,11 +335,11 @@ void GadgetUIManager::Update()
 				int sub = m_nowSelectGadgetNumber - hoge;
 				if ((*itr).first == GadgetNumber::e_NonGadget)
 				{
-					m_nonGadget.Update({ xPos + (xOffset * sub), yPos });
+					m_nonGadget.EasePosInit({ xPos + (xOffset * sub), yPos });
 				}
 				else if ((*itr).first == GadgetNumber::e_Sonar)
 				{
-					m_sonar.Update({ xPos + (xOffset * sub), yPos });
+					m_sonar.EasePosInit({ xPos + (xOffset * sub), yPos });
 				}
 				hoge++;
 			}
@@ -324,18 +349,29 @@ void GadgetUIManager::Update()
 				int sub = m_nowSelectGadgetNumber - hoge;
 				if ((*itr).first == GadgetNumber::e_NonGadget)
 				{
-					m_nonGadget.Update({ xPos , yPos + (yOffset * sub) });
+					m_nonGadget.EasePosInit({ xPos , yPos + (yOffset * sub) });
 				}
 				else if ((*itr).first == GadgetNumber::e_Sonar)
 				{
-					m_sonar.Update({ xPos , yPos + (yOffset * sub) });
+					m_sonar.EasePosInit({ xPos , yPos + (yOffset * sub) });
 				}
 				hoge++;
 			}
 
 		}
 	}
-
+	for (auto itr = m_haveGadgets.begin(); itr != m_haveGadgets.end(); ++itr)
+	{
+		if ((*itr).first == GadgetNumber::e_NonGadget)
+		{
+			m_nonGadget.Update();
+		}
+		else if ((*itr).first == GadgetNumber::e_Sonar)
+		{
+			m_sonar.Update();
+		}
+	}
+	easeTimer += 0.1f;
 }
 
 void GadgetUIManager::Draw(DrawingByRasterize& arg_rasterize)
