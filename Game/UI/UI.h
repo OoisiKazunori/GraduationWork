@@ -27,6 +27,16 @@ public:
 
 class WeponUIManager
 {
+public:
+	enum WeponNumber
+	{
+		e_NonWepon,
+		e_Knife,
+		e_Hundgun,
+		e_Rifle,
+		e_WeponMax,
+	};
+private:
 	std::list<UI2DElement> m_UIs;
 	UI2DElement m_nonWepon;
 	UI2DElement m_knife;
@@ -43,15 +53,8 @@ class WeponUIManager
 	const int c_ShowTime = 60;
 	int m_showUITime;
 	float easeTimer = 0.0f;
+	std::list<std::pair<WeponNumber, int>> m_haveWepons;
 public:
-	enum WeponNumber
-	{
-		e_NonWepon,
-		e_Knife,
-		e_Hundgun,
-		e_Rifle,
-		e_WeponMax,
-	};
 
 	WeponUIManager(DrawingByRasterize& arg_rasterize);
 	void Init();
@@ -61,8 +64,8 @@ public:
 	
 	//こっちがプレイヤーに渡す方
 	WeponNumber m_nowWepon;
-
-	std::list<std::pair<WeponNumber, int>> m_haveWepons;
+	//好きなタイミングで武器追加
+	void AddWepon(WeponNumber f_wepon);
 
 	//UIのサイズ
 	static KazMath::Vec2<float> GetUITextureSize(){return { c_UITexX , c_UITexY }; }
@@ -72,6 +75,14 @@ public:
 
 class GadgetUIManager
 {
+public:
+	enum GadgetNumber
+	{
+		e_NonGadget,
+		e_Sonar,
+		e_GadgetMax,
+	};
+private:
 	std::list<UI2DElement> m_UIs;
 	UI2DElement m_nonGadget;
 	UI2DElement m_sonar;
@@ -87,13 +98,9 @@ class GadgetUIManager
 	const int c_ShowTime = 60;
 	int m_showUITime;
 	float easeTimer = 0.0f;
+	std::list<std::pair<GadgetNumber, int>> m_haveGadgets;
+
 public:
-	enum GadgetNumber
-	{
-		e_NonGadget,
-		e_Sonar,
-		e_GadgetMax,
-	};
 
 	GadgetUIManager(DrawingByRasterize& arg_rasterize);
 	void Init();
@@ -103,8 +110,8 @@ public:
 
 	//こっちがプレイヤーに渡す方
 	GadgetNumber m_nowGadget;
-
-	std::list<std::pair<GadgetNumber, int>> m_haveGadgets;
+	//好きなタイミングで武器追加
+	void AddGadget(GadgetNumber f_gadget);
 
 	//UIのサイズ
 	static KazMath::Vec2<float> GetUITextureSize() { return { c_UITexX , c_UITexY }; }

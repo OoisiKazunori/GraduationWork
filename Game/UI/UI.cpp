@@ -45,10 +45,10 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_knife(arg_rasterize, "Resource/UITexture/UI_Knife.png"),
 	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png")
 {
-	m_nowWepon = e_Knife;
+	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
 	m_haveWepons.push_back({ WeponNumber::e_Knife, 1 });
-	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	//m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
 }
@@ -132,8 +132,13 @@ void WeponUIManager::Update()
 			easeTimer = 0.0f;
 		}
 	}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F8))
+	{
+		AddWepon(WeponNumber::e_Hundgun);
+	}
 	if (isDirty)
 	{
+		m_nowWepon = (WeponNumber)m_nowSelectWeponNumber;
 		int hoge = 0;
 		std::list<UI2DElement> have_lists;
 		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
@@ -241,6 +246,18 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 	}
 }
 
+void WeponUIManager::AddWepon(WeponNumber f_wepon)
+{
+	for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
+	{
+		if ((*itr).first == f_wepon)
+		{
+			return;
+		}
+	}
+	m_haveWepons.push_back({ f_wepon, (int)m_haveWepons.size() - 1});
+}
+
 GadgetUIManager::GadgetUIManager(DrawingByRasterize& arg_rasterize) :
 	m_nonGadget(arg_rasterize, "Resource/UITexture/UI_hand.png"),
 	m_sonar(arg_rasterize, "Resource/UITexture/UI_sonar.png")
@@ -325,6 +342,7 @@ void GadgetUIManager::Update()
 	}
 	if (isDirty)
 	{
+		m_nowGadget = (GadgetNumber)m_nowSelectGadgetNumber;
 		int hoge = 0;
 		std::list<UI2DElement> have_lists;
 		for (auto itr = m_haveGadgets.begin(); itr != m_haveGadgets.end(); ++itr)
@@ -409,4 +427,9 @@ void GadgetUIManager::Draw(DrawingByRasterize& arg_rasterize)
 			}
 		}
 	}
+}
+
+void GadgetUIManager::AddGadget(GadgetNumber f_gadget)
+{
+	m_haveGadgets.push_back({ f_gadget, (int)m_haveGadgets.size() -1 });
 }

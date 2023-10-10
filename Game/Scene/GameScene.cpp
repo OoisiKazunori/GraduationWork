@@ -93,6 +93,9 @@ CameraMgr::Instance()->Camera({}, {}, {});
 //デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
+	m_uiManager.Update();
+	m_gadgetMaanager.Update();
+
 	m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr);
 	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 	m_bulletMgr->Update(m_stageMeshCollision);
@@ -100,8 +103,7 @@ CameraMgr::Instance()->Camera({}, {}, {});
 	//ステージの描画
 	m_stageManager.Update(arg_rasterize);
 
-	m_uiManager.Update();
-	m_gadgetMaanager.Update();
+	
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
