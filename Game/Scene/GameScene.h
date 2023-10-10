@@ -80,4 +80,5 @@ private:
 	StageManager m_stageManager;
 	
 	WeponUIManager m_uiManager;
+	GadgetUIManager m_gadgetMaanager;
 };

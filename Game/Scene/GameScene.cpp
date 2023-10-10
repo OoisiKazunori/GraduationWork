@@ -22,7 +22,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_line(arg_rasterize),
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
-	m_uiManager(arg_rasterize)
+	m_uiManager(arg_rasterize),
+	m_gadgetMaanager(arg_rasterize)
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -66,6 +67,8 @@ void GameScene::Init()
 {
 	m_sceneNum = SCENE_NONE;
 	m_bulletMgr->Init();
+	m_uiManager.Init();
+	m_gadgetMaanager.Init();
 }
 
 void GameScene::PreInit()
@@ -96,6 +99,9 @@ CameraMgr::Instance()->Camera({}, {}, {});
 
 	//ステージの描画
 	m_stageManager.Update(arg_rasterize);
+
+	m_uiManager.Update();
+	m_gadgetMaanager.Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -115,6 +121,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//m_weponUIManager.Draw(arg_rasterize);
 	m_uiManager.Draw(arg_rasterize);
+	m_gadgetMaanager.Draw(arg_rasterize);
 }
 
 int GameScene::SceneChange()
