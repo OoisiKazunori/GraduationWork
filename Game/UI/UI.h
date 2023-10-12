@@ -128,14 +128,16 @@ class HPUI
 {
 	UI2DElement m_HPFrame;
 	UI2DElement m_HPBar;
+	UI2DElement m_HPBarRed;
 	/*UI2DElement m_StaminaFrame;
 	UI2DElement m_StaminaBar;*/
-
-	static const int c_UITexX = 243;
+	static const int c_texOffset = 30;
+	static const int c_UITexX = 342;
 	static const int c_UITexY = 14;
-	static const int c_BaseUIX = c_UITexX / 2 + 30;
-	static const int c_BaseUIY = c_UITexY / 2 + 30;
+	static const int c_BaseUIX = c_UITexX / 2 + c_texOffset;
+	static const int c_BaseUIY = c_UITexY / 2 + c_texOffset;
 	int m_hp = 100;
+	int m_redHP = 0;
 	const int MaxHP = 100;
 public:
 	HPUI(DrawingByRasterize& arg_rasterize);

@@ -348,11 +348,12 @@ UI2DElement& GadgetUIManager::GetUI(GadgetNumber f_gadget)
 
 HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
 	m_HPFrame(arg_rasterize, "Resource/UITexture/UI_HPBarBase.png"),
-	m_HPBar(arg_rasterize, "Resource/UITexture/UI_HPBar.png")/*,
+	m_HPBar(arg_rasterize, "Resource/UITexture/UI_HPBar.png"),
+	m_HPBarRed(arg_rasterize, "Resource/UITexture/UI_HPBar_Red.png")/*,
 	m_StaminaFrame(arg_rasterize, "Resource/UITexture/UI_hand.png"),
 	m_StaminaBar(arg_rasterize, "Resource/UITexture/UI_hand.png")*/
 {
-
+	m_hp = 100;
 }
 
 void HPUI::Init()
@@ -363,26 +364,52 @@ void HPUI::Init()
 
 void HPUI::Update(const int f_playerHP)
 {
-	if (KeyBoradInputManager::Instance()->InputState(DIK_P))
+	static int redWaitTime = 0;
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		if (m_hp > 0)
 		{
-			m_hp -= 1;
+			m_hp -= 10;
+			if (m_hp > 0)
+			{
+				m_redHP = 5;
+			}
+			else
+			{
+				m_redHP = 0;
+			}
+			redWaitTime = 10;
+		}
+	}
+	redWaitTime--;
+	if (redWaitTime < 0)
+	{
+		if (m_redHP > 0)
+		{
+			m_redHP--;
+			redWaitTime = 10;
 		}
 	}
 }
 
 void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
-	m_HPFrame.Draw(arg_rasterize);
+	
 
 
 	float half = c_UITexX / 2.0f;
 	half = half / MaxHP * m_hp;
-	half = half + 30.0f;
-
 	m_HPBar.SetScale({ (float)m_hp / (float)MaxHP, 1.0f });
-	m_HPBar.SetPosition({ half , c_BaseUIY });
+	m_HPBar.SetPosition({ half + (float)c_texOffset, c_BaseUIY });
 	m_HPBar.Draw(arg_rasterize);
+
+
+	float redXSize = (float)m_redHP / (float)MaxHP;
+	float redPos = half * 2.0f - (c_UITexX * (float)m_redHP / (float)MaxHP / 2.0f);
+	m_HPBarRed.SetScale({ redXSize, 1.0f });
+	m_HPBarRed.SetPosition({ redPos + (float)c_texOffset, c_BaseUIY });
+	m_HPBarRed.Draw(arg_rasterize);
+	
+	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HPFrame.Draw(arg_rasterize);
 }
