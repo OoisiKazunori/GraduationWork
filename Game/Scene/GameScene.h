@@ -81,4 +81,5 @@ private:
 	
 	WeponUIManager m_uiManager;
 	GadgetUIManager m_gadgetMaanager;
+	HPUI m_HPBarManager;
 };

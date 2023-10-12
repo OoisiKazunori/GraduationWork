@@ -23,7 +23,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_line(arg_rasterize),
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
-	m_gadgetMaanager(arg_rasterize)
+	m_gadgetMaanager(arg_rasterize),
+	m_HPBarManager(arg_rasterize)
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -95,6 +96,7 @@ CameraMgr::Instance()->Camera({}, {}, {});
 
 	m_uiManager.Update();
 	m_gadgetMaanager.Update();
+	m_HPBarManager.Update(0);
 
 	m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr);
 	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
@@ -124,6 +126,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_weponUIManager.Draw(arg_rasterize);
 	m_uiManager.Draw(arg_rasterize);
 	m_gadgetMaanager.Draw(arg_rasterize);
+	m_HPBarManager.Draw(arg_rasterize);
 }
 
 int GameScene::SceneChange()

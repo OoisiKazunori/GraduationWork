@@ -32,6 +32,16 @@ void UI2DElement::Draw(DrawingByRasterize& arg_rasterize)
 	m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
 }
 
+void UI2DElement::SetScale(KazMath::Vec2<float> f_nowScale)
+{
+	m_nowScale = f_nowScale;
+}
+
+void UI2DElement::SetPosition(KazMath::Vec2<float> f_nowPos)
+{
+	m_nowPos = f_nowPos;
+}
+
 void UI2DElement::EasePosInit(KazMath::Vec2<float> f_easeEnd)
 {
 	m_easePosTimer = 0.0f;
@@ -55,60 +65,18 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 
 void WeponUIManager::Init()
 {
-	const float yOffset = (float)c_UITexY + 10.0f;
-	const float xOffset = (float)c_UITexX + 10.0f;
-	float yPos = c_BaseUIY;
-	float xPos = c_BaseUIX;
-
-	int hoge = 0;
-	std::list<UI2DElement> have_lists;
-	for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
-	{
-		//‰¡ˆÚ“®
-		if (hoge < m_nowSelectWeponNumber)
-		{
-			int sub = m_nowSelectWeponNumber - hoge;
-			if ((*itr).first == WeponNumber::e_NonWepon)
-			{
-				m_nonWepon.EasePosInit({ xPos - (xOffset * sub), yPos });
-			}
-			else if ((*itr).first == WeponNumber::e_Knife)
-			{
-				m_knife.EasePosInit({ xPos - (xOffset * sub), yPos });
-			}
-			else if ((*itr).first == WeponNumber::e_Hundgun)
-			{
-				m_hundgun.EasePosInit({ xPos - (xOffset * sub), yPos });
-			}
-			hoge++;
-		}
-		//cˆÚ“®
-		else
-		{
-			int sub = m_nowSelectWeponNumber - hoge;
-			if ((*itr).first == WeponNumber::e_NonWepon)
-			{
-				m_nonWepon.EasePosInit({ xPos , yPos + (yOffset * sub) });
-			}
-			else if ((*itr).first == WeponNumber::e_Knife)
-			{
-				m_knife.EasePosInit({ xPos , yPos + (yOffset * sub) });
-			}
-			else if ((*itr).first == WeponNumber::e_Hundgun)
-			{
-				m_hundgun.EasePosInit({ xPos , yPos + (yOffset * sub) });
-			}
-			hoge++;
-		}
-	}
+	m_nowWepon = e_NonWepon;
+	m_haveWepons.clear();
+	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
+	m_haveWepons.push_back({ WeponNumber::e_Knife, 1 });
+	//m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_nowSelectWeponNumber = 0;
+	m_showUITime = 0;
+	EaseInit();
 }
 
 void WeponUIManager::Update()
 {
-	const float yOffset = (float)c_UITexY + 10.0f;
-	const float xOffset = (float)c_UITexX + 10.0f;
-	float yPos = c_BaseUIY;
-	float xPos = c_BaseUIX;
 	bool isDirty = false;
 	if (KeyBoradInputManager::Instance()->InputState(DIK_TAB))
 	{
@@ -132,73 +100,53 @@ void WeponUIManager::Update()
 			easeTimer = 0.0f;
 		}
 	}
+	//‚Ä‚·‚Æ
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F8))
 	{
 		AddWepon(WeponNumber::e_Hundgun);
+		isDirty = true;
 	}
 	if (isDirty)
 	{
-		m_nowWepon = (WeponNumber)m_nowSelectWeponNumber;
-		int hoge = 0;
-		std::list<UI2DElement> have_lists;
-		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
-		{
-			//‰¡ˆÚ“®
-			if (hoge < m_nowSelectWeponNumber)
-			{
-				int sub = m_nowSelectWeponNumber - hoge;
-				if ((*itr).first == WeponNumber::e_NonWepon)
-				{
-					m_nonWepon.EasePosInit({ xPos - (xOffset * sub), yPos });
-				}
-				else if ((*itr).first == WeponNumber::e_Knife)
-				{
-					m_knife.EasePosInit({ xPos - (xOffset * sub), yPos });
-				}
-				else if ((*itr).first == WeponNumber::e_Hundgun)
-				{
-					m_hundgun.EasePosInit({ xPos - (xOffset * sub), yPos });
-				}
-				hoge++;
-			}
-			//cˆÚ“®
-			else
-			{
-				int sub = m_nowSelectWeponNumber - hoge;
-				if ((*itr).first == WeponNumber::e_NonWepon)
-				{
-					m_nonWepon.EasePosInit({ xPos , yPos + (yOffset * sub) });
-				}
-				else if ((*itr).first == WeponNumber::e_Knife)
-				{
-					m_knife.EasePosInit({ xPos , yPos + (yOffset * sub) });
-				}
-				else if ((*itr).first == WeponNumber::e_Hundgun)
-				{
-					m_hundgun.EasePosInit({ xPos , yPos + (yOffset * sub) });
-				}
-				hoge++;
-			}
-
-		}
+		EaseInit();
 	}
 
 	for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 	{
-		if ((*itr).first == WeponNumber::e_NonWepon)
-		{
-			m_nonWepon.Update();
-		}
-		else if ((*itr).first == WeponNumber::e_Knife)
-		{
-			m_knife.Update();
-		}
-		else if ((*itr).first == WeponNumber::e_Hundgun)
-		{
-			m_hundgun.Update();
-		}
+		GetUI((*itr).first).Update();
 	}
 	easeTimer += 0.1f;
+}
+
+void WeponUIManager::EaseInit()
+{
+	const float yOffset = (float)c_UITexY + 10.0f;
+	const float xOffset = (float)c_UITexX + 10.0f;
+	float yPos = c_BaseUIY;
+	float xPos = c_BaseUIX;
+	int hoge = 0;
+	for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
+	{
+		//‰¡ˆÚ“®
+		if (hoge < m_nowSelectWeponNumber)
+		{
+			int sub = m_nowSelectWeponNumber - hoge;
+			GetUI((*itr).first).EasePosInit({ xPos - (xOffset * sub), yPos });
+			hoge++;
+		}
+		//cˆÚ“®
+		else
+		{
+			int sub = m_nowSelectWeponNumber - hoge;
+			if (sub == 0)
+			{
+				m_nowWepon = (*itr).first;
+			}
+			GetUI((*itr).first).EasePosInit({ xPos , yPos + (yOffset * sub) });
+			hoge++;
+		}
+
+	}
 }
 
 void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
@@ -212,36 +160,13 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		{
 			itr++;
 		}
-
-		if ((*itr).first == WeponNumber::e_NonWepon)
-		{
-			m_nonWepon.Draw(arg_rasterize);
-		}
-		else if ((*itr).first == WeponNumber::e_Knife)
-		{
-			m_knife.Draw(arg_rasterize);
-		}
-		else if ((*itr).first == WeponNumber::e_Hundgun)
-		{
-			m_hundgun.Draw(arg_rasterize);
-		}
+		GetUI((*itr).first).Draw(arg_rasterize);
 	}
 	else
 	{
 		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 		{
-			if ((*itr).first == WeponNumber::e_NonWepon)
-			{
-				m_nonWepon.Draw(arg_rasterize);
-			}
-			else if ((*itr).first == WeponNumber::e_Knife)
-			{
-				m_knife.Draw(arg_rasterize);
-			}
-			else if ((*itr).first == WeponNumber::e_Hundgun)
-			{
-				m_hundgun.Draw(arg_rasterize);
-			}
+			GetUI((*itr).first).Draw(arg_rasterize);
 		}
 	}
 }
@@ -252,10 +177,38 @@ void WeponUIManager::AddWepon(WeponNumber f_wepon)
 	{
 		if ((*itr).first == f_wepon)
 		{
+			//Šù‚ÉŽ‚Á‚Ä‚¢‚é•Ší‚ÍÄ“x’Ç‰Á‚µ‚È‚¢
 			return;
 		}
 	}
-	m_haveWepons.push_back({ f_wepon, (int)m_haveWepons.size() - 1});
+	m_haveWepons.push_back({ f_wepon, (int)m_haveWepons.size() - 1 });
+
+	GetUI(f_wepon).SetPosition({ c_BaseUIX , c_BaseUIY });
+}
+
+UI2DElement& WeponUIManager::GetUI(WeponNumber f_wepon)
+{
+	if (f_wepon == WeponNumber::e_NonWepon)
+	{
+		return m_nonWepon;
+	}
+	else if (f_wepon == WeponNumber::e_Knife)
+	{
+		return m_knife;
+	}
+	else if (f_wepon == WeponNumber::e_Hundgun)
+	{
+		return m_hundgun;
+	}
+	/*else if (f_wepon == WeponNumber::e_Rifle)
+	{
+		return;
+	}
+	else
+	{
+		return;
+	}*/
+	return m_nonWepon;
 }
 
 GadgetUIManager::GadgetUIManager(DrawingByRasterize& arg_rasterize) :
@@ -271,52 +224,17 @@ GadgetUIManager::GadgetUIManager(DrawingByRasterize& arg_rasterize) :
 
 void GadgetUIManager::Init()
 {
-	const float yOffset = (float)c_UITexY + 10.0f;
-	const float xOffset = (float)c_UITexX + 10.0f;
-	float yPos = c_BaseUIY;
-	float xPos = c_BaseUIX;
-
-	int hoge = 0;
-	std::list<UI2DElement> have_lists;
-	for (auto itr = m_haveGadgets.begin(); itr != m_haveGadgets.end(); ++itr)
-	{
-		//‰¡ˆÚ“®
-		if (hoge < m_nowSelectGadgetNumber)
-		{
-			int sub = m_nowSelectGadgetNumber - hoge;
-			if ((*itr).first == GadgetNumber::e_NonGadget)
-			{
-				m_nonGadget.EasePosInit({ xPos + (xOffset * sub), yPos });
-			}
-			else if ((*itr).first == GadgetNumber::e_Sonar)
-			{
-				m_sonar.EasePosInit({ xPos + (xOffset * sub), yPos });
-			}
-			hoge++;
-		}
-		//cˆÚ“®
-		else
-		{
-			int sub = m_nowSelectGadgetNumber - hoge;
-			if ((*itr).first == GadgetNumber::e_NonGadget)
-			{
-				m_nonGadget.EasePosInit({ xPos , yPos + (yOffset * sub) });
-			}
-			else if ((*itr).first == GadgetNumber::e_Sonar)
-			{
-				m_sonar.EasePosInit({ xPos , yPos + (yOffset * sub) });
-			}
-			hoge++;
-		}
-	}
+	m_nowGadget = e_NonGadget;
+	m_haveGadgets.clear();
+	m_haveGadgets.push_back({ GadgetNumber::e_NonGadget, 0 });
+	m_haveGadgets.push_back({ GadgetNumber::e_Sonar, 1 });
+	m_nowSelectGadgetNumber = 0;
+	m_showUITime = 0;
+	EaseInit();
 }
 
 void GadgetUIManager::Update()
 {
-	const float yOffset = (float)c_UITexY + 10.0f;
-	const float xOffset = (float)c_UITexX + 10.0f;
-	float yPos = c_BaseUIY;
-	float xPos = c_BaseUIX;
 	bool isDirty = false;
 	if (KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
 	{
@@ -342,52 +260,11 @@ void GadgetUIManager::Update()
 	}
 	if (isDirty)
 	{
-		m_nowGadget = (GadgetNumber)m_nowSelectGadgetNumber;
-		int hoge = 0;
-		std::list<UI2DElement> have_lists;
-		for (auto itr = m_haveGadgets.begin(); itr != m_haveGadgets.end(); ++itr)
-		{
-			//‰¡ˆÚ“®
-			if (hoge < m_nowSelectGadgetNumber)
-			{
-				int sub = m_nowSelectGadgetNumber - hoge;
-				if ((*itr).first == GadgetNumber::e_NonGadget)
-				{
-					m_nonGadget.EasePosInit({ xPos + (xOffset * sub), yPos });
-				}
-				else if ((*itr).first == GadgetNumber::e_Sonar)
-				{
-					m_sonar.EasePosInit({ xPos + (xOffset * sub), yPos });
-				}
-				hoge++;
-			}
-			//cˆÚ“®
-			else
-			{
-				int sub = m_nowSelectGadgetNumber - hoge;
-				if ((*itr).first == GadgetNumber::e_NonGadget)
-				{
-					m_nonGadget.EasePosInit({ xPos , yPos + (yOffset * sub) });
-				}
-				else if ((*itr).first == GadgetNumber::e_Sonar)
-				{
-					m_sonar.EasePosInit({ xPos , yPos + (yOffset * sub) });
-				}
-				hoge++;
-			}
-
-		}
+		EaseInit();
 	}
 	for (auto itr = m_haveGadgets.begin(); itr != m_haveGadgets.end(); ++itr)
 	{
-		if ((*itr).first == GadgetNumber::e_NonGadget)
-		{
-			m_nonGadget.Update();
-		}
-		else if ((*itr).first == GadgetNumber::e_Sonar)
-		{
-			m_sonar.Update();
-		}
+		GetUI((*itr).first).Update();
 	}
 	easeTimer += 0.1f;
 }
@@ -403,33 +280,109 @@ void GadgetUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		{
 			itr++;
 		}
-
-		if ((*itr).first == GadgetNumber::e_NonGadget)
-		{
-			m_nonGadget.Draw(arg_rasterize);
-		}
-		else if ((*itr).first == GadgetNumber::e_Sonar)
-		{
-			m_sonar.Draw(arg_rasterize);
-		}
+		GetUI((*itr).first).Draw(arg_rasterize);
 	}
 	else
 	{
 		for (auto itr = m_haveGadgets.begin(); itr != m_haveGadgets.end(); ++itr)
 		{
-			if ((*itr).first == GadgetNumber::e_NonGadget)
-			{
-				m_nonGadget.Draw(arg_rasterize);
-			}
-			else if ((*itr).first == GadgetNumber::e_Sonar)
-			{
-				m_sonar.Draw(arg_rasterize);
-			}
+			GetUI((*itr).first).Draw(arg_rasterize);
+		}
+	}
+}
+
+void GadgetUIManager::EaseInit()
+{
+	const float yOffset = (float)c_UITexY + 10.0f;
+	const float xOffset = (float)c_UITexX + 10.0f;
+	float yPos = c_BaseUIY;
+	float xPos = c_BaseUIX;
+
+	int hoge = 0;
+	std::list<UI2DElement> have_lists;
+	for (auto itr = m_haveGadgets.begin(); itr != m_haveGadgets.end(); ++itr)
+	{
+		//‰¡ˆÚ“®
+		if (hoge < m_nowSelectGadgetNumber)
+		{
+			int sub = m_nowSelectGadgetNumber - hoge;
+			GetUI((*itr).first).EasePosInit({ xPos + (xOffset * sub), yPos });
+			hoge++;
+		}
+		//cˆÚ“®
+		else
+		{
+			int sub = m_nowSelectGadgetNumber - hoge;
+			GetUI((*itr).first).EasePosInit({ xPos , yPos + (yOffset * sub) });
+			hoge++;
 		}
 	}
 }
 
 void GadgetUIManager::AddGadget(GadgetNumber f_gadget)
 {
-	m_haveGadgets.push_back({ f_gadget, (int)m_haveGadgets.size() -1 });
+	for (auto itr = m_haveGadgets.begin(); itr != m_haveGadgets.end(); ++itr)
+	{
+		if ((*itr).first == f_gadget)
+		{
+			//Šù‚ÉŽ‚Á‚Ä‚¢‚é•Ší‚ÍÄ“x’Ç‰Á‚µ‚È‚¢
+			return;
+		}
+	}
+	m_haveGadgets.push_back({ f_gadget, (int)m_haveGadgets.size() - 1 });
+}
+
+UI2DElement& GadgetUIManager::GetUI(GadgetNumber f_gadget)
+{
+	if (f_gadget == GadgetNumber::e_NonGadget)
+	{
+		return m_nonGadget;
+	}
+	else if (f_gadget == GadgetNumber::e_Sonar)
+	{
+		return m_sonar;
+	}
+
+	return m_nonGadget;
+}
+
+HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
+	m_HPFrame(arg_rasterize, "Resource/UITexture/UI_HPBarBase.png"),
+	m_HPBar(arg_rasterize, "Resource/UITexture/UI_HPBar.png")/*,
+	m_StaminaFrame(arg_rasterize, "Resource/UITexture/UI_hand.png"),
+	m_StaminaBar(arg_rasterize, "Resource/UITexture/UI_hand.png")*/
+{
+
+}
+
+void HPUI::Init()
+{
+
+}
+
+
+void HPUI::Update(const int f_playerHP)
+{
+	if (KeyBoradInputManager::Instance()->InputState(DIK_P))
+	{
+		if (m_hp > 0)
+		{
+			m_hp -= 1;
+		}
+	}
+}
+
+void HPUI::Draw(DrawingByRasterize& arg_rasterize)
+{
+	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HPFrame.Draw(arg_rasterize);
+
+
+	float half = c_UITexX / 2.0f;
+	half = half / MaxHP * m_hp;
+	half = half + 30.0f;
+
+	m_HPBar.SetScale({ (float)m_hp / (float)MaxHP, 1.0f });
+	m_HPBar.SetPosition({ half , c_BaseUIY });
+	m_HPBar.Draw(arg_rasterize);
 }

@@ -4,8 +4,6 @@
 
 class UI2DElement
 {
-	BasicDraw::BasicTextureRender m_2DSprite;
-	
 	KazMath::Vec2<float> m_easePosStart;
 	KazMath::Vec2<float> m_easePosEnd;
 	KazMath::Vec2<float> m_nowPos;
@@ -21,8 +19,10 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 
-
+	void SetPosition(KazMath::Vec2<float> f_nowPos);
 	void EasePosInit(KazMath::Vec2<float> f_easeEnd);
+	void SetScale(KazMath::Vec2<float> f_nowScale);
+	BasicDraw::BasicTextureRender m_2DSprite;
 };
 
 class WeponUIManager
@@ -54,6 +54,9 @@ private:
 	int m_showUITime;
 	float easeTimer = 0.0f;
 	std::list<std::pair<WeponNumber, int>> m_haveWepons;
+
+	UI2DElement &GetUI(WeponNumber f_wepon);
+	void EaseInit();
 public:
 
 	WeponUIManager(DrawingByRasterize& arg_rasterize);
@@ -100,6 +103,8 @@ private:
 	float easeTimer = 0.0f;
 	std::list<std::pair<GadgetNumber, int>> m_haveGadgets;
 
+	UI2DElement& GetUI(GadgetNumber f_gadget);
+	void EaseInit();
 public:
 
 	GadgetUIManager(DrawingByRasterize& arg_rasterize);
@@ -117,4 +122,32 @@ public:
 	static KazMath::Vec2<float> GetUITextureSize() { return { c_UITexX , c_UITexY }; }
 	//
 	static KazMath::Vec2<float> GetUIBasePos() { return { c_BaseUIX , c_BaseUIY }; }
+};
+
+class HPUI
+{
+	UI2DElement m_HPFrame;
+	UI2DElement m_HPBar;
+	/*UI2DElement m_StaminaFrame;
+	UI2DElement m_StaminaBar;*/
+
+	static const int c_UITexX = 243;
+	static const int c_UITexY = 14;
+	static const int c_BaseUIX = c_UITexX / 2 + 30;
+	static const int c_BaseUIY = c_UITexY / 2 + 30;
+	int m_hp = 100;
+	const int MaxHP = 100;
+public:
+	HPUI(DrawingByRasterize& arg_rasterize);
+
+	void Init();
+	void Update(const int f_playerHP);
+	void Draw(DrawingByRasterize& arg_rasterize);
+
+};
+
+class CamouflagePercent
+{
+	UI2DElement m_baseUI;
+
 };
