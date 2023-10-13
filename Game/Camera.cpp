@@ -3,6 +3,7 @@
 #include "Input/ControllerInputManager.h"
 #include "../KazLibrary/Camera/CameraMgr.h"
 #include "../Game/Collision/MeshCollision.h"
+#include "../KazLibrary/Buffer/GBufferMgr.h"
 #include <algorithm>
 
 Camera::Camera()
@@ -75,6 +76,8 @@ void Camera::Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<Mesh
 	m_isOldADS = arg_isADS;
 
 	CameraMgr::Instance()->Camera(m_eye, m_target, { 0,1,0 });
+
+	GBufferMgr::Instance()->SetCameraPos(m_eye.ConvertXMFLOAT3(), CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection(0));
 
 }
 

@@ -146,7 +146,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			sm.Draw();
 		}
 
-		if (sm.endGameFlag)
+		if (sm.endGameFlag || KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
 		{
 			break;
 		}
