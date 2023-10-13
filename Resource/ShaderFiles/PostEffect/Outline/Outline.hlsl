@@ -18,7 +18,7 @@ float4 SamplingPixel(Texture2D<float4> arg_texture, uint2 arg_uv)
     return arg_texture[uint2(clamp(arg_uv.x, 0, 1280), clamp(arg_uv.y, 0, 720))].xyzw;
 }
 
-bool CheckOutline(uint2 arg_uv, float4 arg_baseNormal, float4 arg_baseWorld)
+bool CheckOutline(uint2 arg_uv, float4 arg_baseNormal, float4 arg_baseWorld, inout float3 arg_sampleWorldPos)
 {
     
     //どれくらいワールド座標が離れていたらそこにアウトラインを書き込むか。
@@ -35,15 +35,30 @@ bool CheckOutline(uint2 arg_uv, float4 arg_baseNormal, float4 arg_baseWorld)
     {
         return false;
     }
+    //ワールド情報が書き込まれていなかったらアウト。
+    if (length(sampleWorld.xyz) <= 0.1f)
+    {
+        return false;
+    }
     
-    //アウトラインを書き込むかを計算。
-    bool isOutline = false;
     //法線の違いをチェック
-    isOutline |= dot(sampleNormal.xyz, arg_baseNormal.xyz) < outlineNormalDeadline;
+    bool isCheckNormal = dot(sampleNormal.xyz, arg_baseNormal.xyz) < outlineNormalDeadline;
     //ワールド座標による違いもチェック
-    isOutline |= outlineDistanceDeadline < length(sampleWorld.xyz - arg_baseWorld.xyz);
+    bool isCheckWorld = outlineDistanceDeadline < length(sampleWorld.xyz - arg_baseWorld.xyz);
     
-    return isOutline;
+    if (isCheckNormal || isCheckWorld)
+    {
+        
+        if (0.1f < length(sampleWorld.xyz))
+        {
+            arg_sampleWorldPos = sampleWorld.xyz;
+        }
+        
+        return true;
+        
+    }
+    
+    return false;
     
 }
 
@@ -61,36 +76,41 @@ void main(uint3 DTid : SV_DispatchThreadID)
     float4 baseNormal = SamplingPixel(TargetNormal, DTid.xy);
     float4 baseWorld = SamplingPixel(TargetWorld, DTid.xy);
     
+    //サンプリングしたワールド座標
+    float3 sampleWorldPos = float3(0.0f, 0.0f, 0.0f);
+    
     //右側をチェック
-    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, 0), baseNormal, baseWorld);
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, 0), baseNormal, baseWorld, sampleWorldPos);
     
     //左側をチェック
-    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, 0), baseNormal, baseWorld);
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, 0), baseNormal, baseWorld, sampleWorldPos);
     
     //上側をチェック
-    isOutline |= CheckOutline(DTid.xy + uint2(0, -OUTLINE_THICKNESS), baseNormal, baseWorld);
+    isOutline |= CheckOutline(DTid.xy + uint2(0, -OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
     //下側をチェック
-    isOutline |= CheckOutline(DTid.xy + uint2(0, OUTLINE_THICKNESS), baseNormal, baseWorld);
+    isOutline |= CheckOutline(DTid.xy + uint2(0, OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
     //右下をチェック
-    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, OUTLINE_THICKNESS), baseNormal, baseWorld);
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
     //左上をチェック
-    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld);
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
     //左下をチェック
-    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, OUTLINE_THICKNESS), baseNormal, baseWorld);
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
     //右上をチェック
-    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld);
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
-
     if (isOutline)
     {
         
-        OutputAlbedo[DTid.xy] = m_outlineColor;
-        OutputEmissive[DTid.xy] = m_outlineColor;
+        //サンプリングした位置に応じて色を暗くする。
+        float edgeDistance = 1.0f - clamp(length(sampleWorldPos - m_outlineCenterPos) / m_outlineLength, 0.0f, 0.8f);
+        
+        OutputAlbedo[DTid.xy] = m_outlineColor * edgeDistance;
+        OutputEmissive[DTid.xy] = m_outlineColor * edgeDistance;
         
     }
     else

@@ -30,7 +30,7 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 
 	//アウトラインの色
 	m_outlineData.m_color = KazMath::Vec4<float>(0.84f, 0.93f, 0.95f, 1);
-	m_outlineData.m_outlineLength = 100.0f;
+	m_outlineData.m_outlineLength = 300.0f;
 	m_outlineColorConstBuffer = KazBufferHelper::SetConstBufferData(sizeof(OutlineData));
 	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineData, sizeof(OutlineData));
 
