@@ -68,6 +68,6 @@ void main(uint3 DTid : SV_DispatchThreadID)
     //sampleResult.xyz += InputImg[(texpos + haloVec) * TEXSIZE] * weight;
     sampleResult.xyz += TextureDistorted(texpos + haloVec, direction, TEXSIZE, distortion) * weight;
     
-    OutputImg[DTid.xy] = sampleResult;
+    OutputImg[DTid.xy] = sampleResult * 0.2f;
     
 }
