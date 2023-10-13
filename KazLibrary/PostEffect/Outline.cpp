@@ -3,11 +3,12 @@
 #include "Buffer/UavViewHandleMgr.h"
 #include "../PostEffect/GaussianBlur.h"
 
-PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetTexture)
+PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld, KazBufferHelper::BufferData arg_outlineTargetNormal)
 {
 
 	//アウトラインをかける対象のテクスチャを保存しておく。
-	m_outlineTargetTexture = arg_outlineTargetTexture;
+	m_outlineTargetWorld = arg_outlineTargetWorld;
+	m_outlineTargetNormal = arg_outlineTargetNormal;
 
 	//アウトラインの色
 	m_outputAlbedoTexture = KazBufferHelper::SetUAVTexBuffer(1280, 720, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -37,7 +38,8 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetTextur
 
 		std::vector<KazBufferHelper::BufferData>extraBuffer =
 		{
-			 m_outlineTargetTexture,
+			 m_outlineTargetWorld,
+			 m_outlineTargetNormal,
 			 m_outputAlbedoTexture,
 			 m_outputEmissiveTexture,
 			 m_outlineColorConstBuffer,
@@ -48,8 +50,10 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetTextur
 		extraBuffer[1].rootParamType = GRAPHICS_PRAMTYPE_TEX2;
 		extraBuffer[2].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
 		extraBuffer[2].rootParamType = GRAPHICS_PRAMTYPE_TEX3;
-		extraBuffer[3].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		extraBuffer[3].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		extraBuffer[3].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		extraBuffer[3].rootParamType = GRAPHICS_PRAMTYPE_TEX4;
+		extraBuffer[4].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		extraBuffer[4].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 		m_outlineShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "Outline.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 	}
 
@@ -59,7 +63,6 @@ void PostEffect::Outline::Apply()
 {
 	std::vector<D3D12_RESOURCE_BARRIER> barrier;
 
-	barrier.emplace_back(CD3DX12_RESOURCE_BARRIER::UAV(m_outlineTargetTexture.bufferWrapper->GetBuffer().Get()));
 	barrier.emplace_back(CD3DX12_RESOURCE_BARRIER::UAV(m_outputAlbedoTexture.bufferWrapper->GetBuffer().Get()));
 	barrier.emplace_back(CD3DX12_RESOURCE_BARRIER::UAV(m_outputEmissiveTexture.bufferWrapper->GetBuffer().Get()));
 

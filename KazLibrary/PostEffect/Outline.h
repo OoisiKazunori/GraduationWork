@@ -15,7 +15,8 @@ namespace PostEffect {
 
 		ComputeShader m_outlineShader;		//アウトラインを計算。
 
-		KazBufferHelper::BufferData m_outlineTargetTexture;		//アウトラインをかける対象のテクスチャ
+		KazBufferHelper::BufferData m_outlineTargetWorld;		//アウトラインをかける対象のテクスチャ
+		KazBufferHelper::BufferData m_outlineTargetNormal;		//アウトラインをかける対象のテクスチャ
 		KazBufferHelper::BufferData m_outputAlbedoTexture;		//アウトラインの色テクスチャ
 		KazBufferHelper::BufferData m_outputEmissiveTexture;	//アウトラインのエミッシブのテクスチャ
 
@@ -26,7 +27,7 @@ namespace PostEffect {
 
 		/*===== 関数 =====*/
 
-		Outline(KazBufferHelper::BufferData arg_outlineTargetTexture);
+		Outline(KazBufferHelper::BufferData arg_outlineTargetWorld, KazBufferHelper::BufferData arg_outlineTargetNormal);
 
 		//アウトラインを書き込む
 		void Apply();

@@ -194,13 +194,13 @@ namespace Raytracing {
 			m_outlineComposeShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "ComposeOutline.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 		}
 		{
-			std::vector<KazBufferHelper::BufferData>extraBuffer =
-			{
-				 GBufferMgr::Instance()->m_outlineBuffer,
-			};
-			extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-			extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
-			m_outlineCleanShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "BlackOut.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
+			//std::vector<KazBufferHelper::BufferData>extraBuffer =
+			//{
+			//	 GBufferMgr::Instance()->m_outlineBuffer,
+			//};
+			//extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+			//extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
+			//m_outlineCleanShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "BlackOut.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 		}
 
 	}
@@ -338,10 +338,10 @@ namespace Raytracing {
 		dispatchData.z = static_cast<UINT>(1);
 		m_outlineComposeShader.Compute(dispatchData);
 
-		dispatchData.x = static_cast<UINT>(1280 / 16) + 1;
-		dispatchData.y = static_cast<UINT>(720 / 16) + 1;
-		dispatchData.z = static_cast<UINT>(1);
-		m_outlineCleanShader.Compute(dispatchData);
+		//dispatchData.x = static_cast<UINT>(1280 / 16) + 1;
+		//dispatchData.y = static_cast<UINT>(720 / 16) + 1;
+		//dispatchData.z = static_cast<UINT>(1);
+		//m_outlineCleanShader.Compute(dispatchData);
 
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 

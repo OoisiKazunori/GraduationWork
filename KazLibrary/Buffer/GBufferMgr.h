@@ -126,8 +126,6 @@ public:
 	std::shared_ptr<PostEffect::GaussianBlur> m_lensFlareBlur;
 	std::shared_ptr<PostEffect::Outline> m_outline;
 
-	KazBufferHelper::BufferData m_outlineBuffer;
-
 
 	KazBufferHelper::BufferData m_chromaticAberrationData;
 	KazMath::Vec4<float> m_iroShuusa;
