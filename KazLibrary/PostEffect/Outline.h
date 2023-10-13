@@ -21,7 +21,11 @@ namespace PostEffect {
 		KazBufferHelper::BufferData m_outputEmissiveTexture;	//アウトラインのエミッシブのテクスチャ
 
 		KazBufferHelper::BufferData m_outlineColorConstBuffer;	//アウトラインの色
-		KazMath::Vec4<float> m_outlineColor;
+		struct OutlineData {
+			KazMath::Vec4<float> m_color;
+			KazMath::Vec3<float> m_outlineCenter;	//アウトラインを距離によってカリングする場合の中心地点
+			float m_outlineLength;
+		}m_outlineData;
 
 	public:
 
@@ -34,6 +38,8 @@ namespace PostEffect {
 
 		KazBufferHelper::BufferData GetOutputAlbedoTexture() { return m_outputAlbedoTexture; }
 		KazBufferHelper::BufferData GetOutputEmissiveTexture() { return m_outputEmissiveTexture; }
+
+		void SetOutlineCenterPos(KazMath::Vec3<float> arg_outlineCenterPos) { m_outlineData.m_outlineCenter = arg_outlineCenterPos; }
 
 	};
 

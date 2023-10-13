@@ -29,9 +29,10 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 	);
 
 	//アウトラインの色
-	m_outlineColor = KazMath::Vec4<float>(0.84f, 0.93f, 0.95f, 1);
-	m_outlineColorConstBuffer = KazBufferHelper::SetConstBufferData(sizeof(KazMath::Vec4<float>));
-	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineColor, sizeof(KazMath::Vec4<float>));
+	m_outlineData.m_color = KazMath::Vec4<float>(0.84f, 0.93f, 0.95f, 1);
+	m_outlineData.m_outlineLength = 100.0f;
+	m_outlineColorConstBuffer = KazBufferHelper::SetConstBufferData(sizeof(OutlineData));
+	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineData, sizeof(OutlineData));
 
 	//アウトライン計算用のシェーダー
 	{
@@ -44,9 +45,9 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 			 m_outputEmissiveTexture,
 			 m_outlineColorConstBuffer,
 		};
-		extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
-		extraBuffer[1].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		extraBuffer[1].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[1].rootParamType = GRAPHICS_PRAMTYPE_TEX2;
 		extraBuffer[2].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
 		extraBuffer[2].rootParamType = GRAPHICS_PRAMTYPE_TEX3;
@@ -68,11 +69,22 @@ void PostEffect::Outline::Apply()
 
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<UINT>(barrier.size()), barrier.data());
 
-	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineColor, sizeof(KazMath::Vec4<float>));
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetWorld.bufferWrapper->GetBuffer().Get(),
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE));
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetNormal.bufferWrapper->GetBuffer().Get(),
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE));
+
+
+	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineData, sizeof(OutlineData));
 	DispatchData dispatchData;
 	dispatchData.x = static_cast<UINT>(1280 / 16) + 1;
 	dispatchData.y = static_cast<UINT>(720 / 16) + 1;
 	dispatchData.z = static_cast<UINT>(1);
 	m_outlineShader.Compute(dispatchData);
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetWorld.bufferWrapper->GetBuffer().Get(),
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetNormal.bufferWrapper->GetBuffer().Get(),
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
 }

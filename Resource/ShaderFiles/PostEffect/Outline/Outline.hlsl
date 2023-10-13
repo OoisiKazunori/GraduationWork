@@ -1,140 +1,104 @@
 //入力情報
-RWTexture2D<float4> TargetWorld : register(u0);
-RWTexture2D<float4> TargetNormal : register(u1);
+Texture2D<float4> TargetWorld : register(t0);
+Texture2D<float4> TargetNormal : register(t1);
 
 //出力先UAV  
-RWTexture2D<float4> OutputAlbedo : register(u2);
-RWTexture2D<float4> OutputEmissive : register(u3);
+RWTexture2D<float4> OutputAlbedo : register(u0);
+RWTexture2D<float4> OutputEmissive : register(u1);
 
-cbuffer Dissolve : register(b0)
+cbuffer OutlineData : register(b0)
 {
     float4 m_outlineColor;
+    float3 m_outlineCenterPos;
+    float m_outlineLength;
 }
 
-//float4 SamplingPixel(uint2 arg_uv)
-//{
-//    return OutlineMap[uint2(clamp(arg_uv.x, 0, 1280), clamp(arg_uv.y, 0, 720))].xyzw;
-//}
+float4 SamplingPixel(Texture2D<float4> arg_texture, uint2 arg_uv)
+{
+    return arg_texture[uint2(clamp(arg_uv.x, 0, 1280), clamp(arg_uv.y, 0, 720))].xyzw;
+}
+
+bool CheckOutline(uint2 arg_uv, float4 arg_baseNormal, float4 arg_baseWorld)
+{
+    
+    //どれくらいワールド座標が離れていたらそこにアウトラインを書き込むか。
+    float outlineDistanceDeadline = 30.0f;
+    //法線の内積の差分がどれくらいだったらアウトラインを書き込むか。
+    float outlineNormalDeadline = 0.8f;
+    
+    //各情報をサンプリングする。
+    float4 sampleNormal = SamplingPixel(TargetNormal, arg_uv);
+    float4 sampleWorld = SamplingPixel(TargetWorld, arg_uv);
+    
+    //Baseの法線もこのピクセルの法線も書き込まれていなかったら飛ばす。
+    if (length(arg_baseNormal.xyz) <= 0.1f && length(sampleNormal.xyz) < 0.1f)
+    {
+        return false;
+    }
+    
+    //アウトラインを書き込むかを計算。
+    bool isOutline = false;
+    //法線の違いをチェック
+    isOutline |= dot(sampleNormal.xyz, arg_baseNormal.xyz) < outlineNormalDeadline;
+    //ワールド座標による違いもチェック
+    isOutline |= outlineDistanceDeadline < length(sampleWorld.xyz - arg_baseWorld.xyz);
+    
+    return isOutline;
+    
+}
 
 [numthreads(16, 16, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
     
-    //float4 samplingPos = SamplingPixel(DTid.xy);
-   // if (0.0f < length(samplingPos.xyz))
-    //{
-    OutputAlbedo[DTid.xy] = float4(0, 0, 0, 0);
-    OutputEmissive[DTid.xy] = float4(0, 0, 0, 0);
-        return;
-    //}
+    //アウトラインの厚さ
+    const int OUTLINE_THICKNESS = 1;
     
-    //const int OUTLINE_THICKNESS = 2;
+    //このピクセルにアウトラインを書くか？
+    bool isOutline = false;
     
-    ////隊列に参加していないミネラル
-    //bool isNoGatheringMineral = false;
-    ////敵対
-    //bool isEnemy = false;
-    ////友好
-    //bool isPlayer = false;
-    ////攻撃状態のミネラル
-    //bool isMineralAttackMode = false;
-    ////資材や建築物など
-    //bool isbuildingAndMaterial = false;
+    //このピクセルの色情報
+    float4 baseNormal = SamplingPixel(TargetNormal, DTid.xy);
+    float4 baseWorld = SamplingPixel(TargetWorld, DTid.xy);
     
-    ////右側をチェック
-    //float4 sample = SamplingPixel(DTid.xy + uint2(OUTLINE_THICKNESS, 0));
-    //isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    //isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    //isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    //isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    //isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //右側をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, 0), baseNormal, baseWorld);
     
-    ////左側をチェック
-    //sample = SamplingPixel(DTid.xy + uint2(-OUTLINE_THICKNESS, 0));
-    //isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    //isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    //isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    //isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    //isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //左側をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, 0), baseNormal, baseWorld);
     
-    ////上側をチェック
-    //sample = SamplingPixel(DTid.xy + uint2(0, -OUTLINE_THICKNESS));
-    //isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    //isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    //isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    //isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    //isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //上側をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(0, -OUTLINE_THICKNESS), baseNormal, baseWorld);
     
-    ////下側をチェック
-    //sample = SamplingPixel(DTid.xy + uint2(0, OUTLINE_THICKNESS));
-    //isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    //isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    //isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    //isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    //isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //下側をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(0, OUTLINE_THICKNESS), baseNormal, baseWorld);
     
-    ////右側をチェック
-    //sample = SamplingPixel(DTid.xy + uint2(OUTLINE_THICKNESS, OUTLINE_THICKNESS));
-    //isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    //isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    //isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    //isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    //isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //右下をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, OUTLINE_THICKNESS), baseNormal, baseWorld);
     
-    ////右側をチェック
-    //sample = SamplingPixel(DTid.xy + uint2(-OUTLINE_THICKNESS, -OUTLINE_THICKNESS));
-    //isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    //isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    //isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    //isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    //isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //左上をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld);
     
-    ////右側をチェック
-    //sample = SamplingPixel(DTid.xy + uint2(-OUTLINE_THICKNESS, OUTLINE_THICKNESS));
-    //isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    //isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    //isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    //isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    //isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //左下をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, OUTLINE_THICKNESS), baseNormal, baseWorld);
     
-    ////右側をチェック
-    //sample = SamplingPixel(DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS));
-    //isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    //isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    //isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    //isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    //isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //右上をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld);
     
 
-    //if (isPlayer)
-    //{
-    //    Albedo[DTid.xy] = float4(0.59f, 0.84f, 0.31f, 1.0f);
-    //    Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    //}
-    //else if (isEnemy)
-    //{
-    //    Albedo[DTid.xy] = float4(0.70f, 0.21f, 0.34f, 1.0f);
-    //    Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    //}
-    //else if (isNoGatheringMineral)
-    //{
-    //    Albedo[DTid.xy] = float4(0.90f, 0.94f, 0.94f, 1.0f);
-    //    Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    //}
-    //else if (isMineralAttackMode)
-    //{
-    //    Albedo[DTid.xy] = float4(0.94f, 0.95f, 0.49f, 1.0f);
-    //    Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    //}
-    //else if (isbuildingAndMaterial)
-    //{
-    //    Albedo[DTid.xy] = float4(0.88f, 0.66f, 0.27f, 1.0f);
-    //    Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    //}
-    //else
-    //{
-    //    Albedo[DTid.xy] = float4(0, 0, 0, 0);
-    //    Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    //}
+    if (isOutline)
+    {
+        
+        OutputAlbedo[DTid.xy] = m_outlineColor;
+        OutputEmissive[DTid.xy] = m_outlineColor;
+        
+    }
+    else
+    {
+        
+        OutputAlbedo[DTid.xy] = float4(0, 0, 0, 0);
+        OutputEmissive[DTid.xy] = float4(0, 0, 0, 0);
+        
+    }
 
 }

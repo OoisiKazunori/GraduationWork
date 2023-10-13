@@ -4,6 +4,7 @@
 #include "../Game/Collision/MeshCollision.h"
 #include "../Bullet/BulletMgr.h"
 #include "../Camera.h"
+#include "../KazLibrary/PostEffect/Outline.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
@@ -63,6 +64,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 	default:
 		break;
 	}
+
+	//アウトラインを出す中心点代入
+	GBufferMgr::Instance()->m_outline->SetOutlineCenterPos(m_transform.pos);
 
 }
 
