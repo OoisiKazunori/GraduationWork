@@ -134,6 +134,9 @@ void SceneManager::Update()
 		return;
 	}
 
+	//パイプライン関連の更新処理
+	m_rayPipeline->Update();
+
 	//シェイク量を更新。
 	ShakeMgr::Instance()->Update();
 

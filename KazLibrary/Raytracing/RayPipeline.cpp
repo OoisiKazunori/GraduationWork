@@ -175,6 +175,10 @@ namespace Raytracing {
 		m_lensFlare = std::make_shared<PostEffect::LensFlare>(GBufferMgr::Instance()->GetLensFlareBuffer(), GBufferMgr::Instance()->GetEmissiveGBuffer());
 
 		m_outlineNoiseData.m_timer = 0.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.x = 0.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.y = 720.0f / 4.0f * 1.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.z = 720.0f / 4.0f * 2.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.a = 720.0f / 4.0f * 3.0f;
 		m_outlineNoiseConstBufferData = KazBufferHelper::SetConstBufferData(sizeof(OutlineNoiseData));
 		m_outlineNoiseConstBufferData.bufferWrapper->TransData(&m_outlineNoiseData, sizeof(OutlineNoiseData));
 
@@ -227,9 +231,9 @@ namespace Raytracing {
 		//if (m_numBlas < blasRefCount) {
 
 			//再構築。
-			ConstructionShaderTable(arg_blacVector, arg_dispatchX, arg_dispatchY);
+		ConstructionShaderTable(arg_blacVector, arg_dispatchX, arg_dispatchY);
 
-			m_numBlas = blasRefCount;
+		m_numBlas = blasRefCount;
 
 		//}
 		//else {
@@ -340,8 +344,6 @@ namespace Raytracing {
 		GBufferMgr::Instance()->m_outline->Apply();
 
 		//アウトラインをGBufferに書き込むと同時にノイズをかける。
-		m_outlineNoiseData.m_timer += 1.0f;
-		m_outlineNoiseConstBufferData.bufferWrapper->TransData(&m_outlineNoiseData, sizeof(OutlineNoiseData));
 		DispatchData dispatchData;
 		dispatchData.x = static_cast<UINT>(1280 / 16) + 1;
 		dispatchData.y = static_cast<UINT>(720 / 16) + 1;
@@ -412,6 +414,35 @@ namespace Raytracing {
 		BufferStatesTransition(m_refDirectX12->GetBackBuffer()[backBufferIndex].Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+	}
+
+	void RayPipeline::Update()
+	{
+
+		//アウトラインにかけるノイズのタイマーの更新。
+		m_outlineNoiseData.m_timer += 1.0f;
+
+		//アウトラインにかけるノイズの縦線の更新
+		const float HORIZONAL_LINE_SPEED = 2.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.x -= HORIZONAL_LINE_SPEED;
+		if (m_outlineNoiseData.m_noiseHorizontalLine.x < 0.0f) {
+			m_outlineNoiseData.m_noiseHorizontalLine.x = 720.0f;
+		}
+		m_outlineNoiseData.m_noiseHorizontalLine.y -= HORIZONAL_LINE_SPEED;
+		if (m_outlineNoiseData.m_noiseHorizontalLine.y < 0.0f) {
+			m_outlineNoiseData.m_noiseHorizontalLine.y = 720.0f;
+		}
+		m_outlineNoiseData.m_noiseHorizontalLine.z -= HORIZONAL_LINE_SPEED;
+		if (m_outlineNoiseData.m_noiseHorizontalLine.z < 0.0f) {
+			m_outlineNoiseData.m_noiseHorizontalLine.z = 720.0f;
+		}
+		m_outlineNoiseData.m_noiseHorizontalLine.a -= HORIZONAL_LINE_SPEED;
+		if (m_outlineNoiseData.m_noiseHorizontalLine.a < 0.0f) {
+			m_outlineNoiseData.m_noiseHorizontalLine.a = 720.0f;
+		}
+
+		m_outlineNoiseConstBufferData.bufferWrapper->TransData(&m_outlineNoiseData, sizeof(OutlineNoiseData));
 
 	}
 
@@ -613,7 +644,7 @@ namespace Raytracing {
 
 	}
 
-	void RayPipeline::UAVBarrier(const std::vector<KazBufferHelper::BufferData> &arg_bufferArray)
+	void RayPipeline::UAVBarrier(const std::vector<KazBufferHelper::BufferData>& arg_bufferArray)
 	{
 		std::vector<D3D12_RESOURCE_BARRIER> barrier;
 

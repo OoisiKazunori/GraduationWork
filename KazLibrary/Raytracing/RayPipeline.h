@@ -82,8 +82,8 @@ namespace Raytracing {
 		//アウトラインにノイズをかける用の定数バッファ
 		KazBufferHelper::BufferData m_outlineNoiseConstBufferData;
 		struct OutlineNoiseData {
+			KazMath::Vec4<float> m_noiseHorizontalLine;
 			float m_timer;
-			KazMath::Vec3<float> m_pad;
 		}m_outlineNoiseData;
 
 		//レンズフレアクラス
@@ -136,6 +136,9 @@ namespace Raytracing {
 		/// レイトレ実行。
 		/// </summary>
 		void TraceRay(Tlas arg_tlas);
+
+		//パイプラインに関する変数の更新処理
+		void Update();
 
 		//各種ゲッタ
 		Microsoft::WRL::ComPtr<ID3D12StateObject> GetStateObject() { return m_stateObject; }
