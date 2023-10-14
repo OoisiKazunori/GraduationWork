@@ -57,7 +57,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
     
     //横線の近くではさらにスケーリングする。
     const float HORIZONAL_SCALE_LENGTH = 70.0f;
-    const float HORIZONAL_SCALE_POWER = 3.0f;
+    const float HORIZONAL_SCALE_POWER = 4.0f;
     float3 color = float3(0, 0, 0);
     CheckHorizonalLine(m_noiseHorizontalLine.x, uv.y, HORIZONAL_SCALE_LENGTH, HORIZONAL_SCALE_POWER, noiseValue);
     CheckHorizonalLine(m_noiseHorizontalLine.y, uv.y, HORIZONAL_SCALE_LENGTH, HORIZONAL_SCALE_POWER, noiseValue);
