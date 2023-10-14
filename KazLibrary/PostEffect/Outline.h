@@ -9,7 +9,7 @@ namespace PostEffect {
 
 	class Outline {
 
-	private:
+	public:
 
 		/*===== 変数 =====*/
 
@@ -26,6 +26,14 @@ namespace PostEffect {
 			KazMath::Vec3<float> m_outlineCenter;	//アウトラインを距離によってカリングする場合の中心地点
 			float m_outlineLength;
 		}m_outlineData;
+
+		KazBufferHelper::BufferData m_echoConstBuffer;	//アウトラインの色
+		struct EchoData {
+			KazMath::Vec3<float> m_color;
+			float m_echoAlpha;
+			KazMath::Vec3<float> m_center;	//アウトラインを距離によってカリングする場合の中心地点
+			float m_echoRadius;
+		}m_echoData;
 
 	public:
 

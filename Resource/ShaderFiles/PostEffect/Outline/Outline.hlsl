@@ -13,6 +13,15 @@ cbuffer OutlineData : register(b0)
     float m_outlineLength;
 }
 
+cbuffer EchoData : register(b1)
+{
+    float3 m_color;
+    float m_echoAlpha;
+	float3 m_center;
+    float m_echoRadius;
+}
+
+
 float4 SamplingPixel(Texture2D<float4> arg_texture, uint2 arg_uv)
 {
     return arg_texture[uint2(clamp(arg_uv.x, 0, 1280), clamp(arg_uv.y, 0, 720))].xyzw;
@@ -156,6 +165,29 @@ void main(uint3 DTid : SV_DispatchThreadID)
             OutputEmissive[DTid.xy] += m_outlineColor * distanceRate;
 
         }
+        
+    }
+    
+    //エコーを描画
+    if (length(baseWorld.xyz - m_center) <= m_echoRadius && 0.0f < length(baseWorld.xyz))
+    {
+        
+        //極細のグリッドを出す。
+        const float ECHO_GRID_RANGE = 2.0f;
+        bool isGrid = frac(baseWorld.x / ECHO_GRID_RANGE) < 0.9f;
+        isGrid |= baseNormal.y < 0.9f && (frac(baseWorld.y / ECHO_GRID_RANGE) < 0.9f);
+        isGrid |= frac(baseWorld.z / ECHO_GRID_RANGE) < 0.9f;
+        
+        if (!isGrid)
+        {
+            
+            OutputAlbedo[DTid.xy] += float4(m_color * m_echoAlpha, 1.0f);
+            OutputEmissive[DTid.xy] += float4(m_color * m_echoAlpha, 1.0f);
+
+        }
+        
+        OutputAlbedo[DTid.xy] += float4(m_color * m_echoAlpha, 1.0f);
+        
         
     }
 

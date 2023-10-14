@@ -29,10 +29,18 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 	);
 
 	//アウトラインの色
-	m_outlineData.m_color = KazMath::Vec4<float>(0.84f, 0.93f, 0.95f, 1);
+	m_outlineData.m_color = KazMath::Vec4<float>(0.90f, 0.94f, 0.94f, 1);
 	m_outlineData.m_outlineLength = 300.0f;
 	m_outlineColorConstBuffer = KazBufferHelper::SetConstBufferData(sizeof(OutlineData));
 	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineData, sizeof(OutlineData));
+
+	//エコー関連
+	m_echoData.m_color = KazMath::Vec3<float>(0.24f, 0.50f, 0.64f);
+	m_echoData.m_center = KazMath::Vec3<float>(0.0f, 0.0f, 0.0f);
+	m_echoData.m_echoAlpha = 0.0f;
+	m_echoData.m_echoRadius = 0.0f;
+	m_echoConstBuffer = KazBufferHelper::SetConstBufferData(sizeof(EchoData));
+	m_echoConstBuffer.bufferWrapper->TransData(&m_echoData, sizeof(EchoData));
 
 	//アウトライン計算用のシェーダー
 	{
@@ -44,6 +52,7 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 			 m_outputAlbedoTexture,
 			 m_outputEmissiveTexture,
 			 m_outlineColorConstBuffer,
+			 m_echoConstBuffer,
 		};
 		extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
@@ -55,6 +64,8 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 		extraBuffer[3].rootParamType = GRAPHICS_PRAMTYPE_TEX4;
 		extraBuffer[4].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		extraBuffer[4].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		extraBuffer[5].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		extraBuffer[5].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
 		m_outlineShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "Outline.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 	}
 
@@ -76,6 +87,7 @@ void PostEffect::Outline::Apply()
 
 
 	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineData, sizeof(OutlineData));
+	m_echoConstBuffer.bufferWrapper->TransData(&m_echoData, sizeof(EchoData));
 	DispatchData dispatchData;
 	dispatchData.x = static_cast<UINT>(1280 / 16) + 1;
 	dispatchData.y = static_cast<UINT>(720 / 16) + 1;

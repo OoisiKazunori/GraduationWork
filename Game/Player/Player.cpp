@@ -68,6 +68,26 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 	//アウトラインを出す中心点代入
 	GBufferMgr::Instance()->m_outline->SetOutlineCenterPos(m_transform.pos);
 
+	//エコーを描画
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
+
+		GBufferMgr::Instance()->m_outline->m_echoData.m_center = m_transform.pos;
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius = 0.0f;
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = 0.2f;
+
+	}
+	else if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE)) {
+
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius += 8.0f;
+
+	}
+	else {
+
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = std::clamp(GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha - 0.01f, 0.0f, 1.0f);
+
+	}
+
+
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
