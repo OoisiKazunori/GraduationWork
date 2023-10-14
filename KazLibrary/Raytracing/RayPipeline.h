@@ -78,6 +78,13 @@ namespace Raytracing {
 		KazBufferHelper::BufferData* m_refRaymarchingConstData;
 		KazBufferHelper::BufferData* m_refDebugOnOffConstData;
 		KazBufferHelper::BufferData* m_refDebugSeaConstData;
+		
+		//アウトラインにノイズをかける用の定数バッファ
+		KazBufferHelper::BufferData m_outlineNoiseConstBufferData;
+		struct OutlineNoiseData {
+			float m_timer;
+			KazMath::Vec3<float> m_pad;
+		}m_outlineNoiseData;
 
 		//レンズフレアクラス
 		std::shared_ptr<PostEffect::LensFlare> m_lensFlare;
