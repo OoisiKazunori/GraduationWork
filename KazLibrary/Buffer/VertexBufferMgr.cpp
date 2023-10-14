@@ -18,8 +18,14 @@ RESOURCE_HANDLE VertexBufferMgr::GenerateBuffer(const std::vector<VertexAndIndex
 	}
 
 	int idx = 0;
+	bool skip = false;
 	for (const auto& meshData : vertexData)
 	{
+		if (!skip)
+		{
+			skip = true;
+			continue;
+		}
 		m_polygonIndexBufferArray[outputHandle].emplace_back();
 		m_polygonIndexBufferArray[outputHandle].back().emplace_back(PolygonGenerateData(meshData.verticesPos, meshData.structureSize, meshData.arraySize));
 		m_polygonIndexBufferArray[outputHandle].back().emplace_back(PolygonGenerateData((void*)meshData.indices.data(), sizeof(UINT), meshData.indices.size()));

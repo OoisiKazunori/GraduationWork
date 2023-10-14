@@ -11,6 +11,7 @@
 #include"../Game/Scene/DemoScene.h"
 #include"../KazLibrary/Scene/LoadScene.h"
 #include"../Game/Scene/TitleScene.h"
+#include"../Game/Scene/RenderScene.h"
 
 class SceneManager
 {
@@ -107,7 +108,7 @@ private:
 		switch (arg_sceneNum)
 		{
 		case 0:
-			return std::make_shared<TitleScene>(m_rasterize);
+			return std::make_shared<RenderScene>(m_rasterize);
 			break;
 		case 1:
 			return std::make_shared<GameScene>(m_rasterize);

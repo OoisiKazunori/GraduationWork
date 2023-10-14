@@ -54,6 +54,44 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, 
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 }
 
+DrawFuncHelper::TextureRender::TextureRender()
+{
+}
+
+void DrawFuncHelper::TextureRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag)
+{
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
+	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaShader());
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
+	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
+	Error();
+	m_textureSize =
+	{
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Width),
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Height)
+	};
+}
+
+void DrawFuncHelper::TextureRender::Load(DrawingByRasterize& arg_rasterize, const KazBufferHelper::BufferData& arg_textureBuffer, bool arg_isUIFlag)
+{
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
+	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaShader());
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
+	m_textureBuffer = arg_textureBuffer;
+	Error();
+	m_textureSize =
+	{
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Width),
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Height)
+	};
+}
+
 void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData& rhs)
 {
 	m_textureBuffer = rhs;

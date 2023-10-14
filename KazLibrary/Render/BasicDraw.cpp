@@ -65,6 +65,10 @@ BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize &arg_raster
 	}
 }
 
+BasicDraw::BasicTextureRender::BasicTextureRender()
+{
+}
+
 BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize &arg_rasterize) :
 	m_render(arg_rasterize, DrawFuncData::SetLine(DrawFuncData::GetBasicGBufferShader()))
 {
