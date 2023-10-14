@@ -82,11 +82,11 @@ void PostEffect::Outline::Apply()
 	dispatchData.z = static_cast<UINT>(1);
 	m_outlineShader.Compute(dispatchData);
 
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<UINT>(barrier.size()), barrier.data());
+
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetWorld.bufferWrapper->GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetNormal.bufferWrapper->GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<UINT>(barrier.size()), barrier.data());
 
 }
