@@ -45,6 +45,18 @@ bool CheckOutline(uint2 arg_uv, float4 arg_baseNormal, float4 arg_baseWorld, ino
     bool isCheckNormal = dot(sampleNormal.xyz, arg_baseNormal.xyz) < outlineNormalDeadline;
     //ワールド座標による違いもチェック
     bool isCheckWorld = outlineDistanceDeadline < length(sampleWorld.xyz - arg_baseWorld.xyz);
+    //床のアウトライン対策。
+    if (0.9f < sampleNormal.y && 0.9f < arg_baseNormal.y)
+    {
+        
+        if (1.0f < length(sampleWorld.y - arg_baseWorld.y))
+        {
+            
+            isCheckWorld = true;
+            
+        }
+        
+    }
     
     if (isCheckNormal || isCheckWorld)
     {
