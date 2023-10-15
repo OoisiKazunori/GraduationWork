@@ -146,6 +146,7 @@ public:
 	void Update(const int f_playerHP);
 	void Draw(DrawingByRasterize& arg_rasterize);
 
+	void HitDamage(int f_mainDamage, int f_redZone);
 };
 
 class CamouflagePercent

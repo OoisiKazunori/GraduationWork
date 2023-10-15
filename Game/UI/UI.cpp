@@ -367,19 +367,8 @@ void HPUI::Update(const int f_playerHP)
 	static int redWaitTime = 0;
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
-		if (m_hp > 0)
-		{
-			m_hp -= 10;
-			if (m_hp > 0)
-			{
-				m_redHP = 5;
-			}
-			else
-			{
-				m_redHP = 0;
-			}
-			redWaitTime = 10;
-		}
+		HitDamage(10, 5);
+		redWaitTime = 10;
 	}
 	redWaitTime--;
 	if (redWaitTime < 0)
@@ -394,9 +383,6 @@ void HPUI::Update(const int f_playerHP)
 
 void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	
-
-
 	float half = c_UITexX / 2.0f;
 	half = half / MaxHP * m_hp;
 	m_HPBar.SetScale({ (float)m_hp / (float)MaxHP, 1.0f });
@@ -412,4 +398,29 @@ void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 	
 	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
 	m_HPFrame.Draw(arg_rasterize);
+}
+
+void HPUI::HitDamage(int f_mainDamage, int f_redZone)
+{
+	m_hp -= f_mainDamage;
+	m_hp -= m_redHP;
+	if (m_hp < 0)
+	{
+		m_hp = 0;
+	}
+	if (m_hp > 0)
+	{
+		if (m_hp > f_redZone)
+		{
+			m_redHP = f_redZone;
+		}
+		else
+		{
+			m_redHP = m_hp;
+		}
+	}
+	else
+	{
+		m_redHP = 0;
+	}
 }
