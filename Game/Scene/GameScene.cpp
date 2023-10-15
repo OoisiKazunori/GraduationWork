@@ -109,18 +109,21 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	DrawFunc::DrawModelEcho(
 		m_modelRender.m_model.m_drawCommand,
-		m_stageTransform,
+		m_modelTransform,
 		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
 		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
 		KazMath::Color(255, 0, 0, 255)
 		);
+	arg_rasterize.ObjectRender(m_modelRender.m_model.m_drawCommandData);
+
 	DrawFunc::DrawModelEcho(
 		m_modelAnimationRender.m_model.m_drawCommand,
-		m_stageTransform,
+		m_modelAnimationTransform,
 		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
 		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
 		KazMath::Color(255, 0, 0, 255)
 	);
+	arg_rasterize.ObjectRender(m_modelAnimationRender.m_model.m_drawCommandData);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));

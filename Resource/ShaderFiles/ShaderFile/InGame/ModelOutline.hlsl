@@ -83,7 +83,7 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
     bool isHitEchoFlag = length(input.worldPos.xyz - echoPos) <= echoRange && 0.0f < length(input.worldPos.xyz);
     if(!isHitEchoFlag)
     {
-        //discard;
+        discard;
     }
 
     float4 texColor = AlbedoTex.Sample(smp, input.uv);
