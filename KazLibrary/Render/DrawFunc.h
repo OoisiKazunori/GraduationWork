@@ -146,7 +146,7 @@ namespace DrawFunc
 
 		//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
 		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
-		
+
 
 		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
 
@@ -159,6 +159,35 @@ namespace DrawFunc
 		arg_callData.extraBufferArray[3].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		arg_callData.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA4;
 	}
+
+	static void DrawModelEcho(DrawFuncData::DrawCallData& arg_callData, KazMath::Transform3D& arg_transform, const KazMath::Vec3<float>& arg_echoPos, float arg_echoRange, const KazMath::Color& arg_outlineColor, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255))
+	{
+		//行列情報
+		CoordinateSpaceMatData transData(arg_transform.GetMat(), CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+		transData.m_world = arg_transform.GetMat();
+		transData.m_projective = CameraMgr::Instance()->GetPerspectiveMatProjection();
+		transData.m_view = CameraMgr::Instance()->GetViewMatrix();
+
+		//クォータニオンに値が入っている or クォータニオンが単位行列じゃなかったらクォータニオンで回転行列を求める。
+		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
+
+		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
+
+		arg_callData.extraBufferArray[2].bufferWrapper->TransData(&arg_color.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
+
+		struct EchoData
+		{
+			DirectX::XMFLOAT4 outlineColor;
+			DirectX::XMFLOAT3 pos;
+			float range;
+		};
+		EchoData initData;
+		initData.outlineColor = arg_outlineColor.ConvertColorRateToXMFLOAT4();
+		initData.pos = arg_echoPos.ConvertXMFLOAT3();
+		initData.range = arg_echoRange;
+		arg_callData.extraBufferArray[3].bufferWrapper->TransData(&initData, sizeof(EchoData));
+	}
+
 
 	static void DrawLine(DrawFuncData::DrawCallData& arg_callData, std::vector<KazMath::Vec3<float>>arg_limitPosArray, RESOURCE_HANDLE arg_vertexHandle, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255))
 	{

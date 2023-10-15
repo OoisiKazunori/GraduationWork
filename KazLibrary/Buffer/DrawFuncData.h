@@ -1473,27 +1473,23 @@ namespace DrawFuncData
 			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
-
-		//アウトライン
-		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMFLOAT4), "CBuffer-Outline"));
-		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
-		KazMath::Color init(255, 255, 255, 255);
-		drawCall.extraBufferArray.back().bufferWrapper->TransData(&init.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
-
 		struct EchoData
 		{
+			DirectX::XMFLOAT4 outlineColor;
 			DirectX::XMFLOAT3 pos;
 			float range;
 		};
-		//エコーの範囲
-		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(EchoData), "CBuffer-Echo"));
+		//アウトライン
+		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(EchoData), "CBuffer-Outline"));
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA5;
-		EchoData echoData;
-		echoData.pos = { 0.0f,0.0f,0.0f };
-		echoData.range = 0.0f;
-		drawCall.extraBufferArray.back().bufferWrapper->TransData(&echoData, sizeof(EchoData));
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+		KazMath::Color init(255, 255, 255, 255);
+
+		EchoData data;
+		data.outlineColor = init.ConvertColorRateToXMFLOAT4();
+		data.pos = {};
+		data.range = 0.0f;
+		drawCall.extraBufferArray.back().bufferWrapper->TransData(&data, sizeof(EchoData));
 		drawCall.SetupRaytracing(arg_isOpaque);
 
 		return drawCall;

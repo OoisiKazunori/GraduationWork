@@ -38,10 +38,6 @@ cbuffer Color : register(b2)
 cbuffer OutlineColor : register(b3)
 {
     float4 outlineColor;
-};
-
-cbuffer echoRange : register(b4)
-{
     float3 echoPos;
     float echoRange;
 };
@@ -84,11 +80,11 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
 
     //エコーの範囲外なら描画しない
     float3 a = echoPos;
-    //bool isHitEchoFlag = length(input.worldPos.xyz - echoPos) <= echoRange && 0.0f < length(input.worldPos.xyz);
-    //if(isHitEchoFlag)
-    //{
-    //    discard;
-    //}
+    bool isHitEchoFlag = length(input.worldPos.xyz - echoPos) <= echoRange && 0.0f < length(input.worldPos.xyz);
+    if(!isHitEchoFlag)
+    {
+        //discard;
+    }
 
     float4 texColor = AlbedoTex.Sample(smp, input.uv);
     float4 mrColor = MetalnessRoughnessTex.Sample(smp, input.uv);

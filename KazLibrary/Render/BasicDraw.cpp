@@ -2,7 +2,7 @@
 
 DrawFuncData::DrawCallData BasicDraw::SetModel(const std::shared_ptr<ModelInfomation>& arg_modelInfomation)
 {
-	return DrawFuncData::SetDefferdRenderingModelAnimationOutline(arg_modelInfomation);
+	return DrawFuncData::SetDefferdRenderingModelAnimation(arg_modelInfomation);
 }
 
 DrawFuncData::DrawCallData BasicDraw::SetTex()
@@ -42,6 +42,13 @@ void BasicDraw::BasicModelRender::Load(DrawingByRasterize& arg_rasterize, const 
 {
 	std::shared_ptr<ModelInfomation>model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName));
 	m_model.Load(model, BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
+	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
+}
+
+void BasicDraw::BasicModelRender::Load(DrawingByRasterize& arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
+{
+	std::shared_ptr<ModelInfomation>model(arg_modelInfomation);
+	m_model.Load(model, arg_drawCall);
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
