@@ -29,6 +29,7 @@ public:
 		R_M_S_ID,
 		WORLD,
 		EMISSIVE,
+		OUTLINE,
 		MAX
 	};
 	GBufferMgr();

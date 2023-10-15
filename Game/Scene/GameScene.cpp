@@ -97,7 +97,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
-
+	
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
