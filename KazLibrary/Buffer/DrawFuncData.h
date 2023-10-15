@@ -1455,6 +1455,46 @@ namespace DrawFuncData
 		return drawCall;
 	};
 
+	//一定の範囲内で描画する処理とアウトラインの表示
+	static DrawCallData SetDefferdRenderingModelAnimationOutline(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
+	{
+		DrawCallData drawCall;
+
+		DrawFuncData::PipelineGenerateData lData;
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "ModelOutline.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "ModelOutline.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+
+		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		struct EchoData
+		{
+			DirectX::XMFLOAT4 outlineColor;
+			DirectX::XMFLOAT3 pos;
+			float range;
+		};
+		//アウトライン
+		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(EchoData), "CBuffer-Outline"));
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+		KazMath::Color init(255, 255, 255, 255);
+
+		EchoData data;
+		data.outlineColor = init.ConvertColorRateToXMFLOAT4();
+		data.pos = {};
+		data.range = 0.0f;
+		drawCall.extraBufferArray.back().bufferWrapper->TransData(&data, sizeof(EchoData));
+		drawCall.SetupRaytracing(arg_isOpaque);
+
+		return drawCall;
+	};
+
 	static DrawCallData SetDefferdRenderingModelAnimationZAllways(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
 	{
 		DrawCallData drawCall;

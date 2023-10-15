@@ -170,8 +170,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
     
     //エコーを描画
     if (length(baseWorld.xyz - m_center) <= m_echoRadius && 0.0f < length(baseWorld.xyz))
-    {
-        
+    {  
         //極細のグリッドを出す。
         const float ECHO_GRID_RANGE = 2.0f;
         bool isGrid = frac(baseWorld.x / ECHO_GRID_RANGE) < 0.9f;

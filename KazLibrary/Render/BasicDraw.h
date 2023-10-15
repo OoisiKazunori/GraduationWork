@@ -16,6 +16,7 @@ namespace BasicDraw
 		BasicModelRender(DrawingByRasterize& arg_rasterize);
 		BasicModelRender();
 		void Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName);
+		void Load(DrawingByRasterize& arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall);
 		DrawFuncHelper::ModelRender m_model;
 	};
 	struct BasicTextureRender

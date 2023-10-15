@@ -45,6 +45,13 @@ void BasicDraw::BasicModelRender::Load(DrawingByRasterize& arg_rasterize, const 
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
+void BasicDraw::BasicModelRender::Load(DrawingByRasterize& arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
+{
+	std::shared_ptr<ModelInfomation>model(arg_modelInfomation);
+	m_model.Load(model, arg_drawCall);
+	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
+}
+
 BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag) :
 	m_tex(arg_rasterize, arg_filePass, BasicDraw::SetTex(), arg_isUIFlag)
 {
