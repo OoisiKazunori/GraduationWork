@@ -24,6 +24,7 @@ GBufferMgr::GBufferMgr()
 		m_gBufferFormatArray[R_M_S_ID] = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		m_gBufferFormatArray[WORLD] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		m_gBufferFormatArray[EMISSIVE] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		m_gBufferFormatArray[OUTLINE] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		//アルベド
 		multiRenderTargetArray[ALBEDO].backGroundColor = { 0.0f,0.0f,0.0f };
@@ -45,7 +46,10 @@ GBufferMgr::GBufferMgr()
 		multiRenderTargetArray[EMISSIVE].backGroundColor = { 0.0f,0.0f,0.0f };
 		multiRenderTargetArray[EMISSIVE].graphSize = winSize;
 		multiRenderTargetArray[EMISSIVE].format = m_gBufferFormatArray[EMISSIVE];
-
+		//アウトライン
+		multiRenderTargetArray[OUTLINE].backGroundColor = { 0.0f,0.0f,0.0f };
+		multiRenderTargetArray[OUTLINE].graphSize = winSize;
+		multiRenderTargetArray[OUTLINE].format = m_gBufferFormatArray[OUTLINE];
 		m_gBufferRenderTargetHandleArray = RenderTargetStatus::Instance()->CreateMultiRenderTarget(multiRenderTargetArray);
 
 		m_finalGBuffer = KazBufferHelper::SetUAVTexBuffer(winSize.x, winSize.y);
@@ -96,18 +100,11 @@ GBufferMgr::GBufferMgr()
 			m_backBufferCompositeBuffer.bufferWrapper->GetBuffer().Get()
 		);
 
-		m_outlineBuffer = KazBufferHelper::SetUAVTexBuffer(winSize.x, winSize.y, DXGI_FORMAT_R8G8B8A8_UNORM);
-		m_outlineBuffer.bufferWrapper->CreateViewHandle(UavViewHandleMgr::Instance()->GetHandle());
-		DescriptorHeapMgr::Instance()->CreateBufferView(
-			m_outlineBuffer.bufferWrapper->GetViewHandle(),
-			KazBufferHelper::SetUnorderedAccessTextureView(sizeof(DirectX::XMFLOAT4), winSize.x * winSize.y),
-			m_outlineBuffer.bufferWrapper->GetBuffer().Get()
-		);
 	}
 
 	//レンズフレア用のブラー
 	m_lensFlareBlur = std::make_shared<PostEffect::GaussianBlur>(m_lensFlareLuminanceGBuffer);
-	m_outline = std::make_shared<PostEffect::Outline>(m_outlineBuffer);
+	m_outline = std::make_shared<PostEffect::Outline>(RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[WORLD]), RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[NORMAL]));
 
 	//レンズフレア合成関連。
 	m_lensFlareConposeBuffTexture = KazBufferHelper::SetUAVTexBuffer(1280, 720, DXGI_FORMAT_R8G8B8A8_UNORM);

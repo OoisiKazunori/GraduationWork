@@ -91,7 +91,7 @@ void mainRayGen()
     //}
     
     //合成の結果を入れる。
-    finalColor[launchIndex.xy] = albedoColor;
+    finalColor[launchIndex.xy] = albedoColor * 0.2f;
     emissiveTexture[launchIndex.xy] = emissiveColor;
     lensFlareTexture[launchIndex.xy] = emissiveColor / 8.0f;
   

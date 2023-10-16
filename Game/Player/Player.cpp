@@ -4,6 +4,7 @@
 #include "../Game/Collision/MeshCollision.h"
 #include "../Bullet/BulletMgr.h"
 #include "../Camera.h"
+#include "../KazLibrary/PostEffect/Outline.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
@@ -40,7 +41,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 	m_transform.pos.y += m_gravity;
 
 	//動いた方向に回転させる。
-	Rotate(arg_camera);
+	//Rotate(arg_camera);
 
 	//現在の姿勢のステータスによってモデルのスケール量をいじる。アニメーションとかモデルを置き変える処理の代替処理。
 	switch (m_playerAttitude)
@@ -64,22 +65,45 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 		break;
 	}
 
+	//アウトラインを出す中心点代入
+	GBufferMgr::Instance()->m_outline->SetOutlineCenterPos(m_transform.pos);
+
+	//エコーを描画
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
+
+		GBufferMgr::Instance()->m_outline->m_echoData.m_center = m_transform.pos;
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius = 0.0f;
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = 0.2f;
+
+	}
+	else if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE)) {
+
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius += 8.0f;
+
+	}
+	else {
+
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = std::clamp(GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha - 0.01f, 0.0f, 1.0f);
+
+	}
+
+
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+	//m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
 }
 
 void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr)
 {
 
-	KazMath::Transform3D cameraTransform = arg_camera.lock()->GetShotQuaternion();
+	m_transform.quaternion = arg_camera.lock()->GetShotQuaternion().quaternion;
 
-	//前方向と右方向のベクトルを取得。 -をつけているのは、arg_cameraQuaternionがプレイヤーから見たカメラの方向だから。
-	KazMath::Vec3<float> frontVec = -cameraTransform.GetFront();
+	//前方向と右方向のベクトルを取得
+	KazMath::Vec3<float> frontVec = m_transform.GetFront();
 	frontVec.y = 0;
-	KazMath::Vec3<float> rightVec = -cameraTransform.GetRight();
+	KazMath::Vec3<float> rightVec = m_transform.GetRight();
 	rightVec.y = 0;
 
 	//前後左右に移動する。
@@ -122,7 +146,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	//弾をうつ入力も受け付ける。
 	if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
 
-		arg_bulletMgr.lock()->Genrate(m_transform.pos, -arg_camera.lock()->GetShotQuaternion().GetFront());
+		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront());
 
 	}
 
@@ -153,12 +177,12 @@ void Player::Rotate(std::weak_ptr<Camera> arg_camera)
 
 	}
 
-	//ADSしていたらカメラと同じ方向を向く。
-	if (m_isADS) {
+	////ADSしていたらカメラと同じ方向を向く。
+	//if (m_isADS) {
 
-		m_transform.quaternion = arg_camera.lock()->GetCameraQuaternion().quaternion;
+	//	m_transform.quaternion = arg_camera.lock()->GetCameraQuaternion().quaternion;
 
-	}
+	//}
 
 }
 

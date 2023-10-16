@@ -1,139 +1,193 @@
 //入力情報
-RWTexture2D<float4> OutlineMap : register(u0);
+Texture2D<float4> TargetWorld : register(t0);
+Texture2D<float4> TargetNormal : register(t1);
 
 //出力先UAV  
-RWTexture2D<float4> Albedo : register(u1);
-RWTexture2D<float4> Emissive : register(u2);
+RWTexture2D<float4> OutputAlbedo : register(u0);
+RWTexture2D<float4> OutputEmissive : register(u1);
 
-cbuffer Dissolve : register(b0)
+cbuffer OutlineData : register(b0)
 {
     float4 m_outlineColor;
+    float3 m_outlineCenterPos;
+    float m_outlineLength;
 }
 
-float4 SamplingPixel(uint2 arg_uv)
+cbuffer EchoData : register(b1)
 {
-    return OutlineMap[uint2(clamp(arg_uv.x, 0, 1280), clamp(arg_uv.y, 0, 720))].xyzw;
+    float3 m_color;
+    float m_echoAlpha;
+	float3 m_center;
+    float m_echoRadius;
+}
+
+
+float4 SamplingPixel(Texture2D<float4> arg_texture, uint2 arg_uv)
+{
+    return arg_texture[uint2(clamp(arg_uv.x, 0, 1280), clamp(arg_uv.y, 0, 720))].xyzw;
+}
+
+bool CheckOutline(uint2 arg_uv, float4 arg_baseNormal, float4 arg_baseWorld, inout float3 arg_sampleWorldPos)
+{
+    
+    //どれくらいワールド座標が離れていたらそこにアウトラインを書き込むか。
+    float outlineDistanceDeadline = 30.0f;
+    //法線の内積の差分がどれくらいだったらアウトラインを書き込むか。
+    float outlineNormalDeadline = 0.8f;
+    
+    //各情報をサンプリングする。
+    float4 sampleNormal = SamplingPixel(TargetNormal, arg_uv);
+    float4 sampleWorld = SamplingPixel(TargetWorld, arg_uv);
+    
+    //Baseの法線もこのピクセルの法線も書き込まれていなかったら飛ばす。
+    if (length(arg_baseNormal.xyz) <= 0.1f && length(sampleNormal.xyz) < 0.1f)
+    {
+        return false;
+    }
+    //ワールド情報が書き込まれていなかったらアウト。
+    if (length(sampleWorld.xyz) <= 0.1f)
+    {
+        return false;
+    }
+    
+    //法線の違いをチェック
+    bool isCheckNormal = dot(sampleNormal.xyz, arg_baseNormal.xyz) < outlineNormalDeadline;
+    //ワールド座標による違いもチェック
+    bool isCheckWorld = outlineDistanceDeadline < length(sampleWorld.xyz - arg_baseWorld.xyz);
+    //床のアウトライン対策。
+    if (0.9f < sampleNormal.y && 0.9f < arg_baseNormal.y)
+    {
+        
+        if (1.0f < length(sampleWorld.y - arg_baseWorld.y))
+        {
+            
+            isCheckWorld = true;
+            
+        }
+        
+    }
+    
+    if (isCheckNormal || isCheckWorld)
+    {
+        
+        if (0.1f < length(sampleWorld.xyz))
+        {
+            arg_sampleWorldPos = sampleWorld.xyz;
+        }
+        
+        return true;
+        
+    }
+    
+    return false;
+    
 }
 
 [numthreads(16, 16, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
     
-    float4 samplingPos = SamplingPixel(DTid.xy);
-    if (0.0f < length(samplingPos.xyz))
-    {
-        Albedo[DTid.xy] = float4(0, 0, 0, 0);
-        Emissive[DTid.xy] = float4(0, 0, 0, 0);
-        return;
-    }
+    //アウトラインの厚さ
+    const int OUTLINE_THICKNESS = 1;
     
-    const int OUTLINE_THICKNESS = 2;
+    //このピクセルにアウトラインを書くか？
+    bool isOutline = false;
     
-    //隊列に参加していないミネラル
-    bool isNoGatheringMineral = false;
-    //敵対
-    bool isEnemy = false;
-    //友好
-    bool isPlayer = false;
-    //攻撃状態のミネラル
-    bool isMineralAttackMode = false;
-    //資材や建築物など
-    bool isbuildingAndMaterial = false;
+    //このピクセルの色情報
+    float4 baseNormal = SamplingPixel(TargetNormal, DTid.xy);
+    float4 baseWorld = SamplingPixel(TargetWorld, DTid.xy);
+    
+    //サンプリングしたワールド座標
+    float3 sampleWorldPos = float3(0.0f, 0.0f, 0.0f);
     
     //右側をチェック
-    float4 sample = SamplingPixel(DTid.xy + uint2(OUTLINE_THICKNESS, 0));
-    isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, 0), baseNormal, baseWorld, sampleWorldPos);
     
     //左側をチェック
-    sample = SamplingPixel(DTid.xy + uint2(-OUTLINE_THICKNESS, 0));
-    isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, 0), baseNormal, baseWorld, sampleWorldPos);
     
     //上側をチェック
-    sample = SamplingPixel(DTid.xy + uint2(0, -OUTLINE_THICKNESS));
-    isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    isOutline |= CheckOutline(DTid.xy + uint2(0, -OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
     //下側をチェック
-    sample = SamplingPixel(DTid.xy + uint2(0, OUTLINE_THICKNESS));
-    isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    isOutline |= CheckOutline(DTid.xy + uint2(0, OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
-    //右側をチェック
-    sample = SamplingPixel(DTid.xy + uint2(OUTLINE_THICKNESS, OUTLINE_THICKNESS));
-    isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //右下をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
-    //右側をチェック
-    sample = SamplingPixel(DTid.xy + uint2(-OUTLINE_THICKNESS, -OUTLINE_THICKNESS));
-    isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //左上をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
-    //右側をチェック
-    sample = SamplingPixel(DTid.xy + uint2(-OUTLINE_THICKNESS, OUTLINE_THICKNESS));
-    isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //左下をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
-    //右側をチェック
-    sample = SamplingPixel(DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS));
-    isPlayer |= abs(0.1f - sample.x) < 0.01f;
-    isEnemy |= abs(0.2f - sample.x) < 0.01f;
-    isNoGatheringMineral |= abs(0.3f - sample.x) < 0.01f;
-    isMineralAttackMode |= abs(0.4f - sample.x) < 0.01f;
-    isbuildingAndMaterial |= abs(0.5f - sample.x) < 0.01f;
+    //右上をチェック
+    isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
     
-
-    if (isPlayer)
+    if (isOutline)
     {
-        Albedo[DTid.xy] = float4(0.59f, 0.84f, 0.31f, 1.0f);
-        Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    }
-    else if (isEnemy)
-    {
-        Albedo[DTid.xy] = float4(0.70f, 0.21f, 0.34f, 1.0f);
-        Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    }
-    else if (isNoGatheringMineral)
-    {
-        Albedo[DTid.xy] = float4(0.90f, 0.94f, 0.94f, 1.0f);
-        Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    }
-    else if (isMineralAttackMode)
-    {
-        Albedo[DTid.xy] = float4(0.94f, 0.95f, 0.49f, 1.0f);
-        Emissive[DTid.xy] = float4(0, 0, 0, 0);
-    }
-    else if (isbuildingAndMaterial)
-    {
-        Albedo[DTid.xy] = float4(0.88f, 0.66f, 0.27f, 1.0f);
-        Emissive[DTid.xy] = float4(0, 0, 0, 0);
+        
+        //サンプリングした位置に応じて色を暗くする。
+        float edgeDistance = 1.0f - clamp(length(sampleWorldPos - m_outlineCenterPos) / m_outlineLength, 0.0f, 0.8f);
+        
+        OutputAlbedo[DTid.xy] = m_outlineColor * edgeDistance;
+        OutputEmissive[DTid.xy] = m_outlineColor * edgeDistance;
+        
     }
     else
     {
-        Albedo[DTid.xy] = float4(0, 0, 0, 0);
-        Emissive[DTid.xy] = float4(0, 0, 0, 0);
+        
+        OutputAlbedo[DTid.xy] = float4(0, 0, 0, 0);
+        OutputEmissive[DTid.xy] = float4(0, 0, 0, 0);
+        
+    }
+    
+    //中心地点から一定の距離だったら
+    const float GRID_SCOPE = 100.0f;
+    const int GRID_RANGE = 15.0f;
+    float baseWorldDistance = length(baseWorld.xyz - m_outlineCenterPos);
+    if (baseWorldDistance <= GRID_SCOPE && 0.0f < length(baseWorld.xyz))
+    {
+        
+        //ワールド座標の値がGRID_RANGEで割り切れる値に近かったら
+        bool isGrid = frac(baseWorld.x / GRID_RANGE) < 0.01f;
+        isGrid |= baseNormal.y < 0.9f && (frac(baseWorld.y / GRID_RANGE) < 0.01f);
+        isGrid |= frac(baseWorld.z / GRID_RANGE) < 0.01f;
+        
+        //割合を求める。
+        float distanceRate = 1.0f - baseWorldDistance / GRID_SCOPE;
+        distanceRate *= 0.3f;
+        
+        if (isGrid)
+        {
+            
+            OutputAlbedo[DTid.xy] += m_outlineColor * distanceRate;
+            OutputEmissive[DTid.xy] += m_outlineColor * distanceRate;
+
+        }
+        
+    }
+    
+    //エコーを描画
+    if (length(baseWorld.xyz - m_center) <= m_echoRadius && 0.0f < length(baseWorld.xyz))
+    {  
+        //極細のグリッドを出す。
+        const float ECHO_GRID_RANGE = 2.0f;
+        bool isGrid = frac(baseWorld.x / ECHO_GRID_RANGE) < 0.9f;
+        isGrid |= baseNormal.y < 0.9f && (frac(baseWorld.y / ECHO_GRID_RANGE) < 0.9f);
+        isGrid |= frac(baseWorld.z / ECHO_GRID_RANGE) < 0.9f;
+        
+        if (!isGrid)
+        {
+            
+            OutputAlbedo[DTid.xy] += float4(m_color * m_echoAlpha, 1.0f);
+            OutputEmissive[DTid.xy] += float4(m_color * m_echoAlpha, 1.0f);
+
+        }
+        
+        OutputAlbedo[DTid.xy] += float4(m_color * m_echoAlpha, 1.0f);
+        
+        
     }
 
 }

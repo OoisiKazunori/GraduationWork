@@ -10,6 +10,8 @@
 #include"../Game/Camera.h"
 #include"../Game/Collision/MeshCollision.h"
 #include"../Bullet/BulletMgr.h"
+#include"../KazLibrary/Buffer/GBufferMgr.h"
+#include "../KazLibrary/PostEffect/Outline.h"
 
 #include"../MapLoader/MapLoader.h"
 
@@ -18,14 +20,23 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_2DSprite(arg_rasterize, "Resource/Test/texas.png", true),
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
 	//DrawFuncHelperでのモデル読み込み
-	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
-	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_line(arg_rasterize),
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize)
 {
+	m_modelAnimationRender.Load(
+		arg_rasterize,
+		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
+		DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"))
+	);
+	m_modelRender.Load(
+		arg_rasterize,
+		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
+		DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"))
+	);
+
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
 	読み込み単体の処理は下の処理になります。(多重読み込み防止あり)
@@ -43,8 +54,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//アニメーション再生無しモデルの位置調整
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
 
-	m_stageTransform.pos = {0.0f, -20.0f, 0.0f};
-	m_stageTransform.scale = {8.0f, 1.0f, 8.0f};
+	m_stageTransform.pos = { 0.0f, -20.0f, 0.0f };
+	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
 
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stage.m_model.m_modelInfo->modelData[0].vertexData, m_stageTransform);
@@ -114,8 +125,24 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//描画命令発行
 	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
-	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+
+	DrawFunc::DrawModelEcho(
+		m_modelRender.m_model.m_drawCommand,
+		m_modelTransform,
+		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
+		KazMath::Color(255, 0, 0, 255)
+		);
+	arg_rasterize.ObjectRender(m_modelRender.m_model.m_drawCommandData);
+
+	DrawFunc::DrawModelEcho(
+		m_modelAnimationRender.m_model.m_drawCommand,
+		m_modelAnimationTransform,
+		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
+		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
+		KazMath::Color(255, 0, 0, 255)
+	);
+	arg_rasterize.ObjectRender(m_modelAnimationRender.m_model.m_drawCommandData);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));

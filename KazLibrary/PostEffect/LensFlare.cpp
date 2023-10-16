@@ -32,7 +32,7 @@ namespace PostEffect {
 			m_lensFlareTexture.bufferWrapper->GetBuffer().Get()
 		);
 		//ブルーム用のテクスチャを用意。
-		m_bloomTexture = arg_emissiveTexture;
+		m_bloomTexture = arg_lnesflareTargetTexture;
 		m_bloom = std::make_shared<PostEffect::Bloom>(m_bloomTexture);
 		//レンズの色テクスチャをロード
 		m_lensColorTexture = TextureResourceMgr::Instance()->LoadGraphBuffer(KazFilePathName::LensFlarePath + "lensColor.png");
