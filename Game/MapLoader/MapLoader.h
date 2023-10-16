@@ -9,6 +9,10 @@
 #include"../KazLibrary/Loader/ModelLoader.h"
 #include"../KazLibrary/Render/BasicDraw.h"
 
+
+/*jsonのマップデータから各オブジェクトのトランスフォームをリストに格納していく*/
+
+
 //木や岩などの配置
 class MapObject
 {
@@ -17,6 +21,8 @@ public:
 	DirectX::XMFLOAT3 m_position;
 	DirectX::XMFLOAT3 m_rotition;
 	DirectX::XMFLOAT3 m_scale;
+
+	float echoScale = 0.0f;
 };
 
 //敵の初期スポーン位置
@@ -37,13 +43,7 @@ class MapManager
 	static bool GetFileNames(std::string f_folderPath, std::list<std::string>& f_fileNames);
 public:
 	MapManager(){};
-	//既にjsonデータがある場合
-	MapManager(ParameterMgr f_parm){};
-	MapManager(int a) {};
 	static void Init();
-	static void Update();
-	//現在有効なステージ番号
-	static void Draw(int f_stageNumber);
 
 	//ステージ番号を入れるとトランスフォームのリストが帰ってくる
 	static std::list<MapObject> GetStageData(int f_stageNum)

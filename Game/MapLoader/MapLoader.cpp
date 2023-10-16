@@ -71,7 +71,7 @@ bool MapManager::GetFileNames(std::string f_folderPath, std::list<std::string>& 
 KazMath::Transform3D MapManager::GetPlayerStartPosition(int f_stageNum)
 {
 	KazMath::Transform3D l_result;
-	auto l_map = MapManager::GetStageData(2);
+	auto l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
 		if (l_mapItr->m_objetName.starts_with("player") == true)

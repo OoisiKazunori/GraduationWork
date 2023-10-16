@@ -3,6 +3,7 @@
 
 /// <summary>
 /// ステージ全体の管理処理
+/// MapLoaderのデータなどをここで描画している
 /// </summary>
 class StageManager
 {
@@ -14,6 +15,7 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	//ステージが切り替わったトリガー
 	bool ChangeSceneTrigger();
+	void AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum);
 private:
 	int m_nowStageNumber, m_nextStageNumber;
 	bool m_changeSceneTriggerFlag;
