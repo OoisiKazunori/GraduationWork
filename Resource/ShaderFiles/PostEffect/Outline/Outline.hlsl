@@ -130,15 +130,15 @@ void main(uint3 DTid : SV_DispatchThreadID)
         //サンプリングした位置に応じて色を暗くする。
         float edgeDistance = 1.0f - clamp(length(sampleWorldPos - m_outlineCenterPos) / m_outlineLength, 0.0f, 0.8f);
         
-        OutputAlbedo[DTid.xy] = m_outlineColor * edgeDistance;
-        OutputEmissive[DTid.xy] = m_outlineColor * edgeDistance;
+        OutputAlbedo[DTid.xy] += m_outlineColor * edgeDistance;
+        OutputEmissive[DTid.xy] += m_outlineColor * edgeDistance;
         
     }
     else
     {
         
-        OutputAlbedo[DTid.xy] = float4(0, 0, 0, 0);
-        OutputEmissive[DTid.xy] = float4(0, 0, 0, 0);
+        OutputAlbedo[DTid.xy] += float4(0, 0, 0, 0);
+        OutputEmissive[DTid.xy] += float4(0, 0, 0, 0);
         
     }
     

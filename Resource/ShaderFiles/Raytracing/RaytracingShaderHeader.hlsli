@@ -139,6 +139,8 @@ RWTexture2D<float4> finalColor : register(u0);
 RWTexture3D<float4> volumeNoiseTexture : register(u1);
 RWTexture2D<float4> lensFlareTexture : register(u2);
 RWTexture2D<float4> emissiveTexture : register(u3);
+RWTexture2D<float4> outlineAlbedoTexture : register(u4);
+RWTexture2D<float4> outlineEmissiveTexture : register(u5);
 
 
 //barys‚ğŒvZ
