@@ -104,8 +104,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 {
 
 	//描画命令発行
-	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-	m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
+	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
+	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 
 	DrawFunc::DrawModelEcho(
 		m_modelRender.m_model.m_drawCommand,
