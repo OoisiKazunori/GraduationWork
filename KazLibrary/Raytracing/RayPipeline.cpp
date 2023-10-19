@@ -692,6 +692,8 @@ namespace Raytracing {
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(9, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(m_refVolumeNoiseTexture->bufferWrapper->GetViewHandle()));	//ボリュームフォグ用テクスチャ
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(10, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->GetLensFlareBuffer().bufferWrapper->GetViewHandle()));	//レンズフレア用テクスチャ
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(11, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->GetEmissiveGBuffer().bufferWrapper->GetViewHandle()));	//ブルーム用テクスチャ
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(12, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->m_outline->GetOutputAlbedoTexture().bufferWrapper->GetViewHandle()));	//アウトラインのアルベド(後でノイズを書けるため分離)
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(13, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->m_outline->GetOutputEmissiveTexture().bufferWrapper->GetViewHandle()));	//アウトラインのエミッシブ(後でノイズをかけるため分離)
 
 		//パイプラインを設定。
 		DirectX12CmdList::Instance()->cmdList->SetPipelineState1(m_stateObject.Get());

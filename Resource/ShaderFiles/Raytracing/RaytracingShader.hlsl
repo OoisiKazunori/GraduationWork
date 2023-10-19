@@ -94,6 +94,10 @@ void mainRayGen()
     finalColor[launchIndex.xy] = albedoColor * 0.2f;
     emissiveTexture[launchIndex.xy] = emissiveColor;
     lensFlareTexture[launchIndex.xy] = emissiveColor / 8.0f;
+    
+    //アウトラインの色を計算。
+    outlineAlbedoTexture[launchIndex.xy] = float4(0, 0, 0, 0);
+    outlineEmissiveTexture[launchIndex.xy] = float4(0, 0, 0, 0);
   
 }
 
