@@ -38,6 +38,13 @@ void MapManager::Init()
 			//–¼‘O
 			l_obj.m_objetName = l_mapData.doc["Objects"].GetArray()[o_counter]["name"].GetString();
 
+
+			//ƒGƒR[”ÍˆÍ‚Ì‚ ‚é‚à‚Ì‚Í‚±‚±‚Å“o˜^‚µ‚Ä‚¢‚­
+			if (l_obj.m_objetName.starts_with("echo") == true)
+			{
+				
+			}
+
 			m_objects.push_back(l_obj);
 		}
 
@@ -72,6 +79,7 @@ KazMath::Transform3D MapManager::GetPlayerStartPosition(int f_stageNum)
 {
 	KazMath::Transform3D l_result;
 	auto l_map = MapManager::GetStageData(f_stageNum);
+
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
 		if (l_mapItr->m_objetName.starts_with("player") == true)

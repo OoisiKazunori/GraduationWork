@@ -1,5 +1,5 @@
 #include "UI.h"
-#include "../KazLibrary/Input/KeyBoradInputManager.h"
+#include "../Input/Input.h"
 #include "../KazLibrary/Easing/easing.h"
 
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :

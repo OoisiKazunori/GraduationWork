@@ -42,7 +42,7 @@ class MapManager
 	//フォルダ内のファイルネームを取得
 	static bool GetFileNames(std::string f_folderPath, std::list<std::string>& f_fileNames);
 public:
-	MapManager(){};
+	//jsonの読み込みをここで行っている
 	static void Init();
 
 	//ステージ番号を入れるとトランスフォームのリストが帰ってくる
