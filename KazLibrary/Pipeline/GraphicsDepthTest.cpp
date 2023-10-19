@@ -5,13 +5,11 @@
 
 GraphicsDepthTest::GraphicsDepthTest()
 {
-
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
 	dsvHeapDesc.NumDescriptors = 1;
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV; //デプスステンシルビュー
 
 	DirectX12Device::Instance()->dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
-
 }
 
 GraphicsDepthTest::~GraphicsDepthTest()
