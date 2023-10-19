@@ -17,14 +17,14 @@ GraphicsDepthTest::~GraphicsDepthTest()
 }
 
 RESOURCE_HANDLE GraphicsDepthTest::CreateBuffer()
-{	
+{
 	RESOURCE_HANDLE handleNum = handle.GetHandle();
 
 	depthBuffer.push_back({});
 	dsvH.push_back({});
 
 	CD3DX12_RESOURCE_DESC depthResDesc = CD3DX12_RESOURCE_DESC::Tex2D(
-		DXGI_FORMAT_D32_FLOAT,
+		DXGI_FORMAT_D24_UNORM_S8_UINT,
 		WIN_X,
 		WIN_Y,
 		1, 0,
@@ -33,7 +33,7 @@ RESOURCE_HANDLE GraphicsDepthTest::CreateBuffer()
 	);
 
 	CD3DX12_HEAP_PROPERTIES propertices(D3D12_HEAP_TYPE_DEFAULT);
-	CD3DX12_CLEAR_VALUE clearValue(DXGI_FORMAT_D32_FLOAT, 1.0f, 0);
+	CD3DX12_CLEAR_VALUE clearValue(DXGI_FORMAT_D24_UNORM_S8_UINT, 1.0f, 0);
 
 	DirectX12Device::Instance()->dev->CreateCommittedResource(
 		&propertices,
@@ -49,7 +49,7 @@ RESOURCE_HANDLE GraphicsDepthTest::CreateBuffer()
 
 	//深度ビュー作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
-	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	DirectX12Device::Instance()->dev->CreateDepthStencilView(
 		depthBuffer[handleNum].Get(),
@@ -66,5 +66,5 @@ RESOURCE_HANDLE GraphicsDepthTest::CreateBuffer()
 void GraphicsDepthTest::Clear(RESOURCE_HANDLE HANDLE)
 {
 	//深度ステンシルビュー用デスクリプタヒープのハンドルを取得
-	DirectX12CmdList::Instance()->cmdList->ClearDepthStencilView(dsvH[HANDLE], D3D12_CLEAR_FLAG_DEPTH, 1.0, 0, 0, nullptr);
+	DirectX12CmdList::Instance()->cmdList->ClearDepthStencilView(dsvH[HANDLE], D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0, 0, 0, nullptr);
 }

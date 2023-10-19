@@ -64,16 +64,10 @@ void DrawingByRasterize::GeneratePipeline()
 		result.buffer = &callData->extraBufferArray;
 		result.renderTargetHandle = callData->renderTargetHandle;
 		result.depthHandle = callData->depthHandle;
-
 		result.pipelineData = callData->pipelineData.desc;
 
 		result.m_executeIndirectGenerateData.m_uavArgumentBuffer = callData->m_executeIndirectGenerateData.m_uavArgumentBuffer;
 
-
-		if (result.drawCommandType == DrawFuncData::VERT_TYPE::MULTI_MESHED)
-		{
-			bool debug = false;
-		}
 
 		//ExecuteIndirect‚Ì”­s
 		if (callData->drawCommandType == DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX ||

@@ -78,14 +78,6 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
     }
     //法線の計算--------------------------------
 
-    //エコーの範囲外なら描画しない
-    float3 a = echoPos;
-    bool isHitEchoFlag = length(input.worldPos.xyz - echoPos) <= echoRange && 0.0f < length(input.worldPos.xyz);
-    if(!isHitEchoFlag)
-    {
-        discard;
-    }
-
     float4 texColor = AlbedoTex.Sample(smp, input.uv);
     float4 mrColor = MetalnessRoughnessTex.Sample(smp, input.uv);
     

@@ -167,7 +167,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -225,8 +225,8 @@ namespace DrawFuncPipelineData
 		//デプスステンシルステートの設定
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;	//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -273,7 +273,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -330,7 +330,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -398,7 +398,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -487,7 +487,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -596,7 +596,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -644,7 +644,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -1474,6 +1474,24 @@ namespace DrawFuncData
 			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+
+		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
+		//ステンシルテスト
+		depthDesc.StencilEnable = false;
+		depthDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+		depthDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+		//サーフェス法線がカメラに向いているピクセルに対して深度テストとステンシル テストの結果を使用する
+		depthDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		depthDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+		depthDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+		depthDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_LESS;
+		//サーフェス法線がカメラから離れているピクセルに対して深度テストとステンシル テストの結果を使用する
+		depthDesc.BackFace.StencilFailOp = depthDesc.FrontFace.StencilFailOp;
+		depthDesc.BackFace.StencilDepthFailOp = depthDesc.FrontFace.StencilDepthFailOp;
+		depthDesc.BackFace.StencilPassOp = depthDesc.FrontFace.StencilPassOp;
+		depthDesc.BackFace.StencilFunc = depthDesc.FrontFace.StencilFunc;
+		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
+
 		struct EchoData
 		{
 			DirectX::XMFLOAT4 outlineColor;
@@ -1510,7 +1528,7 @@ namespace DrawFuncData
 		drawCall.pipelineData.desc.DepthStencilState.DepthEnable = false;							//深度テストを行う
 		drawCall.pipelineData.desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		drawCall.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//小さければOK
-		drawCall.pipelineData.desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		drawCall.pipelineData.desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)

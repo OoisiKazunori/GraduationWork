@@ -24,8 +24,15 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
-	m_HPBarManager(arg_rasterize)
+	m_HPBarManager(arg_rasterize),
+	m_outlineTex(arg_rasterize, true)
 {
+	//シルエット用のテクスチャを入れる
+	m_outlineTex.m_tex.m_textureBuffer =
+		RenderTargetStatus::Instance()->GetBuffer(
+			GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::OUTLINE]
+		);
+
 	m_modelAnimationRender.Load(
 		arg_rasterize,
 		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
@@ -52,7 +59,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSpriteTransform.pos = { 10.0f,0.0f,0.0f };
 	m_3DSpriteTransform.scale = { 0.1f,0.1f,1.0f };
 	//アニメーション再生無しモデルの位置調整
-	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
+	m_modelTransform.pos = { -10.0f,-10.0f,0.0f };
+	m_modelAnimationTransform.pos = { 0.0f,-10.0f,0.0f };
 
 	m_stageTransform.pos = { 0.0f, -20.0f, 0.0f };
 	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
@@ -95,14 +103,14 @@ void GameScene::Input()
 {
 }
 
-void GameScene::Update(DrawingByRasterize &arg_rasterize)
+void GameScene::Update(DrawingByRasterize& arg_rasterize)
 {
 	/*
-カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
-計算結果は描画情報に渡ります。
-CameraMgr::Instance()->Camera({}, {}, {});
-*/
-//デバック用のカメラワーク(操作はBlenderと同じ)
+	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
+	計算結果は描画情報に渡ります。
+	CameraMgr::Instance()->Camera({}, {}, {});
+	*/
+	//デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
 	m_uiManager.Update();
@@ -116,7 +124,7 @@ CameraMgr::Instance()->Camera({}, {}, {});
 	//ステージの描画
 	m_stageManager.Update(arg_rasterize);
 
-	
+
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -132,7 +140,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
 		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
 		KazMath::Color(255, 0, 0, 255)
-		);
+	);
 	arg_rasterize.ObjectRender(m_modelRender.m_model.m_drawCommandData);
 
 	DrawFunc::DrawModelEcho(
@@ -148,6 +156,9 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+
+	//シルエット用のテクスチャ描画
+	//m_outlineTex.m_tex.Draw2D(arg_rasterize, KazMath::Transform2D());
 
 	//ここにあるのはデラが描画したい者たち
 	/*m_stageManager.Draw(arg_rasterize, arg_blasVec);

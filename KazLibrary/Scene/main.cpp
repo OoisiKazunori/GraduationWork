@@ -121,16 +121,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			wrc.bottom -= OFFSET;
 			wrc.top += OFFSET;
 
-			ClipCursor(&wrc);
+			//ClipCursor(&wrc);
 			//マウス非表示
-			ShowCursor(false);
+			//ShowCursor(false);
 
 		}
 		else
 		{
 			//マウスを画面外に出す
-			ClipCursor(nullptr);
-			ShowCursor(true);
+			//ClipCursor(nullptr);
+			//ShowCursor(true);
 		}
 
 		CheckMessageFlag = msg.CheckMessage();

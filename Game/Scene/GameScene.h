@@ -76,6 +76,7 @@ private:
 
 	BasicDraw::BasicLineRender m_line;
 	BasicDraw::BasicModelRender m_stage;
+	BasicDraw::BasicTextureRender m_outlineTex;
 
 	StageManager m_stageManager;
 	
