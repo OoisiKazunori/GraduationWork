@@ -12,8 +12,8 @@ namespace BasicDraw
 
 	struct BasicModelRender
 	{
-		BasicModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName);
-		BasicModelRender(DrawingByRasterize& arg_rasterize);
+		BasicModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deletePipelineInScene = false);
+		BasicModelRender(DrawingByRasterize& arg_rasterize, bool arg_deletePipelineInScene = false);
 		BasicModelRender();
 		void Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName);
 		void Load(DrawingByRasterize& arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall);
@@ -21,8 +21,9 @@ namespace BasicDraw
 	};
 	struct BasicTextureRender
 	{
-		BasicTextureRender(DrawingByRasterize& arg_rasterize,const std::string& arg_filePass, bool arg_isUIFlag = false);
-		BasicTextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag = false);
+		BasicTextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
+		BasicTextureRender(DrawingByRasterize& arg_rasterize, const char* arg_filePass, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
+		BasicTextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
 		DrawFuncHelper::TextureRender m_tex;
 	};
 
