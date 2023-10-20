@@ -1484,12 +1484,12 @@ namespace DrawFuncData
 		depthDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
 		depthDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
 		depthDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
-		depthDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+		depthDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_GREATER_EQUAL;
 		//サーフェス法線がカメラから離れているピクセルに対して深度テストとステンシル テストの結果を使用する
-		depthDesc.BackFace.StencilFailOp = depthDesc.FrontFace.StencilFailOp;
-		depthDesc.BackFace.StencilDepthFailOp = depthDesc.FrontFace.StencilDepthFailOp;
-		depthDesc.BackFace.StencilPassOp = depthDesc.FrontFace.StencilPassOp;
-		depthDesc.BackFace.StencilFunc = depthDesc.FrontFace.StencilFunc;
+		depthDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_DECR;
+		depthDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_DECR;
+		depthDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+		depthDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
 
 		struct EchoData
