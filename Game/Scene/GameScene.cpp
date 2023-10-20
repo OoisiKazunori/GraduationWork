@@ -21,7 +21,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
 	//DrawFuncHelperでのモデル読み込み
 	m_line(arg_rasterize),
-	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
@@ -42,6 +41,12 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 		arg_rasterize,
 		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
 		DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"))
+	);
+
+	m_stage.Load(
+		arg_rasterize,
+		ModelLoader::Instance()->Load("Resource/Stage/", "Stage.gltf"),
+		DrawFuncData::SetDefferdRenderingModelAnimationStencil(ModelLoader::Instance()->Load("Resource/Stage/", "Stage.gltf"))
 	);
 
 	/*

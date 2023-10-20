@@ -1456,6 +1456,50 @@ namespace DrawFuncData
 		return drawCall;
 	};
 
+	static DrawCallData SetDefferdRenderingModelAnimationStencil(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
+	{
+		DrawCallData drawCall;
+
+		DrawFuncData::PipelineGenerateData lData;
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+
+		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+
+
+		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
+		//ステンシルテスト
+		depthDesc.StencilEnable = true;
+		depthDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+		depthDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+		//サーフェス法線がカメラに向いているピクセルに対して深度テストとステンシル テストの結果を使用する
+		depthDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		depthDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+		depthDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+		depthDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_GREATER;
+		//サーフェス法線がカメラから離れているピクセルに対して深度テストとステンシル テストの結果を使用する
+		depthDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_DECR;
+		depthDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_DECR;
+		depthDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+		depthDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
+
+		drawCall.SetupRaytracing(arg_isOpaque);
+		return drawCall;
+	};
+
 	//一定の範囲内で描画する処理とアウトラインの表示
 	static DrawCallData SetDefferdRenderingModelAnimationOutline(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
 	{
