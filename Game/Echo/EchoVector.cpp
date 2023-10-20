@@ -7,12 +7,16 @@ EchoVector::EchoVector()
 void EchoVector::Init()
 {
 
+	//配列をクリア。
 	m_echoVector.clear();
 
 }
 
 void EchoVector::Update()
 {
+
+	//GPUにデータを転送する。
+
 }
 
 void EchoVector::Add(std::weak_ptr<Echo> arg_refEcho)

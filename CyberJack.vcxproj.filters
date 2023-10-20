@@ -100,6 +100,8 @@
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
+    <ClCompile Include="Game\Echo\Echo.cpp" />
+    <ClCompile Include="Game\Echo\EchoVector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -218,6 +220,8 @@
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
+    <ClInclude Include="Game\Echo\Echo.h" />
+    <ClInclude Include="Game\Echo\EchoVector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

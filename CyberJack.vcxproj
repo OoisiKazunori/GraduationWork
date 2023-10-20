@@ -120,6 +120,8 @@
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Debug\DebugCamera.cpp" />
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
+    <ClCompile Include="Game\Echo\Echo.cpp" />
+    <ClCompile Include="Game\Echo\EchoVector.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
@@ -221,6 +223,8 @@
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Debug\DebugCamera.h" />
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
+    <ClInclude Include="Game\Echo\Echo.h" />
+    <ClInclude Include="Game\Echo\EchoVector.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
     <ClInclude Include="Game\Input\Input.h" />
