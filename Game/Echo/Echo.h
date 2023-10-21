@@ -2,14 +2,14 @@
 #include "../KazLibrary/Math/KazMath.h"
 
 /// <summary>
-/// エコークラス。エコーを出す各クラスがこれを持ち、EchoVectorに登録することでGPUに値が送られる。
+/// エコークラス。エコーを出す各クラスがこれを持ち、EchoArrayに登録することでGPUに値が送られる。
 /// </summary>
 class Echo {
 
 public:
 
 	/// <summary>
-	/// GPUに送るエコーの情報。EchoVectorにEchoクラスを渡すことでこの構造体の値が追加される。
+	/// GPUに送るエコーの情報。EchoArrayにEchoクラスを渡すことでこの構造体の値が追加される。
 	/// </summary>
 	struct EchoData {
 		KazMath::Vec3<float> m_pos;

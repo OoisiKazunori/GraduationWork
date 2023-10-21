@@ -78,6 +78,7 @@ namespace Raytracing {
 		KazBufferHelper::BufferData* m_refRaymarchingConstData;
 		KazBufferHelper::BufferData* m_refDebugOnOffConstData;
 		KazBufferHelper::BufferData* m_refDebugSeaConstData;
+		KazBufferHelper::BufferData* m_refEchoStructuredBufferData;
 		
 		//アウトラインにノイズをかける用の定数バッファ
 		KazBufferHelper::BufferData m_outlineNoiseConstBufferData;
@@ -150,6 +151,7 @@ namespace Raytracing {
 		void SetRaymarchingConstData(KazBufferHelper::BufferData* arg_raymarchingParamConstData) { m_refRaymarchingConstData = arg_raymarchingParamConstData; }
 		void SetDebugOnOffConstData(KazBufferHelper::BufferData* arg_debugOnOffConstData) { m_refDebugOnOffConstData = arg_debugOnOffConstData; }
 		void SetDebugSeaConstData(KazBufferHelper::BufferData* arg_debugSeaConstData) { m_refDebugSeaConstData = arg_debugSeaConstData; }
+		void SetEchoStructuredBufferData(KazBufferHelper::BufferData* arg_echStructuredBufferData) { m_refEchoStructuredBufferData = arg_echStructuredBufferData; }
 
 	private:
 

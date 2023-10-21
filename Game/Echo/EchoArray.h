@@ -2,21 +2,32 @@
 #include <vector>
 #include <memory>
 #include "Echo.h"
+#include "../KazLibrary/Helper/KazBufferHelper.h"
+#include "../KazLibrary/Helper/ISinglton.h"
 
 /// <summary>
-/// 使用するEchoのデータが入っているvectorクラス。そのフレームで使用するEchoを追加していく。
+/// 使用するEchoのデータが入っているArrayクラス。そのフレームで使用するEchoを追加していく。
 /// </summary>
-class EchoVector {
+class EchoArray : public ISingleton<EchoArray>{
 
 private:
 
-	std::vector<Echo::EchoData> m_echoVector;
-	const int MAX_ELEMENT_COUNT = 64;
+	//GPUに転送する構造化バッファ本体。
+	static const int MAX_ELEMENT_COUNT = 64;
+	std::array<Echo::EchoData, MAX_ELEMENT_COUNT> m_echoArray;
+
+	//構造化バッファ
+	KazBufferHelper::BufferData m_echoStructuredBuffer;
 
 
 public:
 
-	EchoVector();
+	EchoArray();
+
+	/// <summary>
+	/// 構造化バッファなどを生成する。
+	/// </summary>
+	void Setting();
 
 	/// <summary>
 	/// 初期化処理 主に配列をクリアする処理を書く予定。シーンの更新処理の一番先頭に持ってきたい。
@@ -33,6 +44,8 @@ public:
 	/// </summary>
 	/// <param name="arg_refEcho"></param>
 	void Add(std::weak_ptr<Echo> arg_refEcho);
+
+	KazBufferHelper::BufferData GetEchoStructuredBuffer() { return m_echoStructuredBuffer; }
 
 
 };
