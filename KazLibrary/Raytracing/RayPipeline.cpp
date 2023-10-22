@@ -682,13 +682,13 @@ namespace Raytracing {
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, GBufferMgr::Instance()->GetGPUHandle(GBufferMgr::R_M_S_ID));//マテリアル
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(4, GBufferMgr::Instance()->GetGPUHandle(GBufferMgr::WORLD));	//ワールド座標
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(5, GBufferMgr::Instance()->GetGPUHandle(GBufferMgr::EMISSIVE));	//ワールド座標
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(6, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(m_refEchoStructuredBufferData->bufferWrapper->GetViewHandle()));	//ワールド座標
 
 		//DirectX12CmdList::Instance()->cmdList->SetComputeRootShaderResourceView(6, m_refEchoStructuredBufferData->bufferWrapper->GetGpuAddress());
 
 		//カメラ用定数バッファをセット。
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(7, GBufferMgr::Instance()->GetEyePosBuffer().bufferWrapper->GetGpuAddress());
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(8, GBufferMgr::Instance()->m_lightBuffer.bufferWrapper->GetGpuAddress());
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(6, GBufferMgr::Instance()->GetEyePosBuffer().bufferWrapper->GetGpuAddress());
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(7, GBufferMgr::Instance()->m_lightBuffer.bufferWrapper->GetGpuAddress());
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(8, m_refEchoConstBufferData->bufferWrapper->GetGpuAddress());	//エコーのデータ
 
 		//書き込み用UAV
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(9, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->GetRayTracingBuffer().bufferWrapper->GetViewHandle()));	//レイトレ出力用

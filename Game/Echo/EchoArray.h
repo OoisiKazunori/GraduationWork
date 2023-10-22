@@ -45,7 +45,7 @@ public:
 	/// <param name="arg_refEcho"></param>
 	void Add(std::weak_ptr<Echo> arg_refEcho);
 
-	KazBufferHelper::BufferData GetEchoStructuredBuffer() { return m_echoStructuredBuffer; }
+	KazBufferHelper::BufferData* GetEchoStructuredBuffer() { return &m_echoStructuredBuffer; }
 
 
 };

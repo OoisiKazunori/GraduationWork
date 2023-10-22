@@ -89,6 +89,7 @@ void mainRayGen()
     //    }
         
     //}
+
     
     //合成の結果を入れる。
     finalColor[launchIndex.xy] = albedoColor * 0.2f;
@@ -98,6 +99,13 @@ void mainRayGen()
     //アウトラインの色を計算。
     outlineAlbedoTexture[launchIndex.xy] = float4(0, 0, 0, 0);
     outlineEmissiveTexture[launchIndex.xy] = float4(0, 0, 0, 0);
+    
+    if (length(worldColor.xyz - echoData.m_echoData[0].m_pos) < echoData.m_echoData[0].m_radius)
+    {
+        
+        finalColor[launchIndex.xy] = float4(1, 0, 0, 1);
+        
+    }
   
 }
 
@@ -257,8 +265,8 @@ void checkHitRayMS(inout Payload payload)
             {
         
               //アルベドにライトの色をかける。
-              float3 lightColor = float3(1, 1, 1) * dayRate + NIGHT_LIGHT_COLOR * (1.0f - dayRate);
-             payload.m_color.xyz *= lightColor * clamp(bright, 0.0f, 1.0f);
+                float3 lightColor = float3(1, 1, 1) * dayRate + NIGHT_LIGHT_COLOR * (1.0f - dayRate);
+                payload.m_color.xyz *= lightColor * clamp(bright, 0.0f, 1.0f);
             
             }
     

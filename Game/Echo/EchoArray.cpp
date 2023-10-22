@@ -9,7 +9,7 @@ void EchoArray::Setting()
 {
 
 	//構造化バッファを生成。
-	m_echoStructuredBuffer = KazBufferHelper::SetUploadBufferData(sizeof(Echo::EchoData) * MAX_ELEMENT_COUNT, "EchoStructuredBuffer");
+	m_echoStructuredBuffer = KazBufferHelper::SetConstBufferData(sizeof(Echo::EchoData) * MAX_ELEMENT_COUNT, "EchoData");
 
 }
 
@@ -42,7 +42,7 @@ void EchoArray::Add(std::weak_ptr<Echo> arg_refEcho)
 	//Radiusが0のところからどんどん積んでいく。
 	for (auto& index : m_echoArray) {
 
-		if (index.m_radius <= 0.0f) continue;
+		if (0.0f < index.m_radius) continue;
 
 		index = arg_refEcho.lock()->GetEchoData();
 

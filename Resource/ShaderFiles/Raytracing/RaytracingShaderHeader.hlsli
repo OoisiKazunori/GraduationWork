@@ -112,13 +112,17 @@ struct ShockWaveParam
 };
 
 //エコー用構造体
-const float ECHO_ELEMENT_COUNT = 64;
+static const int ECHO_ELEMENT_COUNT = 64;
 struct EchoData
 {
 	float3 m_pos;
     float m_radius;
 	float3 m_color;
     float m_alpha;
+};
+struct EchoConstData
+{
+    EchoData m_echoData[ECHO_ELEMENT_COUNT];
 };
 
 
@@ -135,6 +139,7 @@ RaytracingAccelerationStructure gRtScene : register(t0);
 //カメラ座標用定数バッファ
 ConstantBuffer<CameraEyePosConstData> cameraEyePos : register(b0);
 ConstantBuffer<LightData> lightData : register(b1);
+ConstantBuffer<EchoConstData> echoData : register(b2);
 
 //GBuffer
 Texture2D<float4> albedoMap : register(t1);
@@ -142,7 +147,6 @@ Texture2D<float4> normalMap : register(t2);
 Texture2D<float4> materialMap : register(t3);
 Texture2D<float4> worldMap : register(t4);
 Texture2D<float4> emissiveMap : register(t5);
-StructuredBuffer<EchoData> echoDataArray : register(t6);
 
 //出力先UAV
 RWTexture2D<float4> finalColor : register(u0);
