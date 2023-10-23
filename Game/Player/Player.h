@@ -4,7 +4,6 @@
 class MeshCollision;
 class BulletMgr;
 class Camera;
-class Echo;
 
 class Player {
 
@@ -31,9 +30,6 @@ private:
 		SQUAT,
 		CREEPING,
 	}m_playerAttitude;
-
-	//テスト用エコークラス
-	std::shared_ptr<Echo> m_testEcho;
 
 public:
 

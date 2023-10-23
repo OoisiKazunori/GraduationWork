@@ -30,8 +30,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="arg_echoColor"> エコーの色 </param>
-	Echo(KazMath::Vec3<float> arg_echoColor);
+	Echo();
 
 	/// <summary>
 	/// 初期化処理 強制的にエコーを切る。
@@ -42,7 +41,8 @@ public:
 	/// 生成処理
 	/// </summary>
 	/// <param name="arg_maxEchoRadius"> エコーの到達半径 </param>
-	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius);
+	/// <param name="arg_echoColor"> エコーの色 </param>
+	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, KazMath::Vec3<float> arg_echoColor);
 
 	/// <summary>
 	/// 更新処理

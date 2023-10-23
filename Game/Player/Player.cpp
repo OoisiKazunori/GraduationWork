@@ -11,7 +11,6 @@ Player::Player(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
 {
 	Init();
-	m_testEcho = std::make_shared<Echo>(KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
 }
 
 void Player::Init()
@@ -89,10 +88,11 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 
 	}
 
-	m_testEcho->Generate(m_transform.pos, 100.0f);
-	m_testEcho->Update();
-	EchoArray::Instance()->Add(m_testEcho);
-	EchoArray::Instance()->Update();
+	if (KeyBoradInputManager::Instance()->InputState(DIK_P)) {
+
+		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(1, 0, 0));
+
+	}
 
 }
 

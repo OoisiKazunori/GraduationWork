@@ -28,23 +28,33 @@ void EchoArray::Init()
 void EchoArray::Update()
 {
 
+	for (auto& index : m_echo) {
+
+		if (!index.GetIsActive()) continue;
+
+		index.Update();
+
+	}
+
+	for (int index = 0; index < MAX_ELEMENT_COUNT; ++index) {
+
+		m_echoArray[index] = m_echo[index].GetEchoData();
+
+	}
+
 	//GPUにデータを転送する。
 	m_echoStructuredBuffer.bufferWrapper->TransData(m_echoArray.data(), sizeof(Echo::EchoData) * MAX_ELEMENT_COUNT);
 
 }
 
-void EchoArray::Add(std::weak_ptr<Echo> arg_refEcho)
+void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, KazMath::Vec3<float> arg_color)
 {
 
-	//フラグが有効化されているか？
-	if (!arg_refEcho.lock()->GetIsActive()) return;
+	for (auto& index : m_echo) {
 
-	//Radiusが0のところからどんどん積んでいく。
-	for (auto& index : m_echoArray) {
+		if (index.GetIsActive()) continue;
 
-		if (0.0f < index.m_radius) continue;
-
-		index = arg_refEcho.lock()->GetEchoData();
+		index.Generate(arg_pos, arg_maxRadius, arg_color);
 
 		break;
 

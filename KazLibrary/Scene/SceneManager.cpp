@@ -146,6 +146,9 @@ void SceneManager::Update()
 	//シェイク量を更新。
 	ShakeMgr::Instance()->Update();
 
+	//エコーを更新。
+	EchoArray::Instance()->Update();
+
 	//シーン遷移の開始
 	if (m_nextSceneNumber != m_nowSceneNumber)
 	{
