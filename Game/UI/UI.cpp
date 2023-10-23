@@ -395,7 +395,7 @@ void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 	m_HPBarRed.SetScale({ redXSize, 1.0f });
 	m_HPBarRed.SetPosition({ redPos + (float)c_texOffset, c_BaseUIY });
 	m_HPBarRed.Draw(arg_rasterize);
-	
+
 	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
 	m_HPFrame.Draw(arg_rasterize);
 }
@@ -423,4 +423,57 @@ void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 	{
 		m_redHP = 0;
 	}
+}
+
+HeartRate::HeartRate(DrawingByRasterize& arg_rasterize) :
+	m_HeartRateBaseUI(arg_rasterize, "Resource/UITexture/heartBase.png"),
+	m_HeartRateUI(arg_rasterize, "Resource/UITexture/heartRate.png"),
+	m_HeartRateFrameUI(arg_rasterize, "Resource/UITexture/heartFrame.png")
+{
+
+}
+
+void HeartRate::Update(int f_heartRate)
+{
+	if (m_nowRate != f_heartRate)
+	{
+		m_isRateDirty = true;
+		m_nextRate = f_heartRate;
+	}
+
+	m_nowRateCount--;
+	if (m_nowRateCount <= 0)
+	{
+		m_nowRateCount = m_nextRate;
+		m_nowRate = m_nextRate;
+		m_nowRateScale = 0.0f;
+		m_echoEnd = false;
+	}
+	//ƒGƒR[‚ðL‚°‚Ä‚­
+	else
+	{
+		if (!m_echoEnd)
+		{
+			m_nowRateScale += m_rateScaleSpeed;
+			if (m_nowRateScale > 1.0f)
+			{
+				m_echoEnd = true;
+				m_nowRateScale = 0.0f;
+			}
+		}
+	}
+}
+
+void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
+{
+	m_HeartRateBaseUI.SetPosition({ c_BaseUIX, c_BaseUIY });
+	m_HeartRateBaseUI.Draw(arg_rasterize);
+
+
+	m_HeartRateUI.SetScale({ m_nowRateScale , m_nowRateScale });
+	m_HeartRateUI.SetPosition({ c_BaseUIX, c_BaseUIY });
+	m_HeartRateUI.Draw(arg_rasterize);
+
+	m_HeartRateFrameUI.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HeartRateFrameUI.Draw(arg_rasterize);
 }

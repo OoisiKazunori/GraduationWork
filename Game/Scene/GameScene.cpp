@@ -24,7 +24,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
-	m_HPBarManager(arg_rasterize)
+	m_HPBarManager(arg_rasterize),
+	m_heartRateManager(arg_rasterize)
 {
 	m_modelAnimationRender.Load(
 		arg_rasterize,
@@ -56,18 +57,21 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 
 	m_stageTransform.pos = { 0.0f, -20.0f, 0.0f };
 	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
+	
+	MapManager::Init();
+	m_stageManager.Init(arg_rasterize);
 
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
-	m_stageMeshCollision->Setting(m_stage.m_model.m_modelInfo->modelData[0].vertexData, m_stageTransform);
-
-	m_player = std::make_shared<Player>(arg_rasterize);
+	m_stageMeshCollision->Setting(m_stageManager.m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stageManager.m_stage->m_transform);
+	
+	
+	m_player = std::make_shared<Player>(arg_rasterize, MapManager::GetPlayerStartPosition(0));
 	m_camera = std::make_shared<Camera>();
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
 
-	MapManager::Init();
-	m_stageManager.Init(arg_rasterize);
+	
 
 }
 
@@ -113,10 +117,23 @@ CameraMgr::Instance()->Camera({}, {}, {});
 	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 	m_bulletMgr->Update(m_stageMeshCollision);
 
-	//ステージの描画
+
 	m_stageManager.Update(arg_rasterize);
 
-	
+	static bool flag = false;
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+	{
+		if (flag) flag = false;
+		else flag = true;
+	}
+	if (flag)
+	{
+		m_heartRateManager.Update(60);
+	}
+	else
+	{
+		m_heartRateManager.Update(120);
+	}
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -146,15 +163,16 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち
-	/*m_stageManager.Draw(arg_rasterize, arg_blasVec);
-	m_weponUIManager.Draw(arg_rasterize);
+	m_stageManager.Draw(arg_rasterize, arg_blasVec);
+	//m_weponUIManager.Draw(arg_rasterize);
 	m_uiManager.Draw(arg_rasterize);
 	m_gadgetMaanager.Draw(arg_rasterize);
-	m_HPBarManager.Draw(arg_rasterize);*/
+	m_HPBarManager.Draw(arg_rasterize);
+	m_heartRateManager.Draw(arg_rasterize);
 }
 
 int GameScene::SceneChange()

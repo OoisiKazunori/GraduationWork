@@ -149,8 +149,35 @@ public:
 	void HitDamage(int f_mainDamage, int f_redZone);
 };
 
-class CamouflagePercent
+class HeartRate
 {
-	UI2DElement m_baseUI;
+	UI2DElement m_HeartRateBaseUI;
+	UI2DElement m_HeartRateUI;
+	UI2DElement m_HeartRateFrameUI;
 
+	float rateEx = 0.0f;
+
+	static const int c_texOffset = 40;
+	static const int c_UITexX = 136;
+	static const int c_UITexY = 136;
+	static const int c_BaseUIX = 1280 - (c_UITexX / 2) - c_texOffset;
+	static const int c_BaseUIY = c_UITexY - c_texOffset ;
+
+	int m_nowRateCount;
+	float m_nowRateScale = 0.0f;
+	const float m_rateScaleSpeed = 0.02f;
+	int m_nowRate = 60;
+	bool m_isRateDirty = false;
+	int m_nextRate = 60;
+	bool m_echoEnd = false;
+
+	//Šg‘å—¦
+	float m_rateExt = 0.0f;
+
+public:
+	HeartRate(DrawingByRasterize& arg_rasterize);
+
+	void Init();
+	void Update(int f_heartRate);
+	void Draw(DrawingByRasterize& arg_rasterize);
 };

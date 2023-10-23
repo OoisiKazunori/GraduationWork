@@ -6,9 +6,10 @@
 #include "../Camera.h"
 #include "../KazLibrary/PostEffect/Outline.h"
 
-Player::Player(DrawingByRasterize& arg_rasterize) :
+Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
 {
+	m_transform = f_startPos;
 	Init();
 }
 

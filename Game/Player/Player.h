@@ -33,7 +33,7 @@ private:
 
 public:
 
-	Player(DrawingByRasterize& arg_rasterize);
+	Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos);
 
 	void Init();
 
