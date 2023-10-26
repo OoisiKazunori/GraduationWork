@@ -55,7 +55,8 @@ RESOURCE_HANDLE GraphicsDepthTest::CreateBuffer()
 	dsvH[handleNum] = dsvHeap->GetCPUDescriptorHandleForHeapStart();
 	dsvHeap->SetName(L"GraphicsDepthTest");
 
-	//深度ステンシルバッファのテクスチャとして描画する用のバッファ
+	//深度ステンシルバッファをテクスチャとして描画する用のバッファ
+	//テクスチャとして描画する際はこちらのバッファを使用しています。
 	{
 		CD3DX12_RESOURCE_DESC texDesc = CD3DX12_RESOURCE_DESC::Tex2D(
 			DXGI_FORMAT_R24_UNORM_X8_TYPELESS,
@@ -64,7 +65,6 @@ RESOURCE_HANDLE GraphicsDepthTest::CreateBuffer()
 			1,
 			0
 		);
-
 		depthBufferTex = KazBufferHelper::BufferResourceData(
 			propertices,
 			D3D12_HEAP_FLAG_NONE,
