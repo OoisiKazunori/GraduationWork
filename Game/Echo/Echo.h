@@ -24,6 +24,15 @@ private:
 	float m_maxEchoRadius;	//エコーの半径の最大値
 	bool m_isActive;		//このエコーが有効化されているかのフラグ
 
+	enum class STATUS {
+		APPEAR,
+		EXIT,
+	}m_status;
+	float m_easingTimer;
+	const float APPEAR_EASING_TIMER = 30.0f;
+	const float EXIT_EASING_TIMER = 20.0f;
+	const float ALPHA = 0.12f;
+
 
 public:
 

@@ -97,15 +97,45 @@ void mainRayGen()
     lensFlareTexture[launchIndex.xy] = emissiveColor / 8.0f;
     
     //アウトラインの色を計算。
-    outlineAlbedoTexture[launchIndex.xy] = float4(0, 0, 0, 0);
-    outlineEmissiveTexture[launchIndex.xy] = float4(0, 0, 0, 0);
-    
-    if (length(worldColor.xyz - echoData.m_echoData[0].m_pos) < echoData.m_echoData[0].m_radius)
+    float4 outlineColor = float4(0, 0, 0, 0);
+    if (0.0f < length(worldColor.xyz))
     {
+        for (int index = 0; index < ECHO_ELEMENT_COUNT; ++index)
+        {
         
-        finalColor[launchIndex.xy] = float4(1, 0, 0, 1);
+            if (echoData.m_echoData[index].m_alpha <= 0.0f)
+                continue;
         
+            if (length(worldColor.xyz - echoData.m_echoData[index].m_pos) < echoData.m_echoData[index].m_radius)
+            {
+                
+                //レイを飛ばして交差しているかを判断
+                Payload payloadData;
+                payloadData.m_emissive = float3(0.0f, 0.0f, 0.0f);
+                payloadData.m_color = float3(0.0f, 0.0f, 0.0f); //色を真っ黒にしておく。レイを飛ばしてどこにもあたらなかった時に呼ばれるMissShaderが呼ばれたらそこで1を書きこむ。
+                payloadData.m_rayID = 3;
+        
+                //レイを撃つ
+                CastRay(payloadData, worldColor.xyz + normalColor.xyz, normalize(echoData.m_echoData[index].m_pos - worldColor.xyz), length(echoData.m_echoData[index].m_pos - worldColor.xyz), MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+                
+                if (payloadData.m_color.x <= -1.0f)
+                {
+                    
+                    outlineColor.xyz = echoData.m_echoData[index].m_color * echoData.m_echoData[index].m_alpha;
+                    outlineColor.w = 1.0f;
+                    outlineColor.xyz = echoData.m_echoData[index].m_color * echoData.m_echoData[index].m_alpha;
+                    outlineColor.w = 1.0f;
+                
+                }
+                
+        
+            }
+        
+        }
     }
+    outlineAlbedoTexture[launchIndex.xy] = outlineColor;
+    outlineEmissiveTexture[launchIndex.xy] = outlineColor;
+    
   
 }
 

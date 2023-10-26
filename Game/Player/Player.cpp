@@ -88,9 +88,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 
 	}
 
-	if (KeyBoradInputManager::Instance()->InputState(DIK_P)) {
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P)) {
 
-		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(1, 0, 0));
+		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
 
 	}
 
