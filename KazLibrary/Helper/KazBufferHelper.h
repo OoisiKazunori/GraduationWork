@@ -168,6 +168,10 @@ namespace KazBufferHelper
 			const Microsoft::WRL::ComPtr<ID3D12Resource>& SRC_BUFFER
 		)const;
 
+		void CopyBufferRegion(
+			const Microsoft::WRL::ComPtr<ID3D12Resource>& SRC_BUFFER
+		)const;
+
 		void ChangeBarrier(
 			D3D12_RESOURCE_STATES BEFORE_STATE,D3D12_RESOURCE_STATES AFTER_STATE
 		);
@@ -230,7 +234,6 @@ namespace KazBufferHelper
 		GraphicsRootParamType rootParamType;
 		UINT structureSize;
 		UINT elementNum;
-
 
 		BufferData(const KazBufferHelper::BufferResourceData& BUFFER_DATA) :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), structureSize(0), elementNum(0), bufferWrapper(std::make_shared<ID3D12ResourceWrapper>())
 		{

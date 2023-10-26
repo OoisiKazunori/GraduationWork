@@ -24,7 +24,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
-	m_outlineTex(arg_rasterize, true)
+	m_outlineTex(arg_rasterize, true),
+	m_DSVSprite(arg_rasterize,DrawFuncData::SetStencilSprite(), true)
 {
 	//シルエット用のテクスチャを入れる
 	m_outlineTex.m_tex.m_textureBuffer =
@@ -82,6 +83,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	MapManager::Init();
 	m_stageManager.Init(arg_rasterize);
 
+
+	m_DSVSprite.m_tex.m_textureBuffer = RenderTargetStatus::Instance()->gDepth.depthBufferTex;
 }
 
 GameScene::~GameScene()
@@ -134,7 +137,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
 	//描画命令発行
 	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
@@ -161,6 +163,12 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+
+	m_spriteTransform.pos.x = 1280 / 2;
+	m_spriteTransform.pos.y = 720 / 2;
+	m_spriteTransform.scale = { 1280,720 };
+	DrawFunc::DrawTextureIn2DOnlyTex(m_DSVSprite.m_tex.m_drawCommand, m_spriteTransform, m_DSVSprite.m_tex.m_textureBuffer);
+	arg_rasterize.UIRender(m_DSVSprite.m_tex.m_drawCommandData);
 
 	//シルエット用のテクスチャ描画
 	//m_outlineTex.m_tex.Draw2D(arg_rasterize, KazMath::Transform2D());

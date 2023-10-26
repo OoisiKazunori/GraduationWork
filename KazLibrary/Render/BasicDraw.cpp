@@ -78,6 +78,15 @@ BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_raster
 	}
 }
 
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+	:m_tex(arg_rasterize, arg_drawCall, arg_isUIFlag, arg_deletePipelineInScene)
+{
+	if (!arg_isUIFlag)
+	{
+		m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	}
+}
+
 BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize& arg_rasterize) :
 	m_render(arg_rasterize, DrawFuncData::SetLine(DrawFuncData::GetBasicGBufferShader()))
 {

@@ -376,6 +376,36 @@ void KazBufferHelper::ID3D12ResourceWrapper::CopyBuffer(const Microsoft::WRL::Co
 	}
 }
 
+void KazBufferHelper::ID3D12ResourceWrapper::CopyBufferRegion(const Microsoft::WRL::ComPtr<ID3D12Resource>& SRC_BUFFER) const
+{
+	for (int i = 0; i < buffer.size(); ++i)
+	{
+		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(buffer[i].Get(),
+				resourceState,
+				D3D12_RESOURCE_STATE_COPY_DEST
+			)
+		);
+
+		DirectX12CmdList::Instance()->cmdList->CopyBufferRegion(
+			buffer[i].Get(),
+			0,
+			SRC_BUFFER.Get(),
+			0,
+			4
+		);
+
+		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(buffer[i].Get(),
+				D3D12_RESOURCE_STATE_COPY_DEST,
+				resourceState
+			)
+		);
+	}
+}
+
 void KazBufferHelper::ID3D12ResourceWrapper::ChangeBarrier(D3D12_RESOURCE_STATES BEFORE_STATE, D3D12_RESOURCE_STATES AFTER_STATE)
 {
 	for (int i = 0; i < buffer.size(); ++i)

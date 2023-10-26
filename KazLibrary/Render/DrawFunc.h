@@ -48,6 +48,16 @@ namespace DrawFunc
 		arg_callData.extraBufferArray[2].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		arg_callData.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 	}
+	static void DrawTextureIn2DOnlyTex(DrawFuncData::DrawCallData& arg_callData, const KazMath::Transform2D& arg_transform, const KazBufferHelper::BufferData& arg_texture)
+	{
+		//行列情報
+		DirectX::XMMATRIX mat = arg_transform.GetMat() * CameraMgr::Instance()->GetOrthographicMatProjection();
+		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+		//テクスチャ情報
+		arg_callData.extraBufferArray[1] = arg_texture;
+		arg_callData.extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+		arg_callData.extraBufferArray[1].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+	}
 
 
 	static void DrawModelInRaytracing(DrawFuncData::DrawCallData& arg_callData, KazMath::Transform3D& arg_transform, RayTracingType arg_type)
