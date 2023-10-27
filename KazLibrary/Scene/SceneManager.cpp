@@ -20,10 +20,9 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	//デモ用のゲームシーンを設定。
 	m_nowScene = GetScene(0);
 	m_nowScene->Init();
-	m_rasterize.GeneratePipeline();
-
 	//シーン遷移を設定
-	m_sceneChange = std::make_unique<ChangeScene::SceneChange>();
+	m_sceneChange = std::make_unique<ChangeScene::SceneChange>(m_rasterize);
+	m_rasterize.GeneratePipeline();
 
 	//シーン番号、遷移に関するパラメーターを設定。
 	m_nowSceneNumber = -1;
@@ -117,7 +116,6 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	m_Title = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Title.wav");
 	SoundManager::Instance()->SoundPlayerWave(m_Title, 100);
 	m_Title.source->SetVolume(0.1f);
-
 }
 
 SceneManager::~SceneManager()
