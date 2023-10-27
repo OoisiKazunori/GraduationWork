@@ -268,7 +268,6 @@ void DrawingByRasterize::SortAndRender()
 			}
 		});
 
-
 	//描画命令
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(DirectX::XMFLOAT3(0, 0, 0));
@@ -294,6 +293,8 @@ void DrawingByRasterize::SortAndRender()
 
 		RESOURCE_HANDLE pipelineHandle = renderData->pipelineHandle;
 		RESOURCE_HANDLE rootSignatureHandle = -1;
+
+		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_COMMON);
 		//通常の描画
 		if (renderData->drawCommandType != DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX)
 		{
@@ -320,6 +321,7 @@ void DrawingByRasterize::SortAndRender()
 			);
 			//SetBufferOnCmdList(renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
 		}
+		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
 		//描画コマンド実行
 		switch (renderData->drawCommandType)
@@ -343,6 +345,8 @@ void DrawingByRasterize::SortAndRender()
 			break;
 		}
 	}
+
+	RenderTargetStatus::Instance()->gDepth.WriteInTex();
 
 	if (preRenderTargetHandle != -1)
 	{
@@ -390,6 +394,7 @@ void DrawingByRasterize::UISortAndRender()
 		preDepthHandle = renderData->depthHandle;
 		preRenderTargetHandle = renderData->renderTargetHandle;
 
+		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_COMMON);
 
 		RESOURCE_HANDLE pipelineHandle = renderData->pipelineHandle;
 		RESOURCE_HANDLE rootSignatureHandle = -1;
@@ -419,6 +424,7 @@ void DrawingByRasterize::UISortAndRender()
 			);
 			//SetBufferOnCmdList(renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
 		}
+		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
 		//描画コマンド実行
 		switch (renderData->drawCommandType)
@@ -461,6 +467,12 @@ void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::B
 		{
 			continue;
 		}
+
+		/*if (BUFFER_ARRAY[i].m_changeBarrierFlag)
+		{
+			BUFFER_ARRAY[i].bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		}*/
+
 		//デスクリプタヒープにコマンドリストに積む。余りが偶数ならデスクリプタヒープだと判断する
 		if (BUFFER_ARRAY[i].rangeType % 2 == 0)
 		{
@@ -483,6 +495,11 @@ void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::B
 		default:
 			break;
 		}
+
+		//if (BUFFER_ARRAY[i].m_changeBarrierFlag)
+		//{
+		//	BUFFER_ARRAY[i].bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_COMMON);
+		//}
 	}
 }
 

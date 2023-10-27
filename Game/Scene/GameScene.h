@@ -83,4 +83,8 @@ private:
 	WeponUIManager m_uiManager;
 	GadgetUIManager m_gadgetMaanager;
 	HPUI m_HPBarManager;
+
+	//ステンシルバッファをDSVに書き込む
+	BasicDraw::BasicTextureRender m_DSVSprite;
+	KazMath::Transform2D m_spriteTransform;
 };

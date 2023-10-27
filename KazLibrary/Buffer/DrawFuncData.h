@@ -1325,7 +1325,6 @@ namespace DrawFuncData
 		return drawCallData;
 	};
 
-
 	static DrawCallData SetSpriteAlphaData(const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
@@ -1358,6 +1357,41 @@ namespace DrawFuncData
 
 		return drawCallData;
 	};
+
+	//ステンシル描画
+	static DrawCallData SetStencilSprite()
+	{
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetTex();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "Stencil.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "Stencil.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+
+		DrawCallData drawCallData;
+
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
+		//頂点情報
+		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(handle).index;
+		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
+
+		//行列情報
+		drawCallData.extraBufferArray.emplace_back(
+			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX))
+		);
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
+		//テクスチャ情報
+		drawCallData.extraBufferArray.emplace_back();
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
+		drawCallData.pipelineData = pipelineData;
+
+		return drawCallData;
+	};
+
+
 
 	static DrawCallData SetDefferdRenderingModel(std::shared_ptr<ModelInfomation>arg_model)
 	{
@@ -1481,7 +1515,7 @@ namespace DrawFuncData
 
 		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
 		//ステンシルテスト
-		depthDesc.StencilEnable = true;
+		depthDesc.StencilEnable = false;
 		depthDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
 		depthDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
 		//サーフェス法線がカメラに向いているピクセルに対して深度テストとステンシル テストの結果を使用する
