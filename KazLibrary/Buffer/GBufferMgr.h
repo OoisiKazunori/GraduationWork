@@ -30,6 +30,7 @@ public:
 		WORLD,
 		EMISSIVE,
 		OUTLINE,
+		SILHOUETE,
 		MAX
 	};
 	GBufferMgr();

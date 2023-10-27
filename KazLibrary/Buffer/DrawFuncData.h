@@ -1480,7 +1480,7 @@ namespace DrawFuncData
 			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
-
+		//アニメーション
 		drawCall.extraBufferArray.emplace_back();
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
@@ -1507,10 +1507,15 @@ namespace DrawFuncData
 			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
-
+		//アニメーション
 		drawCall.extraBufferArray.emplace_back();
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+
+		//eye座標
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA5;
 
 		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
 		depthDesc.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
@@ -1542,25 +1547,24 @@ namespace DrawFuncData
 		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
 		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
 
-		struct EchoData
-		{
-			DirectX::XMFLOAT4 outlineColor;
-			DirectX::XMFLOAT3 pos;
-			float range;
-		};
-		//アウトライン
-		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(EchoData), "CBuffer-Outline"));
+		//ボーン
+		drawCall.extraBufferArray.emplace_back();
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+
+		//カメラ
+		drawCall.extraBufferArray.emplace_back(GBufferMgr::Instance()->GetEyePosBuffer());
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA5;
+
 		KazMath::Color init(255, 255, 255, 255);
-
-		EchoData data;
-		data.outlineColor = init.ConvertColorRateToXMFLOAT4();
-		data.pos = {};
-		data.range = 0.0f;
-		drawCall.extraBufferArray.back().bufferWrapper->TransData(&data, sizeof(EchoData));
+		//アウトラインカラー
+		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMFLOAT4), "CBuffer-OutlineColor"));
+		drawCall.extraBufferArray.back().bufferWrapper->TransData(&init.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA6;
+		
 		drawCall.SetupRaytracing(arg_isOpaque);
-
 		return drawCall;
 	};
 

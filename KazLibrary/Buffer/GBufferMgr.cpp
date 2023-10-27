@@ -25,6 +25,7 @@ GBufferMgr::GBufferMgr()
 		m_gBufferFormatArray[WORLD] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		m_gBufferFormatArray[EMISSIVE] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		m_gBufferFormatArray[OUTLINE] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		m_gBufferFormatArray[SILHOUETE] = DXGI_FORMAT_R32_FLOAT;
 
 		//アルベド
 		multiRenderTargetArray[ALBEDO].backGroundColor = { 0.0f,0.0f,0.0f };
@@ -50,6 +51,10 @@ GBufferMgr::GBufferMgr()
 		multiRenderTargetArray[OUTLINE].backGroundColor = { 0.0f,0.0f,0.0f };
 		multiRenderTargetArray[OUTLINE].graphSize = winSize;
 		multiRenderTargetArray[OUTLINE].format = m_gBufferFormatArray[OUTLINE];
+		//シルエット
+		multiRenderTargetArray[SILHOUETE].backGroundColor = { 0.0f,0.0f,0.0f };
+		multiRenderTargetArray[SILHOUETE].graphSize = winSize;
+		multiRenderTargetArray[SILHOUETE].format = m_gBufferFormatArray[SILHOUETE];
 		m_gBufferRenderTargetHandleArray = RenderTargetStatus::Instance()->CreateMultiRenderTarget(multiRenderTargetArray);
 
 		m_finalGBuffer = KazBufferHelper::SetUAVTexBuffer(winSize.x, winSize.y);
