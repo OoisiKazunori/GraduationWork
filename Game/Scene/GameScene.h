@@ -13,6 +13,9 @@ class Camera;
 class MeshCollision;
 class BulletMgr;
 
+//デバッグ用
+class PreEnemy;
+
 class GameScene :public SceneBase
 {
 public:
@@ -41,6 +44,8 @@ private:
 
 	BasicDraw::BasicModelRender m_modelAnimationRender, m_modelRender;
 	KazMath::Transform3D m_modelAnimationTransform, m_modelTransform;
+
+	std::array<std::shared_ptr<PreEnemy>, 3> m_preEnemy;
 
 	KazMath::Transform3D m_stageTransform;
 

@@ -12,6 +12,7 @@
 #include"../Bullet/BulletMgr.h"
 #include"../KazLibrary/Buffer/GBufferMgr.h"
 #include "../KazLibrary/PostEffect/Outline.h"
+#include "../Game/Enemy/PreEnemy.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
@@ -19,18 +20,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
 	//DrawFuncHelperでのモデル読み込み
 	m_line(arg_rasterize),
-	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf")
+	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
+	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
+	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
 {
-	m_modelAnimationRender.Load(
-		arg_rasterize,
-		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
-		DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"))
-	);
-	m_modelRender.Load(
-		arg_rasterize,
-		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
-		DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"))
-	);
 
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -60,6 +53,13 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
+
+	for (auto& index : m_preEnemy) {
+
+		index = std::make_shared<PreEnemy>(arg_rasterize);
+
+	}
+
 }
 
 GameScene::~GameScene()
@@ -98,6 +98,23 @@ CameraMgr::Instance()->Camera({}, {}, {});
 	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 	m_bulletMgr->Update(m_stageMeshCollision);
 
+
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_1)) {
+		m_preEnemy[0]->SetPos(m_player->GetTransform().pos);
+	}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_2)) {
+		m_preEnemy[1]->SetPos(m_player->GetTransform().pos);
+	}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_3)) {
+		m_preEnemy[2]->SetPos(m_player->GetTransform().pos);
+	}
+
+	for (auto& index : m_preEnemy) {
+
+		index->CheckInEcho(m_stageMeshCollision);
+
+	}
+
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -107,28 +124,21 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 
-	DrawFunc::DrawModelEcho(
-		m_modelRender.m_model.m_drawCommand,
-		m_modelTransform,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
-		KazMath::Color(255, 0, 0, 255)
-		);
-	arg_rasterize.ObjectRender(m_modelRender.m_model.m_drawCommandData);
-
-	DrawFunc::DrawModelEcho(
-		m_modelAnimationRender.m_model.m_drawCommand,
-		m_modelAnimationTransform,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
-		KazMath::Color(255, 0, 0, 255)
-	);
-	arg_rasterize.ObjectRender(m_modelAnimationRender.m_model.m_drawCommandData);
+	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+	m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+
+
+	for (auto& index : m_preEnemy) {
+
+		index->Draw(arg_rasterize, arg_blasVec);
+
+	}
+
 }
 
 int GameScene::SceneChange()

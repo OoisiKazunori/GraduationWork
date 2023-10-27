@@ -52,6 +52,7 @@ public:
 	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, KazMath::Vec3<float> arg_color);
 
 	KazBufferHelper::BufferData* GetEchoStructuredBuffer() { return &m_echoStructuredBuffer; }
+	std::array<Echo, MAX_ELEMENT_COUNT>& GetEcho() { return m_echo; }
 
 
 };

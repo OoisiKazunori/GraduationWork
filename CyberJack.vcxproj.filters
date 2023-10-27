@@ -102,6 +102,7 @@
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
     <ClCompile Include="Game\Echo\Echo.cpp" />
     <ClCompile Include="Game\Echo\EchoArray.cpp" />
+    <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -222,6 +223,7 @@
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
     <ClInclude Include="Game\Echo\Echo.h" />
     <ClInclude Include="Game\Echo\EchoArray.h" />
+    <ClInclude Include="Game\Enemy\PreEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
