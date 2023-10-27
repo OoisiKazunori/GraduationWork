@@ -42,7 +42,7 @@ cbuffer OutlineColor : register(b3)
     float echoRange;
 };
 
-//モデルのアニメーション
+//モ�?ルのアニメーション
 PosUvNormalTangentBinormalOutput VSDefferdAnimationMain(VertexData input)
 {
     float4 resultPos = input.pos;
@@ -60,7 +60,7 @@ PosUvNormalTangentBinormalOutput VSDefferdAnimationMain(VertexData input)
 
 BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput input) : SV_TARGET
 {
-    //法線の計算--------------------------------
+    //法線�?�計�?--------------------------------
     float4 normalColor = NormalTex.Sample(smp, input.uv);
     //-1.0f ~ 1.0f
     float3 normalVec = 2 * normalColor - 1.0f;
@@ -76,7 +76,7 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
     {
         nWorld = input.normal;
     }
-    //法線の計算--------------------------------
+    //法線�?�計�?--------------------------------
 
     float4 texColor = AlbedoTex.Sample(smp, input.uv);
     float4 mrColor = MetalnessRoughnessTex.Sample(smp, input.uv);

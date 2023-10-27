@@ -15,7 +15,7 @@
 
 #include"../MapLoader/MapLoader.h"
 
-GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
+GameScene::GameScene(DrawingByRasterize &arg_rasterize) :
 	//DrawFuncHelperでのテクスチャ読み込み
 	m_2DSprite(arg_rasterize, "Resource/Test/texas.png", true),
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
@@ -25,8 +25,13 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
 	m_outlineTex(arg_rasterize, true),
-	m_DSVSprite(arg_rasterize,DrawFuncData::SetStencilSprite(), true)
+	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf")
 {
+	for (auto &obj : m_silhoutteModelArray)
+	{
+		obj.Load(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf");
+	}
+
 	//シルエット用のテクスチャを入れる
 	m_outlineTex.m_tex.m_textureBuffer =
 		RenderTargetStatus::Instance()->GetBuffer(
@@ -42,12 +47,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 		arg_rasterize,
 		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
 		DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"))
-	);
-
-	m_stage.Load(
-		arg_rasterize,
-		ModelLoader::Instance()->Load("Resource/Stage/", "Stage.gltf"),
-		DrawFuncData::SetDefferdRenderingModelAnimationStencil(ModelLoader::Instance()->Load("Resource/Stage/", "Stage.gltf"))
 	);
 
 	/*
@@ -82,9 +81,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 
 	MapManager::Init();
 	m_stageManager.Init(arg_rasterize);
-
-
-	m_DSVSprite.m_tex.m_textureBuffer = RenderTargetStatus::Instance()->gDepth.depthBufferTex;
 }
 
 GameScene::~GameScene()
@@ -111,7 +107,7 @@ void GameScene::Input()
 {
 }
 
-void GameScene::Update(DrawingByRasterize& arg_rasterize)
+void GameScene::Update(DrawingByRasterize &arg_rasterize)
 {
 	/*
 	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
@@ -135,40 +131,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 }
 
-void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
+void GameScene::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec)
 {
 	//描画命令発行
 	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 
-	DrawFunc::DrawModelEcho(
-		m_modelRender.m_model.m_drawCommand,
-		m_modelTransform,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
-		KazMath::Color(255, 0, 0, 255)
-	);
-	arg_rasterize.ObjectRender(m_modelRender.m_model.m_drawCommandData);
-
-	DrawFunc::DrawModelEcho(
-		m_modelAnimationRender.m_model.m_drawCommand,
-		m_modelAnimationTransform,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
-		KazMath::Color(255, 0, 0, 255)
-	);
-	arg_rasterize.ObjectRender(m_modelAnimationRender.m_model.m_drawCommandData);
-
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
-
-	m_spriteTransform.pos.x = 1280 / 2;
-	m_spriteTransform.pos.y = 720 / 2;
-	m_spriteTransform.scale = { 1280,720 };
-	DrawFunc::DrawTextureIn2DOnlyTex(m_DSVSprite.m_tex.m_drawCommand, m_spriteTransform, m_DSVSprite.m_tex.m_textureBuffer);
-	arg_rasterize.UIRender(m_DSVSprite.m_tex.m_drawCommandData);
 
 	//シルエット用のテクスチャ描画
 	//m_outlineTex.m_tex.Draw2D(arg_rasterize, KazMath::Transform2D());
@@ -179,6 +151,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_uiManager.Draw(arg_rasterize);
 	m_gadgetMaanager.Draw(arg_rasterize);
 	m_HPBarManager.Draw(arg_rasterize);*/
+	m_silhoutteModelArray[0].Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+	m_silhoutteModelArray[1].Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 }
 
 int GameScene::SceneChange()
