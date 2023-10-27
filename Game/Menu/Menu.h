@@ -17,9 +17,12 @@ class Menu
 		ToEnd,
 		OptionsMax,
 	};
-	MenuOptions nowSelectMenu;
+	MenuOptions nowSelectMenu = MenuOptions::Return;
 
 	MenuElement m_MenuBackTex;
+
+	MenuElement m_nonSelectBack[MenuOptions::OptionsMax];
+	MenuElement m_selectBack;
 
 	bool m_isMenuOpen = false;
 
@@ -37,6 +40,10 @@ class Menu
 	void MenuInit();
 	//ƒƒjƒ…[‚Ì•Â‚¶‚é‰‰o‰Šú‰»
 	void MenuClose();
+
+	const int C_MenuBaseX = 1000;
+	const int C_MenuBaseY = 100;
+	const int C_MenuDistanceY = 50;
 public:
 	Menu(DrawingByRasterize& arg_rasterize);
 	bool GetIsMenuOpen(){ return m_isMenuOpen; };

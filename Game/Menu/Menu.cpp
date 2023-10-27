@@ -86,7 +86,11 @@ void Menu::MenuClose()
 }
 
 Menu::Menu(DrawingByRasterize& arg_rasterize):
-	m_MenuBackTex(arg_rasterize, "Resource/MenuTex/MenuBackTex.png")
+	m_MenuBackTex(arg_rasterize, "Resource/MenuTex/MenuBackTex.png"),
+	m_selectBack(arg_rasterize, "Resource/MenuTex/MenuSelectBack.png"),
+	m_nonSelectBack[MenuOptions::]
 {
 	m_MenuBackTex.SetPosition({1280.0f / 2.0f, 720.0f / 2.0f});
+
+
 }
