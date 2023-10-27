@@ -12,6 +12,7 @@ UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePa
 void UI2DElement::Init(DrawingByRasterize& arg_rasterize, std::string f_filePath)
 {
 
+
 }
 
 void UI2DElement::Update()
