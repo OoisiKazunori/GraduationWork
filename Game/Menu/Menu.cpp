@@ -120,10 +120,10 @@ void Menu::MenuInit()
 	float l_easeSpeed = 0.05f;
 	for (int i = 0; i < static_cast<int>(MenuOptions::OptionsMax); i++)
 	{
-		m_nonSelectBack[i].EasePosInit({1280.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i}, {(float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, (-diray * (float)i));
+		m_nonSelectBack[i].EasePosInit({1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i}, {(float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, (-diray * (float)i));
 		m_nonSelectBack[i].SetEasePosAddTime(l_easeSpeed);
 	}
-	m_selectBack.EasePosInit({ 1280.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)nowSelectMenu }, { (float)C_MenuBaseX,(float)C_MenuBaseY }, (-diray * (float)nowSelectMenu));
+	m_selectBack.EasePosInit({ 1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)nowSelectMenu }, { (float)C_MenuBaseX,(float)C_MenuBaseY }, (-diray * (float)nowSelectMenu));
 }
 
 void Menu::MenuClose()
@@ -134,10 +134,10 @@ void Menu::MenuClose()
 	float l_easeSpeed = 0.05f;
 	for (int i = 0; i < (int)MenuOptions::OptionsMax; i++)
 	{
-		m_nonSelectBack[i].EasePosInit({ (float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, { 1280.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, (-diray * (float)i));
+		m_nonSelectBack[i].EasePosInit({ (float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, { 1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, (-diray * (float)i));
 		m_nonSelectBack[i].SetEasePosAddTime(l_easeSpeed);
 	}
-	m_selectBack.EasePosInit({ (float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)nowSelectMenu }, { 1280.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)nowSelectMenu }, (-diray * ((float)nowSelectMenu)));
+	m_selectBack.EasePosInit({ (float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)nowSelectMenu }, { 1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)nowSelectMenu }, (-diray * ((float)nowSelectMenu)));
 }
 
 Menu::Menu(DrawingByRasterize& arg_rasterize):
