@@ -21,7 +21,7 @@ class Menu
 
 	MenuElement m_MenuBackTex;
 
-	std::list<MenuElement> m_nonSelectBack;
+	std::array<MenuElement, OptionsMax> m_nonSelectBack;
 	MenuElement m_selectBack;
 
 	bool m_isMenuOpen = false;
