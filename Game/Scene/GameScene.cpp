@@ -20,7 +20,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
 	//DrawFuncHelperでのモデル読み込み
 	m_line(arg_rasterize),
-	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
+	m_stage(arg_rasterize, "Resource/Stage/", "TestStage.gltf"),
 	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
 {
@@ -43,7 +43,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
 
 	m_stageTransform.pos = { 0.0f, -20.0f, 0.0f };
-	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
+	m_stageTransform.scale = { 3.0f, 4.0f, 3.0f };
 
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stage.m_model.m_modelInfo->modelData[0].vertexData, m_stageTransform);
