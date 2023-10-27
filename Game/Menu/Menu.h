@@ -5,23 +5,25 @@ class MenuElement : public UI2DElement
 {
 public:
 	using UI2DElement::UI2DElement;
+
 };
 
 class Menu
 {
-	enum MenuOptions
+	enum class MenuOptions
 	{
 		Return,
 		Retry,
 		Totitle,
 		ToEnd,
-		OptionsMax,
+		OptionsMax
 	};
+
 	MenuOptions nowSelectMenu = MenuOptions::Return;
 
 	MenuElement m_MenuBackTex;
 
-	std::array<MenuElement, OptionsMax> m_nonSelectBack;
+	std::array<MenuElement, (int)MenuOptions::OptionsMax> m_nonSelectBack;
 	MenuElement m_selectBack;
 
 	bool m_isMenuOpen = false;

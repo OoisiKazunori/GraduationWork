@@ -16,10 +16,15 @@ void UI2DElement::Init(DrawingByRasterize& arg_rasterize, std::string f_filePath
 
 void UI2DElement::Update()
 {
-	m_easePosTimer += 0.1f;
+	m_easePosTimer += m_easePosTimerAdd;
 	if (m_easePosTimer >= 1.0f)
 	{
 		m_easePosTimer = 1.0f;
+	}
+	if (m_easePosTimer < 0.0f)
+	{
+		m_nowPos = m_easePosStart;
+		return;
 	}
 	auto sub = m_easePosEnd - m_easePosStart;
 	m_nowPos = m_easePosStart + (sub * EasingMaker(EasingType::In, EaseInType::Quad, m_easePosTimer));
@@ -48,6 +53,14 @@ void UI2DElement::EasePosInit(KazMath::Vec2<float> f_easeEnd)
 
 	m_easePosEnd = f_easeEnd;
 	m_easePosStart = m_nowPos;
+}
+
+void UI2DElement::EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2<float> f_easeEnd, float f_timer)
+{
+	m_easePosTimer = f_timer;
+
+	m_easePosEnd = f_easeEnd;
+	m_easePosStart = f_easeStartPos;
 }
 
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :

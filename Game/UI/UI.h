@@ -8,6 +8,7 @@ class UI2DElement
 	KazMath::Vec2<float> m_easePosEnd;
 	KazMath::Vec2<float> m_nowPos;
 	float m_easePosTimer;
+	float m_easePosTimerAdd = 0.1f;
 
 	KazMath::Vec2<float> m_easeScaleStart;
 	KazMath::Vec2<float> m_easeScaleEnd;
@@ -19,8 +20,11 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 
+	void SetEasePosAddTime(float f_easePosTimer){ m_easePosTimerAdd = f_easePosTimer;}
+	float GetPosEaseTimer(){ return m_easePosTimer; }
 	void SetPosition(KazMath::Vec2<float> f_nowPos);
 	void EasePosInit(KazMath::Vec2<float> f_easeEnd);
+	void EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2<float> f_easeEnd, float f_timer);
 	void SetScale(KazMath::Vec2<float> f_nowScale);
 	BasicDraw::BasicTextureRender m_2DSprite;
 };
