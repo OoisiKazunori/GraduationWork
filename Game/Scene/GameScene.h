@@ -9,6 +9,7 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../Stage/StageManager.h"
 #include "../UI/UI.h"
+#include "../Menu/Menu.h"
 
 class Player;
 class Camera;
@@ -83,4 +84,5 @@ private:
 	GadgetUIManager m_gadgetMaanager;
 	HPUI m_HPBarManager;
 	HeartRate m_heartRateManager;
+	Menu m_menu;
 };

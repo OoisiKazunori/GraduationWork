@@ -25,7 +25,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
-	m_heartRateManager(arg_rasterize)
+	m_heartRateManager(arg_rasterize),
+	m_menu(arg_rasterize)
 {
 	m_modelAnimationRender.Load(
 		arg_rasterize,
@@ -134,6 +135,7 @@ CameraMgr::Instance()->Camera({}, {}, {});
 	{
 		m_heartRateManager.Update(120);
 	}
+	m_menu.Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -143,7 +145,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 
-	DrawFunc::DrawModelEcho(
+	/*DrawFunc::DrawModelEcho(
 		m_modelRender.m_model.m_drawCommand,
 		m_modelTransform,
 		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
@@ -159,7 +161,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
 		KazMath::Color(255, 0, 0, 255)
 	);
-	arg_rasterize.ObjectRender(m_modelAnimationRender.m_model.m_drawCommandData);
+	arg_rasterize.ObjectRender(m_modelAnimationRender.m_model.m_drawCommandData);*/
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
@@ -172,6 +174,9 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_gadgetMaanager.Draw(arg_rasterize);
 	m_HPBarManager.Draw(arg_rasterize);
 	m_heartRateManager.Draw(arg_rasterize);
+
+
+	m_menu.Draw(arg_rasterize);
 }
 
 int GameScene::SceneChange()
