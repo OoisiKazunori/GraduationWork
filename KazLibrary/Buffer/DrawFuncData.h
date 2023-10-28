@@ -1545,6 +1545,7 @@ namespace DrawFuncData
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 
 		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
+		//depthDesc.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
 		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
 
 		//É{Å[Éì

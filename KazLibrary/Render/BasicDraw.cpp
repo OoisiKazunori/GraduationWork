@@ -112,11 +112,10 @@ void BasicDraw::SilhouetteModelRender::Load(DrawingByRasterize &arg_rasterize, c
 
 	m_modelSilhouette.Load(model, DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
 	m_modelSilhouette.m_drawCommandData = arg_rasterize.SetPipeline(m_modelSilhouette.m_drawCommand);
-
 }
 
 void BasicDraw::SilhouetteModelRender::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, KazMath::Transform3D &arg_trasform3D, const KazMath::Color &arg_addColor, float arg_timeScale)
 {
-	m_modelSilhouette.Draw(arg_rasterize, arg_blasVec, arg_trasform3D, KazMath::Color(255, 0, 0, 255));
-	m_model.Draw(arg_rasterize, arg_blasVec, arg_trasform3D);
+	m_modelSilhouette.Draw(arg_rasterize, arg_blasVec, arg_trasform3D);
+	//m_model.Draw(arg_rasterize, arg_blasVec, arg_trasform3D);
 }

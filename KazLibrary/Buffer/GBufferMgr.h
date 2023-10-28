@@ -2,6 +2,7 @@
 #include"../KazLibrary/Helper/ISinglton.h"
 #include"../KazLibrary/Helper/KazBufferHelper.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"RenderTarget/RenderTargetStatus.h"
 #include<memory>
 
 struct DessolveOutline {
@@ -138,6 +139,7 @@ private:
 	std::vector<DXGI_FORMAT>m_gBufferFormatArray;
 
 	KazBufferHelper::BufferData m_cameraPosBuffer;
+
 
 	//ç≈èIçáê¨åãâ 
 	KazBufferHelper::BufferData m_finalGBuffer;

@@ -2,7 +2,6 @@
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
-#include"RenderTarget/RenderTargetStatus.h"
 #include"../KazLibrary/PostEffect/GaussianBlur.h"
 #include"../KazLibrary/Helper/Compute.h"
 #include"../PostEffect/Outline.h"
@@ -57,6 +56,7 @@ GBufferMgr::GBufferMgr()
 		multiRenderTargetArray[SILHOUETE].format = m_gBufferFormatArray[SILHOUETE];
 		m_gBufferRenderTargetHandleArray = RenderTargetStatus::Instance()->CreateMultiRenderTarget(multiRenderTargetArray);
 
+
 		m_finalGBuffer = KazBufferHelper::SetUAVTexBuffer(winSize.x, winSize.y);
 		m_finalGBuffer.bufferWrapper->CreateViewHandle(UavViewHandleMgr::Instance()->GetHandle());
 		DescriptorHeapMgr::Instance()->CreateBufferView(
@@ -109,7 +109,11 @@ GBufferMgr::GBufferMgr()
 
 	//レンズフレア用のブラー
 	m_lensFlareBlur = std::make_shared<PostEffect::GaussianBlur>(m_lensFlareLuminanceGBuffer);
-	m_outline = std::make_shared<PostEffect::Outline>(RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[WORLD]), RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[NORMAL]));
+	m_outline = std::make_shared<PostEffect::Outline>(
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[WORLD]),
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[NORMAL]),
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[SILHOUETE])
+	);
 
 	//レンズフレア合成関連。
 	m_lensFlareConposeBuffTexture = KazBufferHelper::SetUAVTexBuffer(1280, 720, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -262,7 +266,7 @@ void GBufferMgr::ComposeLensFlareAndScene()
 
 }
 
-void GBufferMgr::BufferStatesTransition(ID3D12Resource* arg_resource, D3D12_RESOURCE_STATES arg_before, D3D12_RESOURCE_STATES arg_after)
+void GBufferMgr::BufferStatesTransition(ID3D12Resource *arg_resource, D3D12_RESOURCE_STATES arg_before, D3D12_RESOURCE_STATES arg_after)
 {
 
 	D3D12_RESOURCE_BARRIER barriers[] = {
