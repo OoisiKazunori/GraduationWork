@@ -13,7 +13,6 @@ class Menu
 	enum class MenuOptions
 	{
 		Return,
-		Retry,
 		Totitle,
 		ToEnd,
 		OptionsMax
@@ -25,6 +24,10 @@ class Menu
 
 	std::array<MenuElement, (int)MenuOptions::OptionsMax> m_nonSelectBack;
 	MenuElement m_selectBack;
+
+	MenuElement returnStrTex;
+	MenuElement toTitleStrTex;
+	MenuElement toEndStrTex;
 
 	bool m_isMenuOpen = false;
 
