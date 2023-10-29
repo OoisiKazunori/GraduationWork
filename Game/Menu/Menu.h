@@ -29,6 +29,8 @@ class Menu
 	MenuElement toTitleStrTex;
 	MenuElement toEndStrTex;
 
+	static bool isGameEnd;
+
 	bool m_isMenuOpen = false;
 
 	//メニュー開いた時のアニメーション中
@@ -51,6 +53,7 @@ class Menu
 	const int C_MenuDistanceY = 50;
 public:
 	Menu(DrawingByRasterize& arg_rasterize);
+	static bool GetIsGameEnd(){ return isGameEnd; }
 	bool GetIsMenuOpen(){ return m_isMenuOpen; };
 	void Init();
 	void Update();

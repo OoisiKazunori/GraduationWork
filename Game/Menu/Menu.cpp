@@ -1,6 +1,9 @@
 #include "Menu.h"
 #include "../Input/Input.h"
 #include"../KazLibrary/Render/BasicDraw.h"
+
+bool Menu::isGameEnd = false;
+
 void Menu::Init()
 {
 
@@ -72,7 +75,7 @@ void Menu::Update()
 				}
 				if (nowSelectMenu == MenuOptions::ToEnd)
 				{
-
+					isGameEnd = true;
 				}
 			}
 		}
@@ -199,9 +202,9 @@ Menu::Menu(DrawingByRasterize& arg_rasterize):
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png")
 	},
-	returnStrTex(arg_rasterize, "Resource/MenuTex/MenuSelectBack.png"),
-	toTitleStrTex(arg_rasterize, "Resource/MenuTex/MenuSelectBack.png"),
-	toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuSelectBack.png")
+	returnStrTex(arg_rasterize, "Resource/MenuTex/MenuReturn.png"),
+	toTitleStrTex(arg_rasterize, "Resource/MenuTex/MenuTitle.png"),
+	toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuEnd.png")
 {
 	m_MenuBackTex.SetPosition({1280.0f / 2.0f, 720.0f / 2.0f});
 	for (int i = 0; i < (int)MenuOptions::OptionsMax; i++)
