@@ -3,7 +3,7 @@
 #include "Buffer/UavViewHandleMgr.h"
 #include "../PostEffect/GaussianBlur.h"
 
-PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld, KazBufferHelper::BufferData arg_outlineTargetNormal, KazBufferHelper::BufferData arg_silhouette)
+PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld, KazBufferHelper::BufferData arg_outlineTargetNormal, KazBufferHelper::BufferData arg_silhouette, KazBufferHelper::BufferData arg_eyeBuffer)
 {
 
 	//アウトラインをかける対象のテクスチャを保存しておく。
@@ -53,6 +53,7 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 			 m_outputEmissiveTexture,
 			 m_outlineColorConstBuffer,
 			 m_echoConstBuffer,
+			 arg_eyeBuffer
 		};
 		extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
@@ -74,6 +75,9 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 
 		extraBuffer[6].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		extraBuffer[6].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+
+		extraBuffer[7].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		extraBuffer[7].rootParamType = GRAPHICS_PRAMTYPE_DATA3;
 		m_outlineShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "Outline.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 	}
 

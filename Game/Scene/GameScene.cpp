@@ -139,7 +139,6 @@ void GameScene::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	//シルエット用のテクスチャ描画
@@ -153,6 +152,8 @@ void GameScene::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &
 	m_HPBarManager.Draw(arg_rasterize);*/
 	m_silhoutteModelArray[0].Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 	m_silhoutteModelArray[1].Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
+	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+
 }
 
 int GameScene::SceneChange()

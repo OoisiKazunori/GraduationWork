@@ -116,6 +116,9 @@ void BasicDraw::SilhouetteModelRender::Load(DrawingByRasterize &arg_rasterize, c
 
 void BasicDraw::SilhouetteModelRender::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, KazMath::Transform3D &arg_trasform3D, const KazMath::Color &arg_addColor, float arg_timeScale)
 {
+	m_modelSilhouette.m_drawCommand.extraBufferArray[4] = GBufferMgr::Instance()->GetEyePosBuffer();
+	m_modelSilhouette.m_drawCommand.extraBufferArray[4].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+	m_modelSilhouette.m_drawCommand.extraBufferArray[4].rootParamType = GRAPHICS_PRAMTYPE_DATA5;
 	m_modelSilhouette.Draw(arg_rasterize, arg_blasVec, arg_trasform3D);
 	//m_model.Draw(arg_rasterize, arg_blasVec, arg_trasform3D);
 }

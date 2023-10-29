@@ -12,6 +12,9 @@
 //ワールド座標、ラフネス、メタルネス、スぺキュラ、オブジェクトが反射するか屈折するか(インデックス)、Albedo、法線、カメラ座標(定数バッファでも可能)
 GBufferMgr::GBufferMgr()
 {
+	m_cameraPosBuffer = KazBufferHelper::SetConstBufferData(sizeof(CameraEyePosBufferData));
+
+
 	KazMath::Vec2<UINT>winSize(1280, 720);
 
 	//G-Buffer用のレンダーターゲット生成
@@ -112,7 +115,8 @@ GBufferMgr::GBufferMgr()
 	m_outline = std::make_shared<PostEffect::Outline>(
 		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[WORLD]),
 		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[NORMAL]),
-		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[SILHOUETE])
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[SILHOUETE]),
+		m_cameraPosBuffer
 	);
 
 	//レンズフレア合成関連。
@@ -162,7 +166,6 @@ GBufferMgr::GBufferMgr()
 		m_backBufferRaytracingCompositeShader->Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "Raytracing/" + "BackBufferComposeShader.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 	}
 
-	m_cameraPosBuffer = KazBufferHelper::SetConstBufferData(sizeof(CameraEyePosBufferData));
 	m_lightBuffer = KazBufferHelper::SetConstBufferData(sizeof(LightConstData));
 	m_lightConstData.m_dirLight.m_dir = KazMath::Vec3<float>(0.0f, -0.4f, 0.8f).GetNormal();
 	m_lightConstData.m_dirLight.m_isActive = true;

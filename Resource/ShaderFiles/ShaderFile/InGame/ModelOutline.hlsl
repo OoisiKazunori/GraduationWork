@@ -37,7 +37,10 @@ cbuffer Color : register(b2)
 
 cbuffer EyePos : register(b4)
 {
-    float3 pos;
+    matrix m_viewMat;
+	matrix m_projMat;
+	float3 m_eyePos;
+	float m_noiseTimer;
 };
 
 cbuffer OutlineColor : register(b5)
@@ -95,7 +98,7 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
     }
 
     const float4 OutlineColor = outlineColor;
-    const float dis = distance(input.worldPos,pos);
+    const float dis = distance(input.worldPos,m_eyePos);
 
     BasicDrawGBufferOutput output;
     output.albedo = texColor * color;
