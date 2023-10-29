@@ -93,10 +93,8 @@ BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize &arg_rasterize) :
 }
 
 BasicDraw::SilhouetteModelRender::SilhouetteModelRender(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName, bool arg_deletePipelineInScene)
-	: m_model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName))),
-	m_modelSilhouette(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), DrawFuncData::SetDefferdRenderingModelAnimationStencil(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
+	:	m_modelSilhouette(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
-	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
 	m_modelSilhouette.m_drawCommandData = arg_rasterize.SetPipeline(m_modelSilhouette.m_drawCommand, arg_deletePipelineInScene);
 }
 
@@ -107,9 +105,6 @@ BasicDraw::SilhouetteModelRender::SilhouetteModelRender()
 void BasicDraw::SilhouetteModelRender::Load(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName)
 {
 	std::shared_ptr<ModelInfomation>model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName));
-	m_model.Load(model, BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
-	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
-
 	m_modelSilhouette.Load(model, DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
 	m_modelSilhouette.m_drawCommandData = arg_rasterize.SetPipeline(m_modelSilhouette.m_drawCommand);
 }

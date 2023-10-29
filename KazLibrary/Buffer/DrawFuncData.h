@@ -1495,8 +1495,8 @@ namespace DrawFuncData
 		DrawCallData drawCall;
 
 		DrawFuncData::PipelineGenerateData lData;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "ModelOutline.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "ModelOutline.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
 
 		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
 		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
@@ -1518,7 +1518,6 @@ namespace DrawFuncData
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA5;
 
 		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
-		depthDesc.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
 		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
 
 		drawCall.SetupRaytracing(arg_isOpaque);
@@ -1545,7 +1544,6 @@ namespace DrawFuncData
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 
 		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
-		//depthDesc.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
 		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
 
 		//É{Å[Éì
