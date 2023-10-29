@@ -98,16 +98,21 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
+	//ゲームシーンへ
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	{
+		m_sceneNum = 0;
+	}
 }
 
 void GameScene::Update(DrawingByRasterize &arg_rasterize)
 {
 	/*
-カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
-計算結果は描画情報に渡ります。
-CameraMgr::Instance()->Camera({}, {}, {});
-*/
-//デバック用のカメラワーク(操作はBlenderと同じ)
+	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
+	計算結果は描画情報に渡ります。
+	CameraMgr::Instance()->Camera({}, {}, {});
+	*/
+	//デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
 	m_uiManager.Update();
@@ -140,7 +145,6 @@ CameraMgr::Instance()->Camera({}, {}, {});
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
 	//描画命令発行
 	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
