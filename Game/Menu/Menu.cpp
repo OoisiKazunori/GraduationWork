@@ -71,13 +71,16 @@ void Menu::Update()
 void Menu::Draw(DrawingByRasterize& arg_rasterize)
 {
 	if (!m_isMenuOpen) return;
-	m_MenuBackTex.Draw(arg_rasterize);
+
+	m_selectBack.Draw(arg_rasterize);
 
 	for (auto itr = m_nonSelectBack.begin(); itr != m_nonSelectBack.end(); ++itr)
 	{
 		itr->Draw(arg_rasterize);
 	}
-	m_selectBack.Draw(arg_rasterize);
+	m_MenuBackTex.Draw(arg_rasterize);
+
+
 }
 
 void Menu::UpdateOpen()
