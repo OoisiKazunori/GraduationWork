@@ -116,7 +116,7 @@ void mainRayGen()
                 payloadData.m_rayID = 3;
         
                 //レイを撃つ
-                CastRay(payloadData, worldColor.xyz + normalColor.xyz, normalize(echoData.m_echoData[index].m_pos - worldColor.xyz), length(echoData.m_echoData[index].m_pos - worldColor.xyz), MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+                CastRay(payloadData, worldColor.xyz + normalColor.xyz, normalize(echoData.m_echoData[index].m_pos - worldColor.xyz), length(echoData.m_echoData[index].m_pos - worldColor.xyz) - 1.0f, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
                 
                 if (payloadData.m_color.x <= -1.0f)
                 {
