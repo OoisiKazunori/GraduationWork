@@ -2,7 +2,6 @@
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
-#include"RenderTarget/RenderTargetStatus.h"
 #include"../KazLibrary/PostEffect/GaussianBlur.h"
 #include"../KazLibrary/Helper/Compute.h"
 #include"../PostEffect/Outline.h"
@@ -13,6 +12,9 @@
 //ワールド座標、ラフネス、メタルネス、スぺキュラ、オブジェクトが反射するか屈折するか(インデックス)、Albedo、法線、カメラ座標(定数バッファでも可能)
 GBufferMgr::GBufferMgr()
 {
+	m_cameraPosBuffer = KazBufferHelper::SetConstBufferData(sizeof(CameraEyePosBufferData));
+
+
 	KazMath::Vec2<UINT>winSize(1280, 720);
 
 	//G-Buffer用のレンダーターゲット生成
@@ -25,6 +27,7 @@ GBufferMgr::GBufferMgr()
 		m_gBufferFormatArray[WORLD] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		m_gBufferFormatArray[EMISSIVE] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		m_gBufferFormatArray[OUTLINE] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		m_gBufferFormatArray[SILHOUETE] = DXGI_FORMAT_R32_FLOAT;
 
 		//アルベド
 		multiRenderTargetArray[ALBEDO].backGroundColor = { 0.0f,0.0f,0.0f };
@@ -50,7 +53,12 @@ GBufferMgr::GBufferMgr()
 		multiRenderTargetArray[OUTLINE].backGroundColor = { 0.0f,0.0f,0.0f };
 		multiRenderTargetArray[OUTLINE].graphSize = winSize;
 		multiRenderTargetArray[OUTLINE].format = m_gBufferFormatArray[OUTLINE];
+		//シルエット
+		multiRenderTargetArray[SILHOUETE].backGroundColor = { 0.0f,0.0f,0.0f };
+		multiRenderTargetArray[SILHOUETE].graphSize = winSize;
+		multiRenderTargetArray[SILHOUETE].format = m_gBufferFormatArray[SILHOUETE];
 		m_gBufferRenderTargetHandleArray = RenderTargetStatus::Instance()->CreateMultiRenderTarget(multiRenderTargetArray);
+
 
 		m_finalGBuffer = KazBufferHelper::SetUAVTexBuffer(winSize.x, winSize.y);
 		m_finalGBuffer.bufferWrapper->CreateViewHandle(UavViewHandleMgr::Instance()->GetHandle());
@@ -104,7 +112,12 @@ GBufferMgr::GBufferMgr()
 
 	//レンズフレア用のブラー
 	m_lensFlareBlur = std::make_shared<PostEffect::GaussianBlur>(m_lensFlareLuminanceGBuffer);
-	m_outline = std::make_shared<PostEffect::Outline>(RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[WORLD]), RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[NORMAL]));
+	m_outline = std::make_shared<PostEffect::Outline>(
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[WORLD]),
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[NORMAL]),
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[SILHOUETE]),
+		m_cameraPosBuffer
+	);
 
 	//レンズフレア合成関連。
 	m_lensFlareConposeBuffTexture = KazBufferHelper::SetUAVTexBuffer(1280, 720, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -153,7 +166,6 @@ GBufferMgr::GBufferMgr()
 		m_backBufferRaytracingCompositeShader->Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "Raytracing/" + "BackBufferComposeShader.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 	}
 
-	m_cameraPosBuffer = KazBufferHelper::SetConstBufferData(sizeof(CameraEyePosBufferData));
 	m_lightBuffer = KazBufferHelper::SetConstBufferData(sizeof(LightConstData));
 	m_lightConstData.m_dirLight.m_dir = KazMath::Vec3<float>(0.0f, -0.4f, 0.8f).GetNormal();
 	m_lightConstData.m_dirLight.m_isActive = true;
@@ -257,7 +269,7 @@ void GBufferMgr::ComposeLensFlareAndScene()
 
 }
 
-void GBufferMgr::BufferStatesTransition(ID3D12Resource* arg_resource, D3D12_RESOURCE_STATES arg_before, D3D12_RESOURCE_STATES arg_after)
+void GBufferMgr::BufferStatesTransition(ID3D12Resource *arg_resource, D3D12_RESOURCE_STATES arg_before, D3D12_RESOURCE_STATES arg_after)
 {
 
 	D3D12_RESOURCE_BARRIER barriers[] = {

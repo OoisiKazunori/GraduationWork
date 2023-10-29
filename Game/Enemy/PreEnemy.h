@@ -9,7 +9,7 @@ class PreEnemy {
 
 private:
 
-	BasicDraw::BasicModelRender m_modelRender;
+	BasicDraw::SilhouetteModelRender m_modelRender;
 	KazMath::Transform3D m_modelTransform;
 	bool m_inEcho;
 

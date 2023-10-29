@@ -9,16 +9,15 @@ PreEnemy::PreEnemy(DrawingByRasterize& arg_rasterize) :
 
 void PreEnemy::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
-	if (m_inEcho) {
-		m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+	if (m_inEcho)
+	{
+		m_modelRender.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 	}
 
 }
 
 void PreEnemy::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
-
 	//全てのEchoとチェック
 	m_inEcho = false;
 	for (auto& index : EchoArray::Instance()->GetEcho()) {

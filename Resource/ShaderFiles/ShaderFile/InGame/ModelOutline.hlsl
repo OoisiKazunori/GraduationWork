@@ -35,14 +35,20 @@ cbuffer Color : register(b2)
     float4 color;
 };
 
-cbuffer OutlineColor : register(b3)
+cbuffer EyePos : register(b4)
 {
-    float4 outlineColor;
-    float3 echoPos;
-    float echoRange;
+    matrix m_viewMat;
+	matrix m_projMat;
+	float3 m_eyePos;
+	float m_noiseTimer;
 };
 
-//モデルのアニメーション
+cbuffer OutlineColor : register(b5)
+{
+    float4 outlineColor;
+};
+
+//モ�?ルのアニメーション
 PosUvNormalTangentBinormalOutput VSDefferdAnimationMain(VertexData input)
 {
     float4 resultPos = input.pos;
@@ -60,7 +66,7 @@ PosUvNormalTangentBinormalOutput VSDefferdAnimationMain(VertexData input)
 
 BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput input) : SV_TARGET
 {
-    //法線の計算--------------------------------
+    //法線�?�計�?--------------------------------
     float4 normalColor = NormalTex.Sample(smp, input.uv);
     //-1.0f ~ 1.0f
     float3 normalVec = 2 * normalColor - 1.0f;
@@ -76,15 +82,7 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
     {
         nWorld = input.normal;
     }
-    //法線の計算--------------------------------
-
-    //エコーの範囲外なら描画しない
-    float3 a = echoPos;
-    bool isHitEchoFlag = length(input.worldPos.xyz - echoPos) <= echoRange && 0.0f < length(input.worldPos.xyz);
-    if(!isHitEchoFlag)
-    {
-        discard;
-    }
+    //法線�?�計�?--------------------------------
 
     float4 texColor = AlbedoTex.Sample(smp, input.uv);
     float4 mrColor = MetalnessRoughnessTex.Sample(smp, input.uv);
@@ -99,12 +97,16 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
         mrColor.xyz = float3(0.0f, 0.0f, 0.0f);
     }
 
+    const float4 OutlineColor = outlineColor;
+    const float dis = distance(input.worldPos,m_eyePos);
+
     BasicDrawGBufferOutput output;
     output.albedo = texColor * color;
     output.normal = float4(normal, 1.0f);
-    output.metalnessRoughness = float4(0, 0, 0, 0);
+    output.metalnessRoughness = float4(0, 0, 0, 1);
     output.world = float4(input.worldPos, 1.0f);
     output.emissive = EmissiveTex.Sample(smp, input.uv);
     output.outline = outlineColor;
+    output.outlineWorld = float4(dis,0,0,1);
     return output;
 }

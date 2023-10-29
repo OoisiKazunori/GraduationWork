@@ -7,6 +7,8 @@
 #include"../KazLibrary/Render/DrawFuncHelper.h"
 #include"../Game/Debug/DebugCamera.h"
 #include"../KazLibrary/Render/BasicDraw.h"
+#include"../Stage/StageManager.h"
+#include "../UI/UI.h"
 
 class Player;
 class Camera;
@@ -26,24 +28,21 @@ public:
 	void PreInit();
 	void Finalize();
 	void Input();
-	void Update();
+	void Update(DrawingByRasterize &arg_rasterize);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	int SceneChange();
+
+	bool OrderGeneratePipeline()
+	{
+		return m_stageManager.ChangeSceneTrigger();
+	}
 
 private:
 
 	//ÉJÉÅÉâ--------------------------
 	DebugCamera m_debuCamera;
 	std::shared_ptr<Camera> m_camera;
-
-	//ï`âÊ--------------------------
-	BasicDraw::BasicTextureRender m_2DSprite, m_3DSprite;
-	KazMath::Transform3D m_3DSpriteTransform;
-	KazMath::Transform2D m_2DSpriteTransform;
-
-	BasicDraw::BasicModelRender m_modelAnimationRender, m_modelRender;
-	KazMath::Transform3D m_modelAnimationTransform, m_modelTransform;
 
 	std::array<std::shared_ptr<PreEnemy>, 3> m_preEnemy;
 
@@ -74,4 +73,13 @@ private:
 
 	BasicDraw::BasicLineRender m_line;
 	BasicDraw::BasicModelRender m_stage;
+	BasicDraw::BasicTextureRender m_outlineTex;
+
+	StageManager m_stageManager;
+	
+	WeponUIManager m_uiManager;
+	GadgetUIManager m_gadgetMaanager;
+	HPUI m_HPBarManager;
+
+	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
 };

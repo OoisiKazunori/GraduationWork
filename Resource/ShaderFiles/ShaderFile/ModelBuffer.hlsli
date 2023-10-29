@@ -4,6 +4,8 @@ Texture2D<float4>NormalTex:register(t1);
 Texture2D<float4>MetalnessRoughnessTex:register(t2);
 Texture2D<float4>EmissiveTex:register(t3);
 
+Texture2D<float4>SilhouetteDistanceTex:register(t4);
+
 SamplerState smp :register(s0);
 
 cbuffer MaterialID : register(b1)

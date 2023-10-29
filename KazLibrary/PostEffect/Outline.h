@@ -39,7 +39,12 @@ namespace PostEffect {
 
 		/*===== 関数 =====*/
 
-		Outline(KazBufferHelper::BufferData arg_outlineTargetWorld, KazBufferHelper::BufferData arg_outlineTargetNormal);
+		Outline(
+			KazBufferHelper::BufferData arg_outlineTargetWorld,
+			KazBufferHelper::BufferData arg_outlineTargetNormal,
+			KazBufferHelper::BufferData arg_silhouette,
+			KazBufferHelper::BufferData arg_eyeBuffer
+		);
 
 		//アウトラインを書き込む
 		void Apply();
