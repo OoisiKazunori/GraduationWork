@@ -157,8 +157,8 @@ void main(uint3 DTid : SV_DispatchThreadID)
         if(silleoutFlag)
         {
             float4 silhouetteTexture = SilhouetteTex[DTid.xy];
-            OutputAlbedo[DTid.xy] += silhouetteTexture;
-            OutputEmissive[DTid.xy] += silhouetteTexture;
+            OutputAlbedo[DTid.xy] = silhouetteTexture;
+            OutputEmissive[DTid.xy] = silhouetteTexture;
         }
         else
         {

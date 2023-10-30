@@ -48,13 +48,13 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 		{
 			 m_outlineTargetWorld,
 			 m_outlineTargetNormal,
-			 arg_silhouetteBuffer,
+			 arg_silhouetteRenderTargetBuffer,
 			 m_outputAlbedoTexture,
 			 m_outputEmissiveTexture,
 			 m_outlineColorConstBuffer,
 			 m_echoConstBuffer,
 			 arg_eyeBuffer,
-			 arg_silhouetteRenderTargetBuffer
+			 arg_silhouetteBuffer
 		};
 		extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
