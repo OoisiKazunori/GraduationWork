@@ -40,7 +40,7 @@ void Bullet::Update(std::weak_ptr<MeshCollision> arg_meshCollision) {
 			//“–‚½‚Á‚½’n“_‚ð•Û‘¶B
 			m_endPos = rayResult.m_position;
 
-			EchoArray::Instance()->Generate(m_endPos, 30.0f, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
+			EchoArray::Instance()->Generate(m_endPos, 60.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
 
 		}
 

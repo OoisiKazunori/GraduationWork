@@ -155,6 +155,11 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront());
 
 	}
+	if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_RIGHT)) {
+
+		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), true);
+
+	}
 
 }
 

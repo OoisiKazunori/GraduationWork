@@ -116,6 +116,7 @@
   <ItemGroup>
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
+    <ClCompile Include="Game\Bullet\EchoBullet.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Debug\DebugCamera.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="..\Mineral\Game\Effect\ChromaticAberration.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
+    <ClInclude Include="Game\Bullet\EchoBullet.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Debug\DebugCamera.h" />
