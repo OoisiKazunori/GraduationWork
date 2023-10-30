@@ -160,6 +160,7 @@ void SceneManager::Update()
 		else
 		{
 			m_nowSceneNumber = m_nextSceneNumber;
+			Menu::SetSceneName((SceneName)m_nowSceneNumber);
 			//シーンの破棄
 			m_nowScene.reset();
 			//前シーンの描画命令破棄
@@ -180,6 +181,10 @@ void SceneManager::Update()
 	if (sceneNum != SCENE_NONE)
 	{
 		m_nextSceneNumber = sceneNum;
+	}
+	if (Menu::IsSceneChange())
+	{
+		m_nextSceneNumber = Menu::GetNextSceneName();
 	}
 	m_sceneChange->Update();
 	//Scene内での描画情報で生成された場合の生成

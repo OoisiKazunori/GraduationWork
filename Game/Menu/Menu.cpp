@@ -4,6 +4,10 @@
 
 bool Menu::isGameEnd = false;
 
+SceneName Menu::m_SceneName;
+bool Menu::isSceneChange = false;
+bool Menu::isSceneChangeTrigger = false;
+
 void Menu::Init()
 {
 
@@ -71,7 +75,10 @@ void Menu::Update()
 				}
 				if (nowSelectMenu == MenuOptions::Totitle)
 				{
-
+					isSceneChangeTrigger = true;
+					SetSceneName(SceneName::SCENE_TITLE);
+					isSceneChange = true;
+					m_isMenuOpen = false;
 				}
 				if (nowSelectMenu == MenuOptions::ToEnd)
 				{
