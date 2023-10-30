@@ -361,11 +361,10 @@ UI2DElement& GadgetUIManager::GetUI(GadgetNumber f_gadget)
 }
 
 HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
-	m_HPFrame(arg_rasterize, "Resource/UITexture/UI_HPBarBase.png"),
-	m_HPBar(arg_rasterize, "Resource/UITexture/UI_HPBar.png"),
-	m_HPBarRed(arg_rasterize, "Resource/UITexture/UI_HPBar_Red.png")/*,
-	m_StaminaFrame(arg_rasterize, "Resource/UITexture/UI_hand.png"),
-	m_StaminaBar(arg_rasterize, "Resource/UITexture/UI_hand.png")*/
+	m_HPFrame(arg_rasterize, "Resource/UITexture/HPBer4.png"),
+	m_HPBar(arg_rasterize, "Resource/UITexture/HPBer2.png"),
+	m_HPBarRed(arg_rasterize, "Resource/UITexture/HPBer3.png"),
+	m_HPFrame2(arg_rasterize, "Resource/UITexture/HPBer1.png")
 {
 	m_hp = 100;
 }
@@ -379,25 +378,45 @@ void HPUI::Init()
 void HPUI::Update(const int f_playerHP)
 {
 	static int redWaitTime = 0;
+	const int redTime = 1;
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
-		HitDamage(10, 5);
-		redWaitTime = 10;
+		HitDamage(10, 10);
+		if (m_hp > 0)
+		{
+			redWaitTime = 45;
+		}
+		else
+		{
+			redWaitTime = 0;
+		}
 	}
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
 		if (m_redHP > 0)
 		{
-			m_redHP--;
-			redWaitTime = 10;
+			if (m_hp > 0)
+			{
+				redWaitTime = redTime;
+				m_redHP--;
+			}
+			else
+			{
+				redWaitTime = 1;
+				m_redHP -= 2;
+			}
+			if (m_redHP < 0)
+			{
+				m_redHP = 0;
+			}
 		}
 	}
 }
 
 void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	float half = c_UITexX / 2.0f;
+	/*float half = c_UITexX / 2.0f;
 	half = half / MaxHP * m_hp;
 	m_HPBar.SetScale({ (float)m_hp / (float)MaxHP, 1.0f });
 	m_HPBar.SetPosition({ half + (float)c_texOffset, c_BaseUIY });
@@ -412,30 +431,51 @@ void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 
 	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
 	m_HPFrame.Draw(arg_rasterize);
+	m_HPFrame2.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HPFrame2.Draw(arg_rasterize);*/
+
+	//•`‰æ‡‚ª”½“]‚µ‚Ä‚é‚Á‚Û‚¢
+	float half = c_UITexX / 2.0f;
+	half = half / MaxHP * m_hp;
+	float redXSize = (float)m_redHP / (float)MaxHP;
+	float redPos = half * 2.0f + (c_UITexX * (float)m_redHP / (float)MaxHP / 2.0f);
+	m_HPFrame2.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HPFrame2.Draw(arg_rasterize);
+
+	m_HPBarRed.SetScale({ redXSize, 1.0f });
+	m_HPBarRed.SetPosition({ redPos + (float)c_texOffset, c_BaseUIY });
+	m_HPBarRed.Draw(arg_rasterize);
+
+	m_HPBar.SetScale({ (float)m_hp / (float)MaxHP, 1.0f });
+	m_HPBar.SetPosition({ half + (float)c_texOffset, c_BaseUIY });
+	m_HPBar.Draw(arg_rasterize);
+
+	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HPFrame.Draw(arg_rasterize);
 }
 
 void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 {
 	m_hp -= f_mainDamage;
-	m_hp -= m_redHP;
+	//m_hp -= m_redHP;
 	if (m_hp < 0)
 	{
 		m_hp = 0;
 	}
 	if (m_hp > 0)
 	{
-		if (m_hp > f_redZone)
+		if (m_hp >= f_redZone)
 		{
-			m_redHP = f_redZone;
+			m_redHP += f_redZone;
 		}
-		else
+		/*else
 		{
 			m_redHP = m_hp;
-		}
+		}*/
 	}
 	else
 	{
-		m_redHP = 0;
+		//m_redHP = 0;
 	}
 }
 

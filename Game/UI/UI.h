@@ -133,6 +133,7 @@ class HPUI
 	UI2DElement m_HPFrame;
 	UI2DElement m_HPBar;
 	UI2DElement m_HPBarRed;
+	UI2DElement m_HPFrame2;
 	/*UI2DElement m_StaminaFrame;
 	UI2DElement m_StaminaBar;*/
 	static const int c_texOffset = 30;
