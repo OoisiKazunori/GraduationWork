@@ -121,7 +121,7 @@ void GameScene::Update(DrawingByRasterize &arg_rasterize)
 	//ステージの描画
 	m_stageManager.Update(arg_rasterize);
 
-
+	GBufferMgr::Instance()->ComputeSilhouette();
 }
 
 void GameScene::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec)

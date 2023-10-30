@@ -2,6 +2,7 @@
 Texture2D<float4> TargetWorld : register(t0);
 Texture2D<float4> TargetNormal : register(t1);
 Texture2D<float4> SilhouetteWorld : register(t2);
+RWTexture2D<float4> SilhouetteTex : register(u2);
 
 //èoóÕêÊUAV  
 RWTexture2D<float4> OutputAlbedo : register(u0);
@@ -155,8 +156,9 @@ void main(uint3 DTid : SV_DispatchThreadID)
     {
         if(silleoutFlag)
         {
-            OutputAlbedo[DTid.xy] += float4(1, 0, 0, 0);
-            OutputEmissive[DTid.xy] += float4(1, 0, 0, 0);
+            float4 silhouetteTexture = SilhouetteTex[DTid.xy];
+            OutputAlbedo[DTid.xy] = silhouetteTexture;
+            OutputEmissive[DTid.xy] = silhouetteTexture;
         }
         else
         {

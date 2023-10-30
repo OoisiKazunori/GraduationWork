@@ -42,8 +42,9 @@ namespace PostEffect {
 		Outline(
 			KazBufferHelper::BufferData arg_outlineTargetWorld,
 			KazBufferHelper::BufferData arg_outlineTargetNormal,
-			KazBufferHelper::BufferData arg_silhouette,
-			KazBufferHelper::BufferData arg_eyeBuffer
+			KazBufferHelper::BufferData arg_silhouetteRenderTargetBuffer,
+			KazBufferHelper::BufferData arg_eyeBuffer,
+			KazBufferHelper::BufferData arg_silhouetteBuffer
 		);
 
 		//アウトラインを書き込む

@@ -13,7 +13,6 @@ void PreEnemy::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 	{
 		m_modelRender.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 	}
-
 }
 
 void PreEnemy::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision)

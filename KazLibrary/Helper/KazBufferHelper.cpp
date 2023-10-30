@@ -2,7 +2,7 @@
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetConstBufferData(const unsigned int &BUFFER_SIZE, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetConstBufferData(const unsigned int& BUFFER_SIZE, const std::string& BUFFER_NAME)
 {
 	BufferResourceData data
 	(
@@ -16,7 +16,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetConstBufferData(const un
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetShaderResourceBufferData(const D3D12_RESOURCE_DESC &TEXTURE_DATA, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetShaderResourceBufferData(const D3D12_RESOURCE_DESC& TEXTURE_DATA, const std::string& BUFFER_NAME)
 {
 	BufferResourceData data
 	(
@@ -30,7 +30,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetShaderResourceBufferData
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetVertexBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetVertexBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string& BUFFER_NAME)
 {
 	BufferResourceData data
 	(
@@ -43,7 +43,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetVertexBufferData(BUFFER_
 	);
 	return data;
 }
-KazBufferHelper::BufferResourceData KazBufferHelper::SetIndexBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetIndexBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string& BUFFER_NAME)
 {
 	BufferResourceData data
 	(
@@ -57,7 +57,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetIndexBufferData(BUFFER_S
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetRenderTargetData(const D3D12_HEAP_PROPERTIES &HEAP_PROPERTIES, const D3D12_RESOURCE_DESC &RESOURCE, D3D12_CLEAR_VALUE *CLEAR_COLOR, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetRenderTargetData(const D3D12_HEAP_PROPERTIES& HEAP_PROPERTIES, const D3D12_RESOURCE_DESC& RESOURCE, D3D12_CLEAR_VALUE* CLEAR_COLOR, const std::string& BUFFER_NAME)
 {
 	KazBufferHelper::BufferResourceData data
 	(
@@ -71,7 +71,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetRenderTargetData(const D
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetStructureBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetStructureBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string& BUFFER_NAME)
 {
 	KazBufferHelper::BufferResourceData data
 	(
@@ -85,7 +85,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetStructureBuffer(BUFFER_S
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string& BUFFER_NAME)
 {
 	D3D12_HEAP_PROPERTIES prop = {};
 	prop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
@@ -108,7 +108,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(BUFFE
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetUAVTexBuffer(int width, int height, DXGI_FORMAT format, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetUAVTexBuffer(int width, int height, DXGI_FORMAT format, const std::string& BUFFER_NAME)
 {
 	D3D12_RESOURCE_DESC desc =
 		CD3DX12_RESOURCE_DESC::Tex2D(
@@ -161,7 +161,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetUAV3DTexBuffer(int arg_w
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetOnlyReadStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetOnlyReadStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string& BUFFER_NAME)
 {
 	D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(BUFFER_SIZE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
@@ -177,7 +177,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetOnlyReadStructuredBuffer
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetCommandBufferData(const unsigned int &BUFFER_SIZE, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetCommandBufferData(const unsigned int& BUFFER_SIZE, const std::string& BUFFER_NAME)
 {
 	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(BUFFER_SIZE);
 
@@ -194,7 +194,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetCommandBufferData(const 
 	return data;
 }
 
-D3D12_VERTEX_BUFFER_VIEW KazBufferHelper::SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE)
+D3D12_VERTEX_BUFFER_VIEW KazBufferHelper::SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS& GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE, const unsigned int& ONE_VERTICES_SIZE)
 {
 	D3D12_VERTEX_BUFFER_VIEW view;
 	view.BufferLocation = GPU_ADDRESS;
@@ -203,7 +203,7 @@ D3D12_VERTEX_BUFFER_VIEW KazBufferHelper::SetVertexBufferView(const D3D12_GPU_VI
 	return view;
 }
 
-D3D12_INDEX_BUFFER_VIEW KazBufferHelper::SetIndexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE)
+D3D12_INDEX_BUFFER_VIEW KazBufferHelper::SetIndexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS& GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE)
 {
 	D3D12_INDEX_BUFFER_VIEW view;
 	view.BufferLocation = GPU_ADDRESS;
@@ -273,6 +273,7 @@ void KazBufferHelper::ID3D12ResourceWrapper::CreateBuffer(const BufferResourceDa
 		bufferName = BUFFER_OPTION.BufferName;
 
 		resourceState = BUFFER_OPTION.resourceState;
+		bufferDimension = BUFFER_OPTION.resourceDesc.Dimension;
 
 		if (BUFFER_OPTION.heapProperties.Type != D3D12_HEAP_TYPE_DEFAULT &&
 			BUFFER_OPTION.heapProperties.Type != D3D12_HEAP_TYPE_CUSTOM)
@@ -456,7 +457,7 @@ void KazBufferHelper::ID3D12ResourceWrapper::operator=(const ID3D12ResourceWrapp
 	}
 };
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetGPUBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetGPUBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string& BUFFER_NAME)
 {
 	D3D12_RESOURCE_DESC lDesc = CD3DX12_RESOURCE_DESC::Buffer(BUFFER_SIZE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
@@ -497,7 +498,20 @@ void KazBufferHelper::BufferData::CreateUAVView()
 {
 	RESOURCE_HANDLE handle = UavViewHandleMgr::Instance()->GetHandle();
 	D3D12_UNORDERED_ACCESS_VIEW_DESC desc = KazBufferHelper::SetUnorderedAccessView(structureSize, elementNum);
-	DescriptorHeapMgr::Instance()->CreateBufferView(handle, desc, bufferWrapper->GetBuffer().Get(), counterWrapper->GetBuffer().Get());
+
+	if (bufferWrapper->GetDimension()== D3D12_RESOURCE_DIMENSION_TEXTURE2D)
+	{
+		desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+	}
+
+	if (counterWrapper == nullptr)
+	{
+		DescriptorHeapMgr::Instance()->CreateBufferView(handle, desc, bufferWrapper->GetBuffer().Get(), nullptr);
+	}
+	else
+	{
+		DescriptorHeapMgr::Instance()->CreateBufferView(handle, desc, bufferWrapper->GetBuffer().Get(), counterWrapper->GetBuffer().Get());
+	}
 	bufferWrapper->CreateViewHandle(handle);
 }
 
