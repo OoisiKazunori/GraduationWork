@@ -1,5 +1,6 @@
 #pragma once
 #include "../UI/UI.h"
+#include "../KazLibrary/Scene/SceneData.h"
 
 class MenuElement : public UI2DElement
 {
@@ -51,9 +52,24 @@ class Menu
 	const int C_MenuBaseX = 1000;
 	const int C_MenuBaseY = 200;
 	const int C_MenuDistanceY = 50;
+
+	static SceneName m_SceneName;
+	static bool isSceneChange;
+	static bool isSceneChangeTrigger;
 public:
 	Menu(DrawingByRasterize& arg_rasterize);
 	static bool GetIsGameEnd(){ return isGameEnd; }
+	static void SetSceneName(SceneName f_sceneName){ m_SceneName = f_sceneName; }
+	static bool IsSceneChange()
+	{
+		if (!isSceneChange)return false;
+		else
+		{
+			isSceneChange = false;
+			return true;
+		}
+	}
+	static SceneName GetNextSceneName(){ return m_SceneName; };
 	bool GetIsMenuOpen(){ return m_isMenuOpen; };
 	void Init();
 	void Update();
