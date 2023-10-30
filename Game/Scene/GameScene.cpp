@@ -58,21 +58,21 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 
 	m_stageTransform.pos = { 0.0f, -20.0f, 0.0f };
 	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
-	
+
 	MapManager::Init();
 	m_stageManager.Init(arg_rasterize);
 
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stageManager.m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stageManager.m_stage->m_transform);
-	
-	
+
+
 	m_player = std::make_shared<Player>(arg_rasterize, MapManager::GetPlayerStartPosition(0));
 	m_camera = std::make_shared<Camera>();
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
 
-	
+
 
 }
 
@@ -105,7 +105,7 @@ void GameScene::Input()
 	}
 }
 
-void GameScene::Update(DrawingByRasterize &arg_rasterize)
+void GameScene::Update(DrawingByRasterize& arg_rasterize)
 {
 	/*
 	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
@@ -114,31 +114,35 @@ void GameScene::Update(DrawingByRasterize &arg_rasterize)
 	*/
 	//デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
-
-	m_uiManager.Update();
-	m_gadgetMaanager.Update();
-	m_HPBarManager.Update(0);
-
-	m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr);
-	m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-	m_bulletMgr->Update(m_stageMeshCollision);
-
-
-	m_stageManager.Update(arg_rasterize);
-
-	static bool flag = false;
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+	
+	//メニューが開かれていない時に更新を通す
+	if (!m_menu.GetIsMenuOpen())
 	{
-		if (flag) flag = false;
-		else flag = true;
-	}
-	if (flag)
-	{
-		m_heartRateManager.Update(60);
-	}
-	else
-	{
-		m_heartRateManager.Update(120);
+		m_uiManager.Update();
+		m_gadgetMaanager.Update();
+		m_HPBarManager.Update(0);
+
+		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr);
+		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+		m_bulletMgr->Update(m_stageMeshCollision);
+
+
+		m_stageManager.Update(arg_rasterize);
+
+		static bool flag = false;
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+		{
+			if (flag) flag = false;
+			else flag = true;
+		}
+		if (flag)
+		{
+			m_heartRateManager.Update(60);
+		}
+		else
+		{
+			m_heartRateManager.Update(120);
+		}
 	}
 	m_menu.Update();
 }
