@@ -3,14 +3,14 @@
 #include"../Math/KazMath.h"
 #include"../Helper/DirtyFlag.h"
 #include"../KazLibrary/Render/DrawingByRasterize.h"
-#include"../KazLibrary/Render/DrawFunc.h"
+#include"../KazLibrary/Render/BasicDraw.h"
 
 namespace ChangeScene {
 
 	class SceneChange
 	{
 	public:
-		SceneChange();
+		SceneChange(DrawingByRasterize& arg_rasterize);
 
 		void Init();
 		void Finalize();
@@ -37,9 +37,9 @@ namespace ChangeScene {
 		float tmp;
 		float startOutInT[2];
 
-		KazMath::Transform2D transform;
-		RESOURCE_HANDLE handle;
-		DrawFuncData::DrawCallData sceneTex;
+		KazMath::Transform2D m_transform;
+		DrawFuncData::DrawCallData m_render;
+		const DrawFuncData::DrawData *m_renderCallData;
 		KazBufferHelper::BufferData texBuffer;
 	};
 }
