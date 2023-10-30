@@ -38,7 +38,7 @@ namespace KazFilePathName
 	static std::string StagePath = RelativeResourcePath + "Stage/";
 	static std::string PlayerPath = RelativeResourcePath + "Player/";
 	static std::string LensFlarePath = RelativeResourcePath + "PostEffect/LensFlare/";
-
+	static std::string SilhouettePath = RelativeResourcePath + "PostEffect/Silhouette/";
 
 	//デバックパス-----------------------
 

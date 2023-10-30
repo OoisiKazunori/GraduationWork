@@ -211,6 +211,10 @@ namespace KazBufferHelper
 		{
 			return resourceState;
 		}
+		const D3D12_RESOURCE_DIMENSION& GetDimension()
+		{
+			return bufferDimension;
+		}
 	private:
 		static const int BACK_BUFFER_NUM = 1;
 		std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, BACK_BUFFER_NUM>buffer;
@@ -218,6 +222,7 @@ namespace KazBufferHelper
 		std::vector<RESOURCE_HANDLE> viewHandle;
 		bool isVRAMBufferFlag;
 		D3D12_RESOURCE_STATES resourceState;
+		D3D12_RESOURCE_DIMENSION bufferDimension;
 		std::string bufferName;
 
 		UINT GetIndex()const
