@@ -58,9 +58,9 @@ private:
 
 	//パイプラインの情報----------------------------------------
 
-	PipelineDuplicateBlocking piplineBufferMgr;
-	ShaderDuplicateBlocking shaderBufferMgr;
-	RootSignatureDuplicateBlocking rootSignatureBufferMgr;
+	PipelineDuplicateBlocking m_piplineBufferMgr;
+	ShaderDuplicateBlocking m_shaderBufferMgr;
+	RootSignatureDuplicateBlocking m_rootSignatureBufferMgr;
 
 	//パイプラインの情報----------------------------------------
 
@@ -74,19 +74,6 @@ private:
 	};
 	std::vector<RenderTargetClearData>renderTargetClearArray;
 	//レンダーターゲット情報----------------------------------------
-
-
-	//新しい描画命令の受け取り
-	//描画情報
-	std::vector<DrawFuncData::DrawData> renderInfomationForDirectX12Array;
-	//描画命令の受け取り
-	std::list<DrawFuncData::DrawCallData> kazCommandList;
-
-	//UIの描画命令の受け取り--------------------------------
-	//描画情報
-	std::vector<DrawFuncData::DrawData> m_uiRenderInfomationArray;
-	//描画命令の受け取り
-	std::list<DrawFuncData::DrawCallData> m_uiKazCommandList;
 
 	//描画に必要なバッファをコマンドリストに積む
 	void SetBufferOnCmdList(const  std::vector<KazBufferHelper::BufferData>& BUFFER_ARRAY, std::vector<RootSignatureParameter> ROOT_PARAM);

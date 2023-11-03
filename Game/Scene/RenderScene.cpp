@@ -13,6 +13,9 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 			true
 		);
 	}
+	m_renderTransform.pos = { WIN_X / 2,WIN_Y / 2 };
+	m_gBufferType = 0;
+	m_sceneNum = -1;
 }
 
 RenderScene::~RenderScene()

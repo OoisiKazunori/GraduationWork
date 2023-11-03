@@ -1,109 +1,6 @@
 #include "VertexBufferMgr.h"
 #include"DescriptorHeapMgr.h"
 
-RESOURCE_HANDLE VertexBufferMgr::GenerateBuffer(const std::vector<VertexAndIndexGenerateData>& vertexData, bool arg_generateInVRAMFlag)
-{
-	std::vector<KazRenderHelper::IASetVertexBuffersData> setVertDataArray;
-	std::vector<D3D12_INDEX_BUFFER_VIEW> indexBufferViewArray;
-	std::vector<KazRenderHelper::DrawIndexedInstancedData>drawCommandDataArray;
-
-
-	RESOURCE_HANDLE outputHandle = m_handle.GetHandle();
-	bool pushBackFlag = false;
-	if (m_drawIndexDataArray.size() <= outputHandle)
-	{
-		m_drawIndexDataArray.emplace_back();
-		m_polygonIndexBufferArray.emplace_back();
-		pushBackFlag = true;
-	}
-
-	int idx = 0;
-	bool skip = false;
-	for (const auto& meshData : vertexData)
-	{
-		if (!skip)
-		{
-			skip = true;
-			continue;
-		}
-		m_polygonIndexBufferArray[outputHandle].emplace_back();
-		m_polygonIndexBufferArray[outputHandle].back().emplace_back(PolygonGenerateData(meshData.verticesPos, meshData.structureSize, meshData.arraySize));
-		m_polygonIndexBufferArray[outputHandle].back().emplace_back(PolygonGenerateData((void*)meshData.indices.data(), sizeof(UINT), meshData.indices.size()));
-
-		std::shared_ptr<KazBufferHelper::BufferData>vertexBuffer;
-		if (arg_generateInVRAMFlag)
-		{
-			vertexBuffer = m_polygonIndexBufferArray[outputHandle].back()[idx].m_gpuBuffer.m_buffer;
-		}
-		else
-		{
-			vertexBuffer = m_polygonIndexBufferArray[outputHandle].back()[idx].m_cpuBuffer.m_buffer;
-		}
-		++idx;
-		std::shared_ptr<KazBufferHelper::BufferData>indexBuffer(m_polygonIndexBufferArray[outputHandle].back()[1].m_gpuBuffer.m_buffer);
-
-		vertexBuffer->structureSize = meshData.structureSize;
-		vertexBuffer->elementNum = static_cast<UINT>(meshData.arraySize);
-		indexBuffer->structureSize = sizeof(UINT);
-		indexBuffer->elementNum = static_cast<UINT>(meshData.indices.size());
-
-		//頂点情報
-		setVertDataArray.emplace_back();
-		setVertDataArray.back().numViews = 1;
-		setVertDataArray.back().slot = 0;
-		setVertDataArray.back().vertexBufferView = KazBufferHelper::SetVertexBufferView(vertexBuffer->bufferWrapper->GetGpuAddress(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(meshData.arraySize, meshData.structureSize), meshData.oneArraySize);
-
-		//インデックス情報
-		indexBufferViewArray.emplace_back(
-			KazBufferHelper::SetIndexBufferView(
-				indexBuffer->bufferWrapper->GetGpuAddress(),
-				KazBufferHelper::GetBufferSize<BUFFER_SIZE>(meshData.indices.size(), sizeof(UINT))
-			)
-		);
-
-		//描画コマンド情報
-		KazRenderHelper::DrawIndexedInstancedData result;
-		result.indexCountPerInstance = static_cast<UINT>(meshData.indices.size());
-		result.instanceCount = 1;
-		result.startIndexLocation = 0;
-		result.baseVertexLocation = 0;
-		result.startInstanceLocation = 0;
-		drawCommandDataArray.emplace_back(result);
-
-
-		m_drawIndexDataArray[outputHandle].vertBuffer.emplace_back(vertexBuffer);
-		m_drawIndexDataArray[outputHandle].indexBuffer.emplace_back(indexBuffer);
-
-
-		RESOURCE_HANDLE handle = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_IAPOLYGONE).startSize + sDescHandle;
-		D3D12_SHADER_RESOURCE_VIEW_DESC view;
-		view.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-		view.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-		view.Format = DXGI_FORMAT_UNKNOWN;
-		view.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		view.Buffer.NumElements = static_cast<UINT>(meshData.arraySize);
-		view.Buffer.FirstElement = 0;
-		view.Buffer.StructureByteStride = meshData.structureSize;
-		DescriptorHeapMgr::Instance()->CreateBufferView(handle, view, vertexBuffer->bufferWrapper->GetBuffer().Get());
-		m_drawIndexDataArray[outputHandle].vertBuffer.back()->bufferWrapper->CreateViewHandle(handle);
-		++sDescHandle;
-
-
-		handle = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_IAPOLYGONE).startSize + sDescHandle;
-		view.Buffer.NumElements = static_cast<UINT>(meshData.indices.size());
-		view.Buffer.StructureByteStride = sizeof(UINT);
-		DescriptorHeapMgr::Instance()->CreateBufferView(handle, view, indexBuffer->bufferWrapper->GetBuffer().Get());
-		m_drawIndexDataArray[outputHandle].indexBuffer.back()->bufferWrapper->CreateViewHandle(handle);
-		++sDescHandle;
-	}
-	m_drawIndexDataArray[outputHandle].index.topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	m_drawIndexDataArray[outputHandle].index.vertexBufferDrawData = setVertDataArray;
-	m_drawIndexDataArray[outputHandle].index.indexBufferView = indexBufferViewArray;
-	m_drawIndexDataArray[outputHandle].index.drawIndexInstancedData = drawCommandDataArray;
-
-	return outputHandle;
-}
-
 RESOURCE_HANDLE VertexBufferMgr::GenerateBuffer(const VertexGenerateData& arg_vertexData, bool arg_generateInVRAMFlag)
 {
 	RESOURCE_HANDLE outputHandle = m_vertexHandle.GetHandle();
@@ -164,6 +61,74 @@ RESOURCE_HANDLE VertexBufferMgr::GenerateBuffer(const VertexGenerateData& arg_ve
 	result.startVertexLocation = 0;
 	m_drawDataArray[outputHandle].instanceData.drawInstanceData = result;
 
+	return outputHandle;
+}
+
+RESOURCE_HANDLE VertexBufferMgr::GenerateBuffer(const std::vector<VertexAndIndexGenerateData>& arg_vertexData, bool arg_generateInVRAMFlag)
+{
+	//配列の中から設定する要素を決める--------------------------------
+	RESOURCE_HANDLE outputHandle = m_handle.GetHandle();
+	bool pushBackFlag = false;
+	if (m_drawIndexDataArray.size() <= outputHandle)
+	{
+		m_drawIndexDataArray.emplace_back();
+		m_polygonIndexBufferArray.emplace_back();
+		pushBackFlag = true;
+	}
+
+	std::vector<std::vector<IAPolygonBufferData>>* polygonBuffer = &m_polygonIndexBufferArray[outputHandle];
+	PolygonMultiMeshedIndexData* polygonMeshData = &m_drawIndexDataArray[outputHandle];
+	//配列の中から設定する要素を決める--------------------------------
+
+	//設定開始--------------------------------
+	polygonMeshData->index.topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	for (const auto& meshData : arg_vertexData)
+	{
+		//頂点バッファ生成
+		polygonBuffer->emplace_back();
+		polygonBuffer->back().emplace_back();
+		GenerateIABuffer(&polygonBuffer->back().back(), { meshData.verticesPos,meshData.structureSize, meshData.arraySize });
+		if (arg_generateInVRAMFlag)
+		{
+			polygonMeshData->vertBuffer.emplace_back(polygonBuffer->back().back().m_gpuBuffer.m_buffer);
+		}
+		else
+		{
+			polygonMeshData->vertBuffer.emplace_back(polygonBuffer->back().back().m_cpuBuffer.m_buffer);
+		}
+		//頂点バッファの描画情報の設定
+		polygonMeshData->index.vertexBufferDrawData.emplace_back(
+			0,
+			1,
+			KazBufferHelper::SetVertexBufferView(
+				polygonBuffer->back().back().m_gpuBuffer.m_buffer->bufferWrapper->GetGpuAddress(),
+				KazBufferHelper::GetBufferSize<BUFFER_SIZE>(meshData.arraySize, meshData.structureSize),
+				meshData.oneArraySize)
+		);
+
+		//インデックスバッファ生成
+		polygonBuffer->back().emplace_back();
+		GenerateIABuffer(&polygonBuffer->back().back(), { (void*)meshData.indices.data(),sizeof(UINT), meshData.indices.size() });
+		polygonMeshData->indexBuffer.emplace_back(polygonBuffer->back().back().m_gpuBuffer.m_buffer);
+		//インデックスの描画情報の設定
+		polygonMeshData->index.indexBufferView.emplace_back(
+			KazBufferHelper::SetIndexBufferView(
+				polygonBuffer->back().back().m_gpuBuffer.m_buffer->bufferWrapper->GetGpuAddress(),
+				KazBufferHelper::GetBufferSize<BUFFER_SIZE>(meshData.indices.size(), sizeof(UINT))
+			)
+		);
+
+		//描画コマンド情報
+		polygonMeshData->index.drawIndexInstancedData.emplace_back(SetIndexInstanceData(meshData.indices.size()));
+
+
+		D3D12_SHADER_RESOURCE_VIEW_DESC view = SetView(polygonMeshData->vertBuffer.back()->structureSize, polygonMeshData->vertBuffer.back()->elementNum);
+		//頂点バッファビュー生成
+		SetInDescriptorHeap(polygonMeshData->vertBuffer.back(), view);
+		//インデックスバッファビュー生成
+		view = SetView(static_cast<UINT>(meshData.indices.size()), sizeof(UINT));
+		SetInDescriptorHeap(polygonMeshData->indexBuffer.back(), view);
+	}
 	return outputHandle;
 }
 
@@ -400,4 +365,53 @@ std::vector<DirectX::XMFLOAT3> VertexBufferMgr::GetPlaneVertices(const KazMath::
 	}
 
 	return vertices;
+}
+
+void VertexBufferMgr::GenerateIABuffer(IAPolygonBufferData* arg_bufferData, const PolygonGenerateData& arg_generateBufferData)
+{
+	arg_bufferData->GenerateBuffer(PolygonGenerateData(arg_generateBufferData.m_ptr, arg_generateBufferData.m_structureSize, arg_generateBufferData.m_arraySize));
+
+	//RAM
+	arg_bufferData->m_cpuBuffer.m_buffer->elementNum = static_cast<UINT>(arg_generateBufferData.m_arraySize);
+	arg_bufferData->m_cpuBuffer.m_buffer->structureSize = static_cast<UINT>(arg_generateBufferData.m_structureSize);
+	//VRAM
+	arg_bufferData->m_gpuBuffer.m_buffer->elementNum = static_cast<UINT>(arg_generateBufferData.m_arraySize);
+	arg_bufferData->m_gpuBuffer.m_buffer->structureSize = static_cast<UINT>(arg_generateBufferData.m_structureSize);
+}
+
+void VertexBufferMgr::GenerateBufferView(const D3D12_SHADER_RESOURCE_VIEW_DESC& arg_view)
+{
+}
+
+void VertexBufferMgr::SetInDescriptorHeap(const std::shared_ptr<KazBufferHelper::BufferData>& arg_bufferData, const D3D12_SHADER_RESOURCE_VIEW_DESC& arg_viewDesc)
+{
+	//頂点バッファビューの生成
+	RESOURCE_HANDLE handle = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_IAPOLYGONE).startSize + sDescHandle;
+	DescriptorHeapMgr::Instance()->CreateBufferView(handle, arg_viewDesc, arg_bufferData->bufferWrapper->GetBuffer().Get());
+	arg_bufferData->bufferWrapper->CreateViewHandle(handle);
+	++sDescHandle;
+}
+
+D3D12_SHADER_RESOURCE_VIEW_DESC VertexBufferMgr::SetView(UINT arg_structureByte, UINT arg_numElement)
+{
+	D3D12_SHADER_RESOURCE_VIEW_DESC view;
+	view.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+	view.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+	view.Format = DXGI_FORMAT_UNKNOWN;
+	view.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	view.Buffer.NumElements = arg_numElement;
+	view.Buffer.FirstElement = 0;
+	view.Buffer.StructureByteStride = arg_structureByte;
+	return view;
+}
+
+KazRenderHelper::DrawIndexedInstancedData VertexBufferMgr::SetIndexInstanceData(size_t arg_indexArrayNum)
+{
+	KazRenderHelper::DrawIndexedInstancedData result;
+	result.indexCountPerInstance = static_cast<UINT>(arg_indexArrayNum);
+	result.instanceCount = 1;
+	result.startIndexLocation = 0;
+	result.baseVertexLocation = 0;
+	result.startInstanceLocation = 0;
+	return result;
 }

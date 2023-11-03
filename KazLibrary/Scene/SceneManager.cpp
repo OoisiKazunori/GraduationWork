@@ -239,7 +239,7 @@ void SceneManager::Draw()
 	m_rayPipeline->BuildShaderTable(m_blasVector);
 	if (m_blasVector.GetBlasRefCount() != 0)
 	{
-		m_rayPipeline->TraceRay(m_tlas);
+	//	m_rayPipeline->TraceRay(m_tlas);
 	}
 	//UI用の描画
 	m_rasterize.UISortAndRender();

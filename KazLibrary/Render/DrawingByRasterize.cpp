@@ -102,12 +102,12 @@ void DrawingByRasterize::GeneratePipeline()
 				}
 			}
 			//ルートシグネチャー
-			result.m_commandRootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
+			result.m_commandRootsignatureHandle = m_rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
 
 			//コマンドシグネチャ生成
 			ExecuteIndirectData::GenerateCommandSignature(
 				result.m_commandSignature,
-				rootSignatureBufferMgr.GetBuffer(result.m_commandRootsignatureHandle),
+				m_rootSignatureBufferMgr.GetBuffer(result.m_commandRootsignatureHandle),
 				callData->m_executeIndirectGenerateData.m_desc
 			);
 		}
@@ -137,11 +137,11 @@ void DrawingByRasterize::GeneratePipeline()
 		//シェーダーのコンパイル
 		for (int i = 0; i < callData->pipelineData.shaderDataArray.size(); ++i)
 		{
-			RESOURCE_HANDLE lShaderHandle = shaderBufferMgr.GenerateShader(callData->pipelineData.shaderDataArray[i]);
+			RESOURCE_HANDLE lShaderHandle = m_shaderBufferMgr.GenerateShader(callData->pipelineData.shaderDataArray[i]);
 			ErrorCheck(lShaderHandle, callData->callLocation);
 
 			result.shaderHandleArray.emplace_back(lShaderHandle);
-			D3D12_SHADER_BYTECODE shaderByteCode = CD3DX12_SHADER_BYTECODE(shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferPointer(), shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferSize());
+			D3D12_SHADER_BYTECODE shaderByteCode = CD3DX12_SHADER_BYTECODE(m_shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferPointer(), m_shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferSize());
 			switch (callData->pipelineData.shaderDataArray[i].shaderType)
 			{
 			case SHADER_TYPE_VERTEX:
@@ -182,11 +182,11 @@ void DrawingByRasterize::GeneratePipeline()
 				callData->extraBufferArray[i].rootParamType
 			);
 		}
-		result.m_rootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
+		result.m_rootsignatureHandle = m_rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
 
 		//パイプラインの生成
-		result.pipelineData.pRootSignature = rootSignatureBufferMgr.GetBuffer(result.m_rootsignatureHandle).Get();
-		result.pipelineHandle = piplineBufferMgr.GeneratePipeline(
+		result.pipelineData.pRootSignature = m_rootSignatureBufferMgr.GetBuffer(result.m_rootsignatureHandle).Get();
+		result.pipelineHandle = m_piplineBufferMgr.GeneratePipeline(
 			result.pipelineData,
 			PipelineDuplicateBlocking::PipelineDuplicateData(
 				rootSignatureGenerateData, callData->pipelineData.shaderDataArray, callData->pipelineData.blendMode
@@ -217,9 +217,9 @@ void DrawingByRasterize::ReleasePipeline()
 {
 	if (m_drawCallArray.size() != 0)
 	{
-		piplineBufferMgr.Release();
-		rootSignatureBufferMgr.Release();
-		shaderBufferMgr.Release();
+		m_piplineBufferMgr.Release();
+		m_rootSignatureBufferMgr.Release();
+		m_shaderBufferMgr.Release();
 	}
 	m_drawCallArray.clear();
 	m_drawCallArray.shrink_to_fit();
@@ -367,12 +367,12 @@ const DrawFuncData::DrawData* DrawingByRasterize::GenerateSceneChangePipeline(Dr
 				}
 			}
 			//ルートシグネチャー
-			result.m_commandRootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
+			result.m_commandRootsignatureHandle = m_rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
 
 			//コマンドシグネチャ生成
 			ExecuteIndirectData::GenerateCommandSignature(
 				result.m_commandSignature,
-				rootSignatureBufferMgr.GetBuffer(result.m_commandRootsignatureHandle),
+				m_rootSignatureBufferMgr.GetBuffer(result.m_commandRootsignatureHandle),
 				callData->m_executeIndirectGenerateData.m_desc
 			);
 		}
@@ -402,11 +402,11 @@ const DrawFuncData::DrawData* DrawingByRasterize::GenerateSceneChangePipeline(Dr
 		//シェーダーのコンパイル
 		for (int i = 0; i < callData->pipelineData.shaderDataArray.size(); ++i)
 		{
-			RESOURCE_HANDLE lShaderHandle = shaderBufferMgr.GenerateShader(callData->pipelineData.shaderDataArray[i]);
+			RESOURCE_HANDLE lShaderHandle = m_shaderBufferMgr.GenerateShader(callData->pipelineData.shaderDataArray[i]);
 			ErrorCheck(lShaderHandle, callData->callLocation);
 
 			result.shaderHandleArray.emplace_back(lShaderHandle);
-			D3D12_SHADER_BYTECODE shaderByteCode = CD3DX12_SHADER_BYTECODE(shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferPointer(), shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferSize());
+			D3D12_SHADER_BYTECODE shaderByteCode = CD3DX12_SHADER_BYTECODE(m_shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferPointer(), m_shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferSize());
 			switch (callData->pipelineData.shaderDataArray[i].shaderType)
 			{
 			case SHADER_TYPE_VERTEX:
@@ -447,11 +447,11 @@ const DrawFuncData::DrawData* DrawingByRasterize::GenerateSceneChangePipeline(Dr
 				callData->extraBufferArray[i].rootParamType
 			);
 		}
-		result.m_rootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
+		result.m_rootsignatureHandle = m_rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
 
 		//パイプラインの生成
-		result.pipelineData.pRootSignature = rootSignatureBufferMgr.GetBuffer(result.m_rootsignatureHandle).Get();
-		result.pipelineHandle = piplineBufferMgr.GeneratePipeline(
+		result.pipelineData.pRootSignature = m_rootSignatureBufferMgr.GetBuffer(result.m_rootsignatureHandle).Get();
+		result.pipelineHandle = m_piplineBufferMgr.GeneratePipeline(
 			result.pipelineData,
 			PipelineDuplicateBlocking::PipelineDuplicateData(
 				rootSignatureGenerateData, callData->pipelineData.shaderDataArray, callData->pipelineData.blendMode
@@ -636,12 +636,12 @@ void DrawingByRasterize::DrawCall(const std::list<const DrawFuncData::DrawData*>
 			rootSignatureHandle = renderData->m_rootsignatureHandle;
 
 			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
-				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
+				m_rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
 			);
 			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
-				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
+				m_piplineBufferMgr.GetBuffer(pipelineHandle).Get()
 			);
-			SetBufferOnCmdList(*renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+			SetBufferOnCmdList(*renderData->buffer, m_rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
 		}
 		//ExcuteIndirectの使用
 		else
@@ -649,10 +649,10 @@ void DrawingByRasterize::DrawCall(const std::list<const DrawFuncData::DrawData*>
 			rootSignatureHandle = renderData->m_rootsignatureHandle;
 
 			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
-				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
+				m_rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
 			);
 			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
-				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
+				m_piplineBufferMgr.GetBuffer(pipelineHandle).Get()
 			);
 			//SetBufferOnCmdList(renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
 		}
@@ -667,7 +667,7 @@ void DrawingByRasterize::DrawCall(const std::list<const DrawFuncData::DrawData*>
 			DrawInstanceCommand(renderData->drawInstanceCommandData);
 			break;
 		case DrawFuncData::VERT_TYPE::MULTI_MESHED:
-			MultiMeshedDrawIndexInstanceCommand(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->materialBuffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+			MultiMeshedDrawIndexInstanceCommand(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->materialBuffer, m_rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
 			break;
 		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX:
 			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
