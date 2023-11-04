@@ -13,6 +13,15 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 			true
 		);
 	}
+
+	for (auto& modelType : m_modelDrawArray)
+	{
+		for (auto& modelInstance : modelType)
+		{
+			modelInstance.Load(arg_rasterize, "Resource/DefferdRendering/Avocado/", "Avocado.gltf", false);
+		}
+	}
+
 	m_renderTransform.pos = { WIN_X / 2,WIN_Y / 2 };
 	m_gBufferType = 0;
 	m_sceneNum = -1;
@@ -56,6 +65,17 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	m_sponzaModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_sponzaModelTransform);
 	//G-Buffer‚Ì•`‰æ
 	m_gBufferRender[m_gBufferType].m_tex.Draw2D(arg_rasterize, m_renderTransform);
+
+	for (int x = 0; x < m_modelDrawArray.size(); ++x)
+	{
+		for (int z = 0; z < m_modelDrawArray[x].size(); ++z)
+		{
+			KazMath::Transform3D transform;
+			transform.pos = { static_cast<float>(x) * 30.0f,0.0f,static_cast<float>(z) * 30.0f };
+
+			m_modelDrawArray[x][z].m_model.Draw(arg_rasterize, arg_blasVec, transform);
+		}
+	}
 }
 
 int RenderScene::SceneChange()

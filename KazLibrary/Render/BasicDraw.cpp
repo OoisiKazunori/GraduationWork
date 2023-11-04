@@ -73,3 +73,19 @@ BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize &arg_rasterize) :
 	m_render(arg_rasterize, DrawFuncData::SetLine(DrawFuncData::GetBasicGBufferShader()))
 {
 }
+
+BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deleteInSceneFlag)
+{
+}
+
+BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize& arg_rasterize, bool arg_deleteInSceneFlag)
+{
+}
+
+BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender()
+{
+}
+
+void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deleteInSceneFlag)
+{
+}
