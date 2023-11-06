@@ -25,7 +25,11 @@ namespace BasicDraw
 		BasicModelInstanceRender(DrawingByRasterize& arg_rasterize, bool arg_deleteInSceneFlag = false);
 		BasicModelInstanceRender();
 		void Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deleteInSceneFlag);
+
+		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 		DrawFuncHelper::ModelRender m_model;
+
+		KazBufferHelper::RAMToVRAMBufferData m_transformBuffer;
 	};
 
 	struct BasicTextureRender

@@ -1,12 +1,14 @@
 #include"ModelBuffer.hlsli"
 
-cbuffer MatBuffer : register(b0)
+struct TransformData
 {
     matrix worldMat;
     matrix viewMat;
     matrix projectionMat;
     matrix rotaion;
-}
+};
+
+RWStructuredBuffer<TransformData> TransformBuffer : register(u0);
 
 cbuffer ColorBuffer : register(b2)
 {
@@ -32,6 +34,7 @@ struct PosUvNormalTangentBinormalOutput
     float3 worldPos : POSITION;
     float3 tangent : TANGENT2;
     float3 binormal : BINORMAL;
+    uint id : SV_InstanceID;
 };
 
 //モデルのアニメーション
@@ -39,14 +42,15 @@ PosUvNormalTangentBinormalOutput VSDefferdAnimationMain(VertexData input,uint id
 {
     float4 resultPos = input.pos;
     PosUvNormalTangentBinormalOutput op;
-    op.svpos = mul(worldMat, resultPos);
+    op.svpos = mul(TransformBuffer[id].worldMat, resultPos);
     op.worldPos = op.svpos.xyz;
-    op.svpos = mul(viewMat, op.svpos);
-    op.svpos = mul(projectionMat, op.svpos);
+    op.svpos = mul(TransformBuffer[id].viewMat, op.svpos);
+    op.svpos = mul(TransformBuffer[id].projectionMat, op.svpos);
     op.uv = input.uv;
     op.normal = input.normal;
     op.binormal = input.binormal;
     op.tangent = input.tangent;
+    op.id = id;
     return op;
 }
 
@@ -57,9 +61,9 @@ GBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput input) : S
     float3 normalVec = 2 * normalColor - 1.0f;
     normalVec = normalize(normalVec);
 
-    float3 normal = mul(rotaion, float4(input.normal, 1.0f));
+    float3 normal = mul(TransformBuffer[input.id].rotaion, float4(input.normal, 1.0f));
     normal = normalize(normal);
-    float3 tangent = mul(rotaion, float4(input.tangent, 1.0f));
+    float3 tangent = mul(TransformBuffer[input.id].rotaion, float4(input.tangent, 1.0f));
     tangent = normalize(tangent);
     float3 binormal = cross(normal, tangent);
 

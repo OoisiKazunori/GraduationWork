@@ -32,9 +32,16 @@ private:
 	BasicDraw::BasicModelRender m_sponzaModelRender;//ƒXƒ|ƒ“ƒU•`‰æ
 	KazMath::Transform3D m_sponzaModelTransform;
 
-	std::array<std::array<BasicDraw::BasicModelRender, 4>, 10>m_modelDrawArray;
 	BasicDraw::BasicModelRender m_modelInstanceRender;
 
+
+	static const int MODEL_MAX_NUM = 20;
+	struct ModelDraw
+	{
+		BasicDraw::BasicModelInstanceRender m_modelInstanceRender;
+		std::array<KazMath::Transform3D, MODEL_MAX_NUM> m_transform;
+	};
+	std::array<ModelDraw, 6> m_modelInstanceRenderArray;
 
 	//G-Buffer‚Ì•`‰æ
 	enum GBufferTexEnum

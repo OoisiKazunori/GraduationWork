@@ -1411,20 +1411,20 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCall;
 
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
 
 		//その他設定
-		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
 		{
-			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+			pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdMain", "ps_6_4", SHADER_TYPE_PIXEL);
 
-		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, pipelineData);
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 		drawCall.SetupRaytracing(true);
 
@@ -1435,19 +1435,19 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCall;
 
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
 
 		//その他設定
-		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
 		{
-			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+			pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 
-		lData.shaderDataArray = arg_shader;
+		pipelineData.shaderDataArray = arg_shader;
 
-		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, pipelineData);
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 		drawCall.SetupRaytracing(true);
 
@@ -1458,19 +1458,19 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCall;
 
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
 
 		//その他設定
-		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
 		{
-			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+			pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 
-		lData.shaderDataArray = arg_shader;
+		pipelineData.shaderDataArray = arg_shader;
 
-		drawCall = DrawFuncData::SetDrawInstanceGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall = DrawFuncData::SetDrawInstanceGLTFIndexMaterialInRayTracingData(*arg_model, pipelineData);
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 		drawCall.SetupRaytracing(true);
 
@@ -1481,11 +1481,11 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCall;
 
-		DrawFuncData::PipelineGenerateData lData;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
 
-		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, pipelineData);
 		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
 
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
@@ -1508,11 +1508,11 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCall;
 
-		DrawFuncData::PipelineGenerateData lData;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
 
-		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingInstanceData(*arg_model, lData);
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingInstanceData(*arg_model, pipelineData);
 		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
 
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
@@ -1536,13 +1536,12 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCall;
 
-		DrawFuncData::PipelineGenerateData lData;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
 
-		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, pipelineData);
 		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
-		drawCall.pipelineData.desc.DepthStencilState;
 		drawCall.pipelineData.desc.DepthStencilState.DepthEnable = false;							//深度テストを行う
 		drawCall.pipelineData.desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		drawCall.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//小さければOK
@@ -1568,11 +1567,11 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCall;
 
-		DrawFuncData::PipelineGenerateData lData;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMainNoLighting", "ps_6_4", SHADER_TYPE_PIXEL);
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMainNoLighting", "ps_6_4", SHADER_TYPE_PIXEL);
 
-		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, pipelineData);
 		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
 
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
@@ -1595,11 +1594,11 @@ namespace DrawFuncData
 	{
 		DrawCallData drawCall;
 
-		DrawFuncData::PipelineGenerateData lData;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "PostEffect/Dissolve/" + "DissolveModel.hlsl", "PSDefferdAnimationMainDissolve", "ps_6_4", SHADER_TYPE_PIXEL);
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "PostEffect/Dissolve/" + "DissolveModel.hlsl", "PSDefferdAnimationMainDissolve", "ps_6_4", SHADER_TYPE_PIXEL);
 
-		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, pipelineData);
 		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
 
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
@@ -1630,11 +1629,11 @@ namespace DrawFuncData
 
 	static DrawCallData SetLine(RESOURCE_HANDLE arg_vertexHandle)
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosLine();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "DrawLine.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "DrawLine.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosLine();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "DrawLine.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "DrawLine.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		DrawCallData drawCallData;
 		//頂点情報
@@ -1657,7 +1656,7 @@ namespace DrawFuncData
 		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
 		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMFLOAT4);
 
-		drawCallData.pipelineData = lData;
+		drawCallData.pipelineData = pipelineData;
 		drawCallData.drawInstanceCommandData.topology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
 
 		return drawCallData;
@@ -1665,7 +1664,7 @@ namespace DrawFuncData
 
 	static DrawCallData SetLine(const DrawFuncData::PipelineGenerateData& arg_pipeline)
 	{
-		DrawFuncData::PipelineGenerateData lData(arg_pipeline);
+		DrawFuncData::PipelineGenerateData pipelineData(arg_pipeline);
 
 		DrawCallData drawCallData;
 		//頂点情報
@@ -1686,7 +1685,7 @@ namespace DrawFuncData
 		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
 		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMFLOAT4);
 
-		drawCallData.pipelineData = lData;
+		drawCallData.pipelineData = pipelineData;
 		drawCallData.drawInstanceCommandData.topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 		return drawCallData;
 	}
@@ -1761,183 +1760,183 @@ namespace DrawFuncData
 
 	static DrawFuncData::PipelineGenerateData GetModelShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSPosNormalUvmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSPosNormalUvmain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
-		return lData;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSPosNormalUvmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSPosNormalUvmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetModelBloomShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdBloomMain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdBloomMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//その他設定
-		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
 		{
-			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+			pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
-		return lData;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetAnimationModelBloomShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdBloomMain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdBloomMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//その他設定
-		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
 		{
-			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+			pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
-		return lData;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetSpriteShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetTex();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
-		return lData;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetTex();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetSpriteAlphaShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetTex();
-		lData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "PSAlphaMain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
-		return lData;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetTex();
+		pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "PSAlphaMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetSpriteAlphaDepthAlwaysShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetTex();
-		lData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "PSAlphaMain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
-		return lData;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetTex();
+		pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "PSAlphaMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetBasicInstanceShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//その他設定
-		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
 		{
-			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+			pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
-		return lData;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetBasicInstanceEmissiveShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "PSEmissiveMain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "PSEmissiveMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//その他設定
-		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
 		{
-			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+			pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
-		return lData;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetBasicInstanceShader2()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "PS", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "PS", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//その他設定
-		lData.desc.NumRenderTargets = 1;
-		return lData;
+		pipelineData.desc.NumRenderTargets = 1;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetBasicShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPos();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPos();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 		//その他設定
-		lData.desc.NumRenderTargets = 1;
-		lData.desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		lData.desc.SampleDesc.Count = 1;
-		return lData;
+		pipelineData.desc.NumRenderTargets = 1;
+		pipelineData.desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		pipelineData.desc.SampleDesc.Count = 1;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetBasicGBufferShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPos();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "GBufferVSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "GBufferPSmain", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPos();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "GBufferVSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Basic.hlsl", "GBufferPSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 		//その他設定
-		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
 		{
-			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+			pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
-		return lData;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetDefferedModelShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSModel", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSModel", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSModel", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSModel", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//その他設定
-		lData.desc.NumRenderTargets = 1;
-		lData.desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		return lData;
+		pipelineData.desc.NumRenderTargets = 1;
+		pipelineData.desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		return pipelineData;
 	};
 
 	static DrawFuncData::PipelineGenerateData GetAnimationModelShader()
 	{
-		DrawFuncData::PipelineGenerateData lData;
-		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSAnimationModel", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSModel", "ps_6_4", SHADER_TYPE_PIXEL);
-		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSAnimationModel", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSModel", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//その他設定
-		lData.desc.NumRenderTargets = 1;
-		lData.desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		return lData;
+		pipelineData.desc.NumRenderTargets = 1;
+		pipelineData.desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		return pipelineData;
 	};
 
 }

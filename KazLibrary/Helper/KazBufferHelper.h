@@ -169,7 +169,7 @@ namespace KazBufferHelper
 		)const;
 
 		void ChangeBarrier(
-			D3D12_RESOURCE_STATES BEFORE_STATE,D3D12_RESOURCE_STATES AFTER_STATE
+			D3D12_RESOURCE_STATES BEFORE_STATE, D3D12_RESOURCE_STATES AFTER_STATE
 		);
 		void ChangeBarrier(
 			D3D12_RESOURCE_STATES AFTER_STATE
@@ -245,7 +245,6 @@ namespace KazBufferHelper
 		}
 		~BufferData()
 		{
-			bool debug = false;
 		};
 
 		void GenerateCounterBuffer();
@@ -255,5 +254,38 @@ namespace KazBufferHelper
 	private:
 	};
 
+	//RAMからVRAMにアップロードしやすくした構造体です
+	struct RAMToVRAMBufferData
+	{
+		RAMToVRAMBufferData(int arg_structureSize, int arg_elementNum)
+		{
+			m_ramBuffer = KazBufferHelper::SetUploadBufferData(arg_structureSize * arg_elementNum);
+			m_ramBuffer.structureSize = arg_structureSize;
+			m_ramBuffer.elementNum = arg_elementNum;
+
+			m_vramBuffer = KazBufferHelper::SetGPUBufferData(arg_structureSize * arg_elementNum);
+			m_vramBuffer.structureSize = arg_structureSize;
+			m_vramBuffer.elementNum = arg_elementNum;
+		};
+		RAMToVRAMBufferData()
+		{};
+		void GenerateBuffer(int arg_structureSize, int arg_elementNum)
+		{
+			m_ramBuffer = KazBufferHelper::SetUploadBufferData(arg_structureSize * arg_elementNum);
+			m_ramBuffer.structureSize = arg_structureSize;
+			m_ramBuffer.elementNum = arg_elementNum;
+
+			m_vramBuffer = KazBufferHelper::SetGPUBufferData(arg_structureSize * arg_elementNum);
+			m_vramBuffer.structureSize = arg_structureSize;
+			m_vramBuffer.elementNum = arg_elementNum;
+		};
+		void TransData(void* arg_dataPtr, const unsigned int& arg_dataSize)
+		{
+			m_ramBuffer.bufferWrapper->TransData(arg_dataPtr, arg_dataSize);
+			m_vramBuffer.bufferWrapper->CopyBuffer(m_ramBuffer.bufferWrapper->GetBuffer());
+		}
+
+		KazBufferHelper::BufferData m_ramBuffer, m_vramBuffer;
+	};
 }
 

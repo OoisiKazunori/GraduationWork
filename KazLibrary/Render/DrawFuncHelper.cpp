@@ -257,10 +257,9 @@ void DrawFuncHelper::ModelRender::Load(const std::string& arg_fileDir, const std
 void DrawFuncHelper::ModelRender::Load(const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
 {
 	m_modelInfo = arg_modelInfomation;
-
+	m_drawCommand = arg_drawCall;
 	Error();
 	LoadAnimation();
-	m_drawCommand = arg_drawCall;
 }
 
 bool DrawFuncHelper::ModelRender::LoadAnimation()
