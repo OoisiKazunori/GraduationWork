@@ -40,13 +40,17 @@ private:
 	int m_sceneNum;
 
 	int m_nowSelectNum;
+	const int C_MaxSelectNum = 1;
+
 
 	const int UIBaseX = 300;
 	const int UIBaseY = 200;
 
-	const int UIDistance = 70;
+	const int UIDistance = 50;
 
 	SelectSceneSprite m_backSp;
 	SelectSceneSprite m_backBarSp;
 	SelectSceneSprite m_loadGameSp;
+	SelectSceneSprite m_exitGameSp;
+	SelectSceneSprite m_selectBackSp;
 };

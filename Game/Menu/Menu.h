@@ -59,6 +59,7 @@ class Menu
 public:
 	Menu(DrawingByRasterize& arg_rasterize);
 	static bool GetIsGameEnd(){ return isGameEnd; }
+	static void SetIsGameEnd(bool f_flag) { isGameEnd = f_flag; }
 	static void SetSceneName(SceneName f_sceneName){ m_SceneName = f_sceneName; }
 	static bool IsSceneChange()
 	{
