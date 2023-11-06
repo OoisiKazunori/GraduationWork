@@ -30,7 +30,7 @@ void TitleScene::Input()
 	//ƒQ[ƒ€ƒV[ƒ“‚Ö
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 	{
-		m_sceneNum = 1;
+		m_sceneNum = 2;
 	}
 }
 

@@ -10,6 +10,7 @@
 #include"../Game/Scene/GameScene.h"
 #include"../Game/Scene/DemoScene.h"
 #include"../Game/Scene/TitleScene.h"
+#include"../Game/Scene/StageSelectScene.h"
 
 class SceneManager
 {
@@ -112,6 +113,10 @@ private:
 			return std::make_shared<GameScene>(m_rasterize);
 			break;
 		case 2:
+			return std::make_shared<StageSelectScene>(m_rasterize);
+			break;
+
+		case 3:
 			break;
 		default:
 			break;

@@ -520,7 +520,8 @@ void HeartRate::Update(int f_heartRate)
 
 void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 {
-	
+	m_HeartRateBaseUI.SetPosition({ c_BaseUIX, c_BaseUIY });
+	m_HeartRateBaseUI.Draw(arg_rasterize);
 
 	m_HeartRateUI.SetScale({ m_nowRateScale , m_nowRateScale });
 	m_HeartRateUI.SetPosition({ c_BaseUIX, c_BaseUIY });
@@ -529,6 +530,5 @@ void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 	m_HeartRateFrameUI.SetPosition({ c_BaseUIX , c_BaseUIY });
 	m_HeartRateFrameUI.Draw(arg_rasterize);
 	
-	m_HeartRateBaseUI.SetPosition({ c_BaseUIX, c_BaseUIY });
-	m_HeartRateBaseUI.Draw(arg_rasterize);
+	
 }
