@@ -73,14 +73,14 @@ void Menu::Update()
 				{
 					MenuClose();
 				}
-				if (nowSelectMenu == MenuOptions::Totitle)
+				else if (nowSelectMenu == MenuOptions::Totitle)
 				{
 					isSceneChangeTrigger = true;
 					SetSceneName(SceneName::SCENE_TITLE);
 					isSceneChange = true;
 					m_isMenuOpen = false;
 				}
-				if (nowSelectMenu == MenuOptions::ToEnd)
+				else if (nowSelectMenu == MenuOptions::ToEnd)
 				{
 					isGameEnd = true;
 				}
