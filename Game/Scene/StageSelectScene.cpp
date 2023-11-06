@@ -10,6 +10,7 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize) :
 	m_backSp.SetPosition({1280 / 2.0f, 720.0f / 2.0f});
 	m_backBarSp.SetPosition({ 1280 / 2.0f, 720.0f / 2.0f });
 	m_loadGameSp.SetPosition({ (float)UIBaseX, (float)UIBaseY });
+	m_sceneNum = -1;
 }
 
 StageSelectScene::~StageSelectScene()
