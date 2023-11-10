@@ -231,7 +231,7 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
-	m_sceneChange->Draw(m_rasterize);
+//	m_sceneChange->Draw(m_rasterize);
 
 	m_nowScene->Draw(m_rasterize, m_blasVector);
 	//ラスタライザ描画
