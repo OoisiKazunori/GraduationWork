@@ -34,11 +34,23 @@ public:
 	//指定のステージに移動する
 	int SceneChange();
 
+	void OpenOptionsInit();
 
 	enum SelectOpsions
 	{
 		ToGame,
+		Opsions,
 		ExitGame,
+	};
+
+	enum OptionsOpstions
+	{
+		//マウス反転
+		MouseReversal,
+		//マウス感度調整
+		MouseSens,
+		//ボリューム調整
+		Volume,
 	};
 private:
 	//描画--------------------------
@@ -48,15 +60,25 @@ private:
 	int m_nowSelectNum;
 	const int C_MaxSelectNum = 1;
 
+	int m_opsionsSelectNum = MouseReversal;
+	bool m_isOptionsOpen = false;
+	int m_OptionsOpenSelect = -1; 
+
 
 	const int UIBaseX = 300;
 	const int UIBaseY = 200;
 
 	const int UIDistance = 50;
 
+	const float UIHidePos = -200.0f; 
+
 	SelectSceneSprite m_backSp;
 	SelectSceneSprite m_backBarSp;
 	SelectSceneSprite m_loadGameSp;
 	SelectSceneSprite m_exitGameSp;
 	SelectSceneSprite m_selectBackSp;
+
+	SelectSceneSprite m_MouseReveralSp;
+	SelectSceneSprite m_MouseSensSp;
+	SelectSceneSprite m_VolumeSp;
 };

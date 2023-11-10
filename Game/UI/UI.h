@@ -14,6 +14,8 @@ class UI2DElement
 	KazMath::Vec2<float> m_easeScaleEnd;
 	KazMath::Vec2<float> m_nowScale;
 	float m_easeScaleTimer;
+
+	KazMath::Color m_color;
 public:
 	UI2DElement(DrawingByRasterize& arg_rasterize, const char *f_filePath);
 	void Init(DrawingByRasterize& arg_rasterize, std::string f_filePath);
@@ -26,6 +28,8 @@ public:
 	void EasePosInit(KazMath::Vec2<float> f_easeEnd);
 	void EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2<float> f_easeEnd, float f_timer);
 	void SetScale(KazMath::Vec2<float> f_nowScale);
+
+	void SetColor(KazMath::Color &f_color);
 	BasicDraw::BasicTextureRender m_2DSprite;
 };
 

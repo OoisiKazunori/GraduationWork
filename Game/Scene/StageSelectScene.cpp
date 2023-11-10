@@ -7,18 +7,28 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize) :
 	m_backBarSp(arg_rasterize, "Resource/MenuTex/SelectSceneBar.png"),
 	m_loadGameSp(arg_rasterize, "Resource/MenuTex/LoadGame.png"),
 	m_exitGameSp(arg_rasterize, "Resource/MenuTex/exitGame.png"),
-	m_selectBackSp(arg_rasterize, "Resource/MenuTex/nowSelectBack.png")
+	m_selectBackSp(arg_rasterize, "Resource/MenuTex/nowSelectBack.png"),
+
+	m_MouseReveralSp(arg_rasterize, "Resource/MenuTex/nowSelectBack.png"),
+	m_MouseSensSp(arg_rasterize, "Resource/MenuTex/nowSelectBack.png"),
+	m_VolumeSp(arg_rasterize, "Resource/MenuTex/nowSelectBack.png")
 {
-	m_backSp.SetPosition({1280 / 2.0f, 720.0f / 2.0f});
+	m_backSp.SetPosition({ 1280 / 2.0f, 720.0f / 2.0f });
 	m_backBarSp.SetPosition({ 1280 / 2.0f, 720.0f / 2.0f });
 
-	m_loadGameSp.SetPosition({ -200.0f, (float)UIBaseY });
-	m_loadGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY });
+	m_loadGameSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * ToGame) });
+	m_loadGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + ((float)UIDistance * ToGame) });
 
-	m_exitGameSp.SetPosition({ -200.0f, (float)UIBaseY + (float)UIDistance });
-	m_exitGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + (float)UIDistance });
+	m_selectBackSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * m_nowSelectNum) });
+	m_selectBackSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + ((float)UIDistance * m_nowSelectNum) });
+
+	m_exitGameSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * ExitGame) });
+	m_exitGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + ((float)UIDistance * ExitGame) });
+
 	m_sceneNum = -1;
 	m_nowSelectNum = 0;
+
+
 }
 
 StageSelectScene::~StageSelectScene()
@@ -39,33 +49,94 @@ void StageSelectScene::Finalize()
 
 void StageSelectScene::Input()
 {
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+	if (!m_isOptionsOpen)
 	{
-		if (m_nowSelectNum == ToGame)
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 		{
-			//1”Ô‚ÌƒQ[ƒ€‚És‚­
-			m_sceneNum = 1;
+			if (m_nowSelectNum == ToGame)
+			{
+				//1”Ô‚ÌƒQ[ƒ€‚És‚­
+				m_sceneNum = 1;
+			}
+			//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚éŒã‚Å”Ô†‚ð•Ï‚¦‚é
+			else if (m_nowSelectNum == ExitGame)
+			{
+				Menu::SetIsGameEnd(true);
+			}
 		}
-		//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚éŒã‚Å”Ô†‚ð•Ï‚¦‚é
-		else if (m_nowSelectNum == ExitGame)
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
 		{
-			Menu::SetIsGameEnd(true);
+			m_nowSelectNum++;
+			if (m_nowSelectNum > ExitGame)
+			{
+				m_nowSelectNum = 0;
+			}
+		}
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
+		{
+			m_nowSelectNum--;
+			if (m_nowSelectNum < 0)
+			{
+				m_nowSelectNum = ExitGame;
+			}
 		}
 	}
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
+
+	else
 	{
-		m_nowSelectNum++;
-		if (m_nowSelectNum > ExitGame)
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 		{
-			m_nowSelectNum = 0;
+			if (m_OptionsOpenSelect == -1)
+			{
+				m_OptionsOpenSelect = m_opsionsSelectNum;
+			}
+			else
+			{
+				switch (m_OptionsOpenSelect)
+				{
+				case OptionsOpstions::MouseReversal:
+					
+					break;
+				case OptionsOpstions::MouseSens:
+
+					break;
+				case OptionsOpstions::Volume:
+
+					break;
+				default:
+					break;
+				}
+			}
 		}
-	}
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
-	{
-		m_nowSelectNum--;
-		if (m_nowSelectNum < 0)
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
 		{
-			m_nowSelectNum = ExitGame;
+			if (m_OptionsOpenSelect == -1)
+			{
+				m_opsionsSelectNum--;
+				if (m_opsionsSelectNum < 0)
+				{
+					m_opsionsSelectNum = OptionsOpstions::Volume;
+				}
+			}
+			else
+			{
+
+			}
+		}
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
+		{
+			if (m_OptionsOpenSelect == -1)
+			{
+				m_opsionsSelectNum++;
+				if (m_opsionsSelectNum > OptionsOpstions::Volume)
+				{
+					m_opsionsSelectNum = OptionsOpstions::MouseReversal;
+				}
+			}
+			else
+			{
+
+			}
 		}
 	}
 }
@@ -82,9 +153,8 @@ void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 	m_exitGameSp.Draw(arg_rasterize);
 	m_loadGameSp.Draw(arg_rasterize);
 
-	m_selectBackSp.SetPosition({ (float)UIBaseX, (float)UIBaseY + (float)(UIDistance * m_nowSelectNum)});
 	m_selectBackSp.Draw(arg_rasterize);
-	
+
 	m_backSp.Draw(arg_rasterize);
 }
 
@@ -97,4 +167,14 @@ int StageSelectScene::SceneChange()
 		return tmp;
 	}
 	return SCENE_NONE;
+}
+
+void StageSelectScene::OpenOptionsInit()
+{
+
+	m_loadGameSp.EasePosInit({ UIHidePos, (float)UIBaseY + ((float)UIDistance * ToGame) });
+	m_selectBackSp.EasePosInit({ UIHidePos, (float)UIBaseY + ((float)UIDistance * m_nowSelectNum) });
+	m_exitGameSp.EasePosInit({ UIHidePos, (float)UIBaseY + ((float)UIDistance * ExitGame) });
+
+
 }
