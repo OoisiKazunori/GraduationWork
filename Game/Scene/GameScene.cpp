@@ -60,7 +60,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
 
 	MapManager::Init();
-	m_stageManager.Init(arg_rasterize);
+	int stageNumber = 0;
+	m_stageManager.Init(arg_rasterize, stageNumber);
 
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stageManager.m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stageManager.m_stage->m_transform);

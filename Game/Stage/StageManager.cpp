@@ -6,14 +6,13 @@ StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
 }
 
-void StageManager::Init(DrawingByRasterize& arg_rasterize)
+void StageManager::Init(DrawingByRasterize& arg_rasterize, int f_stageNum)
 {
-	m_nowStageNumber = 0;
+	m_nowStageNumber = f_stageNum;
 	m_changeSceneTriggerFlag = false;
 
 	//最初のステージはこちらで読み込む
-	int stageNumber = 0;
-	AddMapDatas(arg_rasterize, stageNumber);
+	AddMapDatas(arg_rasterize, f_stageNum);
 }
 
 void StageManager::Update(DrawingByRasterize& arg_rasterize)

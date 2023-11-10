@@ -23,7 +23,7 @@ private:
 public:
 	StageManager();
 
-	void Init(DrawingByRasterize& arg_rasterize);
+	void Init(DrawingByRasterize& arg_rasterize, int f_stageNum);
 	void Update(DrawingByRasterize &arg_rasterize);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	//ステージが切り替わったトリガー
