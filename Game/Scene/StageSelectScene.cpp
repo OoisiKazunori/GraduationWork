@@ -11,8 +11,12 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize) :
 {
 	m_backSp.SetPosition({1280 / 2.0f, 720.0f / 2.0f});
 	m_backBarSp.SetPosition({ 1280 / 2.0f, 720.0f / 2.0f });
-	m_loadGameSp.SetPosition({ (float)UIBaseX, (float)UIBaseY });
-	m_exitGameSp.SetPosition({ (float)UIBaseX, (float)UIBaseY + (float)UIDistance });
+
+	m_loadGameSp.SetPosition({ -200.0f, (float)UIBaseY });
+	m_loadGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY });
+
+	m_exitGameSp.SetPosition({ -200.0f, (float)UIBaseY + (float)UIDistance });
+	m_exitGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + (float)UIDistance });
 	m_sceneNum = -1;
 	m_nowSelectNum = 0;
 }
@@ -67,7 +71,8 @@ void StageSelectScene::Input()
 
 void StageSelectScene::Update(DrawingByRasterize& arg_rasterize)
 {
-	
+	m_loadGameSp.Update();
+	m_exitGameSp.Update();
 }
 
 void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
