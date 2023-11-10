@@ -16,14 +16,14 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize) :
 	m_backSp.SetPosition({ 1280 / 2.0f, 720.0f / 2.0f });
 	m_backBarSp.SetPosition({ 1280 / 2.0f, 720.0f / 2.0f });
 
-	m_loadGameSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * ToGame) });
-	m_loadGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + ((float)UIDistance * ToGame) });
+	m_loadGameSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * (float)ToGame) });
+	m_loadGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + ((float)UIDistance * (float)ToGame) });
 
 	m_selectBackSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * m_nowSelectNum) });
 	m_selectBackSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + ((float)UIDistance * m_nowSelectNum) });
 
-	m_exitGameSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * ExitGame) });
-	m_exitGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + ((float)UIDistance * ExitGame) });
+	m_exitGameSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * (float)ExitGame) });
+	m_exitGameSp.EasePosInit({ (float)UIBaseX, (float)UIBaseY + ((float)UIDistance * (float)ExitGame) });
 
 	m_sceneNum = -1;
 	m_nowSelectNum = 0;
@@ -57,6 +57,10 @@ void StageSelectScene::Input()
 			{
 				//1”Ô‚ÌƒQ[ƒ€‚És‚­
 				m_sceneNum = 1;
+			}
+			else if (m_nowSelectNum == SelectOpsions::Opsions)
+			{
+				m_isOptionsOpen = true;
 			}
 			//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚éŒã‚Å”Ô†‚ð•Ï‚¦‚é
 			else if (m_nowSelectNum == ExitGame)
@@ -138,12 +142,20 @@ void StageSelectScene::Input()
 
 			}
 		}
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
+		{
+			if (m_OptionsOpenSelect == -1)
+			{
+				m_isOptionsOpen = false;
+			}
+		}
 	}
 }
 
 void StageSelectScene::Update(DrawingByRasterize& arg_rasterize)
 {
 	m_loadGameSp.Update();
+	m_selectBackSp.Update();
 	m_exitGameSp.Update();
 }
 
@@ -172,9 +184,9 @@ int StageSelectScene::SceneChange()
 void StageSelectScene::OpenOptionsInit()
 {
 
-	m_loadGameSp.EasePosInit({ UIHidePos, (float)UIBaseY + ((float)UIDistance * ToGame) });
+	m_loadGameSp.EasePosInit({ UIHidePos, (float)UIBaseY + ((float)UIDistance * (float)ToGame) });
 	m_selectBackSp.EasePosInit({ UIHidePos, (float)UIBaseY + ((float)UIDistance * m_nowSelectNum) });
-	m_exitGameSp.EasePosInit({ UIHidePos, (float)UIBaseY + ((float)UIDistance * ExitGame) });
+	m_exitGameSp.EasePosInit({ UIHidePos, (float)UIBaseY + ((float)UIDistance * (float)ExitGame) });
 
 
 }
