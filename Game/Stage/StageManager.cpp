@@ -6,14 +6,13 @@ StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
 }
 
-void StageManager::Init(DrawingByRasterize& arg_rasterize)
+void StageManager::Init(DrawingByRasterize& arg_rasterize, int f_stageNum)
 {
-	m_nowStageNumber = 0;
+	m_nowStageNumber = f_stageNum;
 	m_changeSceneTriggerFlag = false;
 
 	//最初のステージはこちらで読み込む
-	int stageNumber = 0;
-	AddMapDatas(arg_rasterize, stageNumber);
+	AddMapDatas(arg_rasterize, f_stageNum);
 }
 
 void StageManager::Update(DrawingByRasterize& arg_rasterize)
@@ -37,6 +36,10 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	{
 		(*l_stoneItr)->Update();
 	}
+	for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
+	{
+		(*l_block01Itr)->Update();
+	}
 }
 
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -49,6 +52,10 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	for (auto l_stoneItr = m_stone.begin(); l_stoneItr != m_stone.end(); ++l_stoneItr)
 	{
 		(*l_stoneItr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
+	{
+		(*l_block01Itr)->Draw(arg_rasterize, arg_blasVec);
 	}
 }
 
@@ -83,8 +90,13 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		}
 		else if (l_mapItr->m_objetName.starts_with("stage") == true)
 		{
-			m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/", "StageBase.gltf",
+			m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("Block01") == true)
+		{
+			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/StageBlock01/", "StageBlock01.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 	}
 }

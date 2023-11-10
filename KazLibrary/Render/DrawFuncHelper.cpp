@@ -4,6 +4,7 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, 
 {
 	if (arg_isUIFlag)
 	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 		m_drawCommand.renderTargetHandle = -1;
 	}
 	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaShader());
@@ -21,6 +22,7 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, 
 {
 	if (arg_isUIFlag)
 	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 		m_drawCommand.renderTargetHandle = -1;
 	}
 	m_drawCommand = arg_drawCall;
@@ -38,6 +40,7 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, 
 {
 	if (arg_isUIFlag)
 	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 		m_drawCommand.renderTargetHandle = -1;
 	}
 	m_drawCommand = arg_drawCall;
@@ -48,6 +51,7 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, 
 {
 	if (arg_isUIFlag)
 	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 		m_drawCommand.renderTargetHandle = -1;
 	}
 	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteShader());

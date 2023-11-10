@@ -12,9 +12,10 @@ public:
 	DirectX::XMFLOAT3 pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3 rot = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
-	
-private:
-	KazMath::Transform3D m_transform;
 	BasicDraw::BasicModelRender m_stageModelRender;
+	KazMath::Transform3D m_transform;
+private:
+	
+	
 };
 

@@ -12,14 +12,20 @@ UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePa
 void UI2DElement::Init(DrawingByRasterize& arg_rasterize, std::string f_filePath)
 {
 
+
 }
 
 void UI2DElement::Update()
 {
-	m_easePosTimer += 0.1f;
+	m_easePosTimer += m_easePosTimerAdd;
 	if (m_easePosTimer >= 1.0f)
 	{
 		m_easePosTimer = 1.0f;
+	}
+	if (m_easePosTimer < 0.0f)
+	{
+		m_nowPos = m_easePosStart;
+		return;
 	}
 	auto sub = m_easePosEnd - m_easePosStart;
 	m_nowPos = m_easePosStart + (sub * EasingMaker(EasingType::In, EaseInType::Quad, m_easePosTimer));
@@ -48,6 +54,14 @@ void UI2DElement::EasePosInit(KazMath::Vec2<float> f_easeEnd)
 
 	m_easePosEnd = f_easeEnd;
 	m_easePosStart = m_nowPos;
+}
+
+void UI2DElement::EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2<float> f_easeEnd, float f_timer)
+{
+	m_easePosTimer = f_timer;
+
+	m_easePosEnd = f_easeEnd;
+	m_easePosStart = f_easeStartPos;
 }
 
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
@@ -347,11 +361,10 @@ UI2DElement& GadgetUIManager::GetUI(GadgetNumber f_gadget)
 }
 
 HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
-	m_HPFrame(arg_rasterize, "Resource/UITexture/UI_HPBarBase.png"),
-	m_HPBar(arg_rasterize, "Resource/UITexture/UI_HPBar.png"),
-	m_HPBarRed(arg_rasterize, "Resource/UITexture/UI_HPBar_Red.png")/*,
-	m_StaminaFrame(arg_rasterize, "Resource/UITexture/UI_hand.png"),
-	m_StaminaBar(arg_rasterize, "Resource/UITexture/UI_hand.png")*/
+	m_HPFrame(arg_rasterize, "Resource/UITexture/HPBer4.png"),
+	m_HPBar(arg_rasterize, "Resource/UITexture/HPBer2.png"),
+	m_HPBarRed(arg_rasterize, "Resource/UITexture/HPBer3.png"),
+	m_HPFrame2(arg_rasterize, "Resource/UITexture/HPBer1.png")
 {
 	m_hp = 100;
 }
@@ -365,25 +378,45 @@ void HPUI::Init()
 void HPUI::Update(const int f_playerHP)
 {
 	static int redWaitTime = 0;
+	const int redTime = 1;
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
-		HitDamage(10, 5);
-		redWaitTime = 10;
+		HitDamage(10, 10);
+		if (m_hp > 0)
+		{
+			redWaitTime = 45;
+		}
+		else
+		{
+			redWaitTime = 0;
+		}
 	}
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
 		if (m_redHP > 0)
 		{
-			m_redHP--;
-			redWaitTime = 10;
+			if (m_hp > 0)
+			{
+				redWaitTime = redTime;
+				m_redHP--;
+			}
+			else
+			{
+				redWaitTime = 1;
+				m_redHP -= 2;
+			}
+			if (m_redHP < 0)
+			{
+				m_redHP = 0;
+			}
 		}
 	}
 }
 
 void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	float half = c_UITexX / 2.0f;
+	/*float half = c_UITexX / 2.0f;
 	half = half / MaxHP * m_hp;
 	m_HPBar.SetScale({ (float)m_hp / (float)MaxHP, 1.0f });
 	m_HPBar.SetPosition({ half + (float)c_texOffset, c_BaseUIY });
@@ -395,7 +428,28 @@ void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 	m_HPBarRed.SetScale({ redXSize, 1.0f });
 	m_HPBarRed.SetPosition({ redPos + (float)c_texOffset, c_BaseUIY });
 	m_HPBarRed.Draw(arg_rasterize);
-	
+
+	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HPFrame.Draw(arg_rasterize);
+	m_HPFrame2.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HPFrame2.Draw(arg_rasterize);*/
+
+	//•`‰æ‡‚ª”½“]‚µ‚Ä‚é‚Á‚Û‚¢
+	float half = c_UITexX / 2.0f;
+	half = half / MaxHP * m_hp;
+	float redXSize = (float)m_redHP / (float)MaxHP;
+	float redPos = half * 2.0f + (c_UITexX * (float)m_redHP / (float)MaxHP / 2.0f);
+	m_HPFrame2.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HPFrame2.Draw(arg_rasterize);
+
+	m_HPBarRed.SetScale({ redXSize, 1.0f });
+	m_HPBarRed.SetPosition({ redPos + (float)c_texOffset, c_BaseUIY });
+	m_HPBarRed.Draw(arg_rasterize);
+
+	m_HPBar.SetScale({ (float)m_hp / (float)MaxHP, 1.0f });
+	m_HPBar.SetPosition({ half + (float)c_texOffset, c_BaseUIY });
+	m_HPBar.Draw(arg_rasterize);
+
 	m_HPFrame.SetPosition({ c_BaseUIX , c_BaseUIY });
 	m_HPFrame.Draw(arg_rasterize);
 }
@@ -403,24 +457,78 @@ void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 {
 	m_hp -= f_mainDamage;
-	m_hp -= m_redHP;
+	//m_hp -= m_redHP;
 	if (m_hp < 0)
 	{
 		m_hp = 0;
 	}
 	if (m_hp > 0)
 	{
-		if (m_hp > f_redZone)
+		if (m_hp >= f_redZone)
 		{
-			m_redHP = f_redZone;
+			m_redHP += f_redZone;
 		}
-		else
+		/*else
 		{
 			m_redHP = m_hp;
-		}
+		}*/
 	}
 	else
 	{
-		m_redHP = 0;
+		//m_redHP = 0;
 	}
+}
+
+HeartRate::HeartRate(DrawingByRasterize& arg_rasterize) :
+	m_HeartRateBaseUI(arg_rasterize, "Resource/UITexture/heartBase.png"),
+	m_HeartRateUI(arg_rasterize, "Resource/UITexture/heartRate.png"),
+	m_HeartRateFrameUI(arg_rasterize, "Resource/UITexture/heartFrame.png")
+{
+
+}
+
+void HeartRate::Update(int f_heartRate)
+{
+	if (m_nowRate != f_heartRate)
+	{
+		m_isRateDirty = true;
+		m_nextRate = f_heartRate;
+	}
+
+	m_nowRateCount--;
+	if (m_nowRateCount <= 0)
+	{
+		m_nowRateCount = m_nextRate;
+		m_nowRate = m_nextRate;
+		m_nowRateScale = 0.0f;
+		m_echoEnd = false;
+	}
+	//ƒGƒR[‚ðL‚°‚Ä‚­
+	else
+	{
+		if (!m_echoEnd)
+		{
+			m_nowRateScale += m_rateScaleSpeed;
+			if (m_nowRateScale > 1.0f)
+			{
+				m_echoEnd = true;
+				m_nowRateScale = 0.0f;
+			}
+		}
+	}
+}
+
+void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
+{
+	m_HeartRateBaseUI.SetPosition({ c_BaseUIX, c_BaseUIY });
+	m_HeartRateBaseUI.Draw(arg_rasterize);
+
+	m_HeartRateUI.SetScale({ m_nowRateScale , m_nowRateScale });
+	m_HeartRateUI.SetPosition({ c_BaseUIX, c_BaseUIY });
+	m_HeartRateUI.Draw(arg_rasterize);
+
+	m_HeartRateFrameUI.SetPosition({ c_BaseUIX , c_BaseUIY });
+	m_HeartRateFrameUI.Draw(arg_rasterize);
+	
+	
 }

@@ -272,88 +272,8 @@ void DrawingByRasterize::SortAndRender()
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(DirectX::XMFLOAT3(0, 0, 0));
 
-	RESOURCE_HANDLE preRenderTargetHandle = -1;
-	RESOURCE_HANDLE preDepthHandle = -1;
-	for (auto &renderData : m_stackDataArray)
-	{
-		//前回と違うハンドルが出たらレンダーターゲットを切り替える
-		if (renderData->renderTargetHandle != preRenderTargetHandle && renderData->depthHandle == -1)
-		{
-			RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderData->renderTargetHandle, preRenderTargetHandle);
-			RenderTargetStatus::Instance()->ClearRenderTarget(renderData->renderTargetHandle);
-		}
-		//レンダーターゲット切り替えずにデプスに書き込む
-		if (renderData->depthHandle != preDepthHandle)
-		{
-			RenderTargetStatus::Instance()->SetDepth(renderData->renderTargetHandle);
-		}
-		preDepthHandle = renderData->depthHandle;
-		preRenderTargetHandle = renderData->renderTargetHandle;
+	DrawCall(m_stackDataArray);
 
-
-		RESOURCE_HANDLE pipelineHandle = renderData->pipelineHandle;
-		RESOURCE_HANDLE rootSignatureHandle = -1;
-
-		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_COMMON);
-		//通常の描画
-		if (renderData->drawCommandType != DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX)
-		{
-			rootSignatureHandle = renderData->m_rootsignatureHandle;
-
-			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
-				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
-			);
-			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
-				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
-			);
-			SetBufferOnCmdList(*renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
-		}
-		//ExcuteIndirectの使用
-		else
-		{
-			rootSignatureHandle = renderData->m_rootsignatureHandle;
-
-			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
-				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
-			);
-			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
-				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
-			);
-			//SetBufferOnCmdList(renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
-		}
-		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE);
-
-		//描画コマンド実行
-		switch (renderData->drawCommandType)
-		{
-		case DrawFuncData::VERT_TYPE::INDEX:
-			DrawIndexInstanceCommand(renderData->drawIndexInstanceCommandData);
-			break;
-		case DrawFuncData::VERT_TYPE::INSTANCE:
-			DrawInstanceCommand(renderData->drawInstanceCommandData);
-			break;
-		case DrawFuncData::VERT_TYPE::MULTI_MESHED:
-			MultiMeshedDrawIndexInstanceCommand(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->materialBuffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
-			break;
-		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX:
-			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
-			break;
-		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INSTANCE:
-			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
-			break;
-		default:
-			break;
-		}
-	}
-
-	RenderTargetStatus::Instance()->gDepth.WriteInTex();
-
-	if (preRenderTargetHandle != -1)
-	{
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(preRenderTargetHandle);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-		RenderTargetStatus::Instance()->ClearDoubuleBuffer(DirectX::XMFLOAT3(0, 0, 0));
-	}
 	m_stackDataArray.clear();
 }
 
@@ -376,85 +296,167 @@ void DrawingByRasterize::UISortAndRender()
 			}
 		});
 
-	RESOURCE_HANDLE preRenderTargetHandle = -1;
-	RESOURCE_HANDLE preDepthHandle = -1;
-	for (auto &renderData : m_uiStackDataArray)
+	DrawCall(m_uiStackDataArray);
+
+	m_uiStackDataArray.clear();
+}
+
+const DrawFuncData::DrawData* DrawingByRasterize::GenerateSceneChangePipeline(DrawFuncData::DrawCallData* arg_drawCall)
+{
+	int index = 0;
+	//ソートが終わったらDirectX12のコマンドリストに命令出来るように描画情報を生成する。
+	auto& callData = arg_drawCall;
 	{
-		//前回と違うハンドルが出たらレンダーターゲットを切り替える
-		if (renderData->renderTargetHandle != preRenderTargetHandle && renderData->depthHandle == -1)
+		DrawFuncData::DrawData result;
+
+		result.generateFlag = callData->m_deleteInSceneFlag;
+		result.drawMultiMeshesIndexInstanceCommandData = callData->drawMultiMeshesIndexInstanceCommandData;
+		result.drawInstanceCommandData = callData->drawInstanceCommandData;
+		result.drawIndexInstanceCommandData = callData->drawIndexInstanceCommandData;
+		result.m_executeIndirectGenerateData = callData->m_executeIndirectGenerateData;
+		result.drawCommandType = callData->drawCommandType;
+
+		result.materialBuffer = callData->materialBuffer;
+		result.buffer = &callData->extraBufferArray;
+		result.renderTargetHandle = callData->renderTargetHandle;
+		result.depthHandle = callData->depthHandle;
+
+		result.pipelineData = callData->pipelineData.desc;
+
+		result.m_executeIndirectGenerateData.m_uavArgumentBuffer = callData->m_executeIndirectGenerateData.m_uavArgumentBuffer;
+
+
+		if (result.drawCommandType == DrawFuncData::VERT_TYPE::MULTI_MESHED)
 		{
-			RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderData->renderTargetHandle, preRenderTargetHandle);
-			RenderTargetStatus::Instance()->ClearRenderTarget(renderData->renderTargetHandle);
+			bool debug = false;
 		}
-		//レンダーターゲット切り替えずにデプスに書き込む
-		if (renderData->depthHandle != preDepthHandle)
+
+		//ExecuteIndirectの発行
+		if (callData->drawCommandType == DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX ||
+			callData->drawCommandType == DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INSTANCE)
 		{
-			RenderTargetStatus::Instance()->SetDepth(renderData->renderTargetHandle);
-		}
-		preDepthHandle = renderData->depthHandle;
-		preRenderTargetHandle = renderData->renderTargetHandle;
+			RootSignatureDataTest rootSignatureGenerateData;
+			for (int i = 0; i < callData->m_executeIndirectGenerateData.m_desc.size(); ++i)
+			{
+				switch (callData->m_executeIndirectGenerateData.m_desc[i].Type)
+				{
+				case D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW:
+					rootSignatureGenerateData.rangeArray.emplace_back(
+						GRAPHICS_RANGE_TYPE_CBV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
+					);
+					break;
+				case D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW:
+					rootSignatureGenerateData.rangeArray.emplace_back(
+						GRAPHICS_RANGE_TYPE_SRV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
+					);
+					break;
+				case D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW:
+					rootSignatureGenerateData.rangeArray.emplace_back(
+						GRAPHICS_RANGE_TYPE_UAV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
+					);
+					break;
+				default:
+					break;
+				}
+			}
+			//ルートシグネチャー
+			result.m_commandRootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
 
-		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_COMMON);
-
-		RESOURCE_HANDLE pipelineHandle = renderData->pipelineHandle;
-		RESOURCE_HANDLE rootSignatureHandle = -1;
-		//通常の描画
-		if (renderData->drawCommandType != DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX)
-		{
-			rootSignatureHandle = renderData->m_rootsignatureHandle;
-
-			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
-				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
+			//コマンドシグネチャ生成
+			ExecuteIndirectData::GenerateCommandSignature(
+				result.m_commandSignature,
+				rootSignatureBufferMgr.GetBuffer(result.m_commandRootsignatureHandle),
+				callData->m_executeIndirectGenerateData.m_desc
 			);
-			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
-				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
-			);
-			SetBufferOnCmdList(*renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
-		}
-		//ExcuteIndirectの使用
-		else
-		{
-			rootSignatureHandle = renderData->m_rootsignatureHandle;
-
-			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
-				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
-			);
-			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
-				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
-			);
-			//SetBufferOnCmdList(renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
 		}
 		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
-		//描画コマンド実行
-		switch (renderData->drawCommandType)
+		for (UINT i = 0; i < result.pipelineData.NumRenderTargets; ++i)
 		{
-		case DrawFuncData::VERT_TYPE::INDEX:
-			DrawIndexInstanceCommand(renderData->drawIndexInstanceCommandData);
-			break;
-		case DrawFuncData::VERT_TYPE::INSTANCE:
-			DrawInstanceCommand(renderData->drawInstanceCommandData);
-			break;
-		case DrawFuncData::VERT_TYPE::MULTI_MESHED:
-			MultiMeshedDrawIndexInstanceCommand(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->materialBuffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
-			break;
-		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX:
-			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
-			break;
-		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INSTANCE:
-			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
-			break;
-		default:
-			break;
+			switch (callData->pipelineData.blendMode)
+			{
+			case DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA:
+				result.pipelineData.BlendState.RenderTarget[i] = DrawFuncPipelineData::SetAlphaBlend();
+				break;
+			case DrawFuncPipelineData::PipelineBlendModeEnum::ADD:
+				result.pipelineData.BlendState.RenderTarget[i] = DrawFuncPipelineData::SetAddBlend();
+				break;
+			case DrawFuncPipelineData::PipelineBlendModeEnum::SUB:
+				result.pipelineData.BlendState.RenderTarget[i] = DrawFuncPipelineData::SetSubBlend();
+				break;
+			case DrawFuncPipelineData::PipelineBlendModeEnum::NONE:
+				result.pipelineData.BlendState.RenderTarget[i].BlendEnable = false;
+				break;
+			default:
+				break;
+			}
 		}
-	}
 
-	if (preRenderTargetHandle != -1)
-	{
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(preRenderTargetHandle);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+
+		//シェーダーのコンパイル
+		for (int i = 0; i < callData->pipelineData.shaderDataArray.size(); ++i)
+		{
+			RESOURCE_HANDLE lShaderHandle = shaderBufferMgr.GenerateShader(callData->pipelineData.shaderDataArray[i]);
+			ErrorCheck(lShaderHandle, callData->callLocation);
+
+			result.shaderHandleArray.emplace_back(lShaderHandle);
+			D3D12_SHADER_BYTECODE shaderByteCode = CD3DX12_SHADER_BYTECODE(shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferPointer(), shaderBufferMgr.GetBuffer(lShaderHandle)->GetBufferSize());
+			switch (callData->pipelineData.shaderDataArray[i].shaderType)
+			{
+			case SHADER_TYPE_VERTEX:
+				result.pipelineData.VS = shaderByteCode;
+				break;
+			case SHADER_TYPE_PIXEL:
+				result.pipelineData.PS = shaderByteCode;
+				break;
+			case SHADER_TYPE_GEOMETORY:
+				result.pipelineData.GS = shaderByteCode;
+				break;
+			default:
+				break;
+			}
+		}
+
+		RootSignatureDataTest rootSignatureGenerateData;
+		if (callData->materialBuffer.size() != 0)
+		{
+			const int FIRST_MESH_INDEX = 0;
+			//マテリアルバッファを見てルートシグネチャーの情報詰め込み
+			//全メッシュ共通で入るマテリアル情報のスタックを見てルートシグネチャーの最初に積める
+			for (int i = 0; i < MATERIAL_TEXTURE_MAX; ++i)
+			{
+				rootSignatureGenerateData.rangeArray.emplace_back
+				(
+					GRAPHICS_RANGE_TYPE_SRV_DESC,
+					callData->materialBuffer[FIRST_MESH_INDEX][i].rootParamType
+				);
+			}
+		}
+		//その他バッファを見てルートシグネチャーの情報詰め込み
+		for (int i = 0; i < callData->extraBufferArray.size(); ++i)
+		{
+			rootSignatureGenerateData.rangeArray.emplace_back
+			(
+				callData->extraBufferArray[i].rangeType,
+				callData->extraBufferArray[i].rootParamType
+			);
+		}
+		result.m_rootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
+
+		//パイプラインの生成
+		result.pipelineData.pRootSignature = rootSignatureBufferMgr.GetBuffer(result.m_rootsignatureHandle).Get();
+		result.pipelineHandle = piplineBufferMgr.GeneratePipeline(
+			result.pipelineData,
+			PipelineDuplicateBlocking::PipelineDuplicateData(
+				rootSignatureGenerateData, callData->pipelineData.shaderDataArray, callData->pipelineData.blendMode
+			)
+		);
+		ErrorCheck(result.pipelineHandle, callData->callLocation);
+
+		m_sceneChange = std::make_unique<DrawFuncData::DrawData>();
+		*m_sceneChange = result;
 	}
-	m_uiStackDataArray.clear();
+	return m_sceneChange.get();
 }
 
 void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::BufferData> &BUFFER_ARRAY, std::vector<RootSignatureParameter> ROOT_PARAM)
@@ -608,4 +610,84 @@ std::string DrawingByRasterize::ErrorMail(const std::source_location &DRAW_SOURC
 	std::string lLine = std::to_string(DRAW_SOURCE_LOCATION.line());
 
 	return lFileNameString + "ファイルの" + lFunctionString + "関数の" + lLine + "行目の" + lColumn + "文字目に書かれている描画クラスで生成された情報に問題があります";
+}
+
+void DrawingByRasterize::DrawCall(const std::list<const DrawFuncData::DrawData*> arg_drawCall)
+{
+	RESOURCE_HANDLE preRenderTargetHandle = -1;
+	RESOURCE_HANDLE preDepthHandle = -1;
+	for (auto& renderData : arg_drawCall)
+	{
+		//前回と違うハンドルが出たらレンダーターゲットを切り替える
+		if (renderData->renderTargetHandle != preRenderTargetHandle && renderData->depthHandle == -1)
+		{
+			RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderData->renderTargetHandle, preRenderTargetHandle);
+			RenderTargetStatus::Instance()->ClearRenderTarget(renderData->renderTargetHandle);
+		}
+		//レンダーターゲット切り替えずにデプスに書き込む
+		if (renderData->depthHandle != preDepthHandle)
+		{
+			RenderTargetStatus::Instance()->SetDepth(renderData->renderTargetHandle);
+		}
+		preDepthHandle = renderData->depthHandle;
+		preRenderTargetHandle = renderData->renderTargetHandle;
+
+
+		RESOURCE_HANDLE pipelineHandle = renderData->pipelineHandle;
+		RESOURCE_HANDLE rootSignatureHandle = -1;
+		//通常の描画
+		if (renderData->drawCommandType != DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX)
+		{
+			rootSignatureHandle = renderData->m_rootsignatureHandle;
+
+			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
+				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
+			);
+			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
+				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
+			);
+			SetBufferOnCmdList(*renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+		}
+		//ExcuteIndirectの使用
+		else
+		{
+			rootSignatureHandle = renderData->m_rootsignatureHandle;
+
+			DirectX12CmdList::Instance()->cmdList->SetGraphicsRootSignature(
+				rootSignatureBufferMgr.GetBuffer(rootSignatureHandle).Get()
+			);
+			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
+				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
+			);
+			//SetBufferOnCmdList(renderData->buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+		}
+
+		//描画コマンド実行
+		switch (renderData->drawCommandType)
+		{
+		case DrawFuncData::VERT_TYPE::INDEX:
+			DrawIndexInstanceCommand(renderData->drawIndexInstanceCommandData);
+			break;
+		case DrawFuncData::VERT_TYPE::INSTANCE:
+			DrawInstanceCommand(renderData->drawInstanceCommandData);
+			break;
+		case DrawFuncData::VERT_TYPE::MULTI_MESHED:
+			MultiMeshedDrawIndexInstanceCommand(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->materialBuffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+			break;
+		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX:
+			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
+			break;
+		case DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INSTANCE:
+			DrawExecuteIndirect(renderData->drawMultiMeshesIndexInstanceCommandData, renderData->m_commandSignature, renderData->m_executeIndirectGenerateData);
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (preRenderTargetHandle != -1)
+	{
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(preRenderTargetHandle);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	}
 }

@@ -8,6 +8,7 @@ class UI2DElement
 	KazMath::Vec2<float> m_easePosEnd;
 	KazMath::Vec2<float> m_nowPos;
 	float m_easePosTimer;
+	float m_easePosTimerAdd = 0.1f;
 
 	KazMath::Vec2<float> m_easeScaleStart;
 	KazMath::Vec2<float> m_easeScaleEnd;
@@ -19,8 +20,11 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 
+	void SetEasePosAddTime(float f_easePosTimer){ m_easePosTimerAdd = f_easePosTimer;}
+	float GetPosEaseTimer(){ return m_easePosTimer; }
 	void SetPosition(KazMath::Vec2<float> f_nowPos);
 	void EasePosInit(KazMath::Vec2<float> f_easeEnd);
+	void EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2<float> f_easeEnd, float f_timer);
 	void SetScale(KazMath::Vec2<float> f_nowScale);
 	BasicDraw::BasicTextureRender m_2DSprite;
 };
@@ -129,6 +133,7 @@ class HPUI
 	UI2DElement m_HPFrame;
 	UI2DElement m_HPBar;
 	UI2DElement m_HPBarRed;
+	UI2DElement m_HPFrame2;
 	/*UI2DElement m_StaminaFrame;
 	UI2DElement m_StaminaBar;*/
 	static const int c_texOffset = 30;
@@ -149,8 +154,35 @@ public:
 	void HitDamage(int f_mainDamage, int f_redZone);
 };
 
-class CamouflagePercent
+class HeartRate
 {
-	UI2DElement m_baseUI;
+	UI2DElement m_HeartRateBaseUI;
+	UI2DElement m_HeartRateUI;
+	UI2DElement m_HeartRateFrameUI;
 
+	float rateEx = 0.0f;
+
+	static const int c_texOffset = 40;
+	static const int c_UITexX = 136;
+	static const int c_UITexY = 136;
+	static const int c_BaseUIX = 1280 - (c_UITexX / 2) - c_texOffset;
+	static const int c_BaseUIY = c_UITexY - c_texOffset ;
+
+	int m_nowRateCount;
+	float m_nowRateScale = 0.0f;
+	const float m_rateScaleSpeed = 0.02f;
+	int m_nowRate = 60;
+	bool m_isRateDirty = false;
+	int m_nextRate = 60;
+	bool m_echoEnd = false;
+
+	//Šg‘å—¦
+	float m_rateExt = 0.0f;
+
+public:
+	HeartRate(DrawingByRasterize& arg_rasterize);
+
+	void Init();
+	void Update(int f_heartRate);
+	void Draw(DrawingByRasterize& arg_rasterize);
 };

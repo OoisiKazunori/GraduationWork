@@ -9,6 +9,8 @@
 #include "../KazLibrary/Raytracing/RayPipeline.h"
 #include"../Game/Scene/GameScene.h"
 #include"../Game/Scene/DemoScene.h"
+#include"../Game/Scene/TitleScene.h"
+#include"../Game/Scene/StageSelectScene.h"
 
 class SceneManager
 {
@@ -105,12 +107,16 @@ private:
 		switch (arg_sceneNum)
 		{
 		case 0:
-			return std::make_shared<GameScene>(m_rasterize);
+			return std::make_shared<TitleScene>(m_rasterize);
 			break;
 		case 1:
-			return std::make_shared<DemoScene>(m_rasterize);
+			return std::make_shared<GameScene>(m_rasterize);
 			break;
 		case 2:
+			return std::make_shared<StageSelectScene>(m_rasterize);
+			break;
+
+		case 3:
 			break;
 		default:
 			break;

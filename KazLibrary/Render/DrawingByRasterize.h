@@ -35,6 +35,9 @@ public:
 
 	void SortAndRender();
 	void UISortAndRender();
+
+
+	const DrawFuncData::DrawData* GenerateSceneChangePipeline(DrawFuncData::DrawCallData*arg_drawCall);
 private:
 
 	//事前生成向け-----
@@ -49,6 +52,8 @@ private:
 	std::vector<int>m_deleteHandleArray;
 	//削除されたハンドルから描画パイプライン生成ハンドル
 	std::vector<int>m_generateFromHandleArray;
+
+	std::unique_ptr<DrawFuncData::DrawData> m_sceneChange;
 
 
 	//パイプラインの情報----------------------------------------
@@ -104,4 +109,6 @@ private:
 	}
 
 	std::string ErrorMail(const std::source_location& DRAW_SOURCE_LOCATION);
+
+	void DrawCall(const std::list<const DrawFuncData::DrawData*> arg_drawCall);
 };

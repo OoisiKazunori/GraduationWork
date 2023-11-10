@@ -9,6 +9,7 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../Stage/StageManager.h"
 #include "../UI/UI.h"
+#include "../Menu/Menu.h"
 
 class Player;
 class Camera;
@@ -82,4 +83,6 @@ private:
 	HPUI m_HPBarManager;
 
 	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
+	HeartRate m_heartRateManager;
+	Menu m_menu;
 };
