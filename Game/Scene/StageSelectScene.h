@@ -34,6 +34,12 @@ public:
 	//指定のステージに移動する
 	int SceneChange();
 
+
+	enum SelectOpsions
+	{
+		ToGame,
+		ExitGame,
+	};
 private:
 	//描画--------------------------
 

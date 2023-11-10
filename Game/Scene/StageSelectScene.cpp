@@ -41,12 +41,13 @@ void StageSelectScene::Input()
 {
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 	{
-		if (m_nowSelectNum == 0)
+		if (m_nowSelectNum == ToGame)
 		{
+			//1”Ô‚ÌƒQ[ƒ€‚És‚­
 			m_sceneNum = 1;
 		}
-		//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚é
-		else if (m_nowSelectNum == 1)
+		//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚éŒã‚Å”Ô†‚ð•Ï‚¦‚é
+		else if (m_nowSelectNum == ExitGame)
 		{
 			Menu::SetIsGameEnd(true);
 		}
@@ -54,7 +55,7 @@ void StageSelectScene::Input()
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
 	{
 		m_nowSelectNum++;
-		if (m_nowSelectNum > C_MaxSelectNum)
+		if (m_nowSelectNum > ExitGame)
 		{
 			m_nowSelectNum = 0;
 		}
@@ -64,7 +65,7 @@ void StageSelectScene::Input()
 		m_nowSelectNum--;
 		if (m_nowSelectNum < 0)
 		{
-			m_nowSelectNum = C_MaxSelectNum;
+			m_nowSelectNum = ExitGame;
 		}
 	}
 }
