@@ -22,7 +22,7 @@ public:
 class StageSelectScene :public SceneBase
 {
 public:
-	StageSelectScene(DrawingByRasterize& arg_rasterize);
+	StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, int f_volume);
 	~StageSelectScene();
 
 	void Init();
@@ -35,6 +35,7 @@ public:
 	int SceneChange();
 
 	void OpenOptionsInit();
+	void CloseOptionsInit();
 
 	enum SelectOpsions
 	{
@@ -72,13 +73,31 @@ private:
 
 	const float UIHidePos = -200.0f; 
 
+	float mouseSensitivity = 1.0;
+
+	const float SensitivityBarX = 700;
+
+	int sensitivityIconOffset = 0;
+	int volumeIconOffset = 0;
+
+	int volume = 100;
+
+	int triggerTime = 0;
+
 	SelectSceneSprite m_backSp;
 	SelectSceneSprite m_backBarSp;
 	SelectSceneSprite m_loadGameSp;
 	SelectSceneSprite m_exitGameSp;
 	SelectSceneSprite m_selectBackSp;
+	SelectSceneSprite m_OprionsSp;
 
 	SelectSceneSprite m_MouseReveralSp;
 	SelectSceneSprite m_MouseSensSp;
 	SelectSceneSprite m_VolumeSp;
+
+	SelectSceneSprite m_SensitivityBarSp;
+	SelectSceneSprite m_SensitivityIconSp;
+
+	SelectSceneSprite m_VolumeBarSp;
+	SelectSceneSprite m_VolumeIconSp;
 };

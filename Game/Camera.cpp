@@ -6,6 +6,8 @@
 #include "../KazLibrary/Buffer/GBufferMgr.h"
 #include <algorithm>
 
+float Camera::CameraSensitivity = 1.0f;
+
 Camera::Camera()
 {
 
@@ -106,10 +108,10 @@ void Camera::Input()
 {
 
 	//¶‰E‚ÌƒJƒƒ‰‘€ì
-	m_shotQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * 0.001f);
+	m_shotQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * (0.001f * CameraSensitivity));
 
 	//ã‰º‚ÌƒJƒƒ‰‘€ì
-	m_cameraXAngle = std::clamp(m_cameraXAngle + KeyBoradInputManager::Instance()->GetMouseVel().y * 0.001f, -1.0f, 1.0f);
+	m_cameraXAngle = std::clamp(m_cameraXAngle + KeyBoradInputManager::Instance()->GetMouseVel().y * (0.001f * CameraSensitivity), -1.0f, 1.0f);
 
 }
 

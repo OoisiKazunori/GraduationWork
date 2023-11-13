@@ -34,6 +34,8 @@ public:
 
 	KazMath::Transform3D GetShotQuaternion();
 
+	static float CameraSensitivity;
+
 private:
 
 	void Input();
