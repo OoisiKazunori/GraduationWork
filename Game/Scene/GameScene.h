@@ -19,7 +19,7 @@ class BulletMgr;
 class GameScene :public SceneBase
 {
 public:
-	GameScene(DrawingByRasterize& arg_rasterize);
+	GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber);
 	~GameScene();
 
 	void Init();

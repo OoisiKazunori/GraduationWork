@@ -15,7 +15,7 @@
 
 #include"../MapLoader/MapLoader.h"
 
-GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
+GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのテクスチャ読み込み
 	m_2DSprite(arg_rasterize, "Resource/Test/texas.png", true),
 	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
@@ -61,7 +61,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 
 	MapManager::Init();
 	int stageNumber = 0;
-	m_stageManager.Init(arg_rasterize, stageNumber);
+	m_stageManager.Init(arg_rasterize, f_mapNumber);
 
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stageManager.m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stageManager.m_stage->m_transform);
@@ -72,9 +72,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
-
-
-
 }
 
 GameScene::~GameScene()

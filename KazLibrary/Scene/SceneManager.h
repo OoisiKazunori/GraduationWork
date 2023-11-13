@@ -111,12 +111,11 @@ private:
 			return std::make_shared<TitleScene>(m_rasterize);
 			break;
 		case 1:
-			return std::make_shared<GameScene>(m_rasterize);
+			return std::make_shared<GameScene>(m_rasterize, 1);
 			break;
 		case 2:
 			return std::make_shared<StageSelectScene>(m_rasterize, Camera::CameraSensitivity, 100);
 			break;
-
 		case 3:
 			break;
 		default:
