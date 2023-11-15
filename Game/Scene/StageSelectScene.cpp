@@ -3,7 +3,9 @@
 #include "../Menu/Menu.h"
 #include "../Camera.h"
 
-StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, int f_volume) :
+float StageSelectScene::volume = 1.0f;
+
+StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, float f_volume, bool f_isFlip) :
 	m_backSp(arg_rasterize, "Resource/MenuTex/SelectSceneBack.png"),
 	m_backBarSp(arg_rasterize, "Resource/MenuTex/SelectSceneBar.png"),
 	m_loadGameSp(arg_rasterize, "Resource/MenuTex/LoadGame.png"),
@@ -11,7 +13,7 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 	m_selectBackSp(arg_rasterize, "Resource/MenuTex/nowSelectBack.png"),
 	m_OprionsSp(arg_rasterize, "Resource/MenuTex/Options.png"),
 
-	m_MouseReveralSp(arg_rasterize, "Resource/MenuTex/exitGame.png"),
+	m_MouseReveralSp(arg_rasterize, "Resource/MenuTex/mouse_flip.png"),
 	m_MouseSensSp(arg_rasterize, "Resource/MenuTex/Sensitivity.png"),
 	m_VolumeSp(arg_rasterize, "Resource/MenuTex/Volume.png"),
 
@@ -19,13 +21,18 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 	m_SensitivityIconSp(arg_rasterize, "Resource/MenuTex/volumeIcon.png"),
 
 	m_VolumeBarSp(arg_rasterize, "Resource/MenuTex/volumeBar.png"),
-	m_VolumeIconSp(arg_rasterize, "Resource/MenuTex/volumeIcon.png")
+	m_VolumeIconSp(arg_rasterize, "Resource/MenuTex/volumeIcon.png"),
+
+	m_FlipCheckBoxSp(arg_rasterize, "Resource/MenuTex/checkBox.png"),
+	m_MouseFlipCheckSp(arg_rasterize, "Resource/MenuTex/check.png")
 {
 	m_sceneNum = -1;
 	m_nowSelectNum = 0;
 
 	mouseSensitivity = cameraSensitivity;
 	volume = f_volume;
+
+	isMouseReversal = f_isFlip;
 
 	sensitivityIconOffset = ((int)cameraSensitivity * 100) - 100;
 
@@ -54,6 +61,10 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 
 	m_VolumeBarSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 2.0f) });
 	m_VolumeIconSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 2.0f) });
+
+	m_FlipCheckBoxSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
+	m_MouseFlipCheckSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
+
 }
 
 StageSelectScene::~StageSelectScene()
@@ -114,23 +125,25 @@ void StageSelectScene::Input()
 
 	else
 	{
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+		if (m_OptionsOpenSelect == -1)
 		{
-			if (m_OptionsOpenSelect == -1)
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 			{
 				m_OptionsOpenSelect = m_opsionsSelectNum;
 			}
-			else
-			{
-				m_OptionsOpenSelect = -1;
-			}
 		}
-		if (m_OptionsOpenSelect != -1)
+		else if (m_OptionsOpenSelect != -1)
 		{
 			switch (m_OptionsOpenSelect)
 			{
 			case OptionsOpstions::MouseReversal:
-
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) ||
+					KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				{
+					if (isMouseReversal)isMouseReversal = false;
+					else isMouseReversal = true;
+				}
+				Camera::isFlip = isMouseReversal;
 				break;
 			case OptionsOpstions::MouseSens:
 				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_D))
@@ -183,9 +196,9 @@ void StageSelectScene::Input()
 			case OptionsOpstions::Volume:
 				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_D))
 				{
-					if (volume < 200)
+					if (volume < 2.0f)
 					{
-						volume += 1;
+						volume += 0.01f;
 						volumeIconOffset++;
 					}
 				}
@@ -194,18 +207,18 @@ void StageSelectScene::Input()
 					triggerTime++;
 					if (triggerTime % 2 == 0)
 					{
-						if (volume < 200)
+						if (volume < 2.0f)
 						{
-							volume += 1;
+							volume += 0.01f;
 							volumeIconOffset++;
 						}
 					}
 				}
 				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_A))
 				{
-					if (volume > 2)
+					if (volume > 0.02f)
 					{
-						volume -= 2;
+						volume -= 0.01f;
 						volumeIconOffset--;
 					}
 				}
@@ -214,14 +227,14 @@ void StageSelectScene::Input()
 					triggerTime++;
 					if (triggerTime % 2 == 0)
 					{
-						if (volume > 2)
+						if (volume > 0.02f)
 						{
-							volume -= 2;
+							volume -= 0.01f;
 							volumeIconOffset--;
 						}
 					}
 				}
-				
+
 				break;
 			default:
 				break;
@@ -265,6 +278,10 @@ void StageSelectScene::Input()
 				m_isOptionsOpen = false;
 				CloseOptionsInit();
 			}
+			else
+			{
+				m_OptionsOpenSelect = -1;
+			}
 		}
 	}
 
@@ -306,16 +323,24 @@ void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 
 	if (m_OptionsOpenSelect == OptionsOpstions::MouseSens)
 	{
-		m_SensitivityIconSp.SetPosition({ SensitivityBarX + (float)sensitivityIconOffset, (float)UIBaseY + ((float)UIDistance * 1.0f)});
+		m_SensitivityIconSp.SetPosition({ SensitivityBarX + (float)sensitivityIconOffset, (float)UIBaseY + ((float)UIDistance * 1.0f) });
 		m_SensitivityIconSp.Draw(arg_rasterize);
 		m_SensitivityBarSp.Draw(arg_rasterize);
-		
+
 	}
 	if (m_OptionsOpenSelect == OptionsOpstions::Volume)
 	{
 		m_VolumeIconSp.SetPosition({ SensitivityBarX + (float)volumeIconOffset, (float)UIBaseY + ((float)UIDistance * 2.0f) });
 		m_VolumeIconSp.Draw(arg_rasterize);
 		m_VolumeBarSp.Draw(arg_rasterize);
+	}
+	if (m_OptionsOpenSelect == OptionsOpstions::MouseReversal)
+	{
+		if (isMouseReversal)
+		{
+			m_MouseFlipCheckSp.Draw(arg_rasterize);
+		}
+		m_FlipCheckBoxSp.Draw(arg_rasterize);
 	}
 	m_selectBackSp.Draw(arg_rasterize);
 

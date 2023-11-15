@@ -22,7 +22,7 @@ public:
 class StageSelectScene :public SceneBase
 {
 public:
-	StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, int f_volume);
+	StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, float f_volume, bool f_isFlip);
 	~StageSelectScene();
 
 	void Init();
@@ -53,6 +53,8 @@ public:
 		//É{ÉäÉÖÅ[ÉÄí≤êÆ
 		Volume,
 	};
+	
+	
 private:
 	//ï`âÊ--------------------------
 
@@ -80,9 +82,11 @@ private:
 	int sensitivityIconOffset = 0;
 	int volumeIconOffset = 0;
 
-	int volume = 100;
+	static float volume;
 
 	int triggerTime = 0;
+
+	bool isMouseReversal = false;
 
 	SelectSceneSprite m_backSp;
 	SelectSceneSprite m_backBarSp;
@@ -100,4 +104,10 @@ private:
 
 	SelectSceneSprite m_VolumeBarSp;
 	SelectSceneSprite m_VolumeIconSp;
+
+	SelectSceneSprite m_FlipCheckBoxSp;
+	SelectSceneSprite m_MouseFlipCheckSp;
+
+	public :
+	static float GetVolune(){return volume;};
 };

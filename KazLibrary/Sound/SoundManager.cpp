@@ -1,6 +1,6 @@
 #include "SoundManager.h"
 #include"../Helper/KazHelper.h"
-
+#include "../Game/Scene/StageSelectScene.h"
 
 
 Microsoft::WRL::ComPtr<IXAudio2> SoundManager::xAudio2{};
@@ -132,7 +132,7 @@ void SoundManager::SoundPlayerWave(SoundData& arg_soundData, int arg_loopCount)
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 	buf.LoopCount = arg_loopCount;
 
-	pSourceVoice->SetVolume(arg_soundData.volume);
+	pSourceVoice->SetVolume(StageSelectScene::GetVolune() * arg_soundData.volume);
 
 	arg_soundData.source = pSourceVoice;
 

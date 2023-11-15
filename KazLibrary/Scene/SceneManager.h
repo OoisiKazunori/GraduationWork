@@ -114,7 +114,7 @@ private:
 			return std::make_shared<GameScene>(m_rasterize, 1);
 			break;
 		case 2:
-			return std::make_shared<StageSelectScene>(m_rasterize, Camera::CameraSensitivity, 100);
+			return std::make_shared<StageSelectScene>(m_rasterize, Camera::CameraSensitivity, StageSelectScene::GetVolune(), Camera::isFlip);
 			break;
 		case 3:
 			break;
