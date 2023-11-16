@@ -51,6 +51,31 @@ namespace DrawFuncHelper
 		void StackOnBlas(Raytracing::BlasVector& arg_blasVec, const DirectX::XMMATRIX& arg_worldMat);
 	};
 
+	struct TextureRectRender
+	{
+		TextureRectRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene = false);
+		TextureRectRender();
+
+		void Draw(DrawingByRasterize& arg_rasterize,
+			Raytracing::BlasVector& arg_blasVec,
+			const KazMath::Vec3<float>& arg_pos,
+			const KazMath::Vec2<float>& arg_upScale,
+			const KazMath::Vec2<float>& arg_downScale,
+			const KazBufferHelper::BufferData& arg_texBuffer
+		);
+
+		DrawFuncData::DrawCallData m_drawCommand;
+		const DrawFuncData::DrawData* m_drawCommandData;
+		KazBufferHelper::BufferData m_textureBuffer;
+		KazMath::Vec2<float> m_textureSize;
+
+		RESOURCE_HANDLE m_vertexHandle;
+
+		void Error();
+		void StackOnBlas(Raytracing::BlasVector& arg_blasVec, const DirectX::XMMATRIX& arg_worldMat);
+
+	};
+
 
 	struct ModelRender
 	{

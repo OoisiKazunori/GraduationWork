@@ -328,3 +328,102 @@ void DrawFuncHelper::LineRender::Draw(DrawingByRasterize& arg_rasterize, Raytrac
 
 	arg_rasterize.ObjectRender(m_drawCommandData);
 }
+
+DrawFuncHelper::TextureRectRender::TextureRectRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+{
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		m_drawCommand.renderTargetHandle = -1;
+	}
+	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaShader());
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
+	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
+	Error();
+	m_textureSize =
+	{
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Width),
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Height)
+	};
+
+	m_vertexHandle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+
+	//行列情報
+	DirectX::XMMATRIX mat = DirectX::XMMatrixIdentity();
+	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+}
+
+DrawFuncHelper::TextureRectRender::TextureRectRender()
+{
+}
+
+void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_pos, const KazMath::Vec2<float>& arg_upScale, const KazMath::Vec2<float>& arg_downScale, const KazBufferHelper::BufferData& arg_texBuffer)
+{
+	m_textureSize.x = static_cast<float>(arg_texBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
+	m_textureSize.y = static_cast<float>(arg_texBuffer.bufferWrapper->GetBuffer()->GetDesc().Height);
+
+	//送る--------------------------------
+
+	//頂点情報
+	std::shared_ptr<KazBufferHelper::BufferData> vertBuffer(VertexBufferMgr::Instance()->GetVertexIndexBuffer(m_vertexHandle).vertBuffer[0]);
+
+	KazMath::Vec2<float>upHalfScale = arg_upScale / 2.0f;
+	KazMath::Vec2<float>downHalfScale = arg_downScale / 2.0f;
+
+	std::vector<KazMath::Vec3<float>>posArray;
+	//左上
+	posArray[0] = {
+		arg_pos.x - upHalfScale.x,
+		arg_pos.y + upHalfScale.y,
+		0.0f
+	};
+	//左下
+	posArray[1] = {
+		arg_pos.x - downHalfScale.x,
+		arg_pos.y - downHalfScale.y,
+		0.0f
+	};
+	//右上
+	posArray[2] = {
+		arg_pos.x + upHalfScale.x,
+		arg_pos.y + upHalfScale.y,
+		0.0f
+	};
+	//右下
+	posArray[3] = {
+		arg_pos.x + downHalfScale.x,
+		arg_pos.y - downHalfScale.y,
+		0.0f
+	};
+	vertBuffer->bufferWrapper->TransData(posArray.data(), sizeof(DirectX::XMFLOAT3) * 4);
+
+	//テクスチャ
+	m_drawCommand.extraBufferArray[2] = arg_texBuffer;
+
+
+	//送る--------------------------------
+	arg_rasterize.ObjectRender(m_drawCommandData);
+	StackOnBlas(arg_blasVec, DirectX::XMMatrixIdentity());
+}
+
+void DrawFuncHelper::TextureRectRender::Error()
+{
+	if (!m_textureBuffer.bufferWrapper)
+	{
+		//テクスチャ読み込み失敗
+		assert(0);
+	}
+	else
+	{
+		m_textureSize.x = static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
+		m_textureSize.y = static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Height);
+	}
+}
+
+void DrawFuncHelper::TextureRectRender::StackOnBlas(Raytracing::BlasVector& arg_blasVec, const DirectX::XMMATRIX& arg_worldMat)
+{
+	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
+	{
+		arg_blasVec.Add(obj, arg_worldMat);
+	}
+}
