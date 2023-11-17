@@ -8,11 +8,15 @@
 class Reaction
 {
 public:
-	Reaction(std::vector<std::shared_ptr<KazBufferHelper::BufferData>> buffer)
+	Reaction(DrawingByRasterize &arg_rasterize)
 	{
 		m_timer.Reset(120);
 		m_timer.ForciblyTimeUp();
-		m_tex = buffer;
+		m_tex.emplace_back(TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/UI/Reaction/!.png"));
+		m_tex.emplace_back(TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/UI/Reaction/Hatena.png"));
+		m_index = 0;
+
+		m_render.Load(arg_rasterize, false, false);
 	}
 
 	void Init(int index, const KazMath::Vec3<float>& upVec)
@@ -26,6 +30,7 @@ public:
 		m_baseScale = { 2.0f,5.0f };
 		m_downScale = m_baseScale;
 		m_upVec = upVec;
+
 	}
 
 	void Update(const KazMath::Vec3<float>& pos)
@@ -40,13 +45,13 @@ public:
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 	{
-		if (!finishFlag)
+		//if (!finishFlag)
 		{
-			m_render.Draw(arg_rasterize, arg_blasVec, m_pos, m_upScale, m_downScale, *m_tex[m_index]);
+			m_render.Draw(arg_rasterize, arg_blasVec, m_pos, m_upScale, m_downScale, m_tex[m_index]);
 		}
-		else
+		//else
 		{
-			m_pos = { 0.0f,0.0f,0.0f };
+		//	m_pos = { 0.0f,0.0f,0.0f };
 		}
 	}
 
@@ -63,7 +68,7 @@ private:
 	KazMath::Vec2<float>m_downScale;
 	KazMath::Vec2<float>m_baseScale;
 	KazMath::Timer m_timer;
-	std::vector<std::shared_ptr<KazBufferHelper::BufferData>>m_tex;
+	std::vector<KazBufferHelper::BufferData>m_tex;
 
 	//•`‰æ
 	DrawFuncHelper::TextureRectRender m_render;

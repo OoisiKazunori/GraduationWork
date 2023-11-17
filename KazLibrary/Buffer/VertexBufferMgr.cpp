@@ -207,8 +207,8 @@ RESOURCE_HANDLE VertexBufferMgr::GeneratePlaneBuffer()
 	m_polygonIndexBufferArray[outputHandle].back().emplace_back(PolygonGenerateData((void*)generateData.indices.data(), sizeof(UINT), generateData.indices.size()));
 
 
-	std::shared_ptr<KazBufferHelper::BufferData>vertexBuffer(m_polygonIndexBufferArray[outputHandle].back()[0].m_gpuBuffer.m_buffer);
-	std::shared_ptr<KazBufferHelper::BufferData>indexBuffer(m_polygonIndexBufferArray[outputHandle].back()[1].m_gpuBuffer.m_buffer);
+	std::shared_ptr<KazBufferHelper::BufferData>vertexBuffer(m_polygonIndexBufferArray[outputHandle].back()[0].m_cpuBuffer.m_buffer);
+	std::shared_ptr<KazBufferHelper::BufferData>indexBuffer(m_polygonIndexBufferArray[outputHandle].back()[1].m_cpuBuffer.m_buffer);
 
 	vertexBuffer->structureSize = generateData.structureSize;
 	vertexBuffer->elementNum = static_cast<UINT>(generateData.arraySize);

@@ -56,6 +56,8 @@ namespace DrawFuncHelper
 		TextureRectRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene = false);
 		TextureRectRender();
 
+		void Load(DrawingByRasterize &arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene = false);
+
 		void Draw(DrawingByRasterize& arg_rasterize,
 			Raytracing::BlasVector& arg_blasVec,
 			const KazMath::Vec3<float>& arg_pos,

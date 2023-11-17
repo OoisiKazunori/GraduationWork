@@ -150,6 +150,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	for (auto& index : m_preEnemy) {
 		index->CheckInEcho(m_stageMeshCollision);
+		index->Update();
 	}
 }
 
