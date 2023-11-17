@@ -88,6 +88,8 @@ private:
 
 	bool isMouseReversal = false;
 
+	static int startStageNum;
+
 	SelectSceneSprite m_backSp;
 	SelectSceneSprite m_backBarSp;
 	SelectSceneSprite m_loadGameSp;
@@ -110,4 +112,5 @@ private:
 
 	public :
 	static float GetVolune(){return volume;};
+	static int GetStartStageNum(){return startStageNum;};
 };

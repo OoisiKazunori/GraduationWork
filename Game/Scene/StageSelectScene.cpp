@@ -4,6 +4,7 @@
 #include "../Camera.h"
 
 float StageSelectScene::volume = 1.0f;
+int StageSelectScene::startStageNum = 0;
 
 StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, float f_volume, bool f_isFlip) :
 	m_backSp(arg_rasterize, "Resource/MenuTex/SelectSceneBack.png"),
