@@ -40,6 +40,47 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	{
 		(*l_block01Itr)->Update();
 	}
+
+	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_Wall_River.begin(); itr != m_Wall_River.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_Wall_H.begin(); itr != m_Wall_H.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_Wall_I.begin(); itr != m_Wall_I.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_Wall_L_LPost.begin(); itr != m_Wall_L_LPost.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_Wall_NonPost.begin(); itr != m_Wall_NonPost.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_Wall_L_Post.begin(); itr != m_Wall_L_Post.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_Wall_T.begin(); itr != m_Wall_T.end(); itr++)
+	{
+		(*itr)->Update();
+	}
+	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
+	{
+		(*itr)->Update();
+	}
 }
 
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -56,6 +97,47 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
 	{
 		(*l_block01Itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+
+	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_Wall_River.begin(); itr != m_Wall_River.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_Wall_H.begin(); itr != m_Wall_H.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_Wall_I.begin(); itr != m_Wall_I.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_Wall_L_LPost.begin(); itr != m_Wall_L_LPost.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_Wall_NonPost.begin(); itr != m_Wall_NonPost.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_Wall_L_Post.begin(); itr != m_Wall_L_Post.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_Wall_T.begin(); itr != m_Wall_T.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
+	}
+	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
+	{
+		(*itr)->Draw(arg_rasterize, arg_blasVec);
 	}
 }
 
