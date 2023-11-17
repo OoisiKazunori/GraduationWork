@@ -253,8 +253,12 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		}
 
 	}
-	m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
-		DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 10.0f, 75.0f));
+	//empty‚È‚ç“ü‚ê‚é
+	if (!m_stage)
+	{
+		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
+			DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 10.0f, 75.0f));
+	}
 }
 
 void StageManager::ChangeScene(DrawingByRasterize& arg_rasterize)
