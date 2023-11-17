@@ -1,11 +1,15 @@
 #pragma once
 #include "Enemy.h"
+#include "PatrolDraw.h"
 
 class EnemyManager
 {
 private:
 	std::vector<Enemy> m_enemys;
-	EnemyPatrolData m_patrolData;
+	std::vector<PatrolData> m_patrolDatas;
+	std::shared_ptr<PatrolConfig> m_config;
+
+	PatrolDraw m_patrolDraw;
 
 public:
 	EnemyManager(DrawingByRasterize& arg_rasterize);
