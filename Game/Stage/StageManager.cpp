@@ -75,6 +75,24 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	m_tree.clear();
 	m_stone.clear();
 	m_stage.reset();
+
+	m_block01.clear();
+
+
+	m_plane.clear();
+	m_Wall_C.clear();
+	m_Wall_Four_Forked_Road.clear();
+	m_Wall_River.clear();
+	m_Wall_H.clear();
+
+	m_Wall_I.clear();
+	m_Wall_L_LPost.clear();
+	m_Wall_NonPost.clear();
+	m_Wall_L_Post.clear();
+	m_Wall_T.clear();
+
+
+
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
@@ -98,6 +116,60 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/StageBlock01/", "StageBlock01.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
+
+
+		else if (l_mapItr->m_objetName.starts_with("plane") == true)
+		{
+			m_plane.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Plane/", "Plane.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("wallC") == true)
+		{
+			m_Wall_C.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_C/", "Wall_C.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("wall_four-forked_road") == true)
+		{
+			m_Wall_Four_Forked_Road.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_Four_Forked_Road/", "Wall_Four_Forked_Road.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("wall_River") == true)
+		{
+			m_Wall_River.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_River/", "Wall_River.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("wallH") == true)
+		{
+			m_Wall_H.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_H/", "Wall_H.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+
+		else if (l_mapItr->m_objetName.starts_with("wallI") == true)
+		{
+			m_Wall_I.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_I/", "Wall_I.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("wallL_LPost") == true)
+		{
+			m_Wall_L_LPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_LPost/", "Wall_L_LPost.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("wallL_NonPost") == true)
+		{
+			m_Wall_NonPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_NonPost/", "Wall_L_NonPost.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("wallL_Post") == true)
+		{
+			m_Wall_L_Post.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_Post/", "Wall_L_Post.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("wallT") == true)
+		{
+			m_Wall_T.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_T/", "Wall_T.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+
 	}
 }
 
