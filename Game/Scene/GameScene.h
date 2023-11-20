@@ -12,6 +12,7 @@ class EnemyManager;
 class Player;
 class Camera;
 class MeshCollision;
+class BulletMgr;
 
 class GameScene :public SceneBase
 {
@@ -49,6 +50,7 @@ private:
 
 	std::shared_ptr<Player> m_player;
 	std::shared_ptr<MeshCollision> m_stageMeshCollision;
+	std::shared_ptr<BulletMgr> m_bulletMgr;
 	std::shared_ptr<EnemyManager> m_enemyManager;
 
 	int m_sceneNum;
