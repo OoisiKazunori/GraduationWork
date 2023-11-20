@@ -175,6 +175,8 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
+		//l_mapItr->m_scale.x = -l_mapItr->m_scale.x;
+		l_mapItr->m_rotition.y = l_mapItr->m_rotition.y + 180.0f;
 		if (l_mapItr->m_objetName.starts_with("tree") == true)
 		{
 			m_tree.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/tree/", "tree2.gltf",
@@ -195,7 +197,6 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/StageBlock01/", "StageBlock01.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
-
 
 		else if (l_mapItr->m_objetName.starts_with("plane") == true)
 		{

@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "generator" : "Khronos glTF Blender I/O v1.6.16",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -15,18 +15,13 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "\u58c1C",
-            "scale" : [
-                5,
-                0.10000000149011612,
-                5
-            ]
+            "name" : "wallC"
         }
     ],
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Wall",
+            "name" : "Wall.006",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -38,7 +33,7 @@
     ],
     "meshes" : [
         {
-            "name" : "\u7acb\u65b9\u4f53.001",
+            "name" : "\u7acb\u65b9\u4f53.003",
             "primitives" : [
                 {
                     "attributes" : {
@@ -69,29 +64,29 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 164,
+            "count" : 189,
             "max" : [
-                0.800000011920929,
-                40,
-                1
+                4,
+                4,
+                5
             ],
             "min" : [
-                -0.800000011920929,
-                1,
-                -0.800000011920929
+                -4,
+                0.10000000149011612,
+                -4
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 164,
+            "count" : 189,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 164,
+            "count" : 189,
             "type" : "VEC2"
         },
         {
@@ -104,23 +99,23 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 1968,
+            "byteLength" : 2268,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 1968,
-            "byteOffset" : 1968
+            "byteLength" : 2268,
+            "byteOffset" : 2268
         },
         {
             "buffer" : 0,
-            "byteLength" : 1312,
-            "byteOffset" : 3936
+            "byteLength" : 1512,
+            "byteOffset" : 4536
         },
         {
             "buffer" : 0,
             "byteLength" : 1176,
-            "byteOffset" : 5248
+            "byteOffset" : 6048
         }
     ],
     "samplers" : [
@@ -131,7 +126,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 6424,
+            "byteLength" : 7224,
             "uri" : "Wall_C.bin"
         }
     ]

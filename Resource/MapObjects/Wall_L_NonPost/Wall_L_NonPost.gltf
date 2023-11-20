@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "generator" : "Khronos glTF Blender I/O v1.6.16",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -15,12 +15,7 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "\u58c1L(\u67f1\u7121\u3057)",
-            "scale" : [
-                5,
-                0.10000000149011612,
-                5
-            ]
+            "name" : "wallL_NonPost"
         }
     ],
     "materials" : [
@@ -71,14 +66,14 @@
             "componentType" : 5126,
             "count" : 152,
             "max" : [
-                1,
-                40,
-                1
+                5,
+                4,
+                5
             ],
             "min" : [
-                -0.800000011920929,
-                1,
-                -0.800000011920929
+                -4,
+                0.10000000149011612,
+                -4
             ],
             "type" : "VEC3"
         },

@@ -148,27 +148,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	//描画命令発行
-	//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-	//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-
-	/*DrawFunc::DrawModelEcho(
-		m_modelRender.m_model.m_drawCommand,
-		m_modelTransform,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
-		KazMath::Color(255, 0, 0, 255)
-		);
-	arg_rasterize.ObjectRender(m_modelRender.m_model.m_drawCommandData);
-
-	DrawFunc::DrawModelEcho(
-		m_modelAnimationRender.m_model.m_drawCommand,
-		m_modelAnimationTransform,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_center,
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius,
-		KazMath::Color(255, 0, 0, 255)
-	);
-	arg_rasterize.ObjectRender(m_modelAnimationRender.m_model.m_drawCommandData);*/
-
+	
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);

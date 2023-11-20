@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "generator" : "Khronos glTF Blender I/O v1.6.16",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -15,18 +15,13 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "\u58c1T",
-            "scale" : [
-                5,
-                0.10000000149011612,
-                5
-            ]
+            "name" : "wallT"
         }
     ],
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Wall",
+            "name" : "Wall.002",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -69,29 +64,29 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 154,
+            "count" : 181,
             "max" : [
-                1,
-                40,
-                1
+                5,
+                4,
+                5
             ],
             "min" : [
-                -1,
-                1,
-                -0.800000011920929
+                -5,
+                0.10000000149011612,
+                -4
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 154,
+            "count" : 181,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 154,
+            "count" : 181,
             "type" : "VEC2"
         },
         {
@@ -104,23 +99,23 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 1848,
+            "byteLength" : 2172,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 1848,
-            "byteOffset" : 1848
+            "byteLength" : 2172,
+            "byteOffset" : 2172
         },
         {
             "buffer" : 0,
-            "byteLength" : 1232,
-            "byteOffset" : 3696
+            "byteLength" : 1448,
+            "byteOffset" : 4344
         },
         {
             "buffer" : 0,
             "byteLength" : 1224,
-            "byteOffset" : 4928
+            "byteOffset" : 5792
         }
     ],
     "samplers" : [
@@ -131,7 +126,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 6152,
+            "byteLength" : 7016,
             "uri" : "Wall_T.bin"
         }
     ]
