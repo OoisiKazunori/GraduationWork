@@ -25,7 +25,7 @@ void Bullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir
 	m_startPos = arg_pos;
 	m_dir = arg_dir;
 	m_endPos = m_startPos + m_dir * 100000.0f;
-
+	
 }
 
 void Bullet::Update(std::weak_ptr<MeshCollision> arg_meshCollision) {

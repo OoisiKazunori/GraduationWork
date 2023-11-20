@@ -15,6 +15,7 @@ class Player;
 class Camera;
 class MeshCollision;
 class BulletMgr;
+class ThrowableObjectController;
 
 //デバッグ用
 class PreEnemy;
@@ -55,6 +56,7 @@ private:
 	std::shared_ptr<Player> m_player;
 	std::shared_ptr<MeshCollision> m_stageMeshCollision;
 	std::shared_ptr<BulletMgr> m_bulletMgr;
+	std::shared_ptr<ThrowableObjectController> m_throwableObjectController;
 
 	int m_sceneNum;
 

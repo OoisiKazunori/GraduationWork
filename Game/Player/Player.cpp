@@ -6,6 +6,7 @@
 #include "../Camera.h"
 #include "../KazLibrary/PostEffect/Outline.h"
 #include "../Echo/EchoArray.h"
+#include "../ThrowableObject/ThrowableObjectController.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
@@ -24,7 +25,7 @@ void Player::Init()
 
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr)
+void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController)
 {
 
 	//ìÆÇ©Ç∑ëOÇÃç¿ïWÅB
@@ -94,6 +95,8 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
 
 	}
+
+	arg_throwableObjectController.lock()->InputHold(KeyBoradInputManager::Instance()->InputState(DIK_E));
 
 }
 

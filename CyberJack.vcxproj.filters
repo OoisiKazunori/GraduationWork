@@ -112,6 +112,8 @@
     <ClCompile Include="Game\Menu\Menu.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Scene\StageSelectScene.cpp" />
+    <ClCompile Include="Game\Bullet\EchoBullet.cpp" />
+    <ClCompile Include="Game\ThrowableObject\ThrowableObjectController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -242,6 +244,8 @@
     <ClInclude Include="Game\Menu\Menu.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Scene\StageSelectScene.h" />
+    <ClInclude Include="Game\Bullet\EchoBullet.h" />
+    <ClInclude Include="Game\ThrowableObject\ThrowableObjectController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

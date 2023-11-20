@@ -13,6 +13,7 @@
 #include"../KazLibrary/Buffer/GBufferMgr.h"
 #include "../KazLibrary/PostEffect/Outline.h"
 #include "../Game/Enemy/PreEnemy.h"
+#include "../Game/ThrowableObject/ThrowableObjectController.h"
 
 #include"../MapLoader/MapLoader.h"
 
@@ -53,6 +54,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_player = std::make_shared<Player>(arg_rasterize, MapManager::GetPlayerStartPosition(0));
 	m_camera = std::make_shared<Camera>();
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
+	m_throwableObjectController = std::make_shared<ThrowableObjectController>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
 
@@ -113,7 +115,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_gadgetMaanager.Update();
 		m_HPBarManager.Update(0);
 
-		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr);
+		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_throwableObjectController);
 		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 		m_bulletMgr->Update(m_stageMeshCollision);
 
@@ -147,6 +149,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	}
 	m_menu.Update();
 
+	m_throwableObjectController->Update(m_player->GetTransform().pos, m_camera->GetShotQuaternion().GetFront());
 
 	for (auto& index : m_preEnemy) {
 		index->CheckInEcho(m_stageMeshCollision);
@@ -173,6 +176,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_menu.Draw(arg_rasterize);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);
 
 
 	for (auto& index : m_preEnemy) {
