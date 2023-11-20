@@ -175,12 +175,14 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
-		//l_mapItr->m_scale.x = -l_mapItr->m_scale.x;
-		l_mapItr->m_rotition.y = l_mapItr->m_rotition.y + 180.0f;
 		if (l_mapItr->m_objetName.starts_with("tree") == true)
 		{
 			m_tree.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/tree/", "tree2.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+			
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_tree.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_tree.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("stone") == true)
 		{
@@ -207,47 +209,83 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		{
 			m_Wall_C.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_C/", "Wall_C.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_C.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_C.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wall_four-forked_road") == true)
 		{
 			m_Wall_Four_Forked_Road.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_Four_Forked_Road/", "Wall_Four_Forked_Road.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_Four_Forked_Road.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_Four_Forked_Road.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wall_River") == true)
 		{
 			m_Wall_River.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_River/", "Wall_River.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+		
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_River.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_River.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallH") == true)
 		{
 			m_Wall_H.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_H/", "Wall_H.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_H.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_H.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 
 		else if (l_mapItr->m_objetName.starts_with("wallI") == true)
 		{
 			m_Wall_I.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_I/", "Wall_I.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_I.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_I.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_LPost") == true)
 		{
 			m_Wall_L_LPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_LPost/", "Wall_L_LPost.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_L_LPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_L_LPost.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_NonPost") == true)
 		{
 			m_Wall_NonPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_NonPost/", "Wall_L_NonPost.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_NonPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_NonPost.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_Post") == true)
 		{
 			m_Wall_L_Post.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_Post/", "Wall_L_Post.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_L_Post.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_L_Post.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallT") == true)
 		{
 			m_Wall_T.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_T/", "Wall_T.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_T.begin())->m_transform);
+			m_collisions.push_back(collision);
 		}
 	}
 	//empty‚È‚ç“ü‚ê‚é

@@ -1,6 +1,6 @@
 #pragma once
 #include"StageModel.h"
-
+#include "../Game/Collision/MeshCollision.h"
 /// <summary>
 /// ステージ全体の管理処理
 /// MapLoaderのデータなどをここで描画している
@@ -29,6 +29,9 @@ private:
 	std::list<std::unique_ptr<StageModel>> m_Wall_NonPost;
 	std::list<std::unique_ptr<StageModel>> m_Wall_L_Post;
 	std::list<std::unique_ptr<StageModel>> m_Wall_T;
+
+	 
+	std::list<std::shared_ptr<MeshCollision>> m_collisions;
 	//その他木等の外部オブジェクトモデル--------------------------------
 
 	//ステージ切り替え前に必ず呼び出してください
@@ -43,6 +46,7 @@ public:
 	bool ChangeSceneTrigger();
 	void AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum);
 
+	std::list<std::shared_ptr<MeshCollision>> GetColliders(){ return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;
 };
 
