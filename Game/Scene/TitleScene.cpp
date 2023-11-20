@@ -3,7 +3,7 @@
 #include"Input/ControllerInputManager.h"
 
 TitleScene::TitleScene(DrawingByRasterize& arg_rasterize) :
-	m_2DSprite(arg_rasterize, "Resource/SceneUI/Title/TitleLogo.png", true)
+	m_2DSprite(arg_rasterize, "Resource/Title/TaitleLogo.png", true)
 {
 	m_2DSpriteTransform.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
 }
