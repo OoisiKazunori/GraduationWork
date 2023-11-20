@@ -1,5 +1,6 @@
 #include "Bullet.h"
 #include "../Collision/MeshCollision.h"
+#include "../Echo/EchoArray.h"
 
 Bullet::Bullet(DrawingByRasterize& arg_rasterize) :
 	m_line(arg_rasterize) {
@@ -38,6 +39,8 @@ void Bullet::Update(std::weak_ptr<MeshCollision> arg_meshCollision) {
 
 			//“–‚½‚Á‚½’n“_‚ð•Û‘¶B
 			m_endPos = rayResult.m_position;
+
+			EchoArray::Instance()->Generate(m_endPos, 60.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
 
 		}
 

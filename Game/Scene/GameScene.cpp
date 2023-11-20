@@ -12,13 +12,12 @@
 #include"../Bullet/BulletMgr.h"
 #include"../KazLibrary/Buffer/GBufferMgr.h"
 #include "../KazLibrary/PostEffect/Outline.h"
+#include "../Game/Enemy/PreEnemy.h"
 
 #include"../MapLoader/MapLoader.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
-	//DrawFuncHelperでのテクスチャ読み込み
-	m_2DSprite(arg_rasterize, "Resource/Test/texas.png", true),
-	m_3DSprite(arg_rasterize, "Resource/Test/texas.png", false),
+
 	//DrawFuncHelperでのモデル読み込み
 	m_line(arg_rasterize),
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
@@ -28,16 +27,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_heartRateManager(arg_rasterize),
 	m_menu(arg_rasterize)
 {
-	m_modelAnimationRender.Load(
-		arg_rasterize,
-		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
-		DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"))
-	);
-	m_modelRender.Load(
-		arg_rasterize,
-		ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"),
-		DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load("Resource/Test/Virus/", "virus_cur.gltf"))
-	);
 
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -49,12 +38,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	//アニメーション再生
 	//m_modelAnimationRender.m_model.m_animator->Play("繧｢繝ｼ繝槭メ繝･繧｢Action", true, false);
-
-	//3DスプライトのTrasform調整
-	m_3DSpriteTransform.pos = { 10.0f,0.0f,0.0f };
-	m_3DSpriteTransform.scale = { 0.1f,0.1f,1.0f };
-	//アニメーション再生無しモデルの位置調整
-	m_modelTransform.pos = { -10.0f,0.0f,0.0f };
 
 	m_stageTransform.pos = { 0.0f, -20.0f, 0.0f };
 	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
@@ -73,6 +56,12 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
+	for (auto& index : m_preEnemy) {
+
+		index = std::make_shared<PreEnemy>(arg_rasterize);
+
+	}
+
 }
 
 GameScene::~GameScene()
@@ -145,6 +134,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	}
 	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
 	m_menu.Update();
+	for (auto& index : m_preEnemy) 
+	{
+		index->CheckInEcho(m_stageMeshCollision);
+	}
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -165,6 +158,15 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 
 	m_menu.Draw(arg_rasterize);
+	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
+	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+
+
+	for (auto& index : m_preEnemy) {
+
+		index->Draw(arg_rasterize, arg_blasVec);
+
+	}
 }
 
 int GameScene::SceneChange()

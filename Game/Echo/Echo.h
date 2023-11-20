@@ -2,14 +2,14 @@
 #include "../KazLibrary/Math/KazMath.h"
 
 /// <summary>
-/// エコークラス。エコーを出す各クラスがこれを持ち、EchoVectorに登録することでGPUに値が送られる。
+/// エコークラス。エコーを出す各クラスがこれを持ち、EchoArrayに登録することでGPUに値が送られる。
 /// </summary>
 class Echo {
 
 public:
 
 	/// <summary>
-	/// GPUに送るエコーの情報。EchoVectorにEchoクラスを渡すことでこの構造体の値が追加される。
+	/// GPUに送るエコーの情報。EchoArrayにEchoクラスを渡すことでこの構造体の値が追加される。
 	/// </summary>
 	struct EchoData {
 		KazMath::Vec3<float> m_pos;
@@ -24,14 +24,22 @@ private:
 	float m_maxEchoRadius;	//エコーの半径の最大値
 	bool m_isActive;		//このエコーが有効化されているかのフラグ
 
+	enum class STATUS {
+		APPEAR,
+		EXIT,
+	}m_status;
+	float m_easingTimer;
+	const float APPEAR_EASING_TIMER = 30.0f;
+	const float EXIT_EASING_TIMER = 20.0f;
+	const float ALPHA = 0.12f;
+
 
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="arg_echoColor"> エコーの色 </param>
-	Echo(KazMath::Vec3<float> arg_echoColor);
+	Echo();
 
 	/// <summary>
 	/// 初期化処理 強制的にエコーを切る。
@@ -42,7 +50,8 @@ public:
 	/// 生成処理
 	/// </summary>
 	/// <param name="arg_maxEchoRadius"> エコーの到達半径 </param>
-	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius);
+	/// <param name="arg_echoColor"> エコーの色 </param>
+	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, KazMath::Vec3<float> arg_echoColor);
 
 	/// <summary>
 	/// 更新処理

@@ -167,7 +167,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -226,7 +226,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -273,7 +273,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -330,7 +330,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -398,7 +398,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -487,7 +487,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -596,7 +596,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -644,7 +644,7 @@ namespace DrawFuncPipelineData
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		gPipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		return gPipeline;
 	}
@@ -1325,7 +1325,6 @@ namespace DrawFuncData
 		return drawCallData;
 	};
 
-
 	static DrawCallData SetSpriteAlphaData(const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
@@ -1358,6 +1357,41 @@ namespace DrawFuncData
 
 		return drawCallData;
 	};
+
+	//ステンシル描画
+	static DrawCallData SetStencilSprite()
+	{
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetTex();
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "Stencil.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "Stencil.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+
+		DrawCallData drawCallData;
+
+		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
+		//頂点情報
+		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(handle).index;
+		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
+
+		//行列情報
+		drawCallData.extraBufferArray.emplace_back(
+			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX))
+		);
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
+		//テクスチャ情報
+		drawCallData.extraBufferArray.emplace_back();
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
+		drawCallData.pipelineData = pipelineData;
+
+		return drawCallData;
+	};
+
+
 
 	static DrawCallData SetDefferdRenderingModel(std::shared_ptr<ModelInfomation>arg_model)
 	{
@@ -1446,13 +1480,47 @@ namespace DrawFuncData
 			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
-
+		//アニメーション
 		drawCall.extraBufferArray.emplace_back();
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
 
 		drawCall.SetupRaytracing(arg_isOpaque);
 
+		return drawCall;
+	};
+
+	static DrawCallData SetDefferdRenderingModelAnimationStencil(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
+	{
+		DrawCallData drawCall;
+
+		DrawFuncData::PipelineGenerateData lData;
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "ModelOutline.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "ModelOutline.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+
+		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		//アニメーション
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+
+		//eye座標
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA5;
+
+		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
+		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
+
+		drawCall.SetupRaytracing(arg_isOpaque);
 		return drawCall;
 	};
 
@@ -1474,25 +1542,28 @@ namespace DrawFuncData
 			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 		}
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
-		struct EchoData
-		{
-			DirectX::XMFLOAT4 outlineColor;
-			DirectX::XMFLOAT3 pos;
-			float range;
-		};
-		//アウトライン
-		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(EchoData), "CBuffer-Outline"));
+
+		D3D12_DEPTH_STENCIL_DESC depthDesc = drawCall.pipelineData.desc.DepthStencilState;
+		drawCall.pipelineData.desc.DepthStencilState = depthDesc;
+
+		//ボーン
+		drawCall.extraBufferArray.emplace_back();
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+
+		//カメラ
+		drawCall.extraBufferArray.emplace_back(GBufferMgr::Instance()->GetEyePosBuffer());
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA5;
+
 		KazMath::Color init(255, 255, 255, 255);
-
-		EchoData data;
-		data.outlineColor = init.ConvertColorRateToXMFLOAT4();
-		data.pos = {};
-		data.range = 0.0f;
-		drawCall.extraBufferArray.back().bufferWrapper->TransData(&data, sizeof(EchoData));
+		//アウトラインカラー
+		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMFLOAT4), "CBuffer-OutlineColor"));
+		drawCall.extraBufferArray.back().bufferWrapper->TransData(&init.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA6;
+		
 		drawCall.SetupRaytracing(arg_isOpaque);
-
 		return drawCall;
 	};
 
@@ -1510,7 +1581,7 @@ namespace DrawFuncData
 		drawCall.pipelineData.desc.DepthStencilState.DepthEnable = false;							//深度テストを行う
 		drawCall.pipelineData.desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		drawCall.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//小さければOK
-		drawCall.pipelineData.desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		drawCall.pipelineData.desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;							//深度値フォーマット
 
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)

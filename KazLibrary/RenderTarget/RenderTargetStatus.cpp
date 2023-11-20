@@ -49,7 +49,6 @@ void RenderTargetStatus::CreateDoubleBuffer(Microsoft::WRL::ComPtr<IDXGISwapChai
 	copyBuffer = backBuffers[0].Get();
 
 	handle = gDepth.CreateBuffer();
-	handle2 = gDepth.CreateBuffer();
 
 
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;

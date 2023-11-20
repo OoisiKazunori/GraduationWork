@@ -64,16 +64,10 @@ void DrawingByRasterize::GeneratePipeline()
 		result.buffer = &callData->extraBufferArray;
 		result.renderTargetHandle = callData->renderTargetHandle;
 		result.depthHandle = callData->depthHandle;
-
 		result.pipelineData = callData->pipelineData.desc;
 
 		result.m_executeIndirectGenerateData.m_uavArgumentBuffer = callData->m_executeIndirectGenerateData.m_uavArgumentBuffer;
 
-
-		if (result.drawCommandType == DrawFuncData::VERT_TYPE::MULTI_MESHED)
-		{
-			bool debug = false;
-		}
 
 		//ExecuteIndirectの発行
 		if (callData->drawCommandType == DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INDEX ||
@@ -274,7 +268,6 @@ void DrawingByRasterize::SortAndRender()
 			}
 		});
 
-
 	//描画命令
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(DirectX::XMFLOAT3(0, 0, 0));
@@ -376,6 +369,7 @@ const DrawFuncData::DrawData* DrawingByRasterize::GenerateSceneChangePipeline(Dr
 				callData->m_executeIndirectGenerateData.m_desc
 			);
 		}
+		//RenderTargetStatus::Instance()->gDepth.depthBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
 		for (UINT i = 0; i < result.pipelineData.NumRenderTargets; ++i)
 		{
@@ -475,6 +469,12 @@ void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::B
 		{
 			continue;
 		}
+
+		/*if (BUFFER_ARRAY[i].m_changeBarrierFlag)
+		{
+			BUFFER_ARRAY[i].bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		}*/
+
 		//デスクリプタヒープにコマンドリストに積む。余りが偶数ならデスクリプタヒープだと判断する
 		if (BUFFER_ARRAY[i].rangeType % 2 == 0)
 		{
@@ -497,6 +497,11 @@ void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::B
 		default:
 			break;
 		}
+
+		//if (BUFFER_ARRAY[i].m_changeBarrierFlag)
+		//{
+		//	BUFFER_ARRAY[i].bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_COMMON);
+		//}
 	}
 }
 

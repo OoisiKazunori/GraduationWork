@@ -168,6 +168,10 @@ namespace KazBufferHelper
 			const Microsoft::WRL::ComPtr<ID3D12Resource>& SRC_BUFFER
 		)const;
 
+		void CopyBufferRegion(
+			const Microsoft::WRL::ComPtr<ID3D12Resource>& SRC_BUFFER
+		)const;
+
 		void ChangeBarrier(
 			D3D12_RESOURCE_STATES BEFORE_STATE,D3D12_RESOURCE_STATES AFTER_STATE
 		);
@@ -207,6 +211,10 @@ namespace KazBufferHelper
 		{
 			return resourceState;
 		}
+		const D3D12_RESOURCE_DIMENSION& GetDimension()
+		{
+			return bufferDimension;
+		}
 	private:
 		static const int BACK_BUFFER_NUM = 1;
 		std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, BACK_BUFFER_NUM>buffer;
@@ -214,6 +222,7 @@ namespace KazBufferHelper
 		std::vector<RESOURCE_HANDLE> viewHandle;
 		bool isVRAMBufferFlag;
 		D3D12_RESOURCE_STATES resourceState;
+		D3D12_RESOURCE_DIMENSION bufferDimension;
 		std::string bufferName;
 
 		UINT GetIndex()const
@@ -230,7 +239,6 @@ namespace KazBufferHelper
 		GraphicsRootParamType rootParamType;
 		UINT structureSize;
 		UINT elementNum;
-
 
 		BufferData(const KazBufferHelper::BufferResourceData& BUFFER_DATA) :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), structureSize(0), elementNum(0), bufferWrapper(std::make_shared<ID3D12ResourceWrapper>())
 		{

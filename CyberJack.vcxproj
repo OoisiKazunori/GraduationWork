@@ -116,11 +116,15 @@
   <ItemGroup>
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
+    <ClCompile Include="Game\Bullet\EchoBullet.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Debug\DebugCamera.cpp" />
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
+    <ClCompile Include="Game\Echo\Echo.cpp" />
+    <ClCompile Include="Game\Echo\EchoArray.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
+    <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Game\Menu\Menu.cpp" />
@@ -225,12 +229,16 @@
     <ClInclude Include="..\Mineral\Game\Effect\ChromaticAberration.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
+    <ClInclude Include="Game\Bullet\EchoBullet.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Debug\DebugCamera.h" />
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
+    <ClInclude Include="Game\Echo\Echo.h" />
+    <ClInclude Include="Game\Echo\EchoArray.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
+    <ClInclude Include="Game\Enemy\PreEnemy.h" />
     <ClInclude Include="Game\Input\Input.h" />
     <ClInclude Include="Game\MapLoader\MapLoader.h" />
     <ClInclude Include="Game\Menu\Menu.h" />

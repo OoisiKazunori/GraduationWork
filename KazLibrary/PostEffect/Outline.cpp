@@ -3,7 +3,7 @@
 #include "Buffer/UavViewHandleMgr.h"
 #include "../PostEffect/GaussianBlur.h"
 
-PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld, KazBufferHelper::BufferData arg_outlineTargetNormal)
+PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld, KazBufferHelper::BufferData arg_outlineTargetNormal, KazBufferHelper::BufferData arg_silhouetteRenderTargetBuffer, KazBufferHelper::BufferData arg_eyeBuffer, KazBufferHelper::BufferData arg_silhouetteBuffer)
 {
 
 	//アウトラインをかける対象のテクスチャを保存しておく。
@@ -44,28 +44,44 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 
 	//アウトライン計算用のシェーダー
 	{
-
 		std::vector<KazBufferHelper::BufferData>extraBuffer =
 		{
 			 m_outlineTargetWorld,
 			 m_outlineTargetNormal,
+			 arg_silhouetteRenderTargetBuffer,
 			 m_outputAlbedoTexture,
 			 m_outputEmissiveTexture,
 			 m_outlineColorConstBuffer,
 			 m_echoConstBuffer,
+			 arg_eyeBuffer,
+			 arg_silhouetteBuffer
 		};
 		extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
+
 		extraBuffer[1].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[1].rootParamType = GRAPHICS_PRAMTYPE_TEX2;
-		extraBuffer[2].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+
+		extraBuffer[2].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[2].rootParamType = GRAPHICS_PRAMTYPE_TEX3;
+
 		extraBuffer[3].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-		extraBuffer[3].rootParamType = GRAPHICS_PRAMTYPE_TEX4;
-		extraBuffer[4].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		extraBuffer[4].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		extraBuffer[3].rootParamType = GRAPHICS_PRAMTYPE_TEX;
+
+		extraBuffer[4].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		extraBuffer[4].rootParamType = GRAPHICS_PRAMTYPE_TEX2;
+
 		extraBuffer[5].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		extraBuffer[5].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+		extraBuffer[5].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
+		extraBuffer[6].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		extraBuffer[6].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+
+		extraBuffer[7].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		extraBuffer[7].rootParamType = GRAPHICS_PRAMTYPE_DATA3;
+
+		extraBuffer[8].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		extraBuffer[8].rootParamType = GRAPHICS_PRAMTYPE_TEX3;
 		m_outlineShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "Outline.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 	}
 

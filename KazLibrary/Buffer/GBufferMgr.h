@@ -2,6 +2,7 @@
 #include"../KazLibrary/Helper/ISinglton.h"
 #include"../KazLibrary/Helper/KazBufferHelper.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"RenderTarget/RenderTargetStatus.h"
 #include<memory>
 
 struct DessolveOutline {
@@ -30,6 +31,7 @@ public:
 		WORLD,
 		EMISSIVE,
 		OUTLINE,
+		SILHOUETE,
 		MAX
 	};
 	GBufferMgr();
@@ -86,6 +88,11 @@ public:
 		return m_backBufferCompositeBuffer;
 	};
 
+	const KazBufferHelper::BufferData& GetSilhouetteBuffer()
+	{
+		return m_silhouetteOutputUAVTexture;
+	};
+	
 	//バックバッファを合成
 	void ComposeBackBuffer();
 
@@ -97,6 +104,8 @@ public:
 
 	//バッファのステータスを遷移。
 	void BufferStatesTransition(ID3D12Resource* arg_resource, D3D12_RESOURCE_STATES arg_before, D3D12_RESOURCE_STATES arg_after);
+
+	void ComputeSilhouette();
 
 	//ライト用構造体
 	struct DirLight {
@@ -138,6 +147,7 @@ private:
 
 	KazBufferHelper::BufferData m_cameraPosBuffer;
 
+
 	//最終合成結果
 	KazBufferHelper::BufferData m_finalGBuffer;
 	KazBufferHelper::BufferData m_raytracingGBuffer;			//レイトレの出力結果
@@ -150,5 +160,11 @@ private:
 	KazBufferHelper::BufferData m_lensFlareConposeBuffTexture;	//レンズフレアを合成するときに一旦保存するテクスチャ。
 	KazBufferHelper::BufferData m_emissiveGBuffer;				//レンズフレアで使用するブルーム用GBuffer レイトレを実行すると書き込まれる。
 	std::shared_ptr<ComputeShader> m_lensFlareComposeShader;
+
+	std::shared_ptr<ComputeShader> m_silhouetteShader;
+	KazBufferHelper::BufferData m_silhouetteBaseTexture;
+	KazBufferHelper::BufferData m_silhouetteOutputUAVTexture;
+	KazBufferHelper::BufferData m_noiseBuffer;
+	int m_uvTimer;
 };
 

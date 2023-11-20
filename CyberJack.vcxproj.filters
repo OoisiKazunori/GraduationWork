@@ -104,6 +104,9 @@
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
+    <ClCompile Include="Game\Echo\Echo.cpp" />
+    <ClCompile Include="Game\Echo\EchoArray.cpp" />
+    <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="Game\Menu\Menu.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
@@ -230,6 +233,9 @@
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
+    <ClInclude Include="Game\Echo\Echo.h" />
+    <ClInclude Include="Game\Echo\EchoArray.h" />
+    <ClInclude Include="Game\Enemy\PreEnemy.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Menu\Menu.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />

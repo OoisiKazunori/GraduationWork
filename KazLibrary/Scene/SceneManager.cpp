@@ -12,6 +12,7 @@
 #include <Input/ControllerInputManager.h>
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Buffer/UavViewHandleMgr.h"
+#include"../Game/Echo/EchoArray.h"
 
 SceneManager::SceneManager() :gameFirstInitFlag(false)
 {
@@ -35,7 +36,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	Raytracing::HitGroupMgr::Instance()->Setting();
 	m_pipelineShaders.push_back({ "Resource/ShaderFiles/RayTracing/RaytracingShader.hlsl", {L"mainRayGen"}, {L"mainMS", L"shadowMS", L"checkHitRayMS"}, {L"mainCHS", L"mainAnyHit"} });
 	int payloadSize = sizeof(float) * 7;
-	m_rayPipeline = std::make_unique<Raytracing::RayPipeline>(m_pipelineShaders, Raytracing::HitGroupMgr::DEF, 6, 2, 6, payloadSize, static_cast<int>(sizeof(KazMath::Vec2<float>)), 6);
+	m_rayPipeline = std::make_unique<Raytracing::RayPipeline>(m_pipelineShaders, Raytracing::HitGroupMgr::DEF, 6, 3, 6, payloadSize, static_cast<int>(sizeof(KazMath::Vec2<float>)), 6);
 
 
 	//ボリュームテクスチャを生成。
@@ -116,6 +117,12 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	m_Title = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Title.wav");
 	SoundManager::Instance()->SoundPlayerWave(m_Title, 100);
 	m_Title.source->SetVolume(0.1f);
+
+
+	//通常エコー用構造体を設定。
+	EchoArray::Instance()->Setting();
+	m_rayPipeline->SetEchoStructuredBufferData(EchoArray::Instance()->GetEchoStructuredBuffer());
+
 }
 
 SceneManager::~SceneManager()
@@ -137,6 +144,9 @@ void SceneManager::Update()
 
 	//シェイク量を更新。
 	ShakeMgr::Instance()->Update();
+
+	//エコーを更新。
+	EchoArray::Instance()->Update();
 
 	//シーン遷移の開始
 	if (m_nextSceneNumber != m_nowSceneNumber)
@@ -221,7 +231,7 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
-	m_sceneChange->Draw(m_rasterize);
+//	m_sceneChange->Draw(m_rasterize);
 
 	m_nowScene->Draw(m_rasterize, m_blasVector);
 	//ラスタライザ描画

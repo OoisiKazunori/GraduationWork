@@ -5,6 +5,7 @@
 #include "../Bullet/BulletMgr.h"
 #include "../Camera.h"
 #include "../KazLibrary/PostEffect/Outline.h"
+#include "../Echo/EchoArray.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
@@ -73,25 +74,30 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 	//アウトラインを出す中心点代入
 	GBufferMgr::Instance()->m_outline->SetOutlineCenterPos(m_transform.pos);
 
-	//エコーを描画
+	////エコーを描画
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
+
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_center = m_transform.pos;
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius = 0.0f;
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = 0.2f;
+
+	//}
+	//else if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE)) {
+
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius += 8.0f;
+
+	//}
+	//else {
+
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = std::clamp(GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha - 0.01f, 0.0f, 1.0f);
+
+	//}
+
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
 
-		GBufferMgr::Instance()->m_outline->m_echoData.m_center = m_transform.pos;
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius = 0.0f;
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = 0.2f;
+		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
 
 	}
-	else if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE)) {
-
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius += 8.0f;
-
-	}
-	else {
-
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = std::clamp(GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha - 0.01f, 0.0f, 1.0f);
-
-	}
-
 
 }
 
@@ -152,6 +158,11 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
 
 		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront());
+
+	}
+	if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_RIGHT)) {
+
+		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), true);
 
 	}
 

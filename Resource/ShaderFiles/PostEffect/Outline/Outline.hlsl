@@ -1,6 +1,8 @@
 //入力情報
 Texture2D<float4> TargetWorld : register(t0);
 Texture2D<float4> TargetNormal : register(t1);
+Texture2D<float4> SilhouetteWorld : register(t2);
+RWTexture2D<float4> SilhouetteTex : register(u2);
 
 //出力先UAV  
 RWTexture2D<float4> OutputAlbedo : register(u0);
@@ -21,6 +23,13 @@ cbuffer EchoData : register(b1)
     float m_echoRadius;
 }
 
+cbuffer EyePos : register(b2)
+{
+    matrix m_viewMat;
+	matrix m_projMat;
+	float3 m_eyePos;
+	float m_noiseTimer;
+};
 
 float4 SamplingPixel(Texture2D<float4> arg_texture, uint2 arg_uv)
 {
@@ -123,23 +132,39 @@ void main(uint3 DTid : SV_DispatchThreadID)
     
     //右上をチェック
     isOutline |= CheckOutline(DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS), baseNormal, baseWorld, sampleWorldPos);
+
+    //シルエット用のマスクならアウトラインを描画しない
+    float4 silleout = SamplingPixel(SilhouetteWorld,DTid.xy);
+    //距離よりワールド座標が大きければ被っていると判定を取って処理する
+    bool silleoutFlag = false;
+    float dis = abs(distance(m_eyePos,baseWorld.xyz));
+    if(dis < silleout.r)
+    {
+        isOutline = false;
+        silleoutFlag = true;
+    }
     
     if (isOutline)
     {
-        
         //サンプリングした位置に応じて色を暗くする。
         float edgeDistance = 1.0f - clamp(length(sampleWorldPos - m_outlineCenterPos) / m_outlineLength, 0.0f, 0.8f);
         
         OutputAlbedo[DTid.xy] += m_outlineColor * edgeDistance;
-        OutputEmissive[DTid.xy] += m_outlineColor * edgeDistance;
-        
+        OutputEmissive[DTid.xy] += m_outlineColor * edgeDistance;        
     }
     else
     {
-        
-        OutputAlbedo[DTid.xy] += float4(0, 0, 0, 0);
-        OutputEmissive[DTid.xy] += float4(0, 0, 0, 0);
-        
+        if(silleoutFlag)
+        {
+            float4 silhouetteTexture = SilhouetteTex[DTid.xy];
+            OutputAlbedo[DTid.xy] = silhouetteTexture;
+            OutputEmissive[DTid.xy] = silhouetteTexture;
+        }
+        else
+        {
+            OutputAlbedo[DTid.xy] += float4(0, 0, 0, 0);
+            OutputEmissive[DTid.xy] += float4(0, 0, 0, 0);
+        }        
     }
     
     //中心地点から一定の距離だったら
@@ -186,8 +211,6 @@ void main(uint3 DTid : SV_DispatchThreadID)
         }
         
         OutputAlbedo[DTid.xy] += float4(m_color * m_echoAlpha, 1.0f);
-        
-        
     }
 
 }

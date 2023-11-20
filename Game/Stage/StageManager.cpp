@@ -44,7 +44,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
 	{
 		(*itr)->Update();
-	}
+}
 	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
 	{
 		(*itr)->Update();
@@ -102,7 +102,7 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
 	{
 		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
+}
 	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
 	{
 		(*itr)->Draw(arg_rasterize, arg_blasVec);
@@ -287,7 +287,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_T.begin())->m_transform);
 			m_collisions.push_back(collision);
 		}
-	}
+		}
 	//empty‚È‚ç“ü‚ê‚é
 	if (!m_stage)
 	{

@@ -88,40 +88,40 @@ void StageSelectScene::Input()
 {
 	if (!m_isOptionsOpen)
 	{
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+	{
+		if (m_nowSelectNum == ToGame)
 		{
-			if (m_nowSelectNum == ToGame)
-			{
-				//1”Ô‚ÌƒQ[ƒ€‚És‚­
-				m_sceneNum = 1;
-			}
+			//1”Ô‚ÌƒQ[ƒ€‚És‚­
+			m_sceneNum = 1;
+		}
 			else if (m_nowSelectNum == SelectOpsions::Opsions)
 			{
 				m_isOptionsOpen = true;
 				OpenOptionsInit();
 			}
-			//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚éŒã‚Å”Ô†‚ð•Ï‚¦‚é
-			else if (m_nowSelectNum == ExitGame)
-			{
-				Menu::SetIsGameEnd(true);
-			}
-		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
+		//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚éŒã‚Å”Ô†‚ð•Ï‚¦‚é
+		else if (m_nowSelectNum == ExitGame)
 		{
-			m_nowSelectNum++;
-			if (m_nowSelectNum > ExitGame)
-			{
-				m_nowSelectNum = 0;
-			}
+			Menu::SetIsGameEnd(true);
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
+	}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
+	{
+		m_nowSelectNum++;
+		if (m_nowSelectNum > ExitGame)
 		{
-			m_nowSelectNum--;
-			if (m_nowSelectNum < 0)
-			{
-				m_nowSelectNum = ExitGame;
-			}
+			m_nowSelectNum = 0;
 		}
+	}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
+	{
+		m_nowSelectNum--;
+		if (m_nowSelectNum < 0)
+		{
+			m_nowSelectNum = ExitGame;
+		}
+	}
 	}
 
 	else
@@ -173,7 +173,7 @@ void StageSelectScene::Input()
 					{
 						mouseSensitivity -= 0.01f;
 						sensitivityIconOffset--;
-					}
+}
 				}
 				else if (KeyBoradInputManager::Instance()->InputState(DIK_A))
 				{
@@ -344,7 +344,7 @@ void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 		m_FlipCheckBoxSp.Draw(arg_rasterize);
 	}
 	m_selectBackSp.Draw(arg_rasterize);
-
+	
 	m_backSp.Draw(arg_rasterize);
 }
 

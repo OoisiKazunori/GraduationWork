@@ -33,7 +33,7 @@ void UI2DElement::Update()
 	if (m_easeEndColor.color.a - m_color.color.a < 0)
 	{
 		m_color.color.a -= m_easeAddColor.color.a;
-	}
+}
 	else
 	{
 		m_color.color.a += m_easeAddColor.color.a;
