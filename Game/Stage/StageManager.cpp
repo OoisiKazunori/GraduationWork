@@ -160,7 +160,6 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 
 	m_block01.clear();
 
-
 	m_plane.clear();
 	m_Wall_C.clear();
 	m_Wall_Four_Forked_Road.clear();
@@ -172,8 +171,6 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	m_Wall_NonPost.clear();
 	m_Wall_L_Post.clear();
 	m_Wall_T.clear();
-
-
 
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
@@ -251,7 +248,6 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_Wall_T.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_T/", "Wall_T.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
-
 	}
 	//empty‚È‚ç“ü‚ê‚é
 	if (!m_stage)
