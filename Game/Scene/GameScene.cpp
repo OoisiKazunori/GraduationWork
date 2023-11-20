@@ -62,6 +62,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	MapManager::Init();
 	int stageNumber = 0;
 	m_stageManager.Init(arg_rasterize, f_mapNumber);
+	m_stageNum = f_mapNumber;
 
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stageManager.m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stageManager.m_stage->m_transform);
@@ -142,6 +143,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_heartRateManager.Update(120);
 		}
 	}
+	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
 	m_menu.Update();
 }
 

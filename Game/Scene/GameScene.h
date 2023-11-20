@@ -60,6 +60,7 @@ private:
 	std::shared_ptr<BulletMgr> m_bulletMgr;
 
 	int m_sceneNum;
+	int m_stageNum;
 
 	int GetDigits(int arg_value, int arg_m, int arg_n) {
 		int mod_value;
