@@ -29,13 +29,26 @@ void UI2DElement::Update()
 	}
 	auto sub = m_easePosEnd - m_easePosStart;
 	m_nowPos = m_easePosStart + (sub * EasingMaker(EasingType::In, EaseInType::Quad, m_easePosTimer));
+	if (!m_isColorEase)return;
+	if (m_easeEndColor.color.a - m_color.color.a < 0)
+	{
+		m_color.color.a -= m_easeAddColor.color.a;
+}
+	else
+	{
+		m_color.color.a += m_easeAddColor.color.a;
+	}
+	if (m_color.color.a - m_easeEndColor.color.a == 0)
+	{
+		m_isColorEase = false;
+	}
 }
 
 void UI2DElement::Draw(DrawingByRasterize& arg_rasterize)
 {
 	KazMath::Transform2D l_trans = KazMath::Transform2D(m_nowPos, m_nowScale);
 
-	m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+	m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, m_color);
 }
 
 void UI2DElement::SetScale(KazMath::Vec2<float> f_nowScale)
@@ -62,6 +75,23 @@ void UI2DElement::EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2
 
 	m_easePosEnd = f_easeEnd;
 	m_easePosStart = f_easeStartPos;
+}
+
+void UI2DElement::SetColor(KazMath::Color& f_color)
+{
+	m_color = f_color;
+}
+
+void UI2DElement::SetAddColor(KazMath::Color& f_addColor)
+{
+	m_easeAddColor = f_addColor;
+}
+
+void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
+{
+	m_easeStartColor = m_color;
+	m_easeEndColor = f_endColor;
+	m_isColorEase = true;
 }
 
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :

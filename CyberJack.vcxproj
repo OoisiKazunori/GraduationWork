@@ -127,10 +127,10 @@
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
+    <ClCompile Include="Game\Menu\Menu.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
-    <ClCompile Include="Game\Menu\Menu.cpp" />
     <ClCompile Include="Game\Scene\StageSelectScene.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Stage\StageManager.cpp" />

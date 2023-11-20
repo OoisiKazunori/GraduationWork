@@ -23,7 +23,7 @@ class PreEnemy;
 class GameScene :public SceneBase
 {
 public:
-	GameScene(DrawingByRasterize& arg_rasterize);
+	GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber);
 	~GameScene();
 
 	void Init();
@@ -59,6 +59,7 @@ private:
 	std::shared_ptr<ThrowableObjectController> m_throwableObjectController;
 
 	int m_sceneNum;
+	int m_stageNum;
 
 	int GetDigits(int arg_value, int arg_m, int arg_n) {
 		int mod_value;
@@ -76,7 +77,7 @@ private:
 
 	BasicDraw::BasicLineRender m_line;
 	BasicDraw::BasicModelRender m_stage;
-	BasicDraw::BasicTextureRender m_outlineTex;
+	//BasicDraw::BasicTextureRender m_outlineTex;
 
 	StageManager m_stageManager;
 	

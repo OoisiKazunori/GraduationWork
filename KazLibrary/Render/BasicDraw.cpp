@@ -23,13 +23,13 @@ DrawFuncData::DrawCallData BasicDraw::SetTex()
 	return DrawFuncData::SetSpriteAlphaData(lData);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName, bool arg_deletePipelineInScene) :
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deletePipelineInScene) :
 	m_model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize &arg_rasterize, bool arg_deletePipelineInScene)
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize, bool arg_deletePipelineInScene)
 {
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
 }

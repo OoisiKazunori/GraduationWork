@@ -11,6 +11,7 @@
 #include"../Game/Scene/DemoScene.h"
 #include"../Game/Scene/TitleScene.h"
 #include"../Game/Scene/StageSelectScene.h"
+#include "../Game/Camera.h"
 
 class SceneManager
 {
@@ -110,12 +111,11 @@ private:
 			return std::make_shared<TitleScene>(m_rasterize);
 			break;
 		case 1:
-			return std::make_shared<GameScene>(m_rasterize);
+			return std::make_shared<GameScene>(m_rasterize, StageSelectScene::GetStartStageNum());
 			break;
 		case 2:
-			return std::make_shared<StageSelectScene>(m_rasterize);
+			return std::make_shared<StageSelectScene>(m_rasterize, Camera::CameraSensitivity, StageSelectScene::GetVolune(), Camera::isFlip);
 			break;
-
 		case 3:
 			break;
 		default:

@@ -26,12 +26,10 @@ public:
 };
 
 //敵の初期スポーン位置
-class EnemySpornData
+class EnemyData
 {
-	std::string m_enemyName;
-	DirectX::XMFLOAT3 m_position;
-	DirectX::XMFLOAT3 m_rotition;
-	DirectX::XMFLOAT3 m_scale;
+public:
+	std::list<DirectX::XMINT2> m_position;
 };
 
 // マップデータ
@@ -39,6 +37,8 @@ class MapManager
 {
 	//
 	static std::list<std::list<MapObject>> m_maps;
+
+	static std::list<std::list<EnemyData>> m_enemys;
 	//フォルダ内のファイルネームを取得
 	static bool GetFileNames(std::string f_folderPath, std::list<std::string>& f_fileNames);
 public:
@@ -49,6 +49,16 @@ public:
 	static std::list<MapObject> GetStageData(int f_stageNum)
 	{
 		std::list<std::list<MapObject>>::iterator l_itr = m_maps.begin();
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		return *l_itr;
+	};
+	//最大敵数9最大チェックポイント9
+	static std::list<EnemyData> GetEnemyData(int f_stageNum)
+	{
+		std::list<std::list<EnemyData>>::iterator l_itr = m_enemys.begin();
 		for (int i = 0; i < f_stageNum; i++)
 		{
 			l_itr++;

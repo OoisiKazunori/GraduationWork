@@ -1,11 +1,17 @@
 #include "MapLoader.h"
 #include <filesystem>
-
+#include <fstream>
+#include <sstream>
 
 std::list<std::list<MapObject>> MapManager::m_maps;
+std::list<std::list<EnemyData>> MapManager::m_enemys;
+
 
 void MapManager::Init()
 {
+	m_maps.clear();
+	m_enemys.clear();
+
 	std::list<std::string> l_fileNames;
 
 	//フォルダ内のファイル名全てを取得する
@@ -53,6 +59,72 @@ void MapManager::Init()
 		l_fileNameItr++;
 		//マップデータへの登録
 		m_maps.push_back(m_objects);
+	}
+
+	std::list<std::string> l_enemyFileNames;
+
+	//フォルダ内のファイル名全てを取得する
+	if (!GetFileNames("Resource/EnemyDatas", l_enemyFileNames)) return;
+
+	std::list<std::string>::iterator l_enemyFileNameItr = l_enemyFileNames.begin();
+	//int x,y = 0;
+	for (; l_enemyFileNameItr != l_enemyFileNames.end(); ++l_enemyFileNameItr)
+	{
+		const int enemyMax = 9;
+		std::list<EnemyData> l_enemys;
+		l_enemys.resize(enemyMax);
+		for (auto itr = l_enemys.begin(); itr != l_enemys.end(); ++itr)
+		{
+			(*itr).m_position.resize(enemyMax);
+			for (auto hogeItr = (*itr).m_position.begin(); hogeItr != (*itr).m_position.end(); ++hogeItr)
+			{
+				hogeItr->x = -1;
+				hogeItr->y = -1;
+			}
+		}
+
+
+		ifstream file((*l_enemyFileNameItr));
+		if (file.is_open())
+		{
+			string line;
+			DirectX::XMINT2 pos = { 0, -0 };
+			while (getline(file, line))
+			{
+				istringstream line_stream(line);
+
+				string key;
+				while (getline(line_stream, key, ','))
+				{
+					int num = atoi(key.c_str());
+					if (num > 10 && num < 100)
+					{
+						int enemy10Number = -1;
+						int enemy1WalkPosint = -1;
+						enemy10Number = num / 10;
+						enemy10Number -= 1;
+						enemy1WalkPosint = num % 10;
+						enemy1WalkPosint -= 1;
+						auto enemyNumItr = l_enemys.begin();
+						for (int i = 0; i < enemy10Number; i++)
+						{
+							enemyNumItr++;
+							
+						}
+						auto enemyWalkItr = (*enemyNumItr).m_position.begin();
+						for (int k = 0; k < enemy1WalkPosint; k++)
+						{
+							enemyWalkItr++;
+						}
+						(*enemyWalkItr) = pos;
+					}
+					pos.x++;
+				}
+				pos.y++;
+				pos.x = 0;
+			}
+		}
+		m_enemys.push_back(l_enemys);
 	}
 }
 

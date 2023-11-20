@@ -17,14 +17,14 @@
 
 #include"../MapLoader/MapLoader.h"
 
-GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
+GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
+
 	//DrawFuncHelperでのモデル読み込み
 	m_line(arg_rasterize),
+	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
-	m_outlineTex(arg_rasterize, true),
-	m_stage(arg_rasterize, "Resource/Stage/", "TestStage.gltf"),
 	m_heartRateManager(arg_rasterize),
 	m_menu(arg_rasterize)
 {
@@ -41,11 +41,12 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	//m_modelAnimationRender.m_model.m_animator->Play("繧｢繝ｼ繝槭メ繝･繧｢Action", true, false);
 
 	m_stageTransform.pos = { 0.0f, -20.0f, 0.0f };
-	m_stageTransform.scale = { 3.0f, 4.0f, 3.0f };
+	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
 
 	MapManager::Init();
 	int stageNumber = 0;
-	m_stageManager.Init(arg_rasterize, stageNumber);
+	m_stageManager.Init(arg_rasterize, f_mapNumber);
+	m_stageNum = f_mapNumber;
 
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stageManager.m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stageManager.m_stage->m_transform);
@@ -57,10 +58,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize) :
 	m_throwableObjectController = std::make_shared<ThrowableObjectController>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
-
-	MapManager::Init();
-	m_stageManager.Init(arg_rasterize, 0);
-
 	for (auto& index : m_preEnemy) {
 
 		index = std::make_shared<PreEnemy>(arg_rasterize);
@@ -115,20 +112,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_gadgetMaanager.Update();
 		m_HPBarManager.Update(0);
 
-		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_throwableObjectController);
+		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
 		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 		m_bulletMgr->Update(m_stageMeshCollision);
 
-
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_1)) {
-			m_preEnemy[0]->SetPos(m_player->GetTransform().pos);
-		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_2)) {
-			m_preEnemy[1]->SetPos(m_player->GetTransform().pos);
-		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_3)) {
-			m_preEnemy[2]->SetPos(m_player->GetTransform().pos);
-		}
 
 		m_stageManager.Update(arg_rasterize);
 
@@ -147,23 +134,25 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_heartRateManager.Update(120);
 		}
 	}
+	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
 	m_menu.Update();
 
 	m_throwableObjectController->Update(m_player->GetTransform().pos, m_camera->GetShotQuaternion().GetFront());
 
-	for (auto& index : m_preEnemy) {
+	for (auto& index : m_preEnemy)
+	{
 		index->CheckInEcho(m_stageMeshCollision);
 	}
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	//ステージの描画
-	//m_stageManager.Update(arg_rasterize);
-	//GBufferMgr::Instance()->ComputeSilhouette();
+	//描画命令発行
 
+	m_player->Draw(arg_rasterize, arg_blasVec);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
@@ -174,7 +163,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 
 	m_menu.Draw(arg_rasterize);
-	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
+	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);
 
@@ -182,9 +171,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	for (auto& index : m_preEnemy) {
 
 		index->Draw(arg_rasterize, arg_blasVec);
-
 	}
-	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 }
 
 int GameScene::SceneChange()

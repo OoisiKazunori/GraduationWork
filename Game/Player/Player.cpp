@@ -25,7 +25,7 @@ void Player::Init()
 
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController)
+void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
 {
 
 	//ìÆÇ©Ç∑ëOÇÃç¿ïWÅB
@@ -34,6 +34,10 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 	//ì¸óÕèàóù
 	Input(arg_camera, arg_bulletMgr);
 
+	/*for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr)
+	{
+		Collision(*itr);
+	}*/
 	//ìñÇΩÇËîªíË
 	Collision(arg_stageMeshCollision);
 

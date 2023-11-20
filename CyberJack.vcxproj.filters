@@ -108,7 +108,6 @@
     <ClCompile Include="Game\Echo\EchoArray.cpp" />
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
-    <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="Game\Menu\Menu.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Scene\StageSelectScene.cpp" />
@@ -239,7 +238,6 @@
     <ClInclude Include="Game\Echo\Echo.h" />
     <ClInclude Include="Game\Echo\EchoArray.h" />
     <ClInclude Include="Game\Enemy\PreEnemy.h" />
-    <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Menu\Menu.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
