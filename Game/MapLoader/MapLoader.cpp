@@ -9,6 +9,9 @@ std::list<std::list<EnemyData>> MapManager::m_enemys;
 
 void MapManager::Init()
 {
+	m_maps.clear();
+	m_enemys.clear();
+
 	std::list<std::string> l_fileNames;
 
 	//フォルダ内のファイル名全てを取得する
