@@ -92,6 +92,15 @@ BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize &arg_rasterize) :
 {
 }
 
+BasicDraw::BasicLineRender::BasicLineRender()
+{
+}
+
+void BasicDraw::BasicLineRender::Generate(DrawingByRasterize& arg_rasterize)
+{
+	m_render.Generate(arg_rasterize, DrawFuncData::SetLine(DrawFuncData::GetBasicGBufferShader()));
+}
+
 BasicDraw::SilhouetteModelRender::SilhouetteModelRender(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName, bool arg_deletePipelineInScene)
 	:	m_modelSilhouette(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {

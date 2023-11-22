@@ -8,9 +8,7 @@ ThrowableObjectController::ThrowableObjectController(DrawingByRasterize& arg_ras
 	m_isHoldOld = false;
 
 	for (auto& index : m_line) {
-
-		index = BasicDraw::BasicLineRender(arg_rasterize);
-
+		index.Generate(arg_rasterize);
 	}
 
 }

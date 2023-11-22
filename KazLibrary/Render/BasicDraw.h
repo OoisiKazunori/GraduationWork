@@ -31,6 +31,8 @@ namespace BasicDraw
 	struct BasicLineRender
 	{
 		BasicLineRender(DrawingByRasterize &arg_rasterize);
+		BasicLineRender();
+		void Generate(DrawingByRasterize& arg_rasterize);
 		DrawFuncHelper::LineRender m_render;
 	};
 
