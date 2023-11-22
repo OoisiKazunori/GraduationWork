@@ -137,7 +137,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
 	m_menu.Update();
 
-	m_throwableObjectController->Update(m_player->GetTransform().pos, m_camera->GetShotQuaternion().GetFront());
+	m_throwableObjectController->Update(m_player->GetTransform().pos, m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
 	for (auto& index : m_preEnemy)
 	{
