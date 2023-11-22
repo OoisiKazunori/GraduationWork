@@ -1,6 +1,6 @@
 #include "DrawFuncHelper.h"
 
-DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize &arg_rasterize, const std::string &arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 {
 	if (arg_isUIFlag)
 	{
@@ -18,7 +18,7 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize &arg_rasterize, 
 	};
 }
 
-DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize &arg_rasterize, const std::string &arg_textureFilePass, const DrawFuncData::DrawCallData &arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 {
 	if (arg_isUIFlag)
 	{
@@ -36,7 +36,7 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize &arg_rasterize, 
 	};
 }
 
-DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize &arg_rasterize, const DrawFuncData::DrawCallData &arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 {
 	if (arg_isUIFlag)
 	{
@@ -47,7 +47,7 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize &arg_rasterize, 
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
 }
 
-DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize &arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 {
 	if (arg_isUIFlag)
 	{
@@ -58,7 +58,7 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize &arg_rasterize, 
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
 }
 
-void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData &rhs)
+void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData& rhs)
 {
 	m_textureBuffer = rhs;
 	m_textureSize =
@@ -68,7 +68,7 @@ void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData 
 	};
 }
 
-void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize &arg_rasterize, const KazMath::Transform2D &arg_trasform2D, const KazMath::Color &arg_addColor)
+void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, const KazMath::Transform2D& arg_trasform2D, const KazMath::Color& arg_addColor)
 {
 	Error();
 
@@ -79,7 +79,7 @@ void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize &arg_rasterize, co
 	arg_rasterize.UIRender(m_drawCommandData);
 }
 
-void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize &arg_rasterize, const KazMath::Transform2D &arg_trasform2D, const KazBufferHelper::BufferData &arg_textureBuffer, const KazMath::Color &arg_addColor)
+void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize& arg_rasterize, const KazMath::Transform2D& arg_trasform2D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor)
 {
 	KazMath::Transform2D transform(arg_trasform2D);
 	m_textureSize.x = static_cast<float>(arg_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
@@ -91,7 +91,7 @@ void DrawFuncHelper::TextureRender::Draw2D(DrawingByRasterize &arg_rasterize, co
 	arg_rasterize.UIRender(m_drawCommandData);
 }
 
-void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, const KazMath::Transform3D &arg_trasform3D, const KazMath::Color &arg_addColor)
+void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor)
 {
 	Error();
 
@@ -103,7 +103,7 @@ void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize &arg_rasterize, Ra
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
-void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, const KazMath::Transform3D &arg_trasform3D, const KazBufferHelper::BufferData &arg_textureBuffer, const KazMath::Color &arg_addColor)
+void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor)
 {
 	KazMath::Transform3D transform(arg_trasform3D);
 	m_textureSize.x = static_cast<float>(arg_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
@@ -117,7 +117,7 @@ void DrawFuncHelper::TextureRender::Draw3D(DrawingByRasterize &arg_rasterize, Ra
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
-void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, const KazMath::Transform3D &arg_trasform3D, const KazMath::Color &arg_addColor)
+void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor)
 {
 	Error();
 
@@ -129,7 +129,7 @@ void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize &arg_rast
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
-void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, const KazMath::Transform3D &arg_trasform3D, const KazBufferHelper::BufferData &arg_textureBuffer, const KazMath::Color &arg_addColor)
+void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_trasform3D, const KazBufferHelper::BufferData& arg_textureBuffer, const KazMath::Color& arg_addColor)
 {
 	KazMath::Transform3D transform(arg_trasform3D);
 	m_textureSize.x = static_cast<float>(arg_textureBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
@@ -143,7 +143,7 @@ void DrawFuncHelper::TextureRender::Draw3DBillBoard(DrawingByRasterize &arg_rast
 	StackOnBlas(arg_blasVec, transform.GetMat());
 }
 
-void DrawFuncHelper::TextureRender::DrawGaussian(DrawingByRasterize &arg_rasterize, const KazMath::Transform2D &arg_trasform2D)
+void DrawFuncHelper::TextureRender::DrawGaussian(DrawingByRasterize& arg_rasterize, const KazMath::Transform2D& arg_trasform2D)
 {
 	Error();
 
@@ -178,21 +178,21 @@ void DrawFuncHelper::TextureRender::Error()
 	}
 }
 
-void DrawFuncHelper::TextureRender::StackOnBlas(Raytracing::BlasVector &arg_blasVec, const DirectX::XMMATRIX &arg_worldMat)
+void DrawFuncHelper::TextureRender::StackOnBlas(Raytracing::BlasVector& arg_blasVec, const DirectX::XMMATRIX& arg_worldMat)
 {
-	for (auto &obj : m_drawCommand.m_raytracingData.m_blas)
+	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
 	{
 		arg_blasVec.Add(obj, arg_worldMat);
 	}
 }
 
-DrawFuncHelper::ModelRender::ModelRender(const std::string &arg_fileDir, const std::string &arg_filePass)
+DrawFuncHelper::ModelRender::ModelRender(const std::string& arg_fileDir, const std::string& arg_filePass)
 {
 	Load(arg_fileDir, arg_filePass);
 	m_drawCommand.SetupRaytracing(true);
 }
 
-DrawFuncHelper::ModelRender::ModelRender(const std::shared_ptr<ModelInfomation> &arg_modelInfomation, const DrawFuncData::DrawCallData &arg_drawCall)
+DrawFuncHelper::ModelRender::ModelRender(const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
 {
 	m_modelInfo = arg_modelInfomation;
 	m_drawCommand = arg_drawCall;
@@ -205,7 +205,7 @@ DrawFuncHelper::ModelRender::ModelRender()
 	m_drawCommand.SetupRaytracing(true);
 }
 
-void DrawFuncHelper::ModelRender::Load(const std::string &arg_fileDir, const std::string &arg_filePass)
+void DrawFuncHelper::ModelRender::Load(const std::string& arg_fileDir, const std::string& arg_filePass)
 {
 	m_modelInfo = ModelLoader::Instance()->Load(arg_fileDir, arg_filePass);
 
@@ -220,7 +220,7 @@ void DrawFuncHelper::ModelRender::Load(const std::string &arg_fileDir, const std
 	}
 }
 
-void DrawFuncHelper::ModelRender::Load(const std::shared_ptr<ModelInfomation> &arg_modelInfomation, const DrawFuncData::DrawCallData &arg_drawCall)
+void DrawFuncHelper::ModelRender::Load(const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
 {
 	m_modelInfo = arg_modelInfomation;
 	m_drawCommand = arg_drawCall;
@@ -243,7 +243,7 @@ bool DrawFuncHelper::ModelRender::LoadAnimation()
 	}
 }
 
-void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, KazMath::Transform3D &arg_trasform3D, const KazMath::Color &arg_addColor, float arg_timeScale)
+void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor, float arg_timeScale)
 {
 	if (m_animator)
 	{
@@ -257,7 +257,7 @@ void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize &arg_rasterize, Raytra
 	//ラスタライザ描画命令
 	arg_rasterize.ObjectRender(m_drawCommandData);
 	//レイトレ描画命令
-	for (auto &obj : m_drawCommand.m_raytracingData.m_blas)
+	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
 	{
 		arg_blasVec.Add(obj, arg_trasform3D.GetMat());
 	}
@@ -272,7 +272,7 @@ void DrawFuncHelper::ModelRender::Error()
 	}
 }
 
-DrawFuncHelper::LineRender::LineRender(DrawingByRasterize &arg_rasterize, const DrawFuncData::DrawCallData &arg_drawCall)
+DrawFuncHelper::LineRender::LineRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall)
 {
 	VertexGenerateData data(&posArray, sizeof(DirectX::XMFLOAT3), 2, sizeof(DirectX::XMFLOAT3));
 	m_drawCommand = arg_drawCall;
@@ -290,7 +290,7 @@ DrawFuncHelper::LineRender::LineRender()
 {
 }
 
-void DrawFuncHelper::LineRender::Generate(DrawingByRasterize &arg_rasterize)
+void DrawFuncHelper::LineRender::Generate(DrawingByRasterize& arg_rasterize)
 {
 	VertexGenerateData data(&posArray, sizeof(DirectX::XMFLOAT3), 2, sizeof(DirectX::XMFLOAT3));
 	m_drawCommand = DrawFuncData::SetLine(DrawFuncData::GetBasicShader());
@@ -302,7 +302,7 @@ void DrawFuncHelper::LineRender::Generate(DrawingByRasterize &arg_rasterize)
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 }
 
-void DrawFuncHelper::LineRender::Generate(DrawingByRasterize &arg_rasterize, const DrawFuncData::DrawCallData &arg_drawCall)
+void DrawFuncHelper::LineRender::Generate(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall)
 {
 	VertexGenerateData data(&posArray, sizeof(DirectX::XMFLOAT3), 2, sizeof(DirectX::XMFLOAT3));
 	m_drawCommand = arg_drawCall;
@@ -314,7 +314,7 @@ void DrawFuncHelper::LineRender::Generate(DrawingByRasterize &arg_rasterize, con
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
 }
 
-void DrawFuncHelper::LineRender::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, const KazMath::Vec3<float> &arg_startPos, const KazMath::Vec3<float> &arg_endPos, const KazMath::Color &arg_color)
+void DrawFuncHelper::LineRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_startPos, const KazMath::Vec3<float>& arg_endPos, const KazMath::Color& arg_color)
 {
 	posArray[0] = arg_startPos;
 	posArray[1] = arg_endPos;
@@ -329,7 +329,7 @@ void DrawFuncHelper::LineRender::Draw(DrawingByRasterize &arg_rasterize, Raytrac
 	arg_rasterize.ObjectRender(m_drawCommandData);
 }
 
-DrawFuncHelper::TextureRectRender::TextureRectRender(DrawingByRasterize &arg_rasterize, const std::string &arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+DrawFuncHelper::TextureRectRender::TextureRectRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 {
 	if (arg_isUIFlag)
 	{
@@ -357,7 +357,7 @@ DrawFuncHelper::TextureRectRender::TextureRectRender()
 {
 }
 
-void DrawFuncHelper::TextureRectRender::Load(DrawingByRasterize &arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+void DrawFuncHelper::TextureRectRender::Load(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 {
 	if (arg_isUIFlag)
 	{
@@ -370,7 +370,6 @@ void DrawFuncHelper::TextureRectRender::Load(DrawingByRasterize &arg_rasterize, 
 	m_drawCommand.m_modelVertDataHandle = m_vertexHandle;
 
 	m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
-
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
 
 
@@ -382,7 +381,7 @@ void DrawFuncHelper::TextureRectRender::Load(DrawingByRasterize &arg_rasterize, 
 	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&color, sizeof(DirectX::XMFLOAT4));
 }
 
-void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, const KazMath::Vec3<float> &arg_pos, const KazMath::Vec2<float> &arg_upScale, const KazMath::Vec2<float> &arg_downScale, const KazBufferHelper::BufferData &arg_texBuffer)
+void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_pos, const KazMath::Vec2<float>& arg_upScale, const KazMath::Vec2<float>& arg_downScale, const KazBufferHelper::BufferData& arg_texBuffer)
 {
 	m_textureSize.x = static_cast<float>(arg_texBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
 	m_textureSize.y = static_cast<float>(arg_texBuffer.bufferWrapper->GetBuffer()->GetDesc().Height);
@@ -402,8 +401,8 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize &arg_rasterize, 
 	//左上
 	posArray[0] = {
 		{
-		arg_pos.x - upHalfScale.x,
-		arg_pos.y + upHalfScale.y,
+		-upHalfScale.x,
+		-upHalfScale.y,
 		0.0f
 		},
 		lUv[0]
@@ -411,8 +410,8 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize &arg_rasterize, 
 	//左下
 	posArray[1] = {
 		{
-		arg_pos.x - downHalfScale.x,
-		arg_pos.y - downHalfScale.y,
+		-downHalfScale.x,
+		downHalfScale.y,
 		0.0f
 		},
 		lUv[1]
@@ -420,8 +419,8 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize &arg_rasterize, 
 	//右上
 	posArray[2] = {
 		{
-		arg_pos.x + upHalfScale.x,
-		arg_pos.y + upHalfScale.y,
+		upHalfScale.x,
+		-upHalfScale.y,
 		0.0f
 		},
 		lUv[2]
@@ -429,15 +428,18 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize &arg_rasterize, 
 	//右下
 	posArray[3] = {
 		{
-		arg_pos.x + downHalfScale.x,
-		arg_pos.y - downHalfScale.y,
+		downHalfScale.x,
+		downHalfScale.y,
 		0.0f
 		},
 		lUv[3]
 	};
-	vertBuffer->bufferWrapper->TransData(posArray.data(), sizeof(SpriteVertex) * 4);
+	//vertBuffer->bufferWrapper->TransData(posArray.data(), sizeof(SpriteVertex) * 4);
 
-	DirectX::XMMATRIX mat(CameraMgr::Instance()->GetMatBillBoard() * CameraMgr::Instance()->GetPerspectiveMatProjection());
+	DirectX::XMMATRIX mat(
+		KazMath::Transform3D(arg_pos, KazMath::Vec3<float>(10.0f, 10.0f, 10.0f)).GetMat(CameraMgr::Instance()->GetMatBillBoard())
+		* CameraMgr::Instance()->GetViewMatrix()
+		* CameraMgr::Instance()->GetPerspectiveMatProjection());
 	m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
 
 	//テクスチャ
@@ -464,9 +466,9 @@ void DrawFuncHelper::TextureRectRender::Error()
 	}
 }
 
-void DrawFuncHelper::TextureRectRender::StackOnBlas(Raytracing::BlasVector &arg_blasVec, const DirectX::XMMATRIX &arg_worldMat)
+void DrawFuncHelper::TextureRectRender::StackOnBlas(Raytracing::BlasVector& arg_blasVec, const DirectX::XMMATRIX& arg_worldMat)
 {
-	for (auto &obj : m_drawCommand.m_raytracingData.m_blas)
+	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
 	{
 		arg_blasVec.Add(obj, arg_worldMat);
 	}

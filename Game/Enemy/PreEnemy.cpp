@@ -22,7 +22,7 @@ void PreEnemy::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &a
 {
 	if (m_inEcho)
 	{
-		m_modelRender.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
+		//m_modelRender.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 	}
 
 	m_reactionRender.Draw(arg_rasterize, arg_blasVec);

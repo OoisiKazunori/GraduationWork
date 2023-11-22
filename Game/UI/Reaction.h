@@ -30,13 +30,12 @@ public:
 		m_baseScale = { 2.0f,5.0f };
 		m_downScale = m_baseScale;
 		m_upVec = upVec;
-
 	}
 
 	void Update(const KazMath::Vec3<float>& pos)
 	{
-		float rate = EasingMaker(Out, Back, 1.0f);
-		m_pos = pos + (pos + KazMath::Vec3<float>(10.0f, 10.0f, 10.0f) * m_upVec) * rate;
+		float rate = EasingMaker(Out, Back, m_timer.GetTimeRate());
+		m_pos = pos + (KazMath::Vec3<float>(2.0f, 2.0f, 2.0f) * m_upVec) * rate;
 		m_timer.UpdateTimer();
 
 		Find();
@@ -45,6 +44,7 @@ public:
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 	{
+		//m_pos = { 0.0f,-47.2f,0.0f };
 		//if (!finishFlag)
 		{
 			m_render.Draw(arg_rasterize, arg_blasVec, m_pos, m_upScale, m_downScale, m_tex[m_index]);

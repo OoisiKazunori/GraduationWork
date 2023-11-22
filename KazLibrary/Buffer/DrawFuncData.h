@@ -1864,8 +1864,8 @@ namespace DrawFuncData
 		DrawFuncData::PipelineGenerateData lData;
 		lData.desc = DrawFuncPipelineData::SetTex();
 		lData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "PSAlphaMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "MultiSprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "MultiSprite.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
 		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//ÇªÇÃëºê›íË
