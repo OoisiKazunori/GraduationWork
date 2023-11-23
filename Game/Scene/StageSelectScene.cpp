@@ -57,11 +57,14 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 	m_MouseSensSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * 1.0f) });
 	m_VolumeSp.SetPosition({ UIHidePos, (float)UIBaseY + ((float)UIDistance * 2.0f) });
 
-	m_SensitivityBarSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 1.0f) });
+	m_SensitivityBarSp.SetPosition({ SensitivityBarX + 0.5f, (float)UIBaseY + ((float)UIDistance * 1.0f) });
 	m_SensitivityIconSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 1.0f) });
+	m_SensitivityBarSp.SetScale({ 0.7f, 1.0f });
 
-	m_VolumeBarSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 2.0f) });
+	m_VolumeBarSp.SetPosition({ SensitivityBarX + 0.5f, (float)UIBaseY + ((float)UIDistance * 2.0f) });
 	m_VolumeIconSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 2.0f) });
+	m_VolumeBarSp.SetScale({0.7f, 1.0f});
+
 
 	m_FlipCheckBoxSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
 	m_MouseFlipCheckSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
