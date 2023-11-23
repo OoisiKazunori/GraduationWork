@@ -152,9 +152,9 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 	m_uiManager.Draw(arg_rasterize);
-	m_gadgetMaanager.Draw(arg_rasterize);
+	//m_gadgetMaanager.Draw(arg_rasterize);
 	m_HPBarManager.Draw(arg_rasterize);
-	m_heartRateManager.Draw(arg_rasterize);
+	//m_heartRateManager.Draw(arg_rasterize);
 
 
 	m_menu.Draw(arg_rasterize);

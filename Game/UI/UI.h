@@ -197,3 +197,25 @@ public:
 	void Update(int f_heartRate);
 	void Draw(DrawingByRasterize& arg_rasterize);
 };
+
+class ResultUI
+{
+	//背景
+	UI2DElement m_back;
+	//リザルトって書いてあるやつ
+	UI2DElement m_ResultStrSp;
+	//ミッションクリア
+	UI2DElement m_missionClearSp;
+	//ミッション失敗
+	UI2DElement m_missionFailedSp;
+	UI2DElement m_pushSpaceSp;
+
+	bool m_isResultShow = false;
+public:
+	ResultUI(DrawingByRasterize & arg_rasterize);
+
+	void Init();
+	void Update();
+	void Draw(DrawingByRasterize& arg_rasterize);
+	bool GetResultShow() { return m_isResultShow; };
+};

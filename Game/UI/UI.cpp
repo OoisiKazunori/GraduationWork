@@ -562,3 +562,25 @@ void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 	
 	
 }
+
+ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
+	m_back(arg_rasterize, "Resource/UITexture/heartBase.png"),
+	m_ResultStrSp(arg_rasterize, "Resource/UITexture/heartRate.png"),
+	m_missionClearSp(arg_rasterize, "Resource/UITexture/heartFrame.png"),
+	m_missionFailedSp(arg_rasterize, "Resource/UITexture/heartFrame.png"),
+	m_pushSpaceSp(arg_rasterize, "Resource/UITexture/PushSpace.png")
+{
+	
+}
+
+void ResultUI::Init()
+{
+}
+
+void ResultUI::Update()
+{
+}
+
+void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
+{
+}
