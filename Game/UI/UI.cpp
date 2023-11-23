@@ -571,7 +571,7 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
 	m_pushSpaceSp(arg_rasterize, "Resource/UITexture/PushSpace.png")
 {
 	m_pushSpaceSp.SetPosition({1280.0 / 2.0f, 800.0f});
-	m_pushSpaceSp.EasePosInit({ 1280.0 / 2.0f, 720.0f / 2.0f + 200.0f });
+	m_pushSpaceSp.EasePosInit({ 1280.0 / 2.0f, 720.0f / 2.0f + 250.0f });
 	m_back.SetPosition({ 1280.0 / 2.0f, 720.0f / 2.0f });
 	m_ResultStrSp.SetPosition({ -300.0f, 100.0f });
 	m_ResultStrSp.EasePosInit({ 300.0f, 100.0f });

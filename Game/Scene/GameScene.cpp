@@ -144,6 +144,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	else if (m_resultManager.GetResultShow())
 	{
 		m_resultManager.Update();
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+		{
+			m_sceneNum = 0;
+		}
 	}
 	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
 	m_menu.Update();

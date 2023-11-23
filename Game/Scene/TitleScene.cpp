@@ -7,7 +7,7 @@ TitleScene::TitleScene(DrawingByRasterize& arg_rasterize) :
 	m_space(arg_rasterize, "Resource/UITexture/PushSpace.png", true)
 {
 	m_2DSpriteTransform.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
-	m_spaceTransform.pos = {1280.0f / 2.0f, 720.0f / 2.0f + 200.0f };
+	m_spaceTransform.pos = {1280.0f / 2.0f, 720.0f / 2.0f + 250.0f };
 	m_spaceTransform.scale = {1.2f, 1.2f};
 }
 
