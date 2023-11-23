@@ -564,13 +564,15 @@ void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 }
 
 ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
-	m_back(arg_rasterize, "Resource/UITexture/heartBase.png"),
+	m_back(arg_rasterize, "Resource/MenuTex/MenuBackTex.png"),
 	m_ResultStrSp(arg_rasterize, "Resource/UITexture/heartRate.png"),
 	m_missionClearSp(arg_rasterize, "Resource/UITexture/heartFrame.png"),
 	m_missionFailedSp(arg_rasterize, "Resource/UITexture/heartFrame.png"),
 	m_pushSpaceSp(arg_rasterize, "Resource/UITexture/PushSpace.png")
 {
-	
+	m_pushSpaceSp.SetPosition({1280.0 / 2.0f, 800.0f});
+	m_pushSpaceSp.EasePosInit({ 1280.0 / 2.0f, 720.0f / 2.0f + 200.0f });
+	m_back.SetPosition({ 1280.0 / 2.0f, 720.0f / 2.0f });
 }
 
 void ResultUI::Init()
@@ -579,8 +581,12 @@ void ResultUI::Init()
 
 void ResultUI::Update()
 {
+	m_pushSpaceSp.Update();
 }
 
 void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 {
+	m_pushSpaceSp.Draw(arg_rasterize);
+
+	m_back.Draw(arg_rasterize);
 }

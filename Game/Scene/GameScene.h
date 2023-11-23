@@ -82,6 +82,8 @@ private:
 	WeponUIManager m_uiManager;
 	GadgetUIManager m_gadgetMaanager;
 	HPUI m_HPBarManager;
+	ResultUI m_resultManager;
+
 
 	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
 	HeartRate m_heartRateManager;

@@ -25,7 +25,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
 	m_heartRateManager(arg_rasterize),
-	m_menu(arg_rasterize)
+	m_menu(arg_rasterize),
+	m_resultManager(arg_rasterize)
 {
 
 	/*
@@ -102,39 +103,51 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	*/
 	//デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
-	
+
 	//メニューが開かれていない時に更新を通す
-	if (!m_menu.GetIsMenuOpen())
+	if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 	{
-		m_uiManager.Update();
-		m_gadgetMaanager.Update();
+		if (m_HPBarManager.GetHP() > 0)
+		{
+			m_uiManager.Update();
+			m_gadgetMaanager.Update();
+
+			m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
+			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+			m_bulletMgr->Update(m_stageMeshCollision);
+
+			m_stageManager.Update(arg_rasterize);
+
+			static bool flag = false;
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+			{
+				if (flag) flag = false;
+				else flag = true;
+			}
+			if (flag)
+			{
+				m_heartRateManager.Update(60);
+			}
+			else
+			{
+				m_heartRateManager.Update(120);
+			}
+		}
 		m_HPBarManager.Update(0);
-
-		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
-		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-		m_bulletMgr->Update(m_stageMeshCollision);
-
-
-		m_stageManager.Update(arg_rasterize);
-
-		static bool flag = false;
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+		//死んだときの更新
+		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
 		{
-			if (flag) flag = false;
-			else flag = true;
+			m_resultManager.ShowResult();
 		}
-		if (flag)
-		{
-			m_heartRateManager.Update(60);
-		}
-		else
-		{
-			m_heartRateManager.Update(120);
-		}
+	}
+	//リザルト出す
+	else if (m_resultManager.GetResultShow())
+	{
+		m_resultManager.Update();
 	}
 	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
 	m_menu.Update();
-	for (auto& index : m_preEnemy) 
+	for (auto& index : m_preEnemy)
 	{
 		index->CheckInEcho(m_stageMeshCollision);
 	}
@@ -143,7 +156,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	//描画命令発行
-	
+
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
@@ -160,6 +173,11 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+
+	if (m_resultManager.GetResultShow())
+	{
+		m_resultManager.Draw(arg_rasterize);
+	}
 
 
 	for (auto& index : m_preEnemy) {

@@ -163,6 +163,9 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize);
 
 	void HitDamage(int f_mainDamage, int f_redZone);
+
+	int GetHP(){ return m_hp; };
+	int RedHP(){ return m_redHP; };
 };
 
 class HeartRate
@@ -218,4 +221,5 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 	bool GetResultShow() { return m_isResultShow; };
+	void ShowResult(){ m_isResultShow = true; };
 };
