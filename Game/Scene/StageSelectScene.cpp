@@ -63,7 +63,7 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 
 	m_VolumeBarSp.SetPosition({ SensitivityBarX + 0.5f, (float)UIBaseY + ((float)UIDistance * 2.0f) });
 	m_VolumeIconSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 2.0f) });
-	m_VolumeBarSp.SetScale({0.7f, 1.0f});
+	m_VolumeBarSp.SetScale({ 0.7f, 1.0f });
 
 
 	m_FlipCheckBoxSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
@@ -89,79 +89,70 @@ void StageSelectScene::Finalize()
 
 void StageSelectScene::Input()
 {
-	if (!m_isOptionsOpen)
+	if (inputDeray >= C_InputDeray)
 	{
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
-	{
-		if (m_nowSelectNum == ToGame)
-		{
-			//1”Ô‚ÌƒQ[ƒ€‚És‚­
-			m_sceneNum = 1;
-		}
-			else if (m_nowSelectNum == SelectOpsions::Opsions)
-			{
-				m_isOptionsOpen = true;
-				OpenOptionsInit();
-			}
-		//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚éŒã‚Å”Ô†‚ð•Ï‚¦‚é
-		else if (m_nowSelectNum == ExitGame)
-		{
-			Menu::SetIsGameEnd(true);
-		}
-	}
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
-	{
-		m_nowSelectNum++;
-		if (m_nowSelectNum > ExitGame)
-		{
-			m_nowSelectNum = 0;
-		}
-	}
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
-	{
-		m_nowSelectNum--;
-		if (m_nowSelectNum < 0)
-		{
-			m_nowSelectNum = ExitGame;
-		}
-	}
-	}
-
-	else
-	{
-		if (m_OptionsOpenSelect == -1)
+		if (!m_isOptionsOpen)
 		{
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 			{
-				m_OptionsOpenSelect = m_opsionsSelectNum;
+				if (m_nowSelectNum == ToGame)
+				{
+					//1”Ô‚ÌƒQ[ƒ€‚És‚­
+					m_sceneNum = 1;
+				}
+				else if (m_nowSelectNum == SelectOpsions::Opsions)
+				{
+					m_isOptionsOpen = true;
+					OpenOptionsInit();
+				}
+				//ˆê’UƒQ[ƒ€I‚í‚è‚Æ‚·‚éŒã‚Å”Ô†‚ð•Ï‚¦‚é
+				else if (m_nowSelectNum == ExitGame)
+				{
+					Menu::SetIsGameEnd(true);
+				}
+			}
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
+			{
+				m_nowSelectNum++;
+				if (m_nowSelectNum > ExitGame)
+				{
+					m_nowSelectNum = 0;
+				}
+			}
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
+			{
+				m_nowSelectNum--;
+				if (m_nowSelectNum < 0)
+				{
+					m_nowSelectNum = ExitGame;
+				}
 			}
 		}
-		else if (m_OptionsOpenSelect != -1)
+
+		else
 		{
-			switch (m_OptionsOpenSelect)
+			if (m_OptionsOpenSelect == -1)
 			{
-			case OptionsOpstions::MouseReversal:
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) ||
-					KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 				{
-					if (isMouseReversal)isMouseReversal = false;
-					else isMouseReversal = true;
+					m_OptionsOpenSelect = m_opsionsSelectNum;
 				}
-				Camera::isFlip = isMouseReversal;
-				break;
-			case OptionsOpstions::MouseSens:
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_D))
+			}
+			else if (m_OptionsOpenSelect != -1)
+			{
+				switch (m_OptionsOpenSelect)
 				{
-					if (mouseSensitivity < 2.0f)
+				case OptionsOpstions::MouseReversal:
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) ||
+						KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 					{
-						mouseSensitivity += 0.01f;
-						sensitivityIconOffset++;
+						if (isMouseReversal)isMouseReversal = false;
+						else isMouseReversal = true;
 					}
-				}
-				else if (KeyBoradInputManager::Instance()->InputState(DIK_D))
-				{
-					triggerTime++;
-					if (triggerTime % 2 == 0)
+					Camera::isFlip = isMouseReversal;
+					break;
+				case OptionsOpstions::MouseSens:
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_D))
 					{
 						if (mouseSensitivity < 2.0f)
 						{
@@ -169,19 +160,19 @@ void StageSelectScene::Input()
 							sensitivityIconOffset++;
 						}
 					}
-				}
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_A))
-				{
-					if (mouseSensitivity > 0.02f)
+					else if (KeyBoradInputManager::Instance()->InputState(DIK_D))
 					{
-						mouseSensitivity -= 0.01f;
-						sensitivityIconOffset--;
-}
-				}
-				else if (KeyBoradInputManager::Instance()->InputState(DIK_A))
-				{
-					triggerTime++;
-					if (triggerTime % 2 == 0)
+						triggerTime++;
+						if (triggerTime % 2 == 0)
+						{
+							if (mouseSensitivity < 2.0f)
+							{
+								mouseSensitivity += 0.01f;
+								sensitivityIconOffset++;
+							}
+						}
+					}
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_A))
 					{
 						if (mouseSensitivity > 0.02f)
 						{
@@ -189,27 +180,27 @@ void StageSelectScene::Input()
 							sensitivityIconOffset--;
 						}
 					}
-				}
-
-				if (!KeyBoradInputManager::Instance()->InputState(DIK_D) && !KeyBoradInputManager::Instance()->InputState(DIK_A))
-				{
-					triggerTime = 0;
-				}
-				Camera::CameraSensitivity = mouseSensitivity;
-				break;
-			case OptionsOpstions::Volume:
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_D))
-				{
-					if (volume < 2.0f)
+					else if (KeyBoradInputManager::Instance()->InputState(DIK_A))
 					{
-						volume += 0.01f;
-						volumeIconOffset++;
+						triggerTime++;
+						if (triggerTime % 2 == 0)
+						{
+							if (mouseSensitivity > 0.02f)
+							{
+								mouseSensitivity -= 0.01f;
+								sensitivityIconOffset--;
+							}
+						}
 					}
-				}
-				else if (KeyBoradInputManager::Instance()->InputState(DIK_D))
-				{
-					triggerTime++;
-					if (triggerTime % 2 == 0)
+
+					if (!KeyBoradInputManager::Instance()->InputState(DIK_D) && !KeyBoradInputManager::Instance()->InputState(DIK_A))
+					{
+						triggerTime = 0;
+					}
+					Camera::CameraSensitivity = mouseSensitivity;
+					break;
+				case OptionsOpstions::Volume:
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_D))
 					{
 						if (volume < 2.0f)
 						{
@@ -217,19 +208,19 @@ void StageSelectScene::Input()
 							volumeIconOffset++;
 						}
 					}
-				}
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_A))
-				{
-					if (volume > 0.02f)
+					else if (KeyBoradInputManager::Instance()->InputState(DIK_D))
 					{
-						volume -= 0.01f;
-						volumeIconOffset--;
+						triggerTime++;
+						if (triggerTime % 2 == 0)
+						{
+							if (volume < 2.0f)
+							{
+								volume += 0.01f;
+								volumeIconOffset++;
+							}
+						}
 					}
-				}
-				else if (KeyBoradInputManager::Instance()->InputState(DIK_A))
-				{
-					triggerTime++;
-					if (triggerTime % 2 == 0)
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_A))
 					{
 						if (volume > 0.02f)
 						{
@@ -237,58 +228,69 @@ void StageSelectScene::Input()
 							volumeIconOffset--;
 						}
 					}
+					else if (KeyBoradInputManager::Instance()->InputState(DIK_A))
+					{
+						triggerTime++;
+						if (triggerTime % 2 == 0)
+						{
+							if (volume > 0.02f)
+							{
+								volume -= 0.01f;
+								volumeIconOffset--;
+							}
+						}
+					}
+
+					break;
+				default:
+					break;
 				}
-
-				break;
-			default:
-				break;
 			}
-		}
 
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
-		{
-			if (m_OptionsOpenSelect == -1)
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
 			{
-				m_opsionsSelectNum--;
-				if (m_opsionsSelectNum < 0)
+				if (m_OptionsOpenSelect == -1)
 				{
-					m_opsionsSelectNum = OptionsOpstions::Volume;
+					m_opsionsSelectNum--;
+					if (m_opsionsSelectNum < 0)
+					{
+						m_opsionsSelectNum = OptionsOpstions::Volume;
+					}
 				}
-			}
-			else
-			{
-
-			}
-		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
-		{
-			if (m_OptionsOpenSelect == -1)
-			{
-				m_opsionsSelectNum++;
-				if (m_opsionsSelectNum > OptionsOpstions::Volume)
+				else
 				{
-					m_opsionsSelectNum = OptionsOpstions::MouseReversal;
+
 				}
 			}
-			else
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
 			{
+				if (m_OptionsOpenSelect == -1)
+				{
+					m_opsionsSelectNum++;
+					if (m_opsionsSelectNum > OptionsOpstions::Volume)
+					{
+						m_opsionsSelectNum = OptionsOpstions::MouseReversal;
+					}
+				}
+				else
+				{
 
+				}
 			}
-		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
-		{
-			if (m_OptionsOpenSelect == -1)
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
 			{
-				m_isOptionsOpen = false;
-				CloseOptionsInit();
-			}
-			else
-			{
-				m_OptionsOpenSelect = -1;
+				if (m_OptionsOpenSelect == -1)
+				{
+					m_isOptionsOpen = false;
+					CloseOptionsInit();
+				}
+				else
+				{
+					m_OptionsOpenSelect = -1;
+				}
 			}
 		}
 	}
-
 }
 
 void StageSelectScene::Update(DrawingByRasterize& arg_rasterize)
@@ -312,6 +314,10 @@ void StageSelectScene::Update(DrawingByRasterize& arg_rasterize)
 	m_MouseReveralSp.Update();
 	m_MouseSensSp.Update();
 	m_VolumeSp.Update();
+	if (inputDeray < C_InputDeray)
+	{
+		inputDeray++;
+	}
 }
 
 void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -347,7 +353,7 @@ void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 		m_FlipCheckBoxSp.Draw(arg_rasterize);
 	}
 	m_selectBackSp.Draw(arg_rasterize);
-	
+
 	m_backSp.Draw(arg_rasterize);
 }
 

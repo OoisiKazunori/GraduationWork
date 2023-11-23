@@ -90,6 +90,9 @@ private:
 
 	static int startStageNum;
 
+	int inputDeray = 0;
+	const int C_InputDeray = 60;
+
 	SelectSceneSprite m_backSp;
 	SelectSceneSprite m_backBarSp;
 	SelectSceneSprite m_loadGameSp;
