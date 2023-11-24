@@ -114,7 +114,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
 		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-		m_bulletMgr->Update(m_stageMeshCollision);
+		m_bulletMgr->Update(m_stageManager.GetColliders());
 
 
 		m_stageManager.Update(arg_rasterize);

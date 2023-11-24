@@ -26,7 +26,7 @@ public:
 
 	void Genrate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir, bool arg_isEcho = false);
 
-	void Update(std::weak_ptr<MeshCollision> arg_meshCollision);
+	void Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

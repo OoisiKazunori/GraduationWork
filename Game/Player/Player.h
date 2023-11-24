@@ -49,7 +49,7 @@ private:
 
 	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr);
 	void Rotate(std::weak_ptr<Camera> arg_camera);
-	void Collision(std::weak_ptr<MeshCollision> arg_meshCollision);
+	void Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders, std::weak_ptr<MeshCollision> arg_stageMeshCollision);
 	float GetMoveSpeed();
 
 };
