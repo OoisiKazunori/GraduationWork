@@ -209,15 +209,11 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		{
 			m_Wall_C.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_C/", "Wall_C.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-			{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-			{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0}, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
+			
+
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_C.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_C.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_C.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wall_four-forked_road") == true)
@@ -225,29 +221,17 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_Wall_Four_Forked_Road.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_Four_Forked_Road/", "Wall_Four_Forked_Road.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-				{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0 }, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_Four_Forked_Road.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_Four_Forked_Road.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_Four_Forked_Road.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wall_River") == true)
 		{
 			m_Wall_River.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_River/", "Wall_River.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-			
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-				{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0 }, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
+		
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_River.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_River.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_River.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallH") == true)
@@ -255,15 +239,8 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_Wall_H.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_H/", "Wall_H.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
-
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-				{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0 }, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_H.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_H.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_H.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 
@@ -272,45 +249,26 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_Wall_I.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_I/", "Wall_I.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-				{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0 }, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_I.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_I.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_I.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_LPost") == true)
 		{
 			m_Wall_L_LPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_LPost/", "Wall_L_LPost.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-			
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-				{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0 }, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
+
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_L_LPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_L_LPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_L_LPost.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_NonPost") == true)
 		{
 			m_Wall_NonPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_NonPost/", "Wall_L_NonPost.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-			
 
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-				{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0 }, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_NonPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_NonPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_NonPost.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_Post") == true)
@@ -318,15 +276,8 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_Wall_L_Post.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_Post/", "Wall_L_Post.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
-
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-				{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0 }, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_L_Post.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_L_Post.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_L_Post.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallT") == true)
@@ -334,14 +285,8 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_Wall_T.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_T/", "Wall_T.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
-			KazMath::Transform3D _trans = KazMath::Transform3D(
-				{ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			_trans.Rotation({ 1, 0, 0 }, l_mapItr->m_rotition.x);
-			_trans.Rotation({ 0, 1, 0 }, l_mapItr->m_rotition.y);
-			_trans.Rotation({ 0, 0, 1 }, l_mapItr->m_rotition.z);
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, _trans);
+			collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_T.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		}
