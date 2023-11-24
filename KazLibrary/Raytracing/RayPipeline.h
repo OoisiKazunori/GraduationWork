@@ -78,6 +78,13 @@ namespace Raytracing {
 		KazBufferHelper::BufferData* m_refRaymarchingConstData;
 		KazBufferHelper::BufferData* m_refDebugOnOffConstData;
 		KazBufferHelper::BufferData* m_refDebugSeaConstData;
+		
+		//アウトラインにノイズをかける用の定数バッファ
+		KazBufferHelper::BufferData m_outlineNoiseConstBufferData;
+		struct OutlineNoiseData {
+			KazMath::Vec4<float> m_noiseHorizontalLine;
+			float m_timer;
+		}m_outlineNoiseData;
 
 		//レンズフレアクラス
 		std::shared_ptr<PostEffect::LensFlare> m_lensFlare;
@@ -129,6 +136,9 @@ namespace Raytracing {
 		/// レイトレ実行。
 		/// </summary>
 		void TraceRay(Tlas arg_tlas);
+
+		//パイプラインに関する変数の更新処理
+		void Update();
 
 		//各種ゲッタ
 		Microsoft::WRL::ComPtr<ID3D12StateObject> GetStateObject() { return m_stateObject; }

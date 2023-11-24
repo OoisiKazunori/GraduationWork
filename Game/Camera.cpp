@@ -3,7 +3,11 @@
 #include "Input/ControllerInputManager.h"
 #include "../KazLibrary/Camera/CameraMgr.h"
 #include "../Game/Collision/MeshCollision.h"
+#include "../KazLibrary/Buffer/GBufferMgr.h"
 #include <algorithm>
+
+float Camera::CameraSensitivity = 1.0f;
+bool  Camera::isFlip = false;
 
 Camera::Camera()
 {
@@ -72,17 +76,17 @@ void Camera::Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<Mesh
 
 	}
 
+	//FPS視点にする。
+	m_eye = arg_playerTransform.pos;
+	m_target = m_eye + arg_playerTransform.GetFront();
+
+
 	m_isOldADS = arg_isADS;
 
 	CameraMgr::Instance()->Camera(m_eye, m_target, { 0,1,0 });
 
-}
+	GBufferMgr::Instance()->SetCameraPos(m_eye.ConvertXMFLOAT3(), CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection(0));
 
-KazMath::Transform3D Camera::GetCameraQuaternion()
-{
-	KazMath::Transform3D cameraTransform = m_shotQuaternion;
-	cameraTransform.Rotation(cameraTransform.GetRight(), m_cameraXAngle);
-	return cameraTransform;
 }
 
 
@@ -90,13 +94,14 @@ KazMath::Transform3D Camera::GetShotQuaternion()
 {
 	KazMath::Transform3D cameraTransform = m_shotQuaternion;
 	cameraTransform.Rotation(cameraTransform.GetRight(), m_cameraXAngle);
+	cameraTransform.Rotation({0,1,0}, DirectX::XM_PI);
 
-	//ADSしていると撃つ方向とカメラの中心がずれるので、それを補正する。
-	if (m_isOldADS) {
+	////ADSしていると撃つ方向とカメラの中心がずれるので、それを補正する。
+	//if (m_isOldADS) {
 
-		cameraTransform.quaternion = DirectX::XMQuaternionMultiply(cameraTransform.quaternion, DirectX::XMQuaternionRotationAxis({ 0,1,0 }, -DirectX::XMConvertToRadians(15.0f)));
+	//	cameraTransform.quaternion = DirectX::XMQuaternionMultiply(cameraTransform.quaternion, DirectX::XMQuaternionRotationAxis({ 0,1,0 }, -DirectX::XMConvertToRadians(15.0f)));
 
-	}
+	//}
 
 	return cameraTransform;
 }
@@ -104,14 +109,20 @@ void Camera::Input()
 {
 
 	//左右のカメラ操作
-	m_shotQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * 0.001f);
+	m_shotQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * (0.001f * CameraSensitivity));
 
 	//上下のカメラ操作
-	m_cameraXAngle = std::clamp(m_cameraXAngle - KeyBoradInputManager::Instance()->GetMouseVel().y * 0.001f, -1.0f, 1.0f);
-
+	if (!isFlip)
+	{
+		m_cameraXAngle = std::clamp(m_cameraXAngle + KeyBoradInputManager::Instance()->GetMouseVel().y * (0.001f * CameraSensitivity), -1.0f, 1.0f);
+	}
+	else
+	{
+		m_cameraXAngle = std::clamp(m_cameraXAngle - KeyBoradInputManager::Instance()->GetMouseVel().y * (0.001f * CameraSensitivity), -1.0f, 1.0f);
+	}
 }
 
 KazMath::Vec3<float> Camera::GetCameraVec()
 {
-	return -TransformVec3(DirectX::XMVector3Transform({ 0,0,1 }, DirectX::XMMatrixRotationQuaternion(GetCameraQuaternion().quaternion)));
+	return -TransformVec3(DirectX::XMVector3Transform({ 0,0,1 }, DirectX::XMMatrixRotationQuaternion(GetShotQuaternion().quaternion)));
 }

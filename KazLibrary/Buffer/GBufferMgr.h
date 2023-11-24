@@ -29,6 +29,7 @@ public:
 		R_M_S_ID,
 		WORLD,
 		EMISSIVE,
+		OUTLINE,
 		MAX
 	};
 	GBufferMgr();
@@ -125,8 +126,6 @@ public:
 	//レンズフレア用ブラー
 	std::shared_ptr<PostEffect::GaussianBlur> m_lensFlareBlur;
 	std::shared_ptr<PostEffect::Outline> m_outline;
-
-	KazBufferHelper::BufferData m_outlineBuffer;
 
 
 	KazBufferHelper::BufferData m_chromaticAberrationData;

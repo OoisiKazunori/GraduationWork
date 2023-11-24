@@ -20,10 +20,9 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	//デモ用のゲームシーンを設定。
 	m_nowScene = GetScene(0);
 	m_nowScene->Init();
-	m_rasterize.GeneratePipeline();
-
 	//シーン遷移を設定
-	m_sceneChange = std::make_unique<ChangeScene::SceneChange>();
+	m_sceneChange = std::make_unique<ChangeScene::SceneChange>(m_rasterize);
+	m_rasterize.GeneratePipeline();
 
 	//シーン番号、遷移に関するパラメーターを設定。
 	m_nowSceneNumber = -1;
@@ -36,7 +35,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	Raytracing::HitGroupMgr::Instance()->Setting();
 	m_pipelineShaders.push_back({ "Resource/ShaderFiles/RayTracing/RaytracingShader.hlsl", {L"mainRayGen"}, {L"mainMS", L"shadowMS", L"checkHitRayMS"}, {L"mainCHS", L"mainAnyHit"} });
 	int payloadSize = sizeof(float) * 7;
-	m_rayPipeline = std::make_unique<Raytracing::RayPipeline>(m_pipelineShaders, Raytracing::HitGroupMgr::DEF, 6, 2, 4, payloadSize, static_cast<int>(sizeof(KazMath::Vec2<float>)), 6);
+	m_rayPipeline = std::make_unique<Raytracing::RayPipeline>(m_pipelineShaders, Raytracing::HitGroupMgr::DEF, 6, 2, 6, payloadSize, static_cast<int>(sizeof(KazMath::Vec2<float>)), 6);
 
 
 	//ボリュームテクスチャを生成。
@@ -117,7 +116,6 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	m_Title = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Title.wav");
 	SoundManager::Instance()->SoundPlayerWave(m_Title, 100);
 	m_Title.source->SetVolume(0.1f);
-
 }
 
 SceneManager::~SceneManager()
@@ -133,6 +131,9 @@ void SceneManager::Update()
 		m_blasVector.Update();
 		return;
 	}
+
+	//パイプライン関連の更新処理
+	m_rayPipeline->Update();
 
 	//シェイク量を更新。
 	ShakeMgr::Instance()->Update();
@@ -157,6 +158,7 @@ void SceneManager::Update()
 		else
 		{
 			m_nowSceneNumber = m_nextSceneNumber;
+			Menu::SetSceneName((SceneName)m_nowSceneNumber);
 			//シーンの破棄
 			m_nowScene.reset();
 			//前シーンの描画命令破棄
@@ -171,12 +173,16 @@ void SceneManager::Update()
 
 	//更新処理
 	m_nowScene->Input();
-	m_nowScene->Update();
+	m_nowScene->Update(m_rasterize);
 	//シーン切り替えのトリガー
 	int sceneNum = m_nowScene->SceneChange();
 	if (sceneNum != SCENE_NONE)
 	{
 		m_nextSceneNumber = sceneNum;
+	}
+	if (Menu::IsSceneChange())
+	{
+		m_nextSceneNumber = Menu::GetNextSceneName();
 	}
 	m_sceneChange->Update();
 	//Scene内での描画情報で生成された場合の生成
@@ -211,7 +217,6 @@ void SceneManager::Update()
 
 	//データを転送。一旦ここで。
 	GBufferMgr::Instance()->m_lightBuffer.bufferWrapper->TransData(&GBufferMgr::Instance()->m_lightConstData, sizeof(GBufferMgr::LightConstData));
-
 }
 
 void SceneManager::Draw()

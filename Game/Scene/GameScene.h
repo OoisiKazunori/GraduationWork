@@ -7,6 +7,9 @@
 #include"../KazLibrary/Render/DrawFuncHelper.h"
 #include"../Game/Debug/DebugCamera.h"
 #include"../KazLibrary/Render/BasicDraw.h"
+#include"../Stage/StageManager.h"
+#include "../UI/UI.h"
+#include "../Menu/Menu.h"
 
 class EnemyManager;
 class Player;
@@ -17,17 +20,22 @@ class BulletMgr;
 class GameScene :public SceneBase
 {
 public:
-	GameScene(DrawingByRasterize& arg_rasterize);
+	GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber);
 	~GameScene();
 
 	void Init();
 	void PreInit();
 	void Finalize();
 	void Input();
-	void Update();
+	void Update(DrawingByRasterize &arg_rasterize);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	int SceneChange();
+
+	bool OrderGeneratePipeline()
+	{
+		return m_stageManager.ChangeSceneTrigger();
+	}
 
 private:
 
@@ -54,6 +62,7 @@ private:
 	std::shared_ptr<EnemyManager> m_enemyManager;
 
 	int m_sceneNum;
+	int m_stageNum;
 
 	int GetDigits(int arg_value, int arg_m, int arg_n) {
 		int mod_value;
@@ -71,4 +80,12 @@ private:
 
 	BasicDraw::BasicLineRender m_line;
 	BasicDraw::BasicModelRender m_stage;
+
+	StageManager m_stageManager;
+	
+	WeponUIManager m_uiManager;
+	GadgetUIManager m_gadgetMaanager;
+	HPUI m_HPBarManager;
+	HeartRate m_heartRateManager;
+	Menu m_menu;
 };

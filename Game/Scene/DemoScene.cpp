@@ -59,7 +59,7 @@ void DemoScene::Input()
 
 }
 
-void DemoScene::Update()
+void DemoScene::Update(DrawingByRasterize &arg_rasterize)
 {
 	/*
 	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます

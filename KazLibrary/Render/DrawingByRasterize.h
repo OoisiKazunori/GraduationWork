@@ -16,7 +16,7 @@ public:
 	DrawingByRasterize();
 
 	//描画情報の生成命令を積む
-	const DrawFuncData::DrawData* SetPipeline(DrawFuncData::DrawCallData& arg_drawData);
+	const DrawFuncData::DrawData* SetPipeline(DrawFuncData::DrawCallData& arg_drawData, bool arg_deleteInSceneFlag = false);
 	/// <summary>
 	/// スタックされた描画情報の生成(マルチスレッド対応の為に一括で生成する処理)
 	/// </summary>
@@ -25,12 +25,19 @@ public:
 	/// 前シーンの描画命令破棄
 	/// </summary>
 	void ReleasePipeline();
+	/// <summary>
+	/// シーン内で描画命令破棄
+	/// </summary>
+	void ReleasePipelineInScene();
 
 	void ObjectRender(const DrawFuncData::DrawData* arg_drawData);
 	void UIRender(const DrawFuncData::DrawData* arg_drawData);
 
 	void SortAndRender();
 	void UISortAndRender();
+
+
+	const DrawFuncData::DrawData* GenerateSceneChangePipeline(DrawFuncData::DrawCallData*arg_drawCall);
 private:
 
 	//事前生成向け-----
@@ -41,6 +48,12 @@ private:
 	//描画命令のキュー
 	std::list<const DrawFuncData::DrawData*>m_stackDataArray;
 	std::list<const DrawFuncData::DrawData*>m_uiStackDataArray;
+	//削除された描画情報のハンドル
+	std::vector<int>m_deleteHandleArray;
+	//削除されたハンドルから描画パイプライン生成ハンドル
+	std::vector<int>m_generateFromHandleArray;
+
+	std::unique_ptr<DrawFuncData::DrawData> m_sceneChange;
 
 
 	//パイプラインの情報----------------------------------------
@@ -96,4 +109,6 @@ private:
 	}
 
 	std::string ErrorMail(const std::source_location& DRAW_SOURCE_LOCATION);
+
+	void DrawCall(const std::list<const DrawFuncData::DrawData*> arg_drawCall);
 };

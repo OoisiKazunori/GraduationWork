@@ -174,6 +174,14 @@ namespace Raytracing {
 		//レンズフレア
 		m_lensFlare = std::make_shared<PostEffect::LensFlare>(GBufferMgr::Instance()->GetLensFlareBuffer(), GBufferMgr::Instance()->GetEmissiveGBuffer());
 
+		m_outlineNoiseData.m_timer = 0.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.x = 0.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.y = 720.0f / 4.0f * 1.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.z = 720.0f / 4.0f * 2.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.a = 720.0f / 4.0f * 3.0f;
+		m_outlineNoiseConstBufferData = KazBufferHelper::SetConstBufferData(sizeof(OutlineNoiseData));
+		m_outlineNoiseConstBufferData.bufferWrapper->TransData(&m_outlineNoiseData, sizeof(OutlineNoiseData));
+
 		//アウトライン合成用シェーダー
 		{
 			std::vector<KazBufferHelper::BufferData>extraBuffer =
@@ -182,6 +190,7 @@ namespace Raytracing {
 				 GBufferMgr::Instance()->GetLensFlareBuffer(),
 				 GBufferMgr::Instance()->m_outline->GetOutputAlbedoTexture(),
 				 GBufferMgr::Instance()->m_outline->GetOutputEmissiveTexture(),
+				 m_outlineNoiseConstBufferData
 			};
 			extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
 			extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
@@ -191,16 +200,18 @@ namespace Raytracing {
 			extraBuffer[2].rootParamType = GRAPHICS_PRAMTYPE_TEX3;
 			extraBuffer[3].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
 			extraBuffer[3].rootParamType = GRAPHICS_PRAMTYPE_TEX4;
+			extraBuffer[4].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+			extraBuffer[4].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 			m_outlineComposeShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "ComposeOutline.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 		}
 		{
-			std::vector<KazBufferHelper::BufferData>extraBuffer =
-			{
-				 GBufferMgr::Instance()->m_outlineBuffer,
-			};
-			extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-			extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
-			m_outlineCleanShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "BlackOut.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
+			//std::vector<KazBufferHelper::BufferData>extraBuffer =
+			//{
+			//	 GBufferMgr::Instance()->m_outlineBuffer,
+			//};
+			//extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+			//extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
+			//m_outlineCleanShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "BlackOut.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 		}
 
 	}
@@ -220,9 +231,9 @@ namespace Raytracing {
 		//if (m_numBlas < blasRefCount) {
 
 			//再構築。
-			ConstructionShaderTable(arg_blacVector, arg_dispatchX, arg_dispatchY);
+		ConstructionShaderTable(arg_blacVector, arg_dispatchX, arg_dispatchY);
 
-			m_numBlas = blasRefCount;
+		m_numBlas = blasRefCount;
 
 		//}
 		//else {
@@ -332,16 +343,17 @@ namespace Raytracing {
 		//アウトラインを計算
 		GBufferMgr::Instance()->m_outline->Apply();
 
+		//アウトラインをGBufferに書き込むと同時にノイズをかける。
 		DispatchData dispatchData;
 		dispatchData.x = static_cast<UINT>(1280 / 16) + 1;
 		dispatchData.y = static_cast<UINT>(720 / 16) + 1;
 		dispatchData.z = static_cast<UINT>(1);
 		m_outlineComposeShader.Compute(dispatchData);
 
-		dispatchData.x = static_cast<UINT>(1280 / 16) + 1;
-		dispatchData.y = static_cast<UINT>(720 / 16) + 1;
-		dispatchData.z = static_cast<UINT>(1);
-		m_outlineCleanShader.Compute(dispatchData);
+		//dispatchData.x = static_cast<UINT>(1280 / 16) + 1;
+		//dispatchData.y = static_cast<UINT>(720 / 16) + 1;
+		//dispatchData.z = static_cast<UINT>(1);
+		//m_outlineCleanShader.Compute(dispatchData);
 
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
@@ -352,11 +364,11 @@ namespace Raytracing {
 		//UAVのバリアを貼る。
 		UAVBarrier({ GBufferMgr::Instance()->GetLensFlareBuffer() , GBufferMgr::Instance()->GetRayTracingBuffer() });
 
-		////レンズフレア用のテクスチャにガウシアンブラーをかけてフレアを表現する。
-		//GBufferMgr::Instance()->ApplyLensFlareBlur();
+		//レンズフレア用のテクスチャにガウシアンブラーをかけてフレアを表現する。
+		GBufferMgr::Instance()->ApplyLensFlareBlur();
 
-		////レンズフレアをかける。
-		//m_lensFlare->Apply();
+		//レンズフレアをかける。
+		m_lensFlare->Apply();
 
 		//シーン情報にレンズフレアを合成する。
 		GBufferMgr::Instance()->ComposeLensFlareAndScene();
@@ -402,6 +414,35 @@ namespace Raytracing {
 		BufferStatesTransition(m_refDirectX12->GetBackBuffer()[backBufferIndex].Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+	}
+
+	void RayPipeline::Update()
+	{
+
+		//アウトラインにかけるノイズのタイマーの更新。
+		m_outlineNoiseData.m_timer += 1.0f;
+
+		//アウトラインにかけるノイズの縦線の更新
+		const float HORIZONAL_LINE_SPEED = 2.0f;
+		m_outlineNoiseData.m_noiseHorizontalLine.x -= HORIZONAL_LINE_SPEED;
+		if (m_outlineNoiseData.m_noiseHorizontalLine.x < 0.0f) {
+			m_outlineNoiseData.m_noiseHorizontalLine.x = 720.0f;
+		}
+		m_outlineNoiseData.m_noiseHorizontalLine.y -= HORIZONAL_LINE_SPEED;
+		if (m_outlineNoiseData.m_noiseHorizontalLine.y < 0.0f) {
+			m_outlineNoiseData.m_noiseHorizontalLine.y = 720.0f;
+		}
+		m_outlineNoiseData.m_noiseHorizontalLine.z -= HORIZONAL_LINE_SPEED;
+		if (m_outlineNoiseData.m_noiseHorizontalLine.z < 0.0f) {
+			m_outlineNoiseData.m_noiseHorizontalLine.z = 720.0f;
+		}
+		m_outlineNoiseData.m_noiseHorizontalLine.a -= HORIZONAL_LINE_SPEED;
+		if (m_outlineNoiseData.m_noiseHorizontalLine.a < 0.0f) {
+			m_outlineNoiseData.m_noiseHorizontalLine.a = 720.0f;
+		}
+
+		m_outlineNoiseConstBufferData.bufferWrapper->TransData(&m_outlineNoiseData, sizeof(OutlineNoiseData));
 
 	}
 
@@ -603,7 +644,7 @@ namespace Raytracing {
 
 	}
 
-	void RayPipeline::UAVBarrier(const std::vector<KazBufferHelper::BufferData> &arg_bufferArray)
+	void RayPipeline::UAVBarrier(const std::vector<KazBufferHelper::BufferData>& arg_bufferArray)
 	{
 		std::vector<D3D12_RESOURCE_BARRIER> barrier;
 
@@ -651,6 +692,8 @@ namespace Raytracing {
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(9, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(m_refVolumeNoiseTexture->bufferWrapper->GetViewHandle()));	//ボリュームフォグ用テクスチャ
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(10, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->GetLensFlareBuffer().bufferWrapper->GetViewHandle()));	//レンズフレア用テクスチャ
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(11, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->GetEmissiveGBuffer().bufferWrapper->GetViewHandle()));	//ブルーム用テクスチャ
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(12, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->m_outline->GetOutputAlbedoTexture().bufferWrapper->GetViewHandle()));	//アウトラインのアルベド(後でノイズを書けるため分離)
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(13, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(GBufferMgr::Instance()->m_outline->GetOutputEmissiveTexture().bufferWrapper->GetViewHandle()));	//アウトラインのエミッシブ(後でノイズをかけるため分離)
 
 		//パイプラインを設定。
 		DirectX12CmdList::Instance()->cmdList->SetPipelineState1(m_stateObject.Get());
