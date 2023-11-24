@@ -1,4 +1,5 @@
 #include "EnemyManager.h"
+#include "../KazLibrary/Input/KeyBoradInputManager.h"
 
 EnemyManager::EnemyManager(DrawingByRasterize& arg_rasterize)
 {
@@ -31,9 +32,9 @@ void EnemyManager::Init()
 
 	//検索ポイント位置
 	m_patrolDatas[0].AddCheckPoint(0, 0);
-	m_patrolDatas[0].AddCheckPoint(0, 4);
-	//m_patrolDatas[0].AddCheckPoint(2, 6);
-	//m_patrolDatas[0].AddCheckPoint(2, 2);
+	m_patrolDatas[0].AddCheckPoint(3, 0);
+	m_patrolDatas[0].AddCheckPoint(3, 3);
+	m_patrolDatas[0].AddCheckPoint(0, 3);
 	//m_patrolDatas[0].AddCheckPoint(2, 0);
 
 	//m_patrolData[0].AddCheckPoint(0, 0);
@@ -64,8 +65,27 @@ void EnemyManager::Init()
 
 void EnemyManager::Update()
 {
+	bool isInput = false;
+	if (KeyBoradInputManager::
+		Instance()->InputTrigger(DIK_E))
+	{
+		isInput = true;
+	}
+
 	for (int i = 0; i < m_enemys.size(); ++i)
 	{
+		if (isInput) {
+			std::pair<float, float> ePos = {
+				m_enemys[i].GetPos().x,
+				m_enemys[i].GetPos().z };
+			std::pair<float, float> sPos = { 0.0f,0.0f };
+			std::vector<std::pair<float, float>>
+				l_checkSoundPos =
+				m_patrolDatas[i].CheckSound(ePos, sPos);
+			m_enemys[i].SetState(Enemy::State::Warning);
+			m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
+		}
+
 		m_patrolDatas[i].Update();
 		m_enemys[i].SetRootPos(m_patrolDatas[i].GetRootPos());
 		m_enemys[i].SetCheckPointDelay(

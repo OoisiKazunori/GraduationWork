@@ -59,14 +59,41 @@ void PatrolData::Update()
 	if (KeyBoradInputManager::
 		Instance()->InputTrigger(DIK_Q))
 	{
-		//Init();
 		std::vector<std::pair<int, int>> l_base_chipRoots;
 
 		l_base_chipRoots = CalcChipRoots(m_checkPoints);
 
 		//角をケアしながら通過座標の算出
-		CalcRootPos(l_base_chipRoots);
+		m_rootPos = CalcRootPos(l_base_chipRoots);
 	}
+}
+
+std::vector<std::pair<float, float>>
+PatrolData::CheckSound(
+	std::pair<float, float> arg_enemyPos,
+	std::pair<float, float> arg_SoundPos)
+{
+	std::vector<std::pair<int, int>> l_base_chipRoots;
+	std::vector<std::pair<int, int>> l_checkPoints;
+
+	//チップサイズ
+	float l_chipSize =
+		m_patrolConfig.lock()->GetChipSize() * 2.5f;
+
+	l_checkPoints.push_back(
+		std::make_pair(
+			static_cast<int>(arg_enemyPos.first / l_chipSize),
+			static_cast<int>(arg_enemyPos.second / l_chipSize)));
+	l_checkPoints.push_back(
+		std::make_pair(5, 5));
+
+	l_base_chipRoots = CalcChipRoots(l_checkPoints);
+
+	//角をケアしながら通過座標の算出
+	std::vector<std::pair<float, float>> l_soundCheckPos;
+	l_soundCheckPos = CalcRootPos(l_base_chipRoots, arg_enemyPos);
+
+	return l_soundCheckPos;
 }
 
 std::vector<std::pair<int, int>>
@@ -301,8 +328,10 @@ void PatrolData::SortRoots(
 	}
 }
 
-void PatrolData::CalcRootPos(
-	std::vector<std::pair<int, int>> arg_roots)
+std::vector<std::pair<float, float>>
+PatrolData::CalcRootPos(
+	std::vector<std::pair<int, int>> arg_roots,
+	std::pair<float, float> arg_startPos)
 {
 	int l_next = -1;
 	int l_start_x = -1;
@@ -320,6 +349,7 @@ void PatrolData::CalcRootPos(
 
 	std::pair<float, float> l_oldStartPos;
 	std::pair<float, float> l_oldGoalPos;
+	std::vector<std::pair<float, float>> l_rootPos;
 
 	//チップサイズ
 	float l_chipSize =
@@ -358,6 +388,9 @@ void PatrolData::CalcRootPos(
 			std::make_pair(
 				l_chipSize * l_start_x,
 				l_chipSize * l_start_y);
+		if (i == 0 && arg_startPos.first > 0.0f) {
+			l_startPos = arg_startPos;
+		}
 		//ゴールの座標
 		std::pair<float, float> l_goalPos =
 			std::make_pair(
@@ -442,7 +475,7 @@ void PatrolData::CalcRootPos(
 					l_curveStartPos.second +
 					(l_goalPos.second - l_curveStartPos.second) *
 					l_currentRate_y;
-				m_rootPos.push_back(
+				l_rootPos.push_back(
 					std::make_pair(l_pos_x, l_pos_y));
 
 				//チェックポイント通過(過去)
@@ -450,7 +483,7 @@ void PatrolData::CalcRootPos(
 					IsCheckPoint(l_end_x, l_end_y)) {
 					m_checkPointDelay.push_back(
 						std::make_pair(
-							static_cast<int>(m_rootPos.size()),
+							static_cast<int>(l_rootPos.size()),
 							0));
 				}
 			}
@@ -523,14 +556,14 @@ void PatrolData::CalcRootPos(
 						l_oldStartPos.second +
 						(l_oldGoalPos.second - l_oldStartPos.second) *
 						l_currentRate;
-					m_rootPos.push_back(
+					l_rootPos.push_back(
 						std::make_pair(l_pos_x, l_pos_y));
 
 					//チェックポイント通過(過去)
 					if (j == l_moveFrame && l_isCheckPoint) {
 						m_checkPointDelay.push_back(
 							std::make_pair(
-								static_cast<int>(m_rootPos.size()),
+								static_cast<int>(l_rootPos.size()),
 								0)
 						);
 						l_isCheckPoint = false;
@@ -548,6 +581,8 @@ void PatrolData::CalcRootPos(
 		//曲がったかの情報の保存
 		l_oldIsCurve = l_isCurve;
 	}
+
+	return l_rootPos;
 }
 
 int PatrolData::CalcHeuristic(

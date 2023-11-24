@@ -36,6 +36,10 @@ public:
 		m_checkPoints.push_back(
 			std::make_pair(arg_x, arg_y));
 	}
+	std::vector<std::pair<float, float>>
+		CheckSound(
+			std::pair<float, float> arg_enemyPos,
+			std::pair<float, float> arg_SoundPos);
 
 private:
 	std::vector<std::pair<int, int>>
@@ -46,8 +50,11 @@ private:
 	void SortRoots(
 		std::vector<std::pair<int, int>>& arg_base_roots,
 		const std::vector<std::pair<int, int>>& arg_roots);
-	void CalcRootPos(
-		std::vector<std::pair<int, int>> arg_roots);
+	std::vector<std::pair<float, float>>
+		CalcRootPos(
+			std::vector<std::pair<int, int>> arg_roots,
+			std::pair<float, float> arg_startPos =
+			std::make_pair(-1.0f, -1.0f));
 
 private:
 	int CalcHeuristic(
