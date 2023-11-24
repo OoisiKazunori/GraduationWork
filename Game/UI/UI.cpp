@@ -601,7 +601,7 @@ void ResultUI::Update()
 	m_pushSpaceSp.Update();
 	m_ResultStrSp.Update();
 	m_missionClearSp.Update();
-	m_missionFailedSp.Update();
+	//m_missionFailedSp.Update();
 	
 }
 

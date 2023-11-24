@@ -28,19 +28,23 @@ void Bullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir
 
 }
 
-void Bullet::Update(std::weak_ptr<MeshCollision> arg_meshCollision) {
+void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders) {
 
 	//まだ当たり判定を行っていなかったら当たり判定を計算。
 	if (m_isCollision) {
 
-		const float RAY_LENGTH = KazMath::Vec3<float>(m_endPos - m_startPos).Length();
-		MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_startPos, KazMath::Vec3<float>(m_endPos - m_startPos).GetNormal());
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+		for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
 
-			//当たった地点を保存。
-			m_endPos = rayResult.m_position;
+			const float RAY_LENGTH = KazMath::Vec3<float>(m_endPos - m_startPos).Length();
+			MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_startPos, KazMath::Vec3<float>(m_endPos - m_startPos).GetNormal());
+			if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
-			EchoArray::Instance()->Generate(m_endPos, 60.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+				//当たった地点を保存。
+				m_endPos = rayResult.m_position;
+
+				EchoArray::Instance()->Generate(m_endPos, 60.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+
+			}
 
 		}
 
