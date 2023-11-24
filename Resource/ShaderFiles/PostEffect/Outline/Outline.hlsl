@@ -2,11 +2,11 @@
 Texture2D<float4> TargetWorld : register(t0);
 Texture2D<float4> TargetNormal : register(t1);
 Texture2D<float4> SilhouetteWorld : register(t2);
-RWTexture2D<float4> SilhouetteTex : register(u2);
 
 //o—ÍæUAV  
 RWTexture2D<float4> OutputAlbedo : register(u0);
 RWTexture2D<float4> OutputEmissive : register(u1);
+RWTexture2D<float4> SilhouetteTex : register(u2);
 
 cbuffer OutlineData : register(b0)
 {

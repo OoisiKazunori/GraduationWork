@@ -51,10 +51,10 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 			 arg_silhouetteRenderTargetBuffer,
 			 m_outputAlbedoTexture,
 			 m_outputEmissiveTexture,
+			 arg_silhouetteBuffer,
 			 m_outlineColorConstBuffer,
 			 m_echoConstBuffer,
 			 arg_eyeBuffer,
-			 arg_silhouetteBuffer
 		};
 		extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
@@ -71,17 +71,17 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 		extraBuffer[4].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
 		extraBuffer[4].rootParamType = GRAPHICS_PRAMTYPE_TEX2;
 
-		extraBuffer[5].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		extraBuffer[5].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		extraBuffer[5].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		extraBuffer[5].rootParamType = GRAPHICS_PRAMTYPE_TEX3;
 
 		extraBuffer[6].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		extraBuffer[6].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+		extraBuffer[6].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 
 		extraBuffer[7].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		extraBuffer[7].rootParamType = GRAPHICS_PRAMTYPE_DATA3;
+		extraBuffer[7].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
 
-		extraBuffer[8].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-		extraBuffer[8].rootParamType = GRAPHICS_PRAMTYPE_TEX3;
+		extraBuffer[8].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		extraBuffer[8].rootParamType = GRAPHICS_PRAMTYPE_DATA3;
 		m_outlineShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "Outline.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 	}
 
