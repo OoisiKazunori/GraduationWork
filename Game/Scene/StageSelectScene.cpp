@@ -5,6 +5,7 @@
 
 float StageSelectScene::volume = 1.0f;
 int StageSelectScene::startStageNum = 1;
+const int StageSelectScene::C_StageMaxNum = 2;
 
 StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, float f_volume, bool f_isFlip) :
 	m_backSp(arg_rasterize, "Resource/MenuTex/SelectSceneBack.png"),
@@ -128,7 +129,6 @@ void StageSelectScene::Input()
 				}
 			}
 		}
-
 		else
 		{
 			if (m_OptionsOpenSelect == -1)

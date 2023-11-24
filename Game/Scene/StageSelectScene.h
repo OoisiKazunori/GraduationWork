@@ -88,7 +88,7 @@ private:
 
 	bool isMouseReversal = false;
 
-	static int startStageNum;
+	
 
 	int inputDeray = 0;
 	const int C_InputDeray = 60;
@@ -114,6 +114,8 @@ private:
 	SelectSceneSprite m_MouseFlipCheckSp;
 
 	public :
+	static int startStageNum;
+	static const int C_StageMaxNum;
 	static float GetVolune(){return volume;};
 	static int GetStartStageNum(){return startStageNum;};
 };

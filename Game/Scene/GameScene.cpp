@@ -13,7 +13,7 @@
 #include"../KazLibrary/Buffer/GBufferMgr.h"
 #include "../KazLibrary/PostEffect/Outline.h"
 #include "../Game/Enemy/PreEnemy.h"
-
+#include "StageSelectScene.h"
 #include"../MapLoader/MapLoader.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
@@ -132,6 +132,21 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			{
 				m_heartRateManager.Update(120);
 			}
+
+			if (false)
+			{
+				//すべてのステージクリア
+				if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
+				{
+					m_resultManager.ShowResult();
+					m_resultManager.SetClear();
+				}
+				else
+				{
+					StageSelectScene::startStageNum += 1;
+					m_sceneNum = 1;
+				}
+			}
 		}
 		m_HPBarManager.Update(0);
 		//死んだときの更新
@@ -146,6 +161,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_resultManager.Update();
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 		{
+			//タイトルに戻る
 			m_sceneNum = 0;
 		}
 	}

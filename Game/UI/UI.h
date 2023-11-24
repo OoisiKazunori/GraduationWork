@@ -214,6 +214,8 @@ class ResultUI
 	UI2DElement m_pushSpaceSp;
 
 	bool m_isResultShow = false;
+
+	bool m_isClear = false;
 public:
 	ResultUI(DrawingByRasterize & arg_rasterize);
 
@@ -222,4 +224,5 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize);
 	bool GetResultShow() { return m_isResultShow; };
 	void ShowResult(){ m_isResultShow = true; };
+	void SetClear(){ m_isClear = true; };
 };
