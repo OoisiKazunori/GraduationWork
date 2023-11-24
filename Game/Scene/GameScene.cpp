@@ -144,7 +144,14 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				else
 				{
 					StageSelectScene::startStageNum += 1;
-					m_sceneNum = 1;
+					if (StageSelectScene::startStageNum % 2 == 0)
+					{
+						m_sceneNum = 1;
+					}
+					else
+					{
+						m_sceneNum = 3;
+					}
 				}
 			}
 		}

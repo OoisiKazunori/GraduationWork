@@ -2,6 +2,8 @@
 #include "../Input/Input.h"
 #include "../KazLibrary/Easing/easing.h"
 
+int HPUI::m_hp = 100;
+
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
 	m_2DSprite(arg_rasterize, f_filePath, true)
 {
@@ -507,6 +509,12 @@ void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 	{
 		//m_redHP = 0;
 	}
+}
+
+void HPUI::InitHP()
+{
+	m_hp = 100;
+	m_redHP = 0;
 }
 
 HeartRate::HeartRate(DrawingByRasterize& arg_rasterize) :

@@ -2,6 +2,7 @@
 #include "../KazLibrary/Input/KeyBoradInputManager.h"
 #include "../Menu/Menu.h"
 #include "../Camera.h"
+#include "../UI/UI.h"
 
 float StageSelectScene::volume = 1.0f;
 int StageSelectScene::startStageNum = 1;
@@ -100,6 +101,8 @@ void StageSelectScene::Input()
 				{
 					//1”Ô‚ÌƒQ[ƒ€‚És‚­
 					m_sceneNum = 1;
+					//HP‚Ì‰Šú‰»
+					HPUI::InitHP();
 				}
 				else if (m_nowSelectNum == SelectOpsions::Opsions)
 				{
