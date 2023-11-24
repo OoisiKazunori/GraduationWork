@@ -3,6 +3,7 @@
 #include "../KazLibrary/Easing/easing.h"
 
 int HPUI::m_hp = 100;
+int HPUI::m_redHP = 0;
 
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
 	m_2DSprite(arg_rasterize, f_filePath, true)

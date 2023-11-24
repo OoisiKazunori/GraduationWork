@@ -153,7 +153,7 @@ class HPUI
 	static const int c_BaseUIX = c_UITexX / 2 + c_texOffset;
 	static const int c_BaseUIY = c_UITexY / 2 + c_texOffset;
 	static int m_hp;
-	int m_redHP = 0;
+	static int m_redHP;
 	const int MaxHP = 100;
 public:
 	HPUI(DrawingByRasterize& arg_rasterize);
