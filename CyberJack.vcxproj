@@ -135,6 +135,8 @@
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Stage\StageManager.cpp" />
     <ClCompile Include="Game\Stage\StageModel.cpp" />
+    <ClCompile Include="Game\ThrowableObject\ThrowableObject.cpp" />
+    <ClCompile Include="Game\ThrowableObject\ThrowableObjectController.cpp" />
     <ClCompile Include="Game\Tool\SplineRail.cpp" />
     <ClCompile Include="Game\Tool\ModelTool.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
@@ -249,6 +251,8 @@
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Stage\StageManager.h" />
     <ClInclude Include="Game\Stage\StageModel.h" />
+    <ClInclude Include="Game\ThrowableObject\ThrowableObject.h" />
+    <ClInclude Include="Game\ThrowableObject\ThrowableObjectController.h" />
     <ClInclude Include="Game\Tool\SplineRail.h" />
     <ClInclude Include="Game\Tool\ModelTool.h" />
     <ClInclude Include="Game\UI\UI.h" />

@@ -2,11 +2,11 @@
 Texture2D<float4> TargetWorld : register(t0);
 Texture2D<float4> TargetNormal : register(t1);
 Texture2D<float4> SilhouetteWorld : register(t2);
-RWTexture2D<float4> SilhouetteTex : register(u2);
 
 //出力先UAV  
 RWTexture2D<float4> OutputAlbedo : register(u0);
 RWTexture2D<float4> OutputEmissive : register(u1);
+RWTexture2D<float4> SilhouetteTex : register(u2);
 
 cbuffer OutlineData : register(b0)
 {
@@ -167,31 +167,31 @@ void main(uint3 DTid : SV_DispatchThreadID)
         }        
     }
     
-    //中心地点から一定の距離だったら
-    const float GRID_SCOPE = 100.0f;
-    const int GRID_RANGE = 15.0f;
-    float baseWorldDistance = length(baseWorld.xyz - m_outlineCenterPos);
-    if (baseWorldDistance <= GRID_SCOPE && 0.0f < length(baseWorld.xyz))
-    {
+    ////中心地点から一定の距離だったら
+    //const float GRID_SCOPE = 100.0f;
+    //const int GRID_RANGE = 15.0f;
+    //float baseWorldDistance = length(baseWorld.xyz - m_outlineCenterPos);
+    //if (baseWorldDistance <= GRID_SCOPE && 0.0f < length(baseWorld.xyz))
+    //{
         
-        //ワールド座標の値がGRID_RANGEで割り切れる値に近かったら
-        bool isGrid = frac(baseWorld.x / GRID_RANGE) < 0.01f;
-        isGrid |= baseNormal.y < 0.9f && (frac(baseWorld.y / GRID_RANGE) < 0.01f);
-        isGrid |= frac(baseWorld.z / GRID_RANGE) < 0.01f;
+    //    //ワールド座標の値がGRID_RANGEで割り切れる値に近かったら
+    //    bool isGrid = frac(baseWorld.x / GRID_RANGE) < 0.01f;
+    //    isGrid |= baseNormal.y < 0.9f && (frac(baseWorld.y / GRID_RANGE) < 0.01f);
+    //    isGrid |= frac(baseWorld.z / GRID_RANGE) < 0.01f;
         
-        //割合を求める。
-        float distanceRate = 1.0f - baseWorldDistance / GRID_SCOPE;
-        distanceRate *= 0.3f;
+    //    //割合を求める。
+    //    float distanceRate = 1.0f - baseWorldDistance / GRID_SCOPE;
+    //    distanceRate *= 0.3f;
         
-        if (isGrid)
-        {
+    //    if (isGrid)
+    //    {
             
-            OutputAlbedo[DTid.xy] += m_outlineColor * distanceRate;
-            OutputEmissive[DTid.xy] += m_outlineColor * distanceRate;
+    //        OutputAlbedo[DTid.xy] += m_outlineColor * distanceRate;
+    //        OutputEmissive[DTid.xy] += m_outlineColor * distanceRate;
 
-        }
+    //    }
         
-    }
+    //}
     
     //エコーを描画
     if (length(baseWorld.xyz - m_center) <= m_echoRadius && 0.0f < length(baseWorld.xyz))

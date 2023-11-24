@@ -4,7 +4,6 @@
 class MeshCollision;
 class BulletMgr;
 class Camera;
-class ThrowableObjectController;
 
 class Player {
 
@@ -38,7 +37,7 @@ public:
 
 	void Init();
 
-	void Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
+	void Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
@@ -49,7 +48,7 @@ private:
 
 	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr);
 	void Rotate(std::weak_ptr<Camera> arg_camera);
-	void Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders, std::weak_ptr<MeshCollision> arg_stageMeshCollision);
+	void Collision(std::weak_ptr<MeshCollision> arg_meshCollision);
 	float GetMoveSpeed();
 
 };
