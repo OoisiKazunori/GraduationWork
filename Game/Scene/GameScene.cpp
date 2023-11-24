@@ -132,7 +132,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			{
 				m_heartRateManager.Update(120);
 			}
-
+			//nextステージへいくところを踏んだら
 			if (false)
 			{
 				//すべてのステージクリア

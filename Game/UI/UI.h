@@ -38,6 +38,8 @@ public:
 	void SetAddColor(KazMath::Color &f_addColor);
 	void SetColorEaseEnd(KazMath::Color &f_endColor);
 	BasicDraw::BasicTextureRender m_2DSprite;
+	KazMath::Vec2<float> GetNowScale() { return m_nowScale; };
+	KazMath::Vec2<float> GetNowPosition() { return m_nowPos; };
 };
 
 class WeponUIManager
@@ -46,15 +48,14 @@ public:
 	enum WeponNumber
 	{
 		e_NonWepon,
-		e_Knife,
+		e_Echo,
 		e_Hundgun,
-		e_Rifle,
 		e_WeponMax,
 	};
 private:
 	std::list<UI2DElement> m_UIs;
 	UI2DElement m_nonWepon;
-	UI2DElement m_knife;
+	UI2DElement m_echo;
 	UI2DElement m_hundgun;
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
@@ -218,6 +219,8 @@ class ResultUI
 	bool m_isResultShow = false;
 
 	bool m_isClear = false;
+
+	int m_faliedColor = 100;
 public:
 	ResultUI(DrawingByRasterize & arg_rasterize);
 

@@ -99,13 +99,13 @@ void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
 
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
-	m_knife(arg_rasterize, "Resource/UITexture/UI_Knife.png"),
+	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
 	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
-	m_haveWepons.push_back({ WeponNumber::e_Knife, 1 });
-	//m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_haveWepons.push_back({ WeponNumber::e_Echo, 1 });
+	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
 }
@@ -115,8 +115,8 @@ void WeponUIManager::Init()
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.clear();
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
-	m_haveWepons.push_back({ WeponNumber::e_Knife, 1 });
-	//m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_haveWepons.push_back({ WeponNumber::e_Echo, 1 });
+	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
 	EaseInit();
@@ -239,9 +239,9 @@ UI2DElement& WeponUIManager::GetUI(WeponNumber f_wepon)
 	{
 		return m_nonWepon;
 	}
-	else if (f_wepon == WeponNumber::e_Knife)
+	else if (f_wepon == WeponNumber::e_Echo)
 	{
-		return m_knife;
+		return m_echo;
 	}
 	else if (f_wepon == WeponNumber::e_Hundgun)
 	{
@@ -584,6 +584,12 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
 	m_back.SetPosition({ 1280.0 / 2.0f, 720.0f / 2.0f });
 	m_ResultStrSp.SetPosition({ -300.0f, 100.0f });
 	m_ResultStrSp.EasePosInit({ 300.0f, 100.0f });
+
+	m_missionFailedSp.SetPosition({1280.0f - 300.0f, 100.0f});
+	m_faliedColor = 100;
+
+	m_missionClearSp.SetPosition({ 1280.0f + 300.0f, 100.0f });
+	m_missionClearSp.EasePosInit({ 1280.0f - 300.0f, 100.0f });
 }
 
 void ResultUI::Init()
@@ -596,11 +602,24 @@ void ResultUI::Update()
 	m_ResultStrSp.Update();
 	m_missionClearSp.Update();
 	m_missionFailedSp.Update();
+	
 }
 
 void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 {
+	
 	m_pushSpaceSp.Draw(arg_rasterize);
 	m_ResultStrSp.Draw(arg_rasterize);
+
+	if (m_isResultShow && !m_isClear)
+	{
+		m_faliedColor += 1;
+		KazMath::Transform2D _trans = KazMath::Transform2D(m_missionFailedSp.GetNowPosition(), m_missionFailedSp.GetNowScale());
+		m_missionFailedSp.m_2DSprite.m_tex.Draw2D(arg_rasterize, _trans, {255, 255, 255, m_faliedColor});
+	}
+	else if (m_isClear)
+	{
+		m_missionClearSp.Draw(arg_rasterize);
+	}
 	m_back.Draw(arg_rasterize);
 }
