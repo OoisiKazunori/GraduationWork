@@ -247,4 +247,5 @@ void SceneManager::Draw()
 	}
 	//UI用の描画
 	m_rasterize.UISortAndRender();
+	m_rasterize.StaticSortAndRender();
 }
