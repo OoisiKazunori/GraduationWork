@@ -15,6 +15,7 @@
 #include "../Game/Enemy/PreEnemy.h"
 #include "StageSelectScene.h"
 #include"../MapLoader/MapLoader.h"
+#include "../UI/UI.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
@@ -159,7 +160,25 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
 		{
-			m_resultManager.ShowResult();
+			//m_resultManager.ShowResult();
+			if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
+			{
+				m_resultManager.ShowResult();
+				m_resultManager.SetClear();
+			}
+			else
+			{
+				HPUI::InitHP();
+				StageSelectScene::startStageNum += 1;
+				if (StageSelectScene::startStageNum % 2 == 0)
+				{
+					m_sceneNum = 1;
+				}
+				else
+				{
+					m_sceneNum = 3;
+				}
+			}
 		}
 	}
 	//リザルト出す
