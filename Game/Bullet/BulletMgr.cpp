@@ -77,7 +77,7 @@ void BulletMgr::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageCollid
 
 		if (!index->GetIsActive()) continue;
 
-		//index->Update(arg_meshCollision);
+		index->Update(arg_stageColliders);
 
 	}
 
