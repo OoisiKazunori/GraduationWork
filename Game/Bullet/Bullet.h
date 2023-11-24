@@ -13,7 +13,7 @@ private:
 	KazMath::Vec3<float> m_endPos;		//当たり判定の結果の終点。当たらなかったらめっちゃ遠くに。
 	bool m_isActive;					//有効化されているかのフラグ
 	bool m_isCollision;					//当たり判定を行うことができるか？のフラグ。軽量化で一回しか当たり判定を行わないために使用する。
-	BasicDraw::BasicLineRender m_line;
+	std::array<BasicDraw::BasicLineRender, 1> m_line;
 
 	//消えるまでのタイマー
 	int m_disappearTimer;

@@ -2,10 +2,13 @@
 #include "../Collision/MeshCollision.h"
 #include "../Echo/EchoArray.h"
 
-Bullet::Bullet(DrawingByRasterize& arg_rasterize) :
-	m_line(arg_rasterize) {
+Bullet::Bullet(DrawingByRasterize& arg_rasterize)
+{
 
 	Init();
+
+
+	m_line[0].Generate(arg_rasterize);
 
 }
 
@@ -60,6 +63,6 @@ void Bullet::Update(std::weak_ptr<MeshCollision> arg_meshCollision) {
 
 void Bullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec) {
 
-	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_startPos, m_endPos, KazMath::Color(255, 255, 255, 255));
+	m_line[0].m_render.Draw(arg_rasterize, arg_blasVec, m_startPos, m_endPos, KazMath::Color(255, 255, 255, 255));
 
 }
