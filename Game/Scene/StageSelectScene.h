@@ -88,10 +88,8 @@ private:
 
 	bool isMouseReversal = false;
 
-	
-
 	int inputDeray = 0;
-	const int C_InputDeray = 60;
+	const int C_InputDeray = 50;
 
 	SelectSceneSprite m_backSp;
 	SelectSceneSprite m_backBarSp;
