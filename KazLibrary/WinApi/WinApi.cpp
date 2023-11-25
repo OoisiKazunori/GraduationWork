@@ -69,6 +69,7 @@ HRESULT WinApi::CreateMyWindow(int WINDOW_SIZE_X, int WINDOW_SIZE_Y)
 	RECT wrc = { 0,0,WINDOW_SIZE_X,WINDOW_SIZE_Y };
 	//自動でサイズ補正
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
+	//AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME, false);
 
 	/*
 	ウィンドウオブジェクトの生成
@@ -92,6 +93,7 @@ HRESULT WinApi::CreateMyWindow(int WINDOW_SIZE_X, int WINDOW_SIZE_Y)
 		window.lpszClassName,
 		L"GradiationWork",
 		WS_OVERLAPPEDWINDOW,
+		//WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		wrc.right - wrc.left,

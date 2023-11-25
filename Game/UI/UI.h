@@ -73,6 +73,8 @@ private:
 
 	UI2DElement &GetUI(WeponNumber f_wepon);
 	void EaseInit();
+	//こっちがプレイヤーに渡す方
+	WeponNumber m_nowWepon;
 public:
 
 	WeponUIManager(DrawingByRasterize& arg_rasterize);
@@ -80,9 +82,8 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 
+	WeponNumber GetNowWepon() { return m_nowWepon; };
 	
-	//こっちがプレイヤーに渡す方
-	WeponNumber m_nowWepon;
 	//好きなタイミングで武器追加
 	void AddWepon(WeponNumber f_wepon);
 
