@@ -1,5 +1,6 @@
 #pragma once
 #include"../KazLibrary/Render/BasicDraw.h"
+#include"../UI/UI.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -38,7 +39,7 @@ public:
 
 	void Init();
 
-	void Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
+	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
@@ -47,9 +48,9 @@ public:
 
 private:
 
-	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr);
+	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber);
 	void Rotate(std::weak_ptr<Camera> arg_camera);
-	void Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders, std::weak_ptr<MeshCollision> arg_stageMeshCollision);
+	void Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
 	float GetMoveSpeed();
 
 };
