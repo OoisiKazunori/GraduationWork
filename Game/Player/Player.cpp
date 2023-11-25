@@ -25,21 +25,21 @@ void Player::Init()
 
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
+void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
 {
 
 	//動かす前の座標。
 	m_prevPos = m_transform.pos;
 
 	//入力処理
-	Input(arg_camera, arg_bulletMgr);
+	Input(arg_camera, arg_bulletMgr, arg_weaponNumber);
 
 	/*for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr)
 	{
 		Collision(*itr);
 	}*/
 	//当たり判定
-	Collision(f_stageColliders, arg_stageMeshCollision);
+	Collision(f_stageColliders);
 
 	//重力をかける。
 	if (!m_onGround) {
@@ -109,7 +109,7 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 	//m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
 }
 
-void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr)
+void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber)
 {
 
 	m_transform.quaternion = arg_camera.lock()->GetShotQuaternion().quaternion;
@@ -158,14 +158,11 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	m_isADS = KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
 
 	//弾をうつ入力も受け付ける。
-	if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
+	if (arg_weaponNumber != WeponUIManager::e_NonWepon && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
 
-		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront());
+		bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 
-	}
-	if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_RIGHT)) {
-
-		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), true);
+		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
 
 	}
 
@@ -205,7 +202,7 @@ void Player::Rotate(std::weak_ptr<Camera> arg_camera)
 
 }
 
-void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders, std::weak_ptr<MeshCollision> arg_stageMeshCollision)
+void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
 {
 
 
@@ -251,15 +248,6 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
 
 		}
-
-	}
-
-	MeshCollision::CheckHitResult rayResult = arg_stageMeshCollision.lock()->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
-	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH + GROUND_RAY_OFFSET) {
-
-		//押し戻し。
-		m_transform.pos += rayResult.m_normal * (RAY_LENGTH + GROUND_RAY_OFFSET - rayResult.m_distance);
-		m_onGround = true;
 
 	}
 
