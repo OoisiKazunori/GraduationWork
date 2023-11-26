@@ -63,10 +63,18 @@ private:
 	UI2DElement m_qSp;
 	UI2DElement m_eSp;
 
+	UI2DElement m_aimTop;
+	UI2DElement m_aimSideR;
+	UI2DElement m_aimSideL;
+	UI2DElement m_aimSideU;
+	UI2DElement m_aimSideB;
+
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
 	static const int c_BaseUIX = 1075;
 	static const int c_BaseUIY = 630;
+
+	const float c_aimDis = 5.0f;
 	
 	//‚±‚Á‚¿‚ÍUI—p
 	int m_nowSelectWeponNumber;

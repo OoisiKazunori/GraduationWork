@@ -103,7 +103,12 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png"),
 	m_TabSp(arg_rasterize, "Resource/UITexture/Tab.png"),
 	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),
-	m_eSp(arg_rasterize, "Resource/UITexture/E.png")
+	m_eSp(arg_rasterize, "Resource/UITexture/E.png"),
+	m_aimTop(arg_rasterize, "Resource/UITexture/gunAim.png"),
+	m_aimSideR(arg_rasterize, "Resource/UITexture/aimSideR.png"),
+	m_aimSideL(arg_rasterize, "Resource/UITexture/aimSideL.png"),
+	m_aimSideU(arg_rasterize, "Resource/UITexture/aimSideU.png"),
+	m_aimSideB(arg_rasterize, "Resource/UITexture/aimSideB.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
@@ -117,6 +122,19 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_qSp.SetScale({ 0.5f, 0.5f });
 	m_eSp.SetPosition({ 1230.0f, 580.0f });
 	m_eSp.SetScale({ 0.5f, 0.5f });
+
+	m_aimTop.SetPosition({1280.0f / 2.0f, 720.0f / 2.0f});
+	m_aimTop.SetScale({0.06f, 0.06f});
+
+	m_aimSideR.SetPosition({ 1280.0f / 2.0f + c_aimDis, 720.0f / 2.0f });
+	m_aimSideL.SetPosition({ 1280.0f / 2.0f - c_aimDis, 720.0f / 2.0f });
+	m_aimSideU.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f - c_aimDis });
+	m_aimSideB.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + c_aimDis });
+	float scl = 0.3f;
+	m_aimSideR.SetScale({ scl, scl });
+	m_aimSideL.SetScale({ scl, scl });
+	m_aimSideU.SetScale({ scl, scl });
+	m_aimSideB.SetScale({ scl, scl });
 }
 
 void WeponUIManager::Init()
@@ -231,6 +249,14 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		{
 			GetUI((*itr).first).Draw(arg_rasterize);
 		}
+	}
+	if (m_nowSelectWeponNumber == e_Echo || m_nowSelectWeponNumber == e_Hundgun)
+	{
+		m_aimTop.Draw(arg_rasterize);
+		m_aimSideR.Draw(arg_rasterize);
+		m_aimSideL.Draw(arg_rasterize);
+		m_aimSideU.Draw(arg_rasterize);
+		m_aimSideB.Draw(arg_rasterize);
 	}
 }
 
