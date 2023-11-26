@@ -8,16 +8,20 @@ class Bullet {
 
 private:
 
-	KazMath::Vec3<float> m_startPos;	//弾を射出した地点。
+	KazMath::Vec3<float> m_collisionStartPos;	//弾を射出した地点。
+	KazMath::Vec3<float> m_collisionEndPos;		//当たり判定の結果の終点。当たらなかったらめっちゃ遠くに。
 	KazMath::Vec3<float> m_dir;			//弾を射出する方向。
-	KazMath::Vec3<float> m_endPos;		//当たり判定の結果の終点。当たらなかったらめっちゃ遠くに。
+	KazMath::Vec3<float> m_bulletPos;
 	bool m_isActive;					//有効化されているかのフラグ
 	bool m_isCollision;					//当たり判定を行うことができるか？のフラグ。軽量化で一回しか当たり判定を行わないために使用する。
 	BasicDraw::BasicLineRender m_line;
 
 	//消えるまでのタイマー
 	int m_disappearTimer;
-	const int DISAPPEAR_TIMER = 10;
+	const int DISAPPEAR_TIMER = 120;
+
+	const float BULLET_SPEED = 20.0f;	//描画にのみ使用する弾の移動速度。当たり判定は射出地点からめっちゃ遠くにレイを飛ばす形式なので、これは使わない。
+	const float BULLET_LENGTH = 20.0f;	//弾の大きさ。描画でのみ使用する。
 
 public:
 
