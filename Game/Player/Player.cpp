@@ -23,6 +23,7 @@ void Player::Init()
 	m_onGround = false;
 	m_isADS = false;
 	m_gravity = 0.0f;
+	m_gunReaction = KazMath::Vec3<float>();
 
 }
 
@@ -134,6 +135,14 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	baseWeaponOffsetPos -= m_weaponTransform.GetUp() * m_weaponPosOffset.y;
 	baseWeaponOffsetPos += m_weaponTransform.GetRight() * m_weaponPosOffset.z;
 	m_weaponTransform.pos += baseWeaponOffsetPos;
+	m_weaponTransform.pos += m_gunReaction;
+
+	//銃の反動を更新。
+	if (0.01f < m_gunReaction.Length()) {
+
+		m_gunReaction -= m_gunReaction / 5.0f;
+
+	}
 
 }
 
@@ -196,6 +205,18 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 
 		arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
+
+		//銃の反動を追加。
+		if (isEchoBullet) {
+
+			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION * 3.0f;
+
+		}
+		else {
+
+			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION;
+
+		}
 
 	}
 

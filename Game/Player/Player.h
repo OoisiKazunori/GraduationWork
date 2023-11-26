@@ -18,6 +18,8 @@ private:
 	BasicDraw::BasicModelRender m_mk23Model;	//使用するモデル
 	KazMath::Transform3D m_weaponTransform;
 	KazMath::Vec3<float> m_weaponPosOffset;		//銃のモデルを配置するオフセット。ADSしている位置を基準としてADSしていない位置にずらしたりするときに使用する。
+	KazMath::Vec3<float> m_gunReaction;
+	const float GUN_REACTION = 0.25f;
 
 	bool m_onGround;
 	bool m_isADS;		//銃を構えている状態か？
