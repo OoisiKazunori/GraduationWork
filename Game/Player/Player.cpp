@@ -106,7 +106,15 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	m_weaponTransform.pos = m_transform.pos;
 	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f);
-	if (m_isADS) {
+	//ïêäÌÇéùÇ¡ÇƒÇ¢Ç»Ç©Ç¡ÇΩÇÁ
+	if (arg_weaponNumber == WeponUIManager::e_NonWepon) {
+
+		m_weaponPosOffset.x += (3.0f - m_weaponPosOffset.x) / 10.0f;
+		m_weaponPosOffset.y += (3.0f - m_weaponPosOffset.y) / 10.0f;
+		m_weaponPosOffset.z += (3.0f - m_weaponPosOffset.z) / 10.0f;
+
+	}
+	else if (m_isADS) {
 
 		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) / 2.0f;
 		m_weaponPosOffset.y += (0.3f - m_weaponPosOffset.y) / 2.0f;
