@@ -9,7 +9,8 @@
 #include "../ThrowableObject/ThrowableObjectController.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
-	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
+	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
+	m_mk23Model(arg_rasterize, "Resource/Weapon/Mk23/", "Mk23.gltf")
 {
 	m_transform = f_startPos;
 	Init();
@@ -102,11 +103,16 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	arg_throwableObjectController.lock()->InputHold(KeyBoradInputManager::Instance()->InputState(DIK_E));
 
+	m_weaponTransform.pos = m_transform.pos;
+	m_weaponTransform.pos += m_transform.GetFront() * 1.5f;
+	m_weaponTransform.pos -= m_transform.GetUp() * 0.3f;
+	m_weaponTransform.quaternion = m_transform.quaternion;
+
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	//m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+	m_mk23Model.m_model.Draw(arg_rasterize, arg_blasVec, m_weaponTransform);
 }
 
 void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber)
@@ -162,7 +168,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 
 		bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 
-		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
+		arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
 
 	}
 
@@ -206,7 +212,7 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 {
 
 
-	const float RAY_LENGTH = 5.0f;
+	const float RAY_LENGTH = 8.0f;
 
 	//ínñ Ç∆ìñÇΩÇËîªíËÇçsÇ§ÅB
 	m_onGround = false;

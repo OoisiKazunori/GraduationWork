@@ -17,7 +17,7 @@ private:
 
 	//消えるまでのタイマー
 	int m_disappearTimer;
-	const int DISAPPEAR_TIMER = 30;
+	const int DISAPPEAR_TIMER = 10;
 
 public:
 

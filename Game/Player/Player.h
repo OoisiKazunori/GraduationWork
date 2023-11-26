@@ -15,6 +15,9 @@ private:
 	KazMath::Transform3D m_transform;		//モデルの描画に使用するトランスフォーム情報
 	KazMath::Vec3<float> m_prevPos;
 
+	BasicDraw::BasicModelRender m_mk23Model;	//使用するモデル
+	KazMath::Transform3D m_weaponTransform;
+
 	bool m_onGround;
 	bool m_isADS;		//銃を構えている状態か？
 
