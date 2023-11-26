@@ -42,13 +42,15 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 	m_echoConstBuffer = KazBufferHelper::SetConstBufferData(sizeof(EchoData));
 	m_echoConstBuffer.bufferWrapper->TransData(&m_echoData, sizeof(EchoData));
 
+	m_inputOutlineWorldTexture = arg_silhouetteRenderTargetBuffer;
+
 	//アウトライン計算用のシェーダー
 	{
 		std::vector<KazBufferHelper::BufferData>extraBuffer =
 		{
 			 m_outlineTargetWorld,
 			 m_outlineTargetNormal,
-			 arg_silhouetteRenderTargetBuffer,
+			 m_inputOutlineWorldTexture,
 			 m_outputAlbedoTexture,
 			 m_outputEmissiveTexture,
 			 arg_silhouetteBuffer,
@@ -100,6 +102,9 @@ void PostEffect::Outline::Apply()
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE));
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetNormal.bufferWrapper->GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE));
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_inputOutlineWorldTexture.bufferWrapper->GetBuffer().Get(),
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE));
+
 
 
 	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineData, sizeof(OutlineData));
@@ -115,6 +120,8 @@ void PostEffect::Outline::Apply()
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetWorld.bufferWrapper->GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_outlineTargetNormal.bufferWrapper->GetBuffer().Get(),
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_inputOutlineWorldTexture.bufferWrapper->GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
 }
