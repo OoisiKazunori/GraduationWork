@@ -7,8 +7,8 @@ TitleScene::TitleScene(DrawingByRasterize& arg_rasterize) :
 	m_space(arg_rasterize, "Resource/UITexture/PushSpace.png", true)
 {
 	m_2DSpriteTransform.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
-	m_spaceTransform.pos = {1280.0f / 2.0f, 720.0f / 2.0f + 250.0f };
-	m_spaceTransform.scale = {1.2f, 1.2f};
+	m_spaceTransform.pos = { 1280.0f / 2.0f, 720.0f / 2.0f + 250.0f };
+	m_spaceTransform.scale = { 1.2f, 1.2f };
 }
 
 TitleScene::~TitleScene()
@@ -30,17 +30,24 @@ void TitleScene::Finalize()
 
 void TitleScene::Input()
 {
-	//ゲームシーンへ
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+	if (m_inputDiray < C_InputDiray)
 	{
-		m_sceneNum = 2;
+		m_inputDiray++;
+	}
+	else
+	{
+		//ゲームシーンへ
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+		{
+			m_sceneNum = 2;
+		}
 	}
 }
 
 void TitleScene::Update(DrawingByRasterize& arg_rasterize)
 {
-	CameraMgr::Instance()->Camera({0.0f,0.0f,0.0f}, {0.0f,0.0f,5.0f}, {0.0f,1.0f,0.0f});
-	
+	CameraMgr::Instance()->Camera({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,5.0f }, { 0.0f,1.0f,0.0f });
+
 	if (m_spaceColor > 255 || m_spaceColor < 150)
 	{
 		m_spaceAddColor = -m_spaceAddColor;
@@ -51,8 +58,8 @@ void TitleScene::Update(DrawingByRasterize& arg_rasterize)
 void TitleScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-	m_space.m_tex.Draw2D(arg_rasterize, m_spaceTransform, 
-	{ m_spaceColor , m_spaceColor , m_spaceColor , m_spaceColor });
+	m_space.m_tex.Draw2D(arg_rasterize, m_spaceTransform,
+		{ m_spaceColor , m_spaceColor , m_spaceColor , m_spaceColor });
 }
 
 int TitleScene::SceneChange()

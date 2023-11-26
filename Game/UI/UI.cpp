@@ -591,8 +591,8 @@ void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
 	m_back(arg_rasterize, "Resource/MenuTex/MenuBackTex.png"),
 	m_ResultStrSp(arg_rasterize, "Resource/UITexture/Result.png"),
-	m_missionClearSp(arg_rasterize, "Resource/UITexture/heartFrame.png"),
-	m_missionFailedSp(arg_rasterize, "Resource/UITexture/heartFrame.png"),
+	m_missionClearSp(arg_rasterize, "Resource/UITexture/Succses.png"),
+	m_missionFailedSp(arg_rasterize, "Resource/UITexture/Defeat.png"),
 	m_pushSpaceSp(arg_rasterize, "Resource/UITexture/PushSpace.png")
 {
 	m_pushSpaceSp.SetPosition({1280.0 / 2.0f, 800.0f});
@@ -623,7 +623,13 @@ void ResultUI::Update()
 
 void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	
+	if (m_spaceColor > C_spaceColorUpper || m_spaceColor < C_spaceColorUnder)
+	{
+		m_spaceAddColor = -m_spaceAddColor;
+	}
+
+	m_spaceColor += m_spaceAddColor;
+	m_pushSpaceSp.m_color = {255, 255, 255, m_spaceColor };
 	m_pushSpaceSp.Draw(arg_rasterize);
 	m_ResultStrSp.Draw(arg_rasterize);
 

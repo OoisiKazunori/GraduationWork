@@ -228,6 +228,11 @@ class ResultUI
 	bool m_isClear = false;
 
 	int m_faliedColor = 100;
+
+	int m_spaceAddColor = 1;
+	int m_spaceColor = 180;
+	const int C_spaceColorUnder = 180;
+	const int C_spaceColorUpper = 255;
 public:
 	ResultUI(DrawingByRasterize & arg_rasterize);
 

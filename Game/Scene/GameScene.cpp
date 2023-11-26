@@ -116,9 +116,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_uiManager.Update();
 			m_gadgetMaanager.Update();
 
-		m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
-		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-		m_bulletMgr->Update(m_stageManager.GetColliders());
+			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
+			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+			m_bulletMgr->Update(m_stageManager.GetColliders());
 
 			m_stageManager.Update(arg_rasterize);
 
@@ -163,8 +163,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
 		{
-			//m_resultManager.ShowResult();
-			if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
+			m_resultManager.ShowResult();
+
+			//次のシーンに進むテスト
+			/*if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 			{
 				m_resultManager.ShowResult();
 				m_resultManager.SetClear();
@@ -181,7 +183,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				{
 					m_sceneNum = 3;
 				}
-			}
+			}*/
 		}
 	}
 	//リザルト出す
@@ -218,11 +220,13 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
-	m_uiManager.Draw(arg_rasterize);
-	//m_gadgetMaanager.Draw(arg_rasterize);
-	m_HPBarManager.Draw(arg_rasterize);
-	//m_heartRateManager.Draw(arg_rasterize);
-
+	if (!m_resultManager.GetResultShow())
+	{
+		m_uiManager.Draw(arg_rasterize);
+		//m_gadgetMaanager.Draw(arg_rasterize);
+		m_HPBarManager.Draw(arg_rasterize);
+		//m_heartRateManager.Draw(arg_rasterize);
+	}
 
 	m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
@@ -233,7 +237,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		m_resultManager.Draw(arg_rasterize);
 	}
-
 
 	for (auto& index : m_preEnemy) {
 
