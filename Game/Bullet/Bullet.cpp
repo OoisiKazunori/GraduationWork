@@ -2,10 +2,13 @@
 #include "../Collision/MeshCollision.h"
 #include "../Echo/EchoArray.h"
 
-Bullet::Bullet(DrawingByRasterize& arg_rasterize) :
-	m_line(arg_rasterize) {
+Bullet::Bullet(DrawingByRasterize& arg_rasterize)
+{
 
 	Init();
+
+
+	m_line.Generate(arg_rasterize);
 
 }
 

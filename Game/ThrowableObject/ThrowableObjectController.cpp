@@ -29,7 +29,7 @@ void ThrowableObjectController::Update(KazMath::Vec3<float> arg_playerPos, KazMa
 
 		//重力
 		float gravity = 0.0f;
-		const float ADD_GRAVITY = 0.1f;
+		const float ADD_GRAVITY = 0.5f;
 
 		//移動速度
 		float vel = 5.0f;
@@ -66,11 +66,12 @@ void ThrowableObjectController::Draw(DrawingByRasterize& arg_rasterize, Raytraci
 	//座標が2個以上入っているか？
 	if (2 <= static_cast<int>(m_dottedLineVector.size())) {
 
-		for (int index = 0; index < static_cast<int>(m_dottedLineVector.size()) - 1; ++index) {
+		//for (int index = 0; index < static_cast<int>(m_dottedLineVector.size()) - 1; ++index) {
 
-			m_line[index].m_render.Draw(arg_rasterize, arg_blasVec, m_dottedLineVector[index], m_dottedLineVector[index + 1], KazMath::Color(255, 255, 255, 255));
+		//	m_line[index].m_render.Draw(arg_rasterize, arg_blasVec, m_dottedLineVector[index], m_dottedLineVector[index + 1], KazMath::Color(255, 255, 255, 255));
 
-		}
+		//}
+		m_line[0].m_render.Draw(arg_rasterize, arg_blasVec, m_dottedLineVector[0], m_dottedLineVector[1], KazMath::Color(255, 255, 255, 255));
 
 	}
 

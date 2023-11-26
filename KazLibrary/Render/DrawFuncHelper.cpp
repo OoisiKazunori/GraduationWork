@@ -309,6 +309,7 @@ void DrawFuncHelper::LineRender::Generate(DrawingByRasterize& arg_rasterize, con
 	//’¸“_î•ñ‚ð—pˆÓ‚·‚é
 	m_drawCommand.m_modelVertDataHandle = VertexBufferMgr::Instance()->GenerateBuffer(data, false);
 	m_drawCommand.drawInstanceCommandData = VertexBufferMgr::Instance()->GetVertexBuffer(m_drawCommand.m_modelVertDataHandle).instanceData;
+	m_drawCommand.drawInstanceCommandData.topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 	m_drawCommand.pipelineData.desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
