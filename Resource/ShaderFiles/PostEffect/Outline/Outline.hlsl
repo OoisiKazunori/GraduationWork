@@ -40,7 +40,7 @@ bool CheckOutline(uint2 arg_uv, float4 arg_baseNormal, float4 arg_baseWorld, ino
 {
     
     //どれくらいワールド座標が離れていたらそこにアウトラインを書き込むか。
-    float outlineDistanceDeadline = 30.0f;
+    float outlineDistanceDeadline = 10.0f;
     //法線の内積の差分がどれくらいだったらアウトラインを書き込むか。
     float outlineNormalDeadline = 0.8f;
     
