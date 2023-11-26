@@ -103,10 +103,29 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	arg_throwableObjectController.lock()->InputHold(KeyBoradInputManager::Instance()->InputState(DIK_E));
 
+
 	m_weaponTransform.pos = m_transform.pos;
-	m_weaponTransform.pos += m_transform.GetFront() * 1.5f;
-	m_weaponTransform.pos -= m_transform.GetUp() * 0.3f;
-	m_weaponTransform.quaternion = m_transform.quaternion;
+	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f);
+	if (m_isADS) {
+
+		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) / 2.0f;
+		m_weaponPosOffset.y += (0.3f - m_weaponPosOffset.y) / 2.0f;
+		m_weaponPosOffset.z += (0.0f - m_weaponPosOffset.z) / 2.0f;
+
+	}
+	else {
+
+		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) / 2.0f;
+		m_weaponPosOffset.y += (0.5f - m_weaponPosOffset.y) / 2.0f;
+		m_weaponPosOffset.z += (0.5f - m_weaponPosOffset.z) / 2.0f;
+
+	}
+
+	KazMath::Vec3<float> baseWeaponOffsetPos = KazMath::Vec3<float>();
+	baseWeaponOffsetPos += m_weaponTransform.GetFront() * m_weaponPosOffset.x;
+	baseWeaponOffsetPos -= m_weaponTransform.GetUp() * m_weaponPosOffset.y;
+	baseWeaponOffsetPos += m_weaponTransform.GetRight() * m_weaponPosOffset.z;
+	m_weaponTransform.pos += baseWeaponOffsetPos;
 
 }
 
@@ -164,7 +183,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	m_isADS = KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
 
 	//’e‚ð‚¤‚Â“ü—Í‚àŽó‚¯•t‚¯‚éB
-	if (arg_weaponNumber != WeponUIManager::e_NonWepon && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
+	if (m_isADS && arg_weaponNumber != WeponUIManager::e_NonWepon && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
 
 		bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 

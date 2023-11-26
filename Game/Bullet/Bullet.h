@@ -21,7 +21,7 @@ private:
 	const int DISAPPEAR_TIMER = 120;
 
 	const float BULLET_SPEED = 20.0f;	//描画にのみ使用する弾の移動速度。当たり判定は射出地点からめっちゃ遠くにレイを飛ばす形式なので、これは使わない。
-	const float BULLET_LENGTH = 20.0f;	//弾の大きさ。描画でのみ使用する。
+	const float BULLET_LENGTH = 10.0f;	//弾の大きさ。描画でのみ使用する。
 
 public:
 

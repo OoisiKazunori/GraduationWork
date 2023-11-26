@@ -25,7 +25,7 @@ void Bullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir
 	m_collisionStartPos = arg_pos;
 	m_dir = arg_dir;
 	m_collisionEndPos = m_collisionStartPos + m_dir * 100000.0f;
-	m_bulletPos = arg_pos;
+	m_bulletPos = arg_pos + m_dir * 5.0f;
 
 }
 
