@@ -27,7 +27,8 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 	m_VolumeIconSp(arg_rasterize, "Resource/MenuTex/volumeIcon.png"),
 
 	m_FlipCheckBoxSp(arg_rasterize, "Resource/MenuTex/checkBox.png"),
-	m_MouseFlipCheckSp(arg_rasterize, "Resource/MenuTex/check.png")
+	m_MouseFlipCheckSp(arg_rasterize, "Resource/MenuTex/check.png"),
+	m_escSp(arg_rasterize, "Resource/UITexture/ESC.png")
 {
 	m_sceneNum = -1;
 	m_nowSelectNum = 0;
@@ -71,6 +72,8 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 	m_FlipCheckBoxSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
 	m_MouseFlipCheckSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
 
+	m_escSp.m_color = {30, 30, 30 ,255};
+	m_escSp.SetScale({0.5f, 0.5f});
 }
 
 StageSelectScene::~StageSelectScene()
@@ -95,7 +98,8 @@ void StageSelectScene::Input()
 	{
 		if (!m_isOptionsOpen)
 		{
-			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+			m_escSp.SetPosition({ -300.0f, 600.0f });
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) || KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 			{
 				if (m_nowSelectNum == ToGame)
 				{
@@ -134,9 +138,10 @@ void StageSelectScene::Input()
 		}
 		else
 		{
+			m_escSp.SetPosition({ 60.0f, 585.0f });
 			if (m_OptionsOpenSelect == -1)
 			{
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) || KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 				{
 					m_OptionsOpenSelect = m_opsionsSelectNum;
 				}
@@ -333,6 +338,8 @@ void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 	m_MouseReveralSp.Draw(arg_rasterize);
 	m_MouseSensSp.Draw(arg_rasterize);
 	m_VolumeSp.Draw(arg_rasterize);
+
+	m_escSp.Draw(arg_rasterize);
 
 	if (m_OptionsOpenSelect == OptionsOpstions::MouseSens)
 	{

@@ -100,7 +100,10 @@ void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
 	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
-	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png")
+	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png"),
+	m_TabSp(arg_rasterize, "Resource/UITexture/Tab.png"),
+	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),
+	m_eSp(arg_rasterize, "Resource/UITexture/E.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
@@ -108,6 +111,12 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
+	m_TabSp.SetPosition({ 1243.0f, 675.0f });
+	m_TabSp.SetScale({ 0.5f, 0.5f });
+	m_qSp.SetPosition({ 920.0f, 675.0f });
+	m_qSp.SetScale({ 0.5f, 0.5f });
+	m_eSp.SetPosition({ 1230.0f, 580.0f });
+	m_eSp.SetScale({ 0.5f, 0.5f });
 }
 
 void WeponUIManager::Init()
@@ -198,9 +207,12 @@ void WeponUIManager::EaseInit()
 
 void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 {
+	
 	m_showUITime--;
 	if (m_showUITime < 0)
 	{
+		m_TabSp.m_color = {255, 255, 255, 150};
+		m_TabSp.Draw(arg_rasterize);
 		auto itr = m_haveWepons.begin();
 		//所持している武器までイテレーターを回す
 		for (int i = 0; i < m_nowSelectWeponNumber; i++)
@@ -211,6 +223,10 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 	}
 	else
 	{
+		m_TabSp.m_color = { 255, 255, 255, 255 };
+		m_TabSp.Draw(arg_rasterize);
+		m_qSp.Draw(arg_rasterize);
+		m_eSp.Draw(arg_rasterize);
 		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 		{
 			GetUI((*itr).first).Draw(arg_rasterize);
