@@ -138,13 +138,19 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				m_heartRateManager.Update(120);
 			}
 			//nextステージへいくところを踏んだら
-			if (false)
-			{
+			//プレイヤーとゴールの当たり判定
+			KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
+			KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
+			KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
+			KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
+			if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
+			
 				//すべてのステージクリア
 				if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 				{
 					m_resultManager.ShowResult();
 					m_resultManager.SetClear();
+					StageSelectScene::startStageNum = 0;
 				}
 				else
 				{
@@ -158,6 +164,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 						m_sceneNum = 3;
 					}
 				}
+				m_isClear = true;
 			}
 		}
 		m_HPBarManager.Update(0);
@@ -165,26 +172,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
 		{
 			m_resultManager.ShowResult();
-
-			//次のシーンに進むテスト
-			/*if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
-			{
-				m_resultManager.ShowResult();
-				m_resultManager.SetClear();
-			}
-			else
-			{
-				HPUI::InitHP();
-				StageSelectScene::startStageNum += 1;
-				if (StageSelectScene::startStageNum % 2 == 0)
-				{
-					m_sceneNum = 1;
-				}
-				else
-				{
-					m_sceneNum = 3;
-				}
-			}*/
 		}
 	}
 	//リザルト出す
@@ -207,17 +194,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	}
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
-
-	//プレイヤーとゴールの当たり判定
-	KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
-	KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
-	KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
-	KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
-	if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
-
-		int a = 0;
-
-	}
 
 }
 

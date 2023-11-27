@@ -159,12 +159,16 @@ void WeponUIManager::Update()
 	if (KeyBoradInputManager::Instance()->InputState(DIK_TAB))
 	{
 		m_showUITime = c_ShowTime;
+	}
+	if (m_showUITime > 0)
+	{
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber < m_haveWepons.size() - 1)
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber + 1;
 				isDirty = true;
+				m_showUITime = c_ShowTime;
 			}
 			easeTimer = 0.0f;
 
@@ -177,6 +181,7 @@ void WeponUIManager::Update()
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber - 1;
 				isDirty = true;
+				m_showUITime = c_ShowTime;
 			}
 			easeTimer = 0.0f;
 
