@@ -230,7 +230,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	for (auto& index : m_preEnemy) {
 
-		index->Draw(arg_rasterize, arg_blasVec);
+		//index->Draw(arg_rasterize, arg_blasVec);
 	}
 }
 

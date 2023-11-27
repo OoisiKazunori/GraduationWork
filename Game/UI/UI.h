@@ -28,7 +28,7 @@ public:
 	void Init(DrawingByRasterize& arg_rasterize, std::string f_filePath);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
-
+	KazMath::Vec2<float> GetNowPos(){ return m_nowPos; };
 	void SetEasePosAddTime(float f_easePosTimer){ m_easePosTimerAdd = f_easePosTimer;}
 	float GetPosEaseTimer(){ return m_easePosTimer; }
 	void SetPosition(KazMath::Vec2<float> f_nowPos);
@@ -58,7 +58,9 @@ private:
 	std::list<UI2DElement> m_UIs;
 	UI2DElement m_nonWepon;
 	UI2DElement m_echo;
+	UI2DElement m_echoBulletInf;
 	UI2DElement m_hundgun;
+	UI2DElement m_hundgunBulletInf;
 
 	UI2DElement m_TabSp;
 	UI2DElement m_qSp;
@@ -76,6 +78,9 @@ private:
 	static const int c_BaseUIY = 630;
 
 	const float c_aimDis = 6.0f;
+
+	static const int c_BulletNumOffsetX = 85;
+	static const int c_BulletNumOffsetY = 30;
 	
 	//‚±‚Á‚¿‚ÍUI—p
 	int m_nowSelectWeponNumber;
