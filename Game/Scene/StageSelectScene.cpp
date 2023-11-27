@@ -5,7 +5,7 @@
 #include "../UI/UI.h"
 
 float StageSelectScene::volume = 1.0f;
-int StageSelectScene::startStageNum = 1;
+int StageSelectScene::startStageNum = 0;
 const int StageSelectScene::C_StageMaxNum = 2;
 
 StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, float f_volume, bool f_isFlip) :
@@ -207,7 +207,7 @@ void StageSelectScene::Input()
 					}
 					Camera::CameraSensitivity = mouseSensitivity;
 					break;
-				case OptionsOpstions::Volume:
+				/*case OptionsOpstions::Volume:
 					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_D))
 					{
 						if (volume < 2.0f)
@@ -249,7 +249,7 @@ void StageSelectScene::Input()
 						}
 					}
 
-					break;
+					break;*/
 				default:
 					break;
 				}
@@ -262,7 +262,8 @@ void StageSelectScene::Input()
 					m_opsionsSelectNum--;
 					if (m_opsionsSelectNum < 0)
 					{
-						m_opsionsSelectNum = OptionsOpstions::Volume;
+						//m_opsionsSelectNum = OptionsOpstions::Volume;
+						m_opsionsSelectNum = OptionsOpstions::MouseSens;
 					}
 				}
 				else
@@ -275,14 +276,15 @@ void StageSelectScene::Input()
 				if (m_OptionsOpenSelect == -1)
 				{
 					m_opsionsSelectNum++;
-					if (m_opsionsSelectNum > OptionsOpstions::Volume)
+					//if (m_opsionsSelectNum > OptionsOpstions::Volume)
+					if (m_opsionsSelectNum > OptionsOpstions::MouseSens)
 					{
 						m_opsionsSelectNum = OptionsOpstions::MouseReversal;
 					}
 				}
 				else
 				{
-
+					
 				}
 			}
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
@@ -337,7 +339,7 @@ void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 
 	m_MouseReveralSp.Draw(arg_rasterize);
 	m_MouseSensSp.Draw(arg_rasterize);
-	m_VolumeSp.Draw(arg_rasterize);
+	//m_VolumeSp.Draw(arg_rasterize);
 
 	m_escSp.Draw(arg_rasterize);
 
@@ -348,12 +350,12 @@ void StageSelectScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 		m_SensitivityBarSp.Draw(arg_rasterize);
 
 	}
-	if (m_OptionsOpenSelect == OptionsOpstions::Volume)
+	/*if (m_OptionsOpenSelect == OptionsOpstions::Volume)
 	{
 		m_VolumeIconSp.SetPosition({ SensitivityBarX + (float)volumeIconOffset, (float)UIBaseY + ((float)UIDistance * 2.0f) });
 		m_VolumeIconSp.Draw(arg_rasterize);
 		m_VolumeBarSp.Draw(arg_rasterize);
-	}
+	}*/
 	if (m_OptionsOpenSelect == OptionsOpstions::MouseReversal)
 	{
 		if (isMouseReversal)

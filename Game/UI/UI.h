@@ -74,7 +74,7 @@ private:
 	static const int c_BaseUIX = 1075;
 	static const int c_BaseUIY = 630;
 
-	const float c_aimDis = 5.0f;
+	const float c_aimDis = 6.0f;
 	
 	//‚±‚Á‚¿‚ÍUI—p
 	int m_nowSelectWeponNumber;

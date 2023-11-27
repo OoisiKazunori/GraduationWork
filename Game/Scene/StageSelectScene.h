@@ -51,7 +51,7 @@ public:
 		//マウス感度調整
 		MouseSens,
 		//ボリューム調整
-		Volume,
+		//Volume,
 	};
 	
 	

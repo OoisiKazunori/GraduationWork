@@ -627,11 +627,16 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
 	m_ResultStrSp.SetPosition({ -300.0f, 100.0f });
 	m_ResultStrSp.EasePosInit({ 300.0f, 100.0f });
 
-	m_missionFailedSp.SetPosition({1280.0f - 300.0f, 100.0f});
+	m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + 60.0f});
+	m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_missionFailedSp.SetScale({2.0f, 2.0f});
+	m_missionFailedSp.SetEasePosAddTime(0.04f);
 	m_faliedColor = 100;
 
-	m_missionClearSp.SetPosition({ 1280.0f + 300.0f, 100.0f });
-	m_missionClearSp.EasePosInit({ 1280.0f - 300.0f, 100.0f });
+	m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 0.0f });
+	m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_missionClearSp.SetScale({ 2.0f, 2.0f });
+	m_missionClearSp.SetEasePosAddTime(0.5f);
 }
 
 void ResultUI::Init()
@@ -642,7 +647,7 @@ void ResultUI::Update()
 {
 	m_pushSpaceSp.Update();
 	m_ResultStrSp.Update();
-	m_missionClearSp.Update();
+	
 	//m_missionFailedSp.Update();
 	
 }
@@ -662,11 +667,13 @@ void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 	if (m_isResultShow && !m_isClear)
 	{
 		m_faliedColor += 1;
-		KazMath::Transform2D _trans = KazMath::Transform2D(m_missionFailedSp.GetNowPosition(), m_missionFailedSp.GetNowScale());
-		m_missionFailedSp.m_2DSprite.m_tex.Draw2D(arg_rasterize, _trans, {255, 255, 255, m_faliedColor});
+		m_missionFailedSp.m_color = {255, 255, 255, m_faliedColor };
+		m_missionFailedSp.Update();
+		m_missionFailedSp.Draw(arg_rasterize);
 	}
 	else if (m_isClear)
 	{
+		m_missionClearSp.Update();
 		m_missionClearSp.Draw(arg_rasterize);
 	}
 	m_back.Draw(arg_rasterize);

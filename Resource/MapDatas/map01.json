@@ -3,6 +3,28 @@
     "Objects": [
         {
             "type": "MESH",
+            "name": "Goal",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    -2.0,
+                    2.0,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.99,
+                    0.99,
+                    3.99
+                ]
+            }
+        },
+        {
+            "type": "MESH",
             "name": "wallC.001",
             "echo": 0.0,
             "transform": {

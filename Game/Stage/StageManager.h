@@ -36,6 +36,7 @@ private:
 
 	//ステージ切り替え前に必ず呼び出してください
 	void ChangeScene(DrawingByRasterize& arg_rasterize);
+	std::unique_ptr<StageModel> m_goal;
 public:
 	StageManager();
 
@@ -46,7 +47,9 @@ public:
 	bool ChangeSceneTrigger();
 	void AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum);
 
+	
 	std::list<std::shared_ptr<MeshCollision>> GetColliders(){ return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;
+	KazMath::Transform3D GetGoalTransform() { return m_goal->m_transform; };
 };
 
