@@ -109,14 +109,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	OutputDebugStringA("ゲームのメインループを開始します\n");
 	while (CheckMessageFlag)
 	{
-#ifdef DEBUG
-		if (!KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
+#ifdef _DEBUG
+		if (KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
 		{
 
 			GetWindowRect(winApi.hwnd, &wrc);
 
 			//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
-			const LONG OFFSET = 200;
+			const LONG OFFSET = 300;
 			wrc.left += OFFSET;
 			wrc.right -= OFFSET;
 			wrc.bottom -= OFFSET;
