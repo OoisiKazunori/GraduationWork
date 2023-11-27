@@ -1,6 +1,7 @@
 #pragma once
 #include "../KazLibrary/Math/KazMath.h"
 #include "../KazLibrary/Render/BasicDraw.h"
+#include "../KazLibrary/Sound/SoundManager.h"
 
 class MeshCollision;
 
@@ -15,6 +16,8 @@ private:
 	float m_vel;
 	bool m_isActive;
 	bool m_isPredictedObject;
+
+	SoundData m_objectSE;
 
 	//‰¼’u‚«•Ï”
 	int m_exitTimer;

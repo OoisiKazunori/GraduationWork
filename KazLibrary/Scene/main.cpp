@@ -107,10 +107,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	RECT wrc = { 0,0,1280,720 };
 	OutputDebugStringA("ゲームのメインループを開始します\n");
+
+	bool isWindowClip = false;
+
 	while (CheckMessageFlag)
 	{
 #ifdef _DEBUG
-		if (KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0)) {
+			isWindowClip = !isWindowClip;
+		}
+		if (isWindowClip)
 		{
 
 			GetWindowRect(winApi.hwnd, &wrc);
