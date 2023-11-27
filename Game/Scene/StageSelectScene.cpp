@@ -74,6 +74,12 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 
 	m_escSp.m_color = {30, 30, 30 ,255};
 	m_escSp.SetScale({0.5f, 0.5f});
+
+	m_selectSE = SoundManager::Instance()->SoundLoadWave("Resource/sound/UI_Click.wav");
+	m_selectSE.volume = 0.15f;
+
+	m_upDownSE = SoundManager::Instance()->SoundLoadWave("Resource/sound/ChangeWeapon.wav");
+	m_upDownSE.volume = 0.08f;
 }
 
 StageSelectScene::~StageSelectScene()
@@ -101,6 +107,7 @@ void StageSelectScene::Input()
 			m_escSp.SetPosition({ -300.0f, 600.0f });
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) || KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 			{
+				SoundManager::Instance()->SoundPlayerWave(m_selectSE, 0);
 				if (m_nowSelectNum == ToGame)
 				{
 					//1”Ô‚ÌƒQ[ƒ€‚És‚­
@@ -121,6 +128,7 @@ void StageSelectScene::Input()
 			}
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
 			{
+				SoundManager::Instance()->SoundPlayerWave(m_upDownSE, 0);
 				m_nowSelectNum++;
 				if (m_nowSelectNum > ExitGame)
 				{
@@ -129,6 +137,7 @@ void StageSelectScene::Input()
 			}
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
 			{
+				SoundManager::Instance()->SoundPlayerWave(m_upDownSE, 0);
 				m_nowSelectNum--;
 				if (m_nowSelectNum < 0)
 				{
@@ -143,6 +152,7 @@ void StageSelectScene::Input()
 			{
 				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) || KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 				{
+					SoundManager::Instance()->SoundPlayerWave(m_selectSE, 0);
 					m_OptionsOpenSelect = m_opsionsSelectNum;
 				}
 			}
@@ -154,6 +164,7 @@ void StageSelectScene::Input()
 					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) ||
 						KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 					{
+						SoundManager::Instance()->SoundPlayerWave(m_selectSE, 0);
 						if (isMouseReversal)isMouseReversal = false;
 						else isMouseReversal = true;
 					}
@@ -259,6 +270,7 @@ void StageSelectScene::Input()
 			{
 				if (m_OptionsOpenSelect == -1)
 				{
+					SoundManager::Instance()->SoundPlayerWave(m_upDownSE, 0);
 					m_opsionsSelectNum--;
 					if (m_opsionsSelectNum < 0)
 					{
@@ -275,6 +287,7 @@ void StageSelectScene::Input()
 			{
 				if (m_OptionsOpenSelect == -1)
 				{
+					SoundManager::Instance()->SoundPlayerWave(m_upDownSE, 0);
 					m_opsionsSelectNum++;
 					//if (m_opsionsSelectNum > OptionsOpstions::Volume)
 					if (m_opsionsSelectNum > OptionsOpstions::MouseSens)
@@ -291,6 +304,7 @@ void StageSelectScene::Input()
 			{
 				if (m_OptionsOpenSelect == -1)
 				{
+					SoundManager::Instance()->SoundPlayerWave(m_selectSE, 0);
 					m_isOptionsOpen = false;
 					CloseOptionsInit();
 				}
