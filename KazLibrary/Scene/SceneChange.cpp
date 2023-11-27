@@ -10,7 +10,7 @@ using namespace ChangeScene;
 SceneChange::SceneChange(DrawingByRasterize& arg_rasterize) :allHidenFlag(false), startFlag(false)
 {
 	m_render = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaDepthAlwaysShader());
-	texBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/Title/TaitleLogo.png");
+	texBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/Title/c.png");
 	DrawFunc::DrawTextureIn2D(m_render, m_transform, texBuffer, KazMath::Color(255, 255, 255, 255));
 	m_renderCallData = arg_rasterize.GenerateSceneChangePipeline(&m_render);
 

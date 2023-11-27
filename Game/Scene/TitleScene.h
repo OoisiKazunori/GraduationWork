@@ -35,6 +35,8 @@ private:
 
 	std::shared_ptr<Player> m_player;
 
+	SoundData m_selectSE;
+
 	int m_sceneNum;
 	int m_inputDiray = 0;
 	const int C_InputDiray = 45;

@@ -164,10 +164,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
 		{
-			//m_resultManager.ShowResult();
+			m_resultManager.ShowResult();
 
 			//次のシーンに進むテスト
-			if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
+			/*if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 			{
 				m_resultManager.ShowResult();
 				m_resultManager.SetClear();
@@ -184,7 +184,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				{
 					m_sceneNum = 3;
 				}
-			}
+			}*/
 		}
 	}
 	//リザルト出す
