@@ -34,7 +34,7 @@ void StageModel::Update()
 
 void StageModel::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	if (m_drawTimer <= 0)
+	if (m_drawTimer <= 0 && m_echoFlag)
 	{
 		return;
 	}
