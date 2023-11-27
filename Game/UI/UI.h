@@ -57,6 +57,7 @@ public:
 private:
 	std::list<UI2DElement> m_UIs;
 	UI2DElement m_nonWepon;
+	UI2DElement m_StoneInf;
 	UI2DElement m_echo;
 	UI2DElement m_echoBulletInf;
 	UI2DElement m_hundgun;

@@ -102,7 +102,7 @@ void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
 	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
-	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png"),
+	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_Stone.png"),
 	m_TabSp(arg_rasterize, "Resource/UITexture/Tab.png"),
 	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),
 	m_eSp(arg_rasterize, "Resource/UITexture/E.png"),
@@ -112,7 +112,8 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_aimSideU(arg_rasterize, "Resource/UITexture/aimSideU.png"),
 	m_aimSideB(arg_rasterize, "Resource/UITexture/aimSideB.png"),
 	m_echoBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
-	m_hundgunBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png")
+	m_hundgunBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
+	m_StoneInf(arg_rasterize, "Resource/UITexture/Infinity.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
@@ -255,7 +256,13 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		{
 			itr++;
 		}
-		if ((*itr).first == e_Echo)
+		if ((*itr).first == e_NonWepon)
+		{
+			m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
+			m_StoneInf.Draw(arg_rasterize);
+		}
+		else if ((*itr).first == e_Echo)
 		{
 			m_echoBulletInf.SetPosition({ m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
 				m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
@@ -277,7 +284,13 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		m_eSp.Draw(arg_rasterize);
 		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 		{
-			if ((*itr).first == e_Echo)
+			if ((*itr).first == e_NonWepon)
+			{
+				m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
+				m_StoneInf.Draw(arg_rasterize);
+			}
+			else if ((*itr).first == e_Echo)
 			{
 				m_echoBulletInf.SetPosition({m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
 					m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
