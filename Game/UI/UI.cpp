@@ -100,7 +100,15 @@ void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
 	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
-	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png")
+	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png"),
+	m_TabSp(arg_rasterize, "Resource/UITexture/Tab.png"),
+	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),
+	m_eSp(arg_rasterize, "Resource/UITexture/E.png"),
+	m_aimTop(arg_rasterize, "Resource/UITexture/gunAim.png"),
+	m_aimSideR(arg_rasterize, "Resource/UITexture/aimSideR.png"),
+	m_aimSideL(arg_rasterize, "Resource/UITexture/aimSideL.png"),
+	m_aimSideU(arg_rasterize, "Resource/UITexture/aimSideU.png"),
+	m_aimSideB(arg_rasterize, "Resource/UITexture/aimSideB.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
@@ -108,6 +116,25 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
+	m_TabSp.SetPosition({ 1243.0f, 675.0f });
+	m_TabSp.SetScale({ 0.5f, 0.5f });
+	m_qSp.SetPosition({ 920.0f, 675.0f });
+	m_qSp.SetScale({ 0.5f, 0.5f });
+	m_eSp.SetPosition({ 1230.0f, 580.0f });
+	m_eSp.SetScale({ 0.5f, 0.5f });
+
+	m_aimTop.SetPosition({1280.0f / 2.0f, 720.0f / 2.0f});
+	m_aimTop.SetScale({0.06f, 0.06f});
+
+	m_aimSideR.SetPosition({ 1280.0f / 2.0f + c_aimDis, 720.0f / 2.0f });
+	m_aimSideL.SetPosition({ 1280.0f / 2.0f - c_aimDis, 720.0f / 2.0f });
+	m_aimSideU.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f - c_aimDis });
+	m_aimSideB.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + c_aimDis });
+	float scl = 0.3f;
+	m_aimSideR.SetScale({ scl, scl });
+	m_aimSideL.SetScale({ scl, scl });
+	m_aimSideU.SetScale({ scl, scl });
+	m_aimSideB.SetScale({ scl, scl });
 }
 
 void WeponUIManager::Init()
@@ -198,9 +225,12 @@ void WeponUIManager::EaseInit()
 
 void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 {
+	
 	m_showUITime--;
 	if (m_showUITime < 0)
 	{
+		m_TabSp.m_color = {255, 255, 255, 150};
+		m_TabSp.Draw(arg_rasterize);
 		auto itr = m_haveWepons.begin();
 		//所持している武器までイテレーターを回す
 		for (int i = 0; i < m_nowSelectWeponNumber; i++)
@@ -211,10 +241,22 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 	}
 	else
 	{
+		m_TabSp.m_color = { 255, 255, 255, 255 };
+		m_TabSp.Draw(arg_rasterize);
+		m_qSp.Draw(arg_rasterize);
+		m_eSp.Draw(arg_rasterize);
 		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 		{
 			GetUI((*itr).first).Draw(arg_rasterize);
 		}
+	}
+	if (m_nowSelectWeponNumber == e_Echo || m_nowSelectWeponNumber == e_Hundgun)
+	{
+		m_aimTop.Draw(arg_rasterize);
+		m_aimSideR.Draw(arg_rasterize);
+		m_aimSideL.Draw(arg_rasterize);
+		m_aimSideU.Draw(arg_rasterize);
+		m_aimSideB.Draw(arg_rasterize);
 	}
 }
 
@@ -575,8 +617,8 @@ void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
 	m_back(arg_rasterize, "Resource/MenuTex/MenuBackTex.png"),
 	m_ResultStrSp(arg_rasterize, "Resource/UITexture/Result.png"),
-	m_missionClearSp(arg_rasterize, "Resource/UITexture/heartFrame.png"),
-	m_missionFailedSp(arg_rasterize, "Resource/UITexture/heartFrame.png"),
+	m_missionClearSp(arg_rasterize, "Resource/UITexture/Succses.png"),
+	m_missionFailedSp(arg_rasterize, "Resource/UITexture/Defeat.png"),
 	m_pushSpaceSp(arg_rasterize, "Resource/UITexture/PushSpace.png")
 {
 	m_pushSpaceSp.SetPosition({1280.0 / 2.0f, 800.0f});
@@ -585,11 +627,16 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
 	m_ResultStrSp.SetPosition({ -300.0f, 100.0f });
 	m_ResultStrSp.EasePosInit({ 300.0f, 100.0f });
 
-	m_missionFailedSp.SetPosition({1280.0f - 300.0f, 100.0f});
+	m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + 60.0f});
+	m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_missionFailedSp.SetScale({2.0f, 2.0f});
+	m_missionFailedSp.SetEasePosAddTime(0.04f);
 	m_faliedColor = 100;
 
-	m_missionClearSp.SetPosition({ 1280.0f + 300.0f, 100.0f });
-	m_missionClearSp.EasePosInit({ 1280.0f - 300.0f, 100.0f });
+	m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 0.0f });
+	m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_missionClearSp.SetScale({ 2.0f, 2.0f });
+	m_missionClearSp.SetEasePosAddTime(0.5f);
 }
 
 void ResultUI::Init()
@@ -600,25 +647,33 @@ void ResultUI::Update()
 {
 	m_pushSpaceSp.Update();
 	m_ResultStrSp.Update();
-	m_missionClearSp.Update();
+	
 	//m_missionFailedSp.Update();
 	
 }
 
 void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	
+	if (m_spaceColor > C_spaceColorUpper || m_spaceColor < C_spaceColorUnder)
+	{
+		m_spaceAddColor = -m_spaceAddColor;
+	}
+
+	m_spaceColor += m_spaceAddColor;
+	m_pushSpaceSp.m_color = {255, 255, 255, m_spaceColor };
 	m_pushSpaceSp.Draw(arg_rasterize);
 	m_ResultStrSp.Draw(arg_rasterize);
 
 	if (m_isResultShow && !m_isClear)
 	{
 		m_faliedColor += 1;
-		KazMath::Transform2D _trans = KazMath::Transform2D(m_missionFailedSp.GetNowPosition(), m_missionFailedSp.GetNowScale());
-		m_missionFailedSp.m_2DSprite.m_tex.Draw2D(arg_rasterize, _trans, {255, 255, 255, m_faliedColor});
+		m_missionFailedSp.m_color = {255, 255, 255, m_faliedColor };
+		m_missionFailedSp.Update();
+		m_missionFailedSp.Draw(arg_rasterize);
 	}
 	else if (m_isClear)
 	{
+		m_missionClearSp.Update();
 		m_missionClearSp.Draw(arg_rasterize);
 	}
 	m_back.Draw(arg_rasterize);

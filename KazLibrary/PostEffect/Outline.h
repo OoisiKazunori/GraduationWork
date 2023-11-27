@@ -19,6 +19,7 @@ namespace PostEffect {
 		KazBufferHelper::BufferData m_outlineTargetNormal;		//アウトラインをかける対象のテクスチャ
 		KazBufferHelper::BufferData m_outputAlbedoTexture;		//アウトラインの色テクスチャ
 		KazBufferHelper::BufferData m_outputEmissiveTexture;	//アウトラインのエミッシブのテクスチャ
+		KazBufferHelper::BufferData m_inputOutlineWorldTexture;	//視点からオブジェクトまでの距離
 
 		KazBufferHelper::BufferData m_outlineColorConstBuffer;	//アウトラインの色
 		struct OutlineData {

@@ -28,6 +28,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 
 	//ステージの切り替え処理
 	m_stage->Update();
+	m_goal->Update();
 	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Update();
@@ -86,6 +87,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	m_stage->Draw(arg_rasterize, arg_blasVec);
+	m_goal->Draw(arg_rasterize, arg_blasVec);
 	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
@@ -157,7 +159,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	m_tree.clear();
 	m_stone.clear();
 	m_stage.reset();
-
+	m_goal.reset();
 	m_block01.clear();
 
 	m_plane.clear();
@@ -192,6 +194,11 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		else if (l_mapItr->m_objetName.starts_with("stage") == true)
 		{
 			m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("Goal") == true)
+		{
+			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		else if (l_mapItr->m_objetName.starts_with("Block01") == true)

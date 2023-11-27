@@ -5,12 +5,15 @@
 
 std::list<std::list<MapObject>> MapManager::m_maps;
 std::list<std::list<EnemyData>> MapManager::m_enemys;
-
+std::list<DirectX::XMINT2> MapManager::m_mapSize;
+std::list<std::list<std::list<int>>> MapManager::m_mapChips;
 
 void MapManager::Init()
 {
 	m_maps.clear();
 	m_enemys.clear();
+	m_mapSize.clear();
+	m_mapChips.clear();
 
 	std::list<std::string> l_fileNames;
 
@@ -85,15 +88,19 @@ void MapManager::Init()
 
 
 		ifstream file((*l_enemyFileNameItr));
+		std::list<std::list<int>> l_mapChips;
+		DirectX::XMINT2 maxSize = { 0, 0 };
 		if (file.is_open())
 		{
 			string line;
 			DirectX::XMINT2 pos = { 0, -0 };
+			
 			while (getline(file, line))
 			{
 				istringstream line_stream(line);
 
 				string key;
+				l_mapChips.push_back(std::list<int>());
 				while (getline(line_stream, key, ','))
 				{
 					int num = atoi(key.c_str());
@@ -119,12 +126,20 @@ void MapManager::Init()
 						(*enemyWalkItr) = pos;
 					}
 					pos.x++;
+					(*--l_mapChips.end()).push_back(num);
 				}
 				pos.y++;
+				if (maxSize.x < pos.x)
+				{
+					maxSize.x = pos.x;
+				}
 				pos.x = 0;
 			}
+			maxSize.y = pos.y;
 		}
 		m_enemys.push_back(l_enemys);
+		m_mapSize.push_back(maxSize);
+		m_mapChips.push_back(l_mapChips);
 	}
 }
 

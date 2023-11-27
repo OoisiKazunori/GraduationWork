@@ -15,13 +15,14 @@ class UI2DElement
 	KazMath::Vec2<float> m_nowScale;
 	float m_easeScaleTimer;
 
-	KazMath::Color m_color;
+	
 	KazMath::Color m_easeStartColor;
 	KazMath::Color m_easeEndColor;
 	KazMath::Color m_easeAddColor = {0, 0, 0, 1};
 
 	bool m_isColorEase = false;
 public:
+	KazMath::Color m_color;
 	UI2DElement(DrawingByRasterize& arg_rasterize, const char *f_filePath);
 	void Init(DrawingByRasterize& arg_rasterize, std::string f_filePath);
 	void Update();
@@ -57,10 +58,23 @@ private:
 	UI2DElement m_nonWepon;
 	UI2DElement m_echo;
 	UI2DElement m_hundgun;
+
+	UI2DElement m_TabSp;
+	UI2DElement m_qSp;
+	UI2DElement m_eSp;
+
+	UI2DElement m_aimTop;
+	UI2DElement m_aimSideR;
+	UI2DElement m_aimSideL;
+	UI2DElement m_aimSideU;
+	UI2DElement m_aimSideB;
+
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
-	static const int c_BaseUIX = 1095;
+	static const int c_BaseUIX = 1075;
 	static const int c_BaseUIY = 630;
+
+	const float c_aimDis = 6.0f;
 	
 	//‚±‚Á‚¿‚ÍUI—p
 	int m_nowSelectWeponNumber;
@@ -108,7 +122,7 @@ private:
 	UI2DElement m_sonar;
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
-	static const int c_BaseUIX = 185;
+	static const int c_BaseUIX = 205;
 	static const int c_BaseUIY = 630;
 
 	//‚±‚Á‚¿‚ÍUI—p
@@ -222,6 +236,11 @@ class ResultUI
 	bool m_isClear = false;
 
 	int m_faliedColor = 100;
+
+	int m_spaceAddColor = 1;
+	int m_spaceColor = 180;
+	const int C_spaceColorUnder = 180;
+	const int C_spaceColorUpper = 255;
 public:
 	ResultUI(DrawingByRasterize & arg_rasterize);
 

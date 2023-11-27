@@ -36,7 +36,8 @@ private:
 	std::shared_ptr<Player> m_player;
 
 	int m_sceneNum;
-
+	int m_inputDiray = 0;
+	const int C_InputDiray = 45;
 	int m_spaceColor = 255;
 	int m_spaceAddColor = 2;
 };
