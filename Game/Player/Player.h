@@ -33,6 +33,11 @@ private:
 	const float MOVE_SPEED_SQUAT = 0.3f;
 	const float MOVE_SPEED_CREEPING = 0.15f;
 
+	//心音のタイマー
+	int m_heatbeatTimer;
+	const int HEATBEAT_TIMER = 90;
+	SoundData m_heatbeatSE;
+
 	SoundData m_playerShotSE;
 	SoundData m_sonarSE;
 	SoundData m_adsSE;

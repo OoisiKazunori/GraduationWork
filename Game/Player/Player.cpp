@@ -24,6 +24,9 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_adsSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ADS.wav");
 	m_adsSE.volume = 0.05f;
 
+	m_heatbeatSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Heartbeat.wav");
+	m_heatbeatSE.volume = 0.2f;
+
 	m_transform = f_startPos;
 	Init();
 }
@@ -35,6 +38,7 @@ void Player::Init()
 	m_onGround = false;
 	m_isADS = false;
 	m_gravity = 0.0f;
+	m_heatbeatTimer = 0;
 	m_gunReaction = KazMath::Vec3<float>();
 
 }
@@ -151,6 +155,16 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	if (0.01f < m_gunReaction.Length()) {
 
 		m_gunReaction -= m_gunReaction / 5.0f;
+
+	}
+
+	//心音のタイマー
+	++m_heatbeatTimer;
+	if (HEATBEAT_TIMER <= m_heatbeatTimer) {
+
+		SoundManager::Instance()->SoundPlayerWave(m_heatbeatSE, 0);
+		EchoArray::Instance()->Generate(m_transform.pos, 20.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+		m_heatbeatTimer = 0;
 
 	}
 
