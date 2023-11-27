@@ -21,6 +21,10 @@ private:
 		BasicDraw::BasicModelRender> m_enemyBox;
 	std::shared_ptr<MeshCollision> m_meshCol;
 
+	BasicDraw::BasicLineRender m_line;
+
+	bool m_isCombat;
+
 private:
 	std::vector<std::pair<float, float>> m_rootPos;
 	std::vector<std::pair<int, int>> m_checkPointDelay;

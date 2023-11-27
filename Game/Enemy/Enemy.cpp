@@ -54,6 +54,10 @@ void Enemy::SetData(
 		m_enemyBox.get()->m_model.
 		m_modelInfo->modelData[0].vertexData,
 		m_trans);
+
+
+	m_line.Generate(arg_rasterize);
+
 }
 
 void Enemy::SetCheckPointDelay(
@@ -195,12 +199,14 @@ void Enemy::Update(
 	}
 
 	//視線範囲内か
+	m_isCombat = false;
 	if (CheckDistXZ(
 		l_pPos, EnemyConfig::eyeCheckDist) &&
 		CheckEye(arg_playerPos, arg_stageColliders))
 	{
-		m_state = State::Combat;
-		m_rate = MAX_RATE;
+		m_isCombat = true;
+		//m_state = State::Combat;
+		//m_rate = MAX;
 	}
 
 	//回転
@@ -222,16 +228,24 @@ void Enemy::Update(
 	if (m_rootPos.size() > 0)
 	{
 		//重力をかける。
-		/*if (!m_onGround) {
+		if (!m_onGround) {
 			m_gravity -= GRAVITY;
 		}
-		m_trans.pos.y += m_gravity;*/
+		else {
+			m_gravity = 0;
+		}
+		//m_trans.pos.y += m_gravity;
 
 		m_oldPos = m_trans.pos;
 	}
 
 	//判定(メッシュ)
 	Collision(arg_stageColliders);
+
+
+	//一旦Y固定
+	m_trans.pos.y = -43.0f;
+
 }
 
 void Enemy::Draw(
@@ -248,6 +262,14 @@ void Enemy::Draw(
 			m_trans,
 			l_player);
 	}
+
+	if (m_isCombat) {
+		m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 0, 0, 255));
+	}
+	else {
+		m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 255, 255, 255));
+	}
+
 }
 
 DirectX::XMVECTOR Enemy::CalMoveQuaternion(
@@ -283,6 +305,8 @@ void Enemy::Collision(
 
 	//地面と当たり判定を行う。
 	m_onGround = false;
+
+	KazMath::Vec3<float> aaa = -m_trans.GetUp();
 
 	const float GROUND_RAY_OFFSET = 5.0f;
 	for (auto itr = arg_stageColliders.begin();
@@ -408,7 +432,14 @@ bool Enemy::CheckEye(
 	float l_angleOfView = m_trans.GetFront().Dot(
 		(arg_playerPos - m_trans.pos).GetNormal());
 
+	if (l_angleOfView < 0.5f) {
+
+		return false;
+
+	}
+
 	//メッシュ判定
+	bool isHit = false;
 	for (auto itr = arg_stageColliders.begin();
 		itr != arg_stageColliders.end(); ++itr)
 	{
@@ -420,22 +451,21 @@ bool Enemy::CheckEye(
 		MeshCollision::CheckHitResult rayResult =
 			(*itr)->CheckHitRay(
 				m_trans.pos,
-				KazMath::Vec3<float>(
-					arg_playerPos -
-					m_trans.pos).GetNormal());
+				KazMath::Vec3<float>(arg_playerPos - m_trans.pos).GetNormal());
 
 		//当たらなかった場合
 		if (rayResult.m_isHit &&
 			0.0f < rayResult.m_distance &&
 			rayResult.m_distance <= RAY_LENGTH)
 		{
-			return false;
+			isHit = true;
 		}
 		else
 		{
-			return true;
 		}
+	
 	}
 
-	return false;
+	return !isHit;
+
 }
