@@ -47,6 +47,8 @@ public:
 	bool ChangeSceneTrigger();
 	void AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum);
 
+	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision);
+
 	
 	std::list<std::shared_ptr<MeshCollision>> GetColliders(){ return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;

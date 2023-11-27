@@ -194,12 +194,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
             float4 silhouetteTexture = SilhouetteTex[DTid.xy];
             OutputAlbedo[DTid.xy] = silhouetteTexture;
             OutputEmissive[DTid.xy] = silhouetteTexture;
-        }
-        else
-        {
-            OutputAlbedo[DTid.xy] += float4(0, 0, 0, 0);
-            OutputEmissive[DTid.xy] += float4(0, 0, 0, 0);
-        }
+        }      
     }
     
     ////’†S’n“_‚©‚çˆê’è‚Ì‹——£‚¾‚Á‚½‚ç
