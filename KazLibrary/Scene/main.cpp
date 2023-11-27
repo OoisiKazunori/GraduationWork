@@ -109,6 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	OutputDebugStringA("ゲームのメインループを開始します\n");
 	while (CheckMessageFlag)
 	{
+#ifdef DEBUG
 		if (!KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
 		{
 
@@ -132,6 +133,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ClipCursor(nullptr);
 			ShowCursor(true);
 		}
+#endif // _DEBUG
 
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();

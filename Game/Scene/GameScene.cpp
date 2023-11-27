@@ -79,7 +79,7 @@ void GameScene::Init()
 	m_bulletMgr->Init();
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
-	m_goalPoint.Init(KazMath::Vec3<float>(0.0f, 0.0f, 400.0f));
+	m_goalPoint.Init(KazMath::Vec3<float>(96.0f, -46.0f, -106.0f));
 }
 
 void GameScene::PreInit()
