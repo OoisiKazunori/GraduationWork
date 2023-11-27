@@ -197,6 +197,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		}
 	}
 	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
+
+	int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
+	int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
 	m_menu.Update();
 
 	m_throwableObjectController->Update(m_player->GetTransform().pos, m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
