@@ -79,7 +79,7 @@ void GameScene::Init()
 	m_bulletMgr->Init();
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
-	m_goalPoint.Init(KazMath::Vec3<float>(96.0f, -46.0f, -106.0f));
+	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
 }
 
 void GameScene::PreInit()
@@ -209,6 +209,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	{
 		index->CheckInEcho(m_stageMeshCollision);
 	}
+	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
 
 }
