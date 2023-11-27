@@ -1,7 +1,7 @@
 #include "CheckPoint.h"
 
 CheckPoint::CheckPoint(DrawingByRasterize& arg_rasterize) :
-	m_render(arg_rasterize, "")
+	m_render(arg_rasterize, "Resource/Test/texas.png")
 {
 }
 
