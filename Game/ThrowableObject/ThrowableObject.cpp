@@ -3,7 +3,8 @@
 #include "../Echo/EchoArray.h"
 
 ThrowableObject::ThrowableObject(DrawingByRasterize& arg_rasterize) :
-	m_model(arg_rasterize, "Resource/Bullet/", "EchoBullet.gltf")
+	m_predictedModel(arg_rasterize, "Resource/Bullet/", "EchoBullet.gltf"),
+	m_model(arg_rasterize, "Resource/Weapon/Rock/", "Rock.gltf")
 {
 
 
@@ -43,7 +44,7 @@ void ThrowableObject::Generate(KazMath::Transform3D arg_playerTransform, KazMath
 	}
 	else {
 
-		m_transform.scale = KazMath::Vec3<float>(1.0f, 1.0f, 1.0f);
+		m_transform.scale = KazMath::Vec3<float>(2.0f, 2.0f, 2.0f);
 
 	}
 
@@ -94,6 +95,11 @@ void ThrowableObject::Update(std::list<std::shared_ptr<MeshCollision>> f_stageCo
 void ThrowableObject::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
-	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+	if (m_isPredictedObject) {
+		m_predictedModel.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+	}
+	else {
+		m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+	}
 
 }
