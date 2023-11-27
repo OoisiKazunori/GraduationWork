@@ -201,10 +201,14 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		else if (l_mapItr->m_objetName.starts_with("Block01") == true)
+		else if (l_mapItr->m_objetName.starts_with("Block") == true)
 		{
-			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/StageBlock01/", "StageBlock01.gltf",
+			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_block01.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_block01.end())->m_transform);
+			m_collisions.push_back(collision);
 		}
 
 		else if (l_mapItr->m_objetName.starts_with("plane") == true)
