@@ -497,6 +497,15 @@ HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
 	m_HPFrame2(arg_rasterize, "Resource/UITexture/HPBer1.png")
 {
 	m_hp = 100;
+	m_hitDamage[0] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit01.wav");
+	m_hitDamage[0].volume = 0.1f;
+	m_hitDamage[1] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit02.wav");
+	m_hitDamage[1].volume = 0.1f;
+	m_hitDamage[2] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit03.wav");
+	m_hitDamage[2].volume = 0.1f;
+	m_hitDamage[3] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit04.wav");
+	m_hitDamage[3].volume = 0.1f;
+
 }
 
 void HPUI::Init()
@@ -578,6 +587,8 @@ void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 {
 	m_hp -= f_mainDamage;
+	int num = rand() % 4;
+	SoundManager::Instance()->SoundPlayerWave(m_hitDamage[num], 0);
 	//m_hp -= m_redHP;
 	if (m_hp < 0)
 	{

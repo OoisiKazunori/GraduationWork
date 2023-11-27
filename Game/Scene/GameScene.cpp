@@ -108,6 +108,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	//デバック用のカメラワーク(操作はBlenderと同じ)
 	//m_debuCamera.Update();
 
+	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
+	{
+		m_HPBarManager.HitDamage(10, 10);
+	}*/
+
 	//メニューが開かれていない時に更新を通す
 	if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 	{
