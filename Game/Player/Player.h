@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../UI/UI.h"
+#include"../KazLibrary/Sound/SoundManager.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -31,6 +32,10 @@ private:
 	const float MOVE_SPEED_STAND = 0.5f;
 	const float MOVE_SPEED_SQUAT = 0.3f;
 	const float MOVE_SPEED_CREEPING = 0.15f;
+
+	SoundData m_playerShotSE;
+	SoundData m_sonarSE;
+	SoundData m_adsSE;
 
 	//姿勢のステータス
 	enum class PlayerAttitude {

@@ -7,12 +7,23 @@
 #include "../KazLibrary/PostEffect/Outline.h"
 #include "../Echo/EchoArray.h"
 #include "../ThrowableObject/ThrowableObjectController.h"
-#include"Imgui/MyImgui.h"
+#include "Imgui/MyImgui.h"
+#include "../Game/Menu/Menu.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_mk23Model(arg_rasterize, "Resource/Weapon/Mk23/", "Mk23.gltf")
 {
+
+	m_playerShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
+	m_playerShotSE.volume = 0.05f;
+
+	m_sonarSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Sonar.wav");
+	m_sonarSE.volume = 0.05f;
+
+	m_adsSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ADS.wav");
+	m_adsSE.volume = 0.05f;
+
 	m_transform = f_startPos;
 	Init();
 }
@@ -100,6 +111,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
 
 		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+		SoundManager::Instance()->SoundPlayerWave(m_sonarSE, 0);
 
 	}
 
@@ -205,7 +217,11 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	}
 
 	//右クリックされている間はADS状態にする。
+	bool isOldADS = m_isADS;
 	m_isADS = KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
+	if (!isOldADS && m_isADS) {
+		SoundManager::Instance()->SoundPlayerWave(m_adsSE, 0);
+	}
 
 	//弾をうつ入力も受け付ける。
 	if (m_isADS && arg_weaponNumber != WeponUIManager::e_NonWepon && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
@@ -218,11 +234,13 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		if (isEchoBullet) {
 
 			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION * 3.0f;
+			SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
 
 		}
 		else {
 
 			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION;
+			SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
 
 		}
 
@@ -288,6 +306,14 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 
 		//当たり判定を計算。
 		rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetFront());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+
+		}
+		//後ろ方向
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetFront());
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 			//押し戻し。

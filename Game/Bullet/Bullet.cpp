@@ -7,7 +7,6 @@ Bullet::Bullet(DrawingByRasterize& arg_rasterize)
 
 	Init();
 
-
 	m_line.Generate(arg_rasterize);
 
 }

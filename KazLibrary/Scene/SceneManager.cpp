@@ -114,9 +114,9 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	m_debugLineScale = 0;
 
 	//BGMの再生
-	m_Title = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Title.wav");
+	m_Title = SoundManager::Instance()->SoundLoadWave("Resource/Sound/NormalBGM1.wav");
+	m_Title.volume = 0.5f;
 	SoundManager::Instance()->SoundPlayerWave(m_Title, 100);
-	m_Title.source->SetVolume(0.1f);
 
 
 	//通常エコー用構造体を設定。

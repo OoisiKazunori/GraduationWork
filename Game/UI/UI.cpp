@@ -36,7 +36,7 @@ void UI2DElement::Update()
 	if (m_easeEndColor.color.a - m_color.color.a < 0)
 	{
 		m_color.color.a -= m_easeAddColor.color.a;
-}
+	}
 	else
 	{
 		m_color.color.a += m_easeAddColor.color.a;
@@ -123,8 +123,8 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_eSp.SetPosition({ 1230.0f, 580.0f });
 	m_eSp.SetScale({ 0.5f, 0.5f });
 
-	m_aimTop.SetPosition({1280.0f / 2.0f, 720.0f / 2.0f});
-	m_aimTop.SetScale({0.06f, 0.06f});
+	m_aimTop.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_aimTop.SetScale({ 0.06f, 0.06f });
 
 	m_aimSideR.SetPosition({ 1280.0f / 2.0f + c_aimDis, 720.0f / 2.0f });
 	m_aimSideL.SetPosition({ 1280.0f / 2.0f - c_aimDis, 720.0f / 2.0f });
@@ -135,6 +135,10 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_aimSideL.SetScale({ scl, scl });
 	m_aimSideU.SetScale({ scl, scl });
 	m_aimSideB.SetScale({ scl, scl });
+
+	m_changeWeaponSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ChangeWeapon.wav");
+	m_changeWeaponSE.volume = 0.05f;
+
 }
 
 void WeponUIManager::Init()
@@ -163,6 +167,9 @@ void WeponUIManager::Update()
 				isDirty = true;
 			}
 			easeTimer = 0.0f;
+
+			SoundManager::Instance()->SoundPlayerWave(m_changeWeaponSE, 0);
+
 		}
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_Q) && easeTimer > 0.6f)
 		{
@@ -172,6 +179,9 @@ void WeponUIManager::Update()
 				isDirty = true;
 			}
 			easeTimer = 0.0f;
+
+			SoundManager::Instance()->SoundPlayerWave(m_changeWeaponSE, 0);
+
 		}
 	}
 	//てすと
@@ -225,11 +235,11 @@ void WeponUIManager::EaseInit()
 
 void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 {
-	
+
 	m_showUITime--;
 	if (m_showUITime < 0)
 	{
-		m_TabSp.m_color = {255, 255, 255, 150};
+		m_TabSp.m_color = { 255, 255, 255, 150 };
 		m_TabSp.Draw(arg_rasterize);
 		auto itr = m_haveWepons.begin();
 		//所持している武器までイテレーターを回す
@@ -610,26 +620,26 @@ void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 
 	m_HeartRateFrameUI.SetPosition({ c_BaseUIX , c_BaseUIY });
 	m_HeartRateFrameUI.Draw(arg_rasterize);
-	
-	
+
+
 }
 
-ResultUI::ResultUI(DrawingByRasterize& arg_rasterize):
+ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
 	m_back(arg_rasterize, "Resource/MenuTex/MenuBackTex.png"),
 	m_ResultStrSp(arg_rasterize, "Resource/UITexture/Result.png"),
 	m_missionClearSp(arg_rasterize, "Resource/UITexture/Succses.png"),
 	m_missionFailedSp(arg_rasterize, "Resource/UITexture/Defeat.png"),
 	m_pushSpaceSp(arg_rasterize, "Resource/UITexture/PushSpace.png")
 {
-	m_pushSpaceSp.SetPosition({1280.0 / 2.0f, 800.0f});
+	m_pushSpaceSp.SetPosition({ 1280.0 / 2.0f, 800.0f });
 	m_pushSpaceSp.EasePosInit({ 1280.0 / 2.0f, 720.0f / 2.0f + 250.0f });
 	m_back.SetPosition({ 1280.0 / 2.0f, 720.0f / 2.0f });
 	m_ResultStrSp.SetPosition({ -300.0f, 100.0f });
 	m_ResultStrSp.EasePosInit({ 300.0f, 100.0f });
 
-	m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + 60.0f});
+	m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + 60.0f });
 	m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
-	m_missionFailedSp.SetScale({2.0f, 2.0f});
+	m_missionFailedSp.SetScale({ 2.0f, 2.0f });
 	m_missionFailedSp.SetEasePosAddTime(0.04f);
 	m_faliedColor = 100;
 
@@ -647,9 +657,9 @@ void ResultUI::Update()
 {
 	m_pushSpaceSp.Update();
 	m_ResultStrSp.Update();
-	
+
 	//m_missionFailedSp.Update();
-	
+
 }
 
 void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
@@ -660,14 +670,14 @@ void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 	}
 
 	m_spaceColor += m_spaceAddColor;
-	m_pushSpaceSp.m_color = {255, 255, 255, m_spaceColor };
+	m_pushSpaceSp.m_color = { 255, 255, 255, m_spaceColor };
 	m_pushSpaceSp.Draw(arg_rasterize);
 	m_ResultStrSp.Draw(arg_rasterize);
 
 	if (m_isResultShow && !m_isClear)
 	{
 		m_faliedColor += 1;
-		m_missionFailedSp.m_color = {255, 255, 255, m_faliedColor };
+		m_missionFailedSp.m_color = { 255, 255, 255, m_faliedColor };
 		m_missionFailedSp.Update();
 		m_missionFailedSp.Draw(arg_rasterize);
 	}
