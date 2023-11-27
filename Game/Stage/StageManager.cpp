@@ -308,7 +308,10 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	if (!m_stage)
 	{
 		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
-			DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 10.0f, 75.0f));
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 4.4f, 75.0f));
+		auto collision = std::make_shared<MeshCollision>();
+		collision->Setting(m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stage->m_transform);
+		m_collisions.push_back(collision);
 	}
 }
 
