@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../UI/UI.h"
+#include"../KazLibrary/Sound/SoundManager.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -32,6 +33,10 @@ private:
 	const float MOVE_SPEED_SQUAT = 0.3f;
 	const float MOVE_SPEED_CREEPING = 0.15f;
 
+	SoundData m_playerShotSE;
+	SoundData m_sonarSE;
+	SoundData m_adsSE;
+
 	//姿勢のステータス
 	enum class PlayerAttitude {
 		STAND,
@@ -54,7 +59,7 @@ public:
 
 private:
 
-	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber);
+	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController);
 	void Rotate(std::weak_ptr<Camera> arg_camera);
 	void Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
 	float GetMoveSpeed();
