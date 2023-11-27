@@ -72,7 +72,7 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 	m_FlipCheckBoxSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
 	m_MouseFlipCheckSp.SetPosition({ SensitivityBarX, (float)UIBaseY + ((float)UIDistance * 0.0f) });
 
-	m_escSp.m_color = {30, 30, 30 ,255};
+	m_escSp.m_color = { 255, 255, 255 ,255};
 	m_escSp.SetScale({0.5f, 0.5f});
 
 	m_selectSE = SoundManager::Instance()->SoundLoadWave("Resource/sound/UI_Click.wav");
