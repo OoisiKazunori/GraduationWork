@@ -70,7 +70,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stageManager.m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stageManager.m_stage->m_transform);
 
-	m_enemyManager = std::make_shared<EnemyManager>(arg_rasterize);
+	m_enemyManager = std::make_shared<EnemyManager>();
+	auto l_enemyData = MapManager::GetEnemyData(m_stageNum);
+	m_enemyManager->SetMapData(l_enemyData, arg_rasterize);
+
 	m_player = std::make_shared<Player>(arg_rasterize, MapManager::GetPlayerStartPosition(0));
 	m_camera = std::make_shared<Camera>();
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
@@ -130,7 +133,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_HPBarManager.Update(0);
 
 		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
-		m_enemyManager->Update();
+		m_enemyManager->Update(m_stageMeshCollision);
 		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 		m_bulletMgr->Update(m_stageMeshCollision);
 
@@ -151,7 +154,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_heartRateManager.Update(120);
 		}
 	}
-	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
 	m_menu.Update();
 }
 

@@ -10,6 +10,7 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
 {
 	m_transform = f_startPos;
+	m_transform.pos.y = 20.0f;
 	Init();
 }
 
