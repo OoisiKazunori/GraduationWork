@@ -23,8 +23,6 @@
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	//DrawFuncHelperでのモデル読み込み
-	m_modelAnimationRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
-	m_modelRender(arg_rasterize, "Resource/cubeFrame/", "cubeFrame.gltf"),
 	m_line(arg_rasterize),
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
@@ -67,16 +65,13 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_throwableObjectController = std::make_shared<ThrowableObjectController>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
-<<<<<<< HEAD
 
 	//マップデータ
-=======
 	for (auto& index : m_preEnemy) {
 
 		index = std::make_shared<PreEnemy>(arg_rasterize);
 
 	}
->>>>>>> 19baaf15d010f09cb408cb87ccb1568eb191ccc4
 
 }
 
@@ -119,38 +114,32 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	CameraMgr::Instance()->Camera({}, {}, {});
 	*/
 	//デバック用のカメラワーク(操作はBlenderと同じ)
-<<<<<<< HEAD
 	//m_debuCamera.Update();
-=======
-	m_debuCamera.Update();
->>>>>>> 19baaf15d010f09cb408cb87ccb1568eb191ccc4
 
 	//メニューが開かれていない時に更新を通す
 	if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 	{
-<<<<<<< HEAD
-		m_uiManager.Update();
-		m_gadgetMaanager.Update();
-		m_HPBarManager.Update(0);
+		//m_uiManager.Update();
+		//m_gadgetMaanager.Update();
+		//m_HPBarManager.Update(0);
 
-		m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
-		m_enemyManager->Update(m_stageMeshCollision);
-		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-		m_bulletMgr->Update(m_stageMeshCollision);
+		//m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
+		//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+		//m_bulletMgr->Update(m_stageMeshCollision);
 
 		m_stageManager.Update(arg_rasterize);
-=======
+
 		if (m_HPBarManager.GetHP() > 0)
 		{
 			m_uiManager.Update();
 			m_gadgetMaanager.Update();
 
+			m_enemyManager->Update(m_stageMeshCollision);
 			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
-			//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 			m_bulletMgr->Update(m_stageManager.GetColliders());
 
 			m_stageManager.Update(arg_rasterize);
->>>>>>> 19baaf15d010f09cb408cb87ccb1568eb191ccc4
 
 			static bool flag = false;
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
@@ -241,18 +230,14 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	//描画命令発行
-<<<<<<< HEAD
 		//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
 		//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
 		//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
-	m_modelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransform);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
-=======
->>>>>>> 19baaf15d010f09cb408cb87ccb1568eb191ccc4
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
@@ -261,12 +246,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
-<<<<<<< HEAD
 	m_uiManager.Draw(arg_rasterize);
 	m_gadgetMaanager.Draw(arg_rasterize);
 	m_HPBarManager.Draw(arg_rasterize);
 	m_heartRateManager.Draw(arg_rasterize);
-=======
 	if (!m_resultManager.GetResultShow())
 	{
 		m_uiManager.Draw(arg_rasterize);
@@ -274,7 +257,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_HPBarManager.Draw(arg_rasterize);
 		//m_heartRateManager.Draw(arg_rasterize);
 	}
->>>>>>> 19baaf15d010f09cb408cb87ccb1568eb191ccc4
 
 	m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));

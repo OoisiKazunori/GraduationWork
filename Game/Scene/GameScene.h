@@ -57,11 +57,8 @@ private:
 	std::shared_ptr<Player> m_player;
 	std::shared_ptr<MeshCollision> m_stageMeshCollision;
 	std::shared_ptr<BulletMgr> m_bulletMgr;
-<<<<<<< HEAD
 	std::shared_ptr<EnemyManager> m_enemyManager;
-=======
 	std::shared_ptr<ThrowableObjectController> m_throwableObjectController;
->>>>>>> 19baaf15d010f09cb408cb87ccb1568eb191ccc4
 
 	int m_sceneNum;
 	int m_stageNum;
