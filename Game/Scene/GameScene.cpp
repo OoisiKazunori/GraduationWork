@@ -20,7 +20,6 @@
 #include "../UI/UI.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
-
 	//DrawFuncHelperでのモデル読み込み
 	m_line(arg_rasterize),
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
@@ -29,7 +28,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_HPBarManager(arg_rasterize),
 	m_heartRateManager(arg_rasterize),
 	m_menu(arg_rasterize),
-	m_resultManager(arg_rasterize)
+	m_resultManager(arg_rasterize),
+	m_goalPoint(arg_rasterize)
 {
 
 	/*
@@ -79,6 +79,7 @@ void GameScene::Init()
 	m_bulletMgr->Init();
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
+	m_goalPoint.Init(KazMath::Vec3<float>(96.0f, -46.0f, -106.0f));
 }
 
 void GameScene::PreInit()
@@ -208,7 +209,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	{
 		index->CheckInEcho(m_stageMeshCollision);
 	}
-
+	m_goalPoint.Update();
 
 }
 
@@ -240,6 +241,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		m_resultManager.Draw(arg_rasterize);
 	}
+
+	m_goalPoint.Draw(arg_rasterize);
 
 	for (auto& index : m_preEnemy) {
 
