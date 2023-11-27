@@ -47,8 +47,12 @@ private:
 	float m_gravity;
 	const float GRAVITY = 0.05f;
 
+	const  int MAX_RATE = 1200;
+	const int MAX_HP = 100;
 	int m_hp;
 	int m_rate;
+	float m_angle = 0.0f;
+	DirectX::XMVECTOR m_oldQuaternion;
 
 public:
 	Enemy();

@@ -20,6 +20,10 @@ Enemy::Enemy()
 	m_offset_y = 0.0f;
 
 	m_gravity = 0.0f;
+
+	m_hp = MAX_HP;
+	m_rate = MAX_RATE;
+	m_angle = 0.0f;
 }
 
 Enemy::~Enemy()
@@ -68,6 +72,25 @@ void Enemy::SetCheckPointDelay(
 
 void Enemy::Init()
 {
+	m_state = State::Patrol;
+	m_delayNum = 0;
+	m_count = 0;
+	m_delay = 0;
+	m_isCheckPoint = false;
+	m_onGround = false;
+
+	m_checkSoundCount = 0;
+	m_isReturn = false;
+	m_oldPos = { -1.0f,-1.0f,-1.0f };
+
+	m_offset_x = 0.0f;
+	m_offset_y = 0.0f;
+
+	m_gravity = 0.0f;
+
+	m_hp = MAX_HP;
+	m_rate = MAX_RATE;
+	m_angle = 0.0f;
 }
 
 void Enemy::Update(
@@ -166,12 +189,12 @@ void Enemy::Update(
 
 		else
 		{
-			//m_rate--;
-			//if(m_rate<0)
-			// {
-			//		m_state = Patrol or Warning
-			//		m_rate = MAX;
-			// }
+			m_rate--;
+			if (m_rate < 0)
+			{
+				m_state = State::Patrol;
+				m_rate = MAX_RATE;
+			}
 		}
 	}
 
@@ -194,6 +217,11 @@ void Enemy::Update(
 				CalMoveQuaternion(m_trans.pos, m_oldPos);
 			m_trans.quaternion = l_quaternion;
 		}
+	}
+
+	if (m_state == State::Patrol ||
+		m_state == State::Warning) {
+		//RotateEye();
 	}
 
 	//重力(仮)
@@ -364,10 +392,22 @@ void Enemy::Collision(
 
 void Enemy::RotateEye()
 {
+	//進行先
+	//m_oldQuaternion = m_trans.quaternion;
+
+	//30度
+	float l_rad = 30.0f;
+	l_rad = l_rad * (3.14f / 180.0f);
+	l_rad *= std::sinf(m_angle);
+	m_angle += 0.01f;
+
 	//ラジアンを加算
-	m_trans.Rotation(
+	KazMath::Transform3D l_trans = m_trans;
+	l_trans.Rotation(
 		KazMath::Vec3<float>(0, 1, 0),
-		0.0f);
+		l_rad);
+
+	m_trans.quaternion = l_trans.quaternion;
 }
 
 bool Enemy::CheckDistXZ(
