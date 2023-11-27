@@ -62,9 +62,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	//d—Í‚ğ‚©‚¯‚éB
 	if (!m_onGround) {
-		//m_gravity -= GRAVITY;
+		m_gravity -= GRAVITY;
 	}
-	m_transform.pos.y += m_gravity;
+	//m_transform.pos.y += m_gravity;
 
 	//“®‚¢‚½•ûŒü‚É‰ñ“]‚³‚¹‚éB
 	//Rotate(arg_camera);

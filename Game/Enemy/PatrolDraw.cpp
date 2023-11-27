@@ -16,15 +16,10 @@ void PatrolDraw::SetData(
 {
 	m_patrolConfig = arg_config;
 
-	size_t l_x = m_patrolConfig.lock()->GetSizeX() / 4;
-	size_t l_y = m_patrolConfig.lock()->GetSizeY() / 4;
+	size_t l_x = m_patrolConfig.lock()->GetSizeX();
+	size_t l_y = m_patrolConfig.lock()->GetSizeY();
 	//size_t l_x = 0;
 	//size_t l_y = 0;
-
-	size_t l_offset_x = m_patrolConfig.lock()->GetOffsetX();
-	size_t l_offset_y = m_patrolConfig.lock()->GetOffsetY();
-
-	float l_chipSize = m_patrolConfig.lock()->GetChipSize();
 
 	m_modelRenders.reserve(l_x);
 	m_modelRenders.resize(l_x);
@@ -43,21 +38,6 @@ void PatrolDraw::SetData(
 					"Resource/cubeFrame/",
 					"cubeFrame.gltf"
 					);
-
-			//箱トランスフォーム
-			float l_multiPos = 2.5f;
-			KazMath::Transform3D l_trans;
-			l_trans.pos = {
-				i * l_chipSize * l_multiPos * 4 + l_offset_x,
-				0,
-				j * l_chipSize * l_multiPos * 4 + l_offset_y
-			};
-			l_trans.scale = {
-				l_chipSize,
-				l_chipSize,
-				l_chipSize
-			};
-			m_patrolConfig.lock()->SetTrans(i, j, l_trans);
 		}
 	}
 }
@@ -106,19 +86,19 @@ void PatrolDraw::Update()
 void PatrolDraw::Input()
 {
 	//仮
-	if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_Q))
-	{
-		//Init();
-		m_isCheck = true;
-		m_isInput = true;
-	}
-	if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_R))
-	{
-		//Init();
-		m_isInput = false;
-	}
+	//if (KeyBoradInputManager::
+	//	Instance()->InputTrigger(DIK_Q))
+	//{
+	//	//Init();
+	//	m_isCheck = true;
+	//	m_isInput = true;
+	//}
+	//if (KeyBoradInputManager::
+	//	Instance()->InputTrigger(DIK_R))
+	//{
+	//	//Init();
+	//	m_isInput = false;
+	//}
 
 	/*if (!m_isInput)
 	{
@@ -177,10 +157,20 @@ void PatrolDraw::Draw(
 	DrawingByRasterize& arg_rasterize,
 	Raytracing::BlasVector& arg_blasVec)
 {
-	for (int i = 0; i < m_patrolConfig.lock()->GetSizeX() / 4; ++i)
+	for (int i = 0; i < m_patrolConfig.lock()->GetSizeX(); ++i)
 	{
-		for (int j = 0; j < m_patrolConfig.lock()->GetSizeY() / 4; ++j)
+		for (int j = 0; j < m_patrolConfig.lock()->GetSizeY(); ++j)
 		{
+			if (i != 0 &&
+				i != m_patrolConfig.lock()->GetSizeX() - 1)
+			{
+				if (j != 0 &&
+					j != m_patrolConfig.lock()->GetSizeY() - 1)
+				{
+					continue;
+				}
+			}
+
 			KazMath::Color l_color = m_baseColor;
 
 			if (m_patrolConfig.lock()->GetData(i, j).type ==

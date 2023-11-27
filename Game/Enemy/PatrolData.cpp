@@ -1,7 +1,6 @@
 #include "PatrolData.h"
-
-#include "../KazLibrary/Input/KeyBoradInputManager.h"
 #include "EnemyConfig.h"
+#include "../KazLibrary/Input/KeyBoradInputManager.h"
 
 PatrolData::PatrolData()
 {
@@ -20,52 +19,16 @@ void PatrolData::SetData(
 
 void PatrolData::Init()
 {
-	for (int i = 0; i < m_patrolConfig.lock()->GetSizeX(); ++i) {
-		for (int j = 0; j < m_patrolConfig.lock()->GetSizeY(); ++j) {
-			m_patrolConfig.lock()->SetType(
-				i, j,
-				PatrolConfig::AstarType::Move);
-		}
-	}
+	//マップチップ検索
+	std::vector<std::pair<int, int>> l_base_chipRoots;
+	l_base_chipRoots = CalcChipRoots(m_checkPoints);
 
-	/*m_astarDatas[2][1].type = AstarType::UnMove;
-	m_astarDatas[2][2].type = AstarType::UnMove;
-	m_astarDatas[3][1].type = AstarType::UnMove;
-	m_astarDatas[3][2].type = AstarType::UnMove;
-
-	m_astarDatas[3][6].type = AstarType::UnMove;
-	m_astarDatas[3][7].type = AstarType::UnMove;
-	m_astarDatas[4][6].type = AstarType::UnMove;
-	m_astarDatas[4][7].type = AstarType::UnMove;
-
-	m_astarDatas[6][1].type = AstarType::UnMove;
-	m_astarDatas[6][2].type = AstarType::UnMove;
-	m_astarDatas[7][1].type = AstarType::UnMove;
-	m_astarDatas[7][2].type = AstarType::UnMove;
-
-	m_astarDatas[6][5].type = AstarType::UnMove;
-	m_astarDatas[6][6].type = AstarType::UnMove;
-	m_astarDatas[7][5].type = AstarType::UnMove;
-	m_astarDatas[7][6].type = AstarType::UnMove;
-
-	m_astarDatas[2][4].type = AstarType::UnMove;
-	m_astarDatas[3][4].type = AstarType::UnMove;
-	m_astarDatas[4][4].type = AstarType::UnMove;*/
+	//角をケアしながら通過座標の算出
+	m_rootPos = CalcRootPos(l_base_chipRoots);
 }
 
 void PatrolData::Update()
 {
-	//入力があった場合
-	if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_Q))
-	{
-		std::vector<std::pair<int, int>> l_base_chipRoots;
-
-		l_base_chipRoots = CalcChipRoots(m_checkPoints);
-
-		//角をケアしながら通過座標の算出
-		m_rootPos = CalcRootPos(l_base_chipRoots);
-	}
 }
 
 std::vector<std::pair<float, float>>
@@ -78,8 +41,9 @@ PatrolData::CheckSound(
 
 	//チップサイズ
 	float l_chipSize =
-		m_patrolConfig.lock()->GetChipSize() * 2.5f;
+		m_patrolConfig.lock()->GetChipSize();
 
+	//仮
 	l_checkPoints.push_back(
 		std::make_pair(
 			static_cast<int>(arg_enemyPos.first / l_chipSize),
@@ -106,6 +70,11 @@ PatrolData::CalcChipRoots(
 		std::make_pair(
 			arg_checkPoints[0].first,
 			arg_checkPoints[0].second));
+
+	//固定
+	if (arg_checkPoints.size() == 1) {
+		return l_base_chipRoots;
+	}
 
 	//チェックポイント分回す
 	for (int p = 0; p < arg_checkPoints.size(); ++p)
@@ -353,7 +322,17 @@ PatrolData::CalcRootPos(
 
 	//チップサイズ
 	float l_chipSize =
-		m_patrolConfig.lock()->GetChipSize() * 2.5f;
+		m_patrolConfig.lock()->GetChipSize();
+
+	//固定
+	if (arg_roots.size() == 1) {
+		l_rootPos.push_back(
+			std::make_pair(
+				arg_roots[0].first * l_chipSize,
+				arg_roots[0].second * l_chipSize));
+		return l_rootPos;
+	}
+
 	//余剰の割合
 	float l_surplusRate = 0.0f;
 	//進む割合

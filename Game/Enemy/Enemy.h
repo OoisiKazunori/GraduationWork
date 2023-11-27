@@ -37,12 +37,24 @@ private:
 	bool m_isReturn;
 	KazMath::Vec3<float> m_oldPos;
 
+	float m_offset_x;
+	float m_offset_y;
+
+	float m_gravity;
+	const float GRAVITY = 0.05f;
+
+	int m_hp;
+	int m_rate;
+
 public:
 	Enemy();
 	~Enemy();
 	void Init();
 	void Update(
-		std::weak_ptr<MeshCollision> arg_meshCollision);
+		std::list<std::shared_ptr<MeshCollision>>
+		arg_stageColliders,
+		KazMath::Vec3<float> arg_playerPos
+	);
 	void Draw(
 		DrawingByRasterize& arg_rasterize,
 		Raytracing::BlasVector& arg_blasVec);
@@ -52,7 +64,15 @@ private:
 		KazMath::Vec3<float> arg_pos,
 		KazMath::Vec3<float> arg_prevPos);
 	void Collision(
-		std::weak_ptr<MeshCollision> arg_meshCollision);
+		std::list<std::shared_ptr<MeshCollision>>
+		arg_stageColliders);
+	void RotateEye();
+	bool CheckDistXZ(
+		std::pair<float, float> arg_checkPos, float arg_dist);
+	bool CheckEye(
+		KazMath::Vec3<float> arg_playerPos,
+		std::list<std::shared_ptr<MeshCollision>>
+		arg_stageColliders);
 
 public:
 	KazMath::Transform3D GetTrans() { return m_trans; }
@@ -78,8 +98,8 @@ public:
 	}
 
 public:
-	void AddOffset(std::pair<size_t, size_t> arg_offsets) {
-		m_trans.pos.x += arg_offsets.first;
-		m_trans.pos.z += arg_offsets.second;
+	void SetOffset(std::pair<float, float> arg_offsets) {
+		m_offset_x = arg_offsets.first;
+		m_offset_y = arg_offsets.second;
 	}
 };

@@ -15,6 +15,11 @@ Enemy::Enemy()
 	m_checkSoundCount = 0;
 	m_isReturn = false;
 	m_oldPos = { -1.0f,-1.0f,-1.0f };
+
+	m_offset_x = 0.0f;
+	m_offset_y = 0.0f;
+
+	m_gravity = 0.0f;
 }
 
 Enemy::~Enemy()
@@ -57,107 +62,52 @@ void Enemy::SetCheckPointDelay(
 	}
 }
 
-void Enemy::Collision(
-	std::weak_ptr<MeshCollision> arg_meshCollision)
-{
-	const float RAY_LENGTH = 5.0f;
-
-	//地面と当たり判定を行う。
-	m_onGround = false;
-	const float GROUND_RAY_OFFSET = 5.0f;
-	MeshCollision::CheckHitResult rayResult =
-		arg_meshCollision.lock()->CheckHitRay(
-			m_trans.pos +
-			m_trans.GetUp() *
-			GROUND_RAY_OFFSET, -m_trans.GetUp());
-
-	if (rayResult.m_isHit &&
-		0.0f < rayResult.m_distance &&
-		rayResult.m_distance <= RAY_LENGTH + GROUND_RAY_OFFSET) {
-
-		//押し戻し。
-		m_trans.pos +=
-			rayResult.m_normal *
-			(RAY_LENGTH + GROUND_RAY_OFFSET - rayResult.m_distance);
-		m_onGround = true;
-	}
-
-	//当たり判定を計算。
-	rayResult = arg_meshCollision.lock()->CheckHitRay(
-		m_trans.pos,
-		m_trans.GetFront());
-	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
-
-		//押し戻し。
-		m_trans.pos +=
-			rayResult.m_normal *
-			(RAY_LENGTH - rayResult.m_distance);
-	}
-
-	//右方向
-	rayResult = arg_meshCollision.lock()->CheckHitRay(
-		m_trans.pos,
-		m_trans.GetRight());
-	if (rayResult.m_isHit &&
-		0.0f < rayResult.m_distance &&
-		rayResult.m_distance <= RAY_LENGTH) {
-
-		//押し戻し。
-		m_trans.pos +=
-			rayResult.m_normal *
-			(RAY_LENGTH - rayResult.m_distance);
-	}
-
-	//左方向
-	rayResult = arg_meshCollision.lock()->CheckHitRay(
-		m_trans.pos,
-		-m_trans.GetRight());
-	if (rayResult.m_isHit &&
-		0.0f < rayResult.m_distance &&
-		rayResult.m_distance <= RAY_LENGTH) {
-
-		//押し戻し。
-		m_trans.pos +=
-			rayResult.m_normal *
-			(RAY_LENGTH - rayResult.m_distance);
-	}
-}
-
 void Enemy::Init()
 {
 }
 
 void Enemy::Update(
-	std::weak_ptr<MeshCollision> arg_meshCollision)
+	std::list<std::shared_ptr<MeshCollision>>
+	arg_stageColliders,
+	KazMath::Vec3<float> arg_playerPos)
 {
-	if (m_state == State::Warning)
+	//プレイヤーXZ座標
+	std::pair<float, float> l_pPos =
+		std::make_pair(arg_playerPos.x, arg_playerPos.z);
+
+	//巡回(通常or警戒)
+	if (m_state == State::Patrol ||
+		m_state == State::Warning)
 	{
-		if (!m_isReturn) {
-			m_checkSoundCount++;
+		//音が鳴った場合
+		if (CheckDistXZ(
+			l_pPos, EnemyConfig::soundCheckDist) && false)
+		{
+			if (!m_isReturn) {
+				m_checkSoundCount++;
 
-			if (m_checkSoundCount ==
-				m_checkSoundPos.size() - 1) {
-				m_isReturn = true;
+				if (m_checkSoundCount ==
+					m_checkSoundPos.size() - 1) {
+					m_isReturn = true;
+				}
 			}
-		}
-		else {
-			m_checkSoundCount--;
+			else {
+				m_checkSoundCount--;
 
-			if (m_checkSoundCount == 0) {
-				m_state = State::Patrol;
-				m_isReturn = false;
+				if (m_checkSoundCount == 0) {
+					m_state = State::Patrol;
+					m_isReturn = false;
+				}
 			}
+
+			m_trans.pos = {
+					m_checkSoundPos[m_checkSoundCount].first,
+					0.0f,
+					m_checkSoundPos[m_checkSoundCount].second
+			};
 		}
 
-		m_trans.pos = {
-				m_checkSoundPos[m_checkSoundCount].first,
-				0.0f,
-				m_checkSoundPos[m_checkSoundCount].second
-		};
-	}
-
-	else
-	{
+		//チェックポイント
 		if (m_isCheckPoint)
 		{
 			m_delay++;
@@ -172,7 +122,7 @@ void Enemy::Update(
 		{
 			m_trans.pos = {
 				m_rootPos[m_count].first,
-				0.0f,
+				m_trans.pos.y,
 				m_rootPos[m_count].second
 			};
 			if (m_count < m_rootPos.size() - 1) {
@@ -191,10 +141,48 @@ void Enemy::Update(
 				m_isCheckPoint = true;
 				break;
 			}
+
+			//仮
+			m_trans.pos.x = m_trans.pos.x + m_offset_x;
+			m_trans.pos.z = m_trans.pos.z + m_offset_y;
 		}
 	}
 
-	if (m_oldPos.x >= 0.0f) {
+	//戦闘中
+	else if (m_state == State::Combat)
+	{
+		//視線範囲内なら向きながら射撃
+		if (CheckEye(arg_playerPos, arg_stageColliders))
+		{
+			//プレイヤー方向
+			CalMoveQuaternion(arg_playerPos, m_trans.pos);
+
+			//射撃
+		}
+
+		else
+		{
+			//m_rate--;
+			//if(m_rate<0)
+			// {
+			//		m_state = Patrol or Warning
+			//		m_rate = MAX;
+			// }
+		}
+	}
+
+	//視線範囲内か
+	if (CheckDistXZ(
+		l_pPos, EnemyConfig::eyeCheckDist) &&
+		CheckEye(arg_playerPos, arg_stageColliders))
+	{
+		//m_state = State::Combat;
+		//m_rate = MAX;
+	}
+
+	//回転
+	if (m_oldPos.x >= 0.0f)
+	{
 		if (m_trans.pos != m_oldPos) {
 			DirectX::XMVECTOR l_quaternion =
 				CalMoveQuaternion(m_trans.pos, m_oldPos);
@@ -202,9 +190,20 @@ void Enemy::Update(
 		}
 	}
 
-	m_oldPos = m_trans.pos;
+	//重力(仮)
+	if (m_rootPos.size() > 0)
+	{
+		//重力をかける。
+		/*if (!m_onGround) {
+			m_gravity -= GRAVITY;
+		}
+		m_trans.pos.y += m_gravity;*/
 
-	Collision(arg_meshCollision);
+		m_oldPos = m_trans.pos;
+	}
+
+	//判定(メッシュ)
+	Collision(arg_stageColliders);
 }
 
 void Enemy::Draw(
@@ -246,4 +245,157 @@ DirectX::XMVECTOR Enemy::CalMoveQuaternion(
 		cross.x,
 		cross.y,
 		cross.z }, angle);
+}
+
+void Enemy::Collision(
+	std::list<std::shared_ptr<MeshCollision>>
+	arg_stageColliders)
+{
+	const float RAY_LENGTH = 8.0f;
+
+	//地面と当たり判定を行う。
+	m_onGround = false;
+
+	const float GROUND_RAY_OFFSET = 5.0f;
+	for (auto itr = arg_stageColliders.begin();
+		itr != arg_stageColliders.end(); ++itr) {
+
+		MeshCollision::CheckHitResult rayResult =
+			(*itr)->CheckHitRay(
+				m_trans.pos +
+				m_trans.GetUp() *
+				GROUND_RAY_OFFSET,
+				-m_trans.GetUp());
+
+		if (rayResult.m_isHit &&
+			0.0f < rayResult.m_distance &&
+			rayResult.m_distance <=
+			RAY_LENGTH + GROUND_RAY_OFFSET)
+		{
+			//押し戻し。
+			m_trans.pos +=
+				rayResult.m_normal *
+				(RAY_LENGTH + GROUND_RAY_OFFSET -
+					rayResult.m_distance);
+			m_onGround = true;
+		}
+
+		//当たり判定を計算。
+		rayResult = (*itr)->CheckHitRay(
+			m_trans.pos,
+			m_trans.GetFront());
+		if (rayResult.m_isHit &&
+			0.0f < rayResult.m_distance &&
+			rayResult.m_distance <= RAY_LENGTH)
+		{
+			//押し戻し。
+			m_trans.pos +=
+				rayResult.m_normal *
+				(RAY_LENGTH - rayResult.m_distance);
+		}
+
+		//後ろ方向
+		rayResult = (*itr)->CheckHitRay(
+			m_trans.pos,
+			-m_trans.GetFront());
+		if (rayResult.m_isHit &&
+			0.0f < rayResult.m_distance &&
+			rayResult.m_distance <= RAY_LENGTH)
+		{
+			//押し戻し。
+			m_trans.pos +=
+				rayResult.m_normal *
+				(RAY_LENGTH - rayResult.m_distance);
+		}
+
+		//右方向
+		rayResult = (*itr)->CheckHitRay(
+			m_trans.pos,
+			m_trans.GetRight());
+		if (rayResult.m_isHit &&
+			0.0f < rayResult.m_distance &&
+			rayResult.m_distance <= RAY_LENGTH)
+		{
+			//押し戻し。
+			m_trans.pos +=
+				rayResult.m_normal *
+				(RAY_LENGTH - rayResult.m_distance);
+		}
+
+		//左方向
+		rayResult = (*itr)->CheckHitRay(
+			m_trans.pos,
+			-m_trans.GetRight());
+		if (rayResult.m_isHit &&
+			0.0f < rayResult.m_distance &&
+			rayResult.m_distance <= RAY_LENGTH)
+		{
+			//押し戻し。
+			m_trans.pos +=
+				rayResult.m_normal *
+				(RAY_LENGTH - rayResult.m_distance);
+		}
+	}
+}
+
+void Enemy::RotateEye()
+{
+	//ラジアンを加算
+	m_trans.Rotation(
+		KazMath::Vec3<float>(0, 1, 0),
+		0.0f);
+}
+
+bool Enemy::CheckDistXZ(
+	std::pair<float, float> arg_checkPos, float arg_dist)
+{
+	float l_dist = std::sqrtf(
+		std::powf(m_trans.pos.x - arg_checkPos.first, 2.0f) +
+		std::powf(m_trans.pos.z - arg_checkPos.second, 2.0f));
+
+	if (l_dist < arg_dist) {
+		return true;
+	}
+	return false;
+}
+
+bool Enemy::CheckEye(
+	KazMath::Vec3<float> arg_playerPos,
+	std::list<std::shared_ptr<MeshCollision>>
+	arg_stageColliders)
+{
+	//-1~1
+	float l_angleOfView = m_trans.GetFront().Dot(
+		(arg_playerPos - m_trans.pos).GetNormal());
+
+	//メッシュ判定
+	for (auto itr = arg_stageColliders.begin();
+		itr != arg_stageColliders.end(); ++itr)
+	{
+		const float RAY_LENGTH =
+			KazMath::Vec3<float>(
+				arg_playerPos -
+				m_trans.pos).Length();
+
+		MeshCollision::CheckHitResult rayResult =
+			(*itr)->CheckHitRay(
+				m_trans.pos,
+				KazMath::Vec3<float>(
+					arg_playerPos -
+					m_trans.pos).GetNormal());
+
+		//当たらなかった場合
+		if (rayResult.m_isHit &&
+			0.0f < rayResult.m_distance &&
+			rayResult.m_distance <= RAY_LENGTH)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

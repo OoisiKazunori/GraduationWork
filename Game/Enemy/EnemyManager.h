@@ -18,7 +18,9 @@ public:
 	~EnemyManager();
 	void Init();
 	void Update(
-		std::weak_ptr<MeshCollision> arg_meshCollision);
+		std::list<std::shared_ptr<MeshCollision>>
+		arg_stageColliders,
+		KazMath::Vec3<float> arg_playerPos);
 	void Draw(
 		DrawingByRasterize& arg_rasterize,
 		Raytracing::BlasVector& arg_blasVec);

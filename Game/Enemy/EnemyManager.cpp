@@ -16,7 +16,7 @@ void EnemyManager::Init()
 	for (int i = 0; i < m_enemys.size(); ++i)
 	{
 		m_enemys[i].Init();
-		m_patrolDatas[i].Init();
+		//m_patrolDatas[i].Init();
 	}
 
 	//検索ポイント位置
@@ -34,8 +34,8 @@ void EnemyManager::Init()
 	m_patrolDatas[2].AddCheckPoint(7, 9);*/
 
 	m_patrolDatas[0].SetColor(KazMath::Color(255, 255, 255, 255));
-	m_patrolDatas[1].SetColor(KazMath::Color(255, 255, 0, 255));
-	m_patrolDatas[2].SetColor(KazMath::Color(0, 255, 0, 255));
+	//m_patrolDatas[1].SetColor(KazMath::Color(255, 255, 0, 255));
+	//m_patrolDatas[2].SetColor(KazMath::Color(0, 255, 0, 255));
 
 	//判定
 	m_patrolDraw.Init();
@@ -50,9 +50,11 @@ void EnemyManager::SetMapData(
 	int l_enemyNum = 0;
 
 	//チェックポイント
-	for (auto i = arg_mapDatas.begin(); i != arg_mapDatas.end(); ++i)
+	for (auto i = arg_mapDatas.begin();
+		i != arg_mapDatas.end(); ++i)
 	{
-		for (auto j = i->m_position.begin(); j != i->m_position.end(); ++j)
+		for (auto j = i->m_position.begin();
+			j != i->m_position.end(); ++j)
 		{
 			//チェックポイント終了
 			if (j->x == -1) {
@@ -77,7 +79,7 @@ void EnemyManager::SetMapData(
 	m_config = std::make_shared<PatrolConfig>(
 		MapManager::GetMapSizeData(arg_stageNum).x,
 		MapManager::GetMapSizeData(arg_stageNum).y,
-		2.0f);
+		4.84f);
 
 	//マップデータ
 	std::list<std::list<int>> l_mapChips =
@@ -105,28 +107,34 @@ void EnemyManager::SetMapData(
 	}
 
 	//マップデータが来てから初期化
-	size_t l_offset_x = m_config.get()->GetOffsetX();
-	size_t l_offset_y = m_config.get()->GetOffsetY();
+	float l_offset_x = m_config.get()->GetOffsetX();
+	float l_offset_y = m_config.get()->GetOffsetY();
 	for (int i = 0; i < l_enemyNum; ++i)
 	{
 		m_enemys[i].SetData(arg_rasterize);
-		m_enemys[i].AddOffset(std::make_pair(
+		m_enemys[i].SetOffset(std::make_pair(
 			l_offset_x,
 			l_offset_y));
 		m_patrolDatas[i].SetData(m_config);
+		m_patrolDatas[i].Init();
 	}
 	m_patrolDraw.SetData(arg_rasterize, m_config);
 }
 
 void EnemyManager::Update(
-	std::weak_ptr<MeshCollision> arg_meshCollision)
+	std::list<std::shared_ptr<MeshCollision>>
+	arg_stageColliders,
+	KazMath::Vec3<float> arg_playerPos)
 {
 	bool isInput = false;
 	if (KeyBoradInputManager::
 		Instance()->InputTrigger(DIK_E))
 	{
-		isInput = true;
+		//isInput = true;
 	}
+
+	float l_offset_x = m_config.get()->GetOffsetX();
+	float l_offset_y = m_config.get()->GetOffsetY();
 
 	for (int i = 0; i < m_enemys.size(); ++i)
 	{
@@ -142,17 +150,22 @@ void EnemyManager::Update(
 			m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
 		}
 
+		//オフセット
+		m_enemys[i].SetOffset(std::make_pair(
+			l_offset_x,
+			l_offset_y));
+
 		m_patrolDatas[i].Update();
 		m_enemys[i].SetRootPos(m_patrolDatas[i].GetRootPos());
 		m_enemys[i].SetCheckPointDelay(
 			m_patrolDatas[i].GetCheckPointDelay());
-		m_enemys[i].Update(arg_meshCollision);
+		m_enemys[i].Update(
+			arg_stageColliders,
+			arg_playerPos);
 	}
 
-	//移動
-	//m_patrolDraw.SetRootPos(m_patrolData[0].GetRootPos());
-
 	//判定
+	m_config->Update();
 	m_patrolDraw.Update();
 }
 

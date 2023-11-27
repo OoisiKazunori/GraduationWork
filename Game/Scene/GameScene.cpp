@@ -135,8 +135,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_uiManager.Update();
 			m_gadgetMaanager.Update();
 
-			m_enemyManager->Update(m_stageMeshCollision);
 			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
+			m_enemyManager->Update(
+				m_stageManager.GetColliders(),
+				m_player->GetTransform().pos);
 			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 			m_bulletMgr->Update(m_stageManager.GetColliders());
 
@@ -216,10 +218,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_sceneNum = 0;
 		}
 	}
+
 	//auto hogehoge = MapManager::GetEnemyData(m_stageNum);
 
 	//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
 	//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
+
 	m_menu.Update();
 
 	m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
@@ -240,6 +244,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
+
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
@@ -247,6 +252,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_player->Draw(arg_rasterize, arg_blasVec);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち

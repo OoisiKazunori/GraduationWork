@@ -23,8 +23,8 @@ private:
 	std::vector<std::vector<AstarData>> m_astarDatas;
 	size_t m_size_x;	//Chip_X
 	size_t m_size_y;	//Chip_Y
-	size_t m_offset_x;
-	size_t m_offset_y;
+	float m_offset_x;
+	float m_offset_y;
 	float m_chipSize;	//Scale
 
 public:
@@ -33,7 +33,8 @@ public:
 		size_t arg_y = 0,
 		float arg_chipSize = 0);
 
-private:
+public:
+	void Init();
 	void Update();
 
 public:
@@ -43,18 +44,17 @@ public:
 
 	size_t GetSizeX() { return m_size_x; }
 	size_t GetSizeY() { return m_size_y; }
-	size_t GetOffsetX() { return m_offset_x; }
-	size_t GetOffsetY() { return m_offset_y; }
+	float GetOffsetX() { return m_offset_x; }
+	float GetOffsetY() { return m_offset_y; }
 	float GetChipSize() { return m_chipSize; }
 
 public:
 	void SetSizeX(size_t arg_x) { m_size_x = arg_x; }
 	void SetSizeY(size_t arg_y) { m_size_y = arg_y; }
-	void SetOffsetX(size_t arg_x) { m_offset_x = arg_x; }
-	void SetOffsetY(size_t arg_y) { m_offset_y = arg_y; }
+	void SetOffsetX(float arg_x) { m_offset_x = arg_x; }
+	void SetOffsetY(float arg_y) { m_offset_y = arg_y; }
 	void SetChipSize(float arg_chipSize) {
 		m_chipSize = arg_chipSize;
-		Update();
 	}
 	void SetType(
 		size_t arg_x, size_t arg_y, AstarType arg_type) {
