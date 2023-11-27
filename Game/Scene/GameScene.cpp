@@ -216,6 +216,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
 	KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
 	KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
+	KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
+	if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
+
+		int a = 0;
+
+	}
 
 }
 
