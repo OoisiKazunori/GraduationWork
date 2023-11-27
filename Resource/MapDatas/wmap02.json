@@ -3,6 +3,28 @@
     "Objects": [
         {
             "type": "MESH",
+            "name": "Goal",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    -10.0,
+                    2.0,
+                    -2.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
             "name": "wallC.003",
             "echo": 0.0,
             "transform": {
@@ -113,7 +135,7 @@
         },
         {
             "type": "MESH",
-            "name": "wallL_Post.003",
+            "name": "Wall_L_Post.003",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -135,7 +157,7 @@
         },
         {
             "type": "MESH",
-            "name": "wallL_Post.005",
+            "name": "Wall_L_Post.005",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -179,7 +201,7 @@
         },
         {
             "type": "MESH",
-            "name": "wallL_Post.006",
+            "name": "Wall_L_Post.006",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -201,7 +223,7 @@
         },
         {
             "type": "MESH",
-            "name": "wallL_Post.007",
+            "name": "Wall_L_Post.007",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -245,7 +267,7 @@
         },
         {
             "type": "MESH",
-            "name": "wallL_Post.008",
+            "name": "Wall_L_Post.008",
             "echo": 0.0,
             "transform": {
                 "translation": [
