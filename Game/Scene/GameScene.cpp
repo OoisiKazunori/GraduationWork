@@ -21,7 +21,6 @@
 #include "../UI/UI.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
-
 	//DrawFuncHelperでのモデル読み込み
 	m_line(arg_rasterize),
 	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
@@ -30,7 +29,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_HPBarManager(arg_rasterize),
 	m_heartRateManager(arg_rasterize),
 	m_menu(arg_rasterize),
-	m_resultManager(arg_rasterize)
+	m_resultManager(arg_rasterize),
+	m_goalPoint(arg_rasterize)
 {
 
 	/*
@@ -57,7 +57,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	m_enemyManager = std::make_shared<EnemyManager>();
 	auto l_enemyData = MapManager::GetEnemyData(m_stageNum);
-	m_enemyManager->SetMapData(l_enemyData, arg_rasterize);
+	m_enemyManager->SetMapData(m_stageNum, l_enemyData, arg_rasterize);
 
 	m_player = std::make_shared<Player>(arg_rasterize, MapManager::GetPlayerStartPosition(0));
 	m_camera = std::make_shared<Camera>();
@@ -87,6 +87,7 @@ void GameScene::Init()
 	m_bulletMgr->Init();
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
+	m_goalPoint.Init(KazMath::Vec3<float>(96.0f, -46.0f, -106.0f));
 }
 
 void GameScene::PreInit()
@@ -215,15 +216,19 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_sceneNum = 0;
 		}
 	}
+	//auto hogehoge = MapManager::GetEnemyData(m_stageNum);
+
+	//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
+	//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
 	m_menu.Update();
 
-	m_throwableObjectController->Update(m_player->GetTransform().pos, m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
+	m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
 	for (auto& index : m_preEnemy)
 	{
 		index->CheckInEcho(m_stageMeshCollision);
 	}
-
+	m_goalPoint.Update();
 
 }
 
@@ -267,6 +272,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		m_resultManager.Draw(arg_rasterize);
 	}
+
+	m_goalPoint.Draw(arg_rasterize);
 
 	for (auto& index : m_preEnemy) {
 

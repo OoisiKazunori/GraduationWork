@@ -10,6 +10,7 @@
 #include"../Stage/StageManager.h"
 #include "../UI/UI.h"
 #include "../Menu/Menu.h"
+#include"../Game/UI/CheckPoint.h"
 
 class EnemyManager;
 class Player;
@@ -92,4 +93,6 @@ private:
 	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
 	HeartRate m_heartRateManager;
 	Menu m_menu;
+
+	CheckPoint m_goalPoint;
 };

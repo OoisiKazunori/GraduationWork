@@ -2,6 +2,8 @@
 #include "Enemy.h"
 #include "PatrolDraw.h"
 
+class EnemyData;
+
 class EnemyManager
 {
 private:
@@ -12,12 +14,19 @@ private:
 	PatrolDraw m_patrolDraw;
 
 public:
-	EnemyManager(DrawingByRasterize& arg_rasterize);
+	EnemyManager();
 	~EnemyManager();
 	void Init();
-	void Update();
+	void Update(
+		std::weak_ptr<MeshCollision> arg_meshCollision);
 	void Draw(
 		DrawingByRasterize& arg_rasterize,
 		Raytracing::BlasVector& arg_blasVec);
+
+public:
+	void SetMapData(
+		int arg_stageNum,
+		std::list<EnemyData> arg_mapDatas,
+		DrawingByRasterize& arg_rasterize);
 };
 

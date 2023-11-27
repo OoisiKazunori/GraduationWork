@@ -1,14 +1,19 @@
 #include "ThrowableObjectController.h"
 #include "../Game/Collision/MeshCollision.h"
+#include "../KazLibrary/Imgui/imgui.h"
+#include "../Game/ThrowableObject/ThrowableObject.h"
 
 ThrowableObjectController::ThrowableObjectController(DrawingByRasterize& arg_rasterize)
 {
 
 	m_isHold = false;
 	m_isHoldOld = false;
+	generatePredictedObjectTimer = 0;
 
-	for (auto& index : m_line) {
-		index.Generate(arg_rasterize);
+	for (auto& index : m_throwableObject) {
+
+		index = std::make_shared<ThrowableObject>(arg_rasterize);
+
 	}
 
 }
@@ -18,43 +23,60 @@ void ThrowableObjectController::Init()
 
 	m_isHold = false;
 	m_isHoldOld = false;
+	generatePredictedObjectTimer = 0;
 
 }
 
-void ThrowableObjectController::Update(KazMath::Vec3<float> arg_playerPos, KazMath::Vec3<float> arg_throwVec, std::list<std::shared_ptr<MeshCollision>> arg_stageColliders)
+void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform, KazMath::Vec3<float> arg_throwVec, std::list<std::shared_ptr<MeshCollision>> arg_stageColliders)
 {
 
+	//生成座標をずらす。
+	arg_playerTransform.pos -= arg_playerTransform.GetUp() * 1.5f;
+	arg_playerTransform.pos -= arg_playerTransform.GetRight() * 4.0f;
+
 	//入力されていたら
-	if (m_isHold) {
+	if (!m_isHold && m_isHoldOld) {
 
-		//重力
-		float gravity = 0.0f;
-		const float ADD_GRAVITY = 0.5f;
+		for (auto& index : m_throwableObject) {
 
-		//移動速度
-		float vel = 5.0f;
-		const float SUB_VEL = 0.2f;
+			if (index->GetIsActive()) continue;
 
-		//座標
-		KazMath::Vec3<float> position = arg_playerPos;
+			index->Generate(arg_playerTransform, arg_throwVec, 5.0f, false);
 
-		for (int counter = 0; counter < 50; ++counter) {
-
-			//座標を保存する。
-			KazMath::Vec3<float> prevPos = position;
-
-			//移動させる。
-			position += arg_throwVec * vel;
-			position += KazMath::Vec3<float>(0.0f, -1.0f, 0.0f) * gravity;
-
-			//移動量を減衰させる。
-			gravity += ADD_GRAVITY;
-			vel = std::clamp(vel - SUB_VEL, 0.0f, 100.0f);
-
-			//座標を保存。
-			m_dottedLineVector.emplace_back(position);
+			break;
 
 		}
+
+	}
+	else if (m_isHold) {
+
+		//入力され続ている状態だったら。
+		++generatePredictedObjectTimer;
+		if (GENERATE_PREDICTED_OBJECT_TIMER <= generatePredictedObjectTimer) {
+
+			//生成する。
+			for (auto& index : m_throwableObject) {
+
+				if (index->GetIsActive()) continue;
+
+				index->Generate(arg_playerTransform, arg_throwVec, 5.0f, true);
+
+				break;
+
+			}
+
+			generatePredictedObjectTimer = 0;
+
+		}
+
+	}
+
+
+	for (auto& index : m_throwableObject) {
+
+		if (!index->GetIsActive()) continue;
+
+		index->Update(arg_stageColliders);
 
 	}
 
@@ -63,19 +85,13 @@ void ThrowableObjectController::Update(KazMath::Vec3<float> arg_playerPos, KazMa
 void ThrowableObjectController::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
-	//座標が2個以上入っているか？
-	if (2 <= static_cast<int>(m_dottedLineVector.size())) {
+	for (auto& index : m_throwableObject) {
 
-		//for (int index = 0; index < static_cast<int>(m_dottedLineVector.size()) - 1; ++index) {
+		if (!index->GetIsActive()) continue;
 
-		//	m_line[index].m_render.Draw(arg_rasterize, arg_blasVec, m_dottedLineVector[index], m_dottedLineVector[index + 1], KazMath::Color(255, 255, 255, 255));
-
-		//}
-		m_line[0].m_render.Draw(arg_rasterize, arg_blasVec, m_dottedLineVector[0], m_dottedLineVector[1], KazMath::Color(255, 255, 255, 255));
+		index->Draw(arg_rasterize, arg_blasVec);
 
 	}
-
-	m_dottedLineVector.clear();
 
 }
 

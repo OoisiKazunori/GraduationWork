@@ -16,8 +16,14 @@ void PatrolDraw::SetData(
 {
 	m_patrolConfig = arg_config;
 
-	size_t l_x = m_patrolConfig.lock()->GetSizeX();
-	size_t l_y = m_patrolConfig.lock()->GetSizeY();
+	size_t l_x = m_patrolConfig.lock()->GetSizeX() / 4;
+	size_t l_y = m_patrolConfig.lock()->GetSizeY() / 4;
+	//size_t l_x = 0;
+	//size_t l_y = 0;
+
+	size_t l_offset_x = m_patrolConfig.lock()->GetOffsetX();
+	size_t l_offset_y = m_patrolConfig.lock()->GetOffsetY();
+
 	float l_chipSize = m_patrolConfig.lock()->GetChipSize();
 
 	m_modelRenders.reserve(l_x);
@@ -42,9 +48,9 @@ void PatrolDraw::SetData(
 			float l_multiPos = 2.5f;
 			KazMath::Transform3D l_trans;
 			l_trans.pos = {
-				i * l_chipSize * l_multiPos,
+				i * l_chipSize * l_multiPos * 4 + l_offset_x,
 				0,
-				j * l_chipSize * l_multiPos
+				j * l_chipSize * l_multiPos * 4 + l_offset_y
 			};
 			l_trans.scale = {
 				l_chipSize,
@@ -171,9 +177,9 @@ void PatrolDraw::Draw(
 	DrawingByRasterize& arg_rasterize,
 	Raytracing::BlasVector& arg_blasVec)
 {
-	for (int i = 0; i < m_patrolConfig.lock()->GetSizeX(); ++i)
+	for (int i = 0; i < m_patrolConfig.lock()->GetSizeX() / 4; ++i)
 	{
-		for (int j = 0; j < m_patrolConfig.lock()->GetSizeY(); ++j)
+		for (int j = 0; j < m_patrolConfig.lock()->GetSizeY() / 4; ++j)
 		{
 			KazMath::Color l_color = m_baseColor;
 

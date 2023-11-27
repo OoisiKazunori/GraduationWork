@@ -1,14 +1,16 @@
 #include "Enemy.h"
 #include "EnemyConfig.h"
+#include"../Game/Collision/MeshCollision.h"
 
 Enemy::Enemy()
 {
 	//m_trans.scale /= 2;
 	m_state = State::Patrol;
-	m_isCheckPoint = false;
 	m_delayNum = 0;
 	m_count = 0;
 	m_delay = 0;
+	m_isCheckPoint = false;
+	m_onGround = false;
 
 	m_checkSoundCount = 0;
 	m_isReturn = false;
@@ -37,6 +39,12 @@ void Enemy::SetData(
 			"Resource/Test/Virus/",
 			"virus_cur.gltf"
 			);
+
+	m_meshCol = std::make_shared<MeshCollision>();
+	m_meshCol->Setting(
+		m_enemyBox.get()->m_model.
+		m_modelInfo->modelData[0].vertexData,
+		m_trans);
 }
 
 void Enemy::SetCheckPointDelay(
@@ -49,11 +57,78 @@ void Enemy::SetCheckPointDelay(
 	}
 }
 
+void Enemy::Collision(
+	std::weak_ptr<MeshCollision> arg_meshCollision)
+{
+	const float RAY_LENGTH = 5.0f;
+
+	//地面と当たり判定を行う。
+	m_onGround = false;
+	const float GROUND_RAY_OFFSET = 5.0f;
+	MeshCollision::CheckHitResult rayResult =
+		arg_meshCollision.lock()->CheckHitRay(
+			m_trans.pos +
+			m_trans.GetUp() *
+			GROUND_RAY_OFFSET, -m_trans.GetUp());
+
+	if (rayResult.m_isHit &&
+		0.0f < rayResult.m_distance &&
+		rayResult.m_distance <= RAY_LENGTH + GROUND_RAY_OFFSET) {
+
+		//押し戻し。
+		m_trans.pos +=
+			rayResult.m_normal *
+			(RAY_LENGTH + GROUND_RAY_OFFSET - rayResult.m_distance);
+		m_onGround = true;
+	}
+
+	//当たり判定を計算。
+	rayResult = arg_meshCollision.lock()->CheckHitRay(
+		m_trans.pos,
+		m_trans.GetFront());
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		//押し戻し。
+		m_trans.pos +=
+			rayResult.m_normal *
+			(RAY_LENGTH - rayResult.m_distance);
+	}
+
+	//右方向
+	rayResult = arg_meshCollision.lock()->CheckHitRay(
+		m_trans.pos,
+		m_trans.GetRight());
+	if (rayResult.m_isHit &&
+		0.0f < rayResult.m_distance &&
+		rayResult.m_distance <= RAY_LENGTH) {
+
+		//押し戻し。
+		m_trans.pos +=
+			rayResult.m_normal *
+			(RAY_LENGTH - rayResult.m_distance);
+	}
+
+	//左方向
+	rayResult = arg_meshCollision.lock()->CheckHitRay(
+		m_trans.pos,
+		-m_trans.GetRight());
+	if (rayResult.m_isHit &&
+		0.0f < rayResult.m_distance &&
+		rayResult.m_distance <= RAY_LENGTH) {
+
+		//押し戻し。
+		m_trans.pos +=
+			rayResult.m_normal *
+			(RAY_LENGTH - rayResult.m_distance);
+	}
+}
+
 void Enemy::Init()
 {
 }
 
-void Enemy::Update()
+void Enemy::Update(
+	std::weak_ptr<MeshCollision> arg_meshCollision)
 {
 	if (m_state == State::Warning)
 	{
@@ -128,6 +203,8 @@ void Enemy::Update()
 	}
 
 	m_oldPos = m_trans.pos;
+
+	Collision(arg_meshCollision);
 }
 
 void Enemy::Draw(

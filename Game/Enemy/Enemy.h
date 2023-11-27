@@ -2,6 +2,8 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 #include "PatrolData.h"
 
+class MeshCollision;
+
 class Enemy
 {
 public:
@@ -14,9 +16,12 @@ public:
 		Death		//Ž€–S
 	};
 
-public:
+private:
 	std::shared_ptr<
 		BasicDraw::BasicModelRender> m_enemyBox;
+	std::shared_ptr<MeshCollision> m_meshCol;
+
+private:
 	std::vector<std::pair<float, float>> m_rootPos;
 	std::vector<std::pair<int, int>> m_checkPointDelay;
 	KazMath::Transform3D m_trans;
@@ -25,6 +30,7 @@ public:
 	int m_count;
 	int m_delay;
 	bool m_isCheckPoint;
+	bool m_onGround;
 
 	std::vector<std::pair<float, float>> m_checkSoundPos;
 	int m_checkSoundCount;
@@ -35,7 +41,8 @@ public:
 	Enemy();
 	~Enemy();
 	void Init();
-	void Update();
+	void Update(
+		std::weak_ptr<MeshCollision> arg_meshCollision);
 	void Draw(
 		DrawingByRasterize& arg_rasterize,
 		Raytracing::BlasVector& arg_blasVec);
@@ -44,8 +51,11 @@ private:
 	DirectX::XMVECTOR CalMoveQuaternion(
 		KazMath::Vec3<float> arg_pos,
 		KazMath::Vec3<float> arg_prevPos);
+	void Collision(
+		std::weak_ptr<MeshCollision> arg_meshCollision);
 
 public:
+	KazMath::Transform3D GetTrans() { return m_trans; }
 	KazMath::Vec3<float> GetPos() { return m_trans.pos; }
 
 public:
@@ -65,5 +75,11 @@ public:
 		m_isReturn = false;
 		m_checkSoundCount = 0;
 		m_checkSoundPos = arg_checkSoundPos;
+	}
+
+public:
+	void AddOffset(std::pair<size_t, size_t> arg_offsets) {
+		m_trans.pos.x += arg_offsets.first;
+		m_trans.pos.z += arg_offsets.second;
 	}
 };

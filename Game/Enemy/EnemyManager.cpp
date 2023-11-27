@@ -1,20 +1,9 @@
 #include "EnemyManager.h"
 #include "../KazLibrary/Input/KeyBoradInputManager.h"
+#include"../MapLoader/MapLoader.h"
 
-EnemyManager::EnemyManager(DrawingByRasterize& arg_rasterize)
+EnemyManager::EnemyManager()
 {
-	m_config = std::make_shared<PatrolConfig>(10, 10, 2.0f);
-
-	int l_eNum = 3;
-	m_enemys.resize(l_eNum);
-	m_patrolDatas.resize(l_eNum);
-	for (int i = 0; i < l_eNum; ++i)
-	{
-		m_enemys[i].SetData(arg_rasterize);
-		m_patrolDatas[i].SetData(m_config);
-	}
-
-	m_patrolDraw.SetData(arg_rasterize, m_config);
 }
 
 EnemyManager::~EnemyManager()
@@ -31,29 +20,18 @@ void EnemyManager::Init()
 	}
 
 	//検索ポイント位置
-	m_patrolDatas[0].AddCheckPoint(0, 0);
+	/*m_patrolDatas[0].AddCheckPoint(0, 0);
 	m_patrolDatas[0].AddCheckPoint(3, 0);
 	m_patrolDatas[0].AddCheckPoint(3, 3);
 	m_patrolDatas[0].AddCheckPoint(0, 3);
-	//m_patrolDatas[0].AddCheckPoint(2, 0);
-
-	//m_patrolData[0].AddCheckPoint(0, 0);
-	//m_patrolData[0].AddCheckPoint(0, 2);
-	//m_patrolData[0].AddCheckPoint(2, 2);
-	//m_patrolData[0].AddCheckPoint(2, 0);
-	//m_patrolData[0].AddCheckPoint(9, 3);
 
 	m_patrolDatas[1].AddCheckPoint(4, 4);
 	m_patrolDatas[1].AddCheckPoint(6, 4);
 	m_patrolDatas[1].AddCheckPoint(6, 1);
 	m_patrolDatas[1].AddCheckPoint(5, 0);
-	//m_patrolData[1].AddCheckPoint(3, 7);
 
 	m_patrolDatas[2].AddCheckPoint(7, 6);
-	m_patrolDatas[2].AddCheckPoint(7, 9);
-	//m_patrolDatas[2].AddCheckPoint(9, 5);
-	//m_patrolDatas[2].AddCheckPoint(7, 2);
-	//m_patrolData[2].AddCheckPoint(7, 9);
+	m_patrolDatas[2].AddCheckPoint(7, 9);*/
 
 	m_patrolDatas[0].SetColor(KazMath::Color(255, 255, 255, 255));
 	m_patrolDatas[1].SetColor(KazMath::Color(255, 255, 0, 255));
@@ -63,7 +41,85 @@ void EnemyManager::Init()
 	m_patrolDraw.Init();
 }
 
-void EnemyManager::Update()
+void EnemyManager::SetMapData(
+	int arg_stageNum,
+	std::list<EnemyData> arg_mapDatas,
+	DrawingByRasterize& arg_rasterize)
+{
+	bool l_isAdd = false;
+	int l_enemyNum = 0;
+
+	//チェックポイント
+	for (auto i = arg_mapDatas.begin(); i != arg_mapDatas.end(); ++i)
+	{
+		for (auto j = i->m_position.begin(); j != i->m_position.end(); ++j)
+		{
+			//チェックポイント終了
+			if (j->x == -1) {
+				l_isAdd = false;
+				break;
+			}
+
+			//敵の配列番号加算
+			if (!l_isAdd) {
+				l_isAdd = true;
+				l_enemyNum++;
+				m_patrolDatas.push_back(PatrolData());
+				m_enemys.push_back(Enemy());
+			}
+
+			m_patrolDatas[l_enemyNum - 1].
+				AddCheckPoint(j->x, j->y);
+		}
+	}
+
+	//マップサイズ
+	m_config = std::make_shared<PatrolConfig>(
+		MapManager::GetMapSizeData(arg_stageNum).x,
+		MapManager::GetMapSizeData(arg_stageNum).y,
+		2.0f);
+
+	//マップデータ
+	std::list<std::list<int>> l_mapChips =
+		MapManager::GetMapChips(arg_stageNum);
+	int l_x = 0;
+	for (auto i = l_mapChips.begin(); i != l_mapChips.end(); ++i)
+	{
+		int l_y = 0;
+
+		for (auto j = i->begin(); j != i->end(); ++j)
+		{
+			if (*j == 0) {
+				m_config->SetType(l_x, l_y,
+					PatrolConfig::AstarType::Move);
+			}
+			else  if (*j == 1) {
+				m_config->SetType(l_x, l_y,
+					PatrolConfig::AstarType::UnMove);
+			}
+
+			l_y++;
+		}
+
+		l_x++;
+	}
+
+	//マップデータが来てから初期化
+	size_t l_offset_x = m_config.get()->GetOffsetX();
+	size_t l_offset_y = m_config.get()->GetOffsetY();
+	for (int i = 0; i < l_enemyNum; ++i)
+	{
+		m_enemys[i].SetData(arg_rasterize);
+		m_enemys[i].AddOffset(std::make_pair(
+			l_offset_x,
+			l_offset_y));
+		m_patrolDatas[i].SetData(m_config);
+	}
+	m_patrolDraw.SetData(arg_rasterize, m_config);
+}
+
+void EnemyManager::Update(
+	std::weak_ptr<MeshCollision> arg_meshCollision)
 {
 	bool isInput = false;
 	if (KeyBoradInputManager::
@@ -90,7 +146,7 @@ void EnemyManager::Update()
 		m_enemys[i].SetRootPos(m_patrolDatas[i].GetRootPos());
 		m_enemys[i].SetCheckPointDelay(
 			m_patrolDatas[i].GetCheckPointDelay());
-		m_enemys[i].Update();
+		m_enemys[i].Update(arg_meshCollision);
 	}
 
 	//移動

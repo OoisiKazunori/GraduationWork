@@ -5,6 +5,8 @@ PatrolConfig::PatrolConfig(
 {
 	m_size_x = arg_x;
 	m_size_y = arg_y;
+	m_offset_x = 0;
+	m_offset_y = 0;
 	m_chipSize = arg_chipSize;
 
 	m_astarDatas.resize(m_size_x);
