@@ -182,7 +182,7 @@ void Enemy::Update(
 		if (CheckEye(arg_playerPos, arg_stageColliders))
 		{
 			//ƒvƒŒƒCƒ„[•ûŒü
-			CalMoveQuaternion(arg_playerPos, m_trans.pos);
+			m_trans.quaternion = CalMoveQuaternion(arg_playerPos, m_trans.pos);
 
 			//ËŒ‚
 		}
@@ -205,8 +205,8 @@ void Enemy::Update(
 		CheckEye(arg_playerPos, arg_stageColliders))
 	{
 		m_isCombat = true;
-		//m_state = State::Combat;
-		//m_rate = MAX;
+		m_state = State::Combat;
+		m_rate = MAX_RATE;
 	}
 
 	//‰ñ“]
