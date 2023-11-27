@@ -16,10 +16,10 @@ void PatrolDraw::SetData(
 {
 	m_patrolConfig = arg_config;
 
-	size_t l_x = m_patrolConfig.lock()->GetSizeX();
-	size_t l_y = m_patrolConfig.lock()->GetSizeY();
-	//size_t l_x = 0;
-	//size_t l_y = 0;
+	//size_t l_x = m_patrolConfig.lock()->GetSizeX() / 10;
+	//size_t l_y = m_patrolConfig.lock()->GetSizeY() / 10;
+	size_t l_x = 0;
+	size_t l_y = 0;
 
 	m_modelRenders.reserve(l_x);
 	m_modelRenders.resize(l_x);
