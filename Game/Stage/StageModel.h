@@ -15,7 +15,7 @@ public:
 	BasicDraw::BasicModelRender m_stageModelRender;
 	KazMath::Transform3D m_transform;
 	bool m_echoFlag = false;//エコーによるオブジェクト描画処理を有効化する
-	int m_drawTimer = 120;
+	int m_drawTimer = 0;
 	bool m_isDrawFlag = false;
 private:
 	bool m_prevIsDrawFlag = false;

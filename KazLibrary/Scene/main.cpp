@@ -118,7 +118,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		if (isWindowClip)
 		{
-
 			GetWindowRect(winApi.hwnd, &wrc);
 
 			//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
@@ -131,7 +130,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ClipCursor(&wrc);
 			//マウス非表示
 			ShowCursor(false);
-
 		}
 		else
 		{
@@ -141,6 +139,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 #endif // _DEBUG
 
+//#ifdef DEBUG
+		GetWindowRect(winApi.hwnd, &wrc);
+
+		//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
+		const LONG OFFSET = 300;
+		wrc.left += OFFSET;
+		wrc.right -= OFFSET;
+		wrc.bottom -= OFFSET;
+		wrc.top += OFFSET;
+
+		ClipCursor(&wrc);
+		//マウス非表示
+		ShowCursor(false);
+//#endif // _DEBUG
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
