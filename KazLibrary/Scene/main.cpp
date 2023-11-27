@@ -155,10 +155,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			sm.Draw();
 		}
 
-		if (sm.endGameFlag || KeyBoradInputManager::Instance()->InputTrigger(DIK_F3) || Menu::GetIsGameEnd())
+		if (sm.endGameFlag || Menu::GetIsGameEnd())
 		{
 			break;
 		}
+		/*if (sm.endGameFlag || KeyBoradInputManager::Instance()->InputTrigger(DIK_F3) || Menu::GetIsGameEnd())
+		{
+			break;
+		}*/
 
 
 		imgui.Set();
