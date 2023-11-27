@@ -10,6 +10,7 @@ class ThrowableObject {
 private:
 
 	BasicDraw::BasicModelRender m_model;
+	BasicDraw::BasicModelRender m_predictedModel;
 	KazMath::Transform3D m_transform;
 	KazMath::Vec3<float> m_throwVector;
 	float m_gravity;
