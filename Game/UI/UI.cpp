@@ -234,7 +234,6 @@ void WeponUIManager::EaseInit()
 			GetUI((*itr).first).EasePosInit({ xPos , yPos + (yOffset * sub) });
 			hoge++;
 		}
-
 	}
 }
 
