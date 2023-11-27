@@ -91,7 +91,7 @@ HRESULT WinApi::CreateMyWindow(int WINDOW_SIZE_X, int WINDOW_SIZE_Y)
 	
 	hwnd = CreateWindow(
 		window.lpszClassName,
-		L"GradiationWork",
+		L"4205_LookBy",
 		WS_OVERLAPPEDWINDOW,
 		//WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
 		CW_USEDEFAULT,
