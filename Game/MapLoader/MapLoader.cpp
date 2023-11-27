@@ -5,12 +5,15 @@
 
 std::list<std::list<MapObject>> MapManager::m_maps;
 std::list<std::list<EnemyData>> MapManager::m_enemys;
-
+std::list<DirectX::XMINT2> MapManager::m_mapSize;
+std::list<std::list<DirectX::XMINT2>> MapManager::m_mapChips;
 
 void MapManager::Init()
 {
 	m_maps.clear();
 	m_enemys.clear();
+	m_mapSize.clear();
+	m_mapChips.clear();
 
 	std::list<std::string> l_fileNames;
 
@@ -25,7 +28,7 @@ void MapManager::Init()
 		ParameterMgr l_mapData;
 		//ファイル名でjsonを取得
 		l_mapData.LoadFile(*l_fileNameItr);
-
+		
 		for (int o_counter = 0; o_counter < static_cast<int>(l_mapData.doc["Objects"].GetArray().Size()); o_counter++)
 		{
 			MapObject l_obj;
@@ -50,7 +53,7 @@ void MapManager::Init()
 			//エコー範囲のあるものはここで登録していく
 			if (l_obj.m_objetName.starts_with("echo") == true)
 			{
-
+				
 			}
 
 			m_objects.push_back(l_obj);
@@ -88,6 +91,7 @@ void MapManager::Init()
 		if (file.is_open())
 		{
 			string line;
+			DirectX::XMINT2 maxSize = { 0, 0 };
 			DirectX::XMINT2 pos = { 0, -0 };
 			while (getline(file, line))
 			{
@@ -121,8 +125,14 @@ void MapManager::Init()
 					pos.x++;
 				}
 				pos.y++;
+				if (maxSize.x < pos.x)
+				{
+					maxSize.x = pos.x;
+				}
 				pos.x = 0;
 			}
+			maxSize.y = pos.y;
+			m_mapSize.push_back(maxSize);
 		}
 		m_enemys.push_back(l_enemys);
 	}

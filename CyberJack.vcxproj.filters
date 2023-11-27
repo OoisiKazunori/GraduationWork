@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
@@ -95,30 +95,24 @@
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="KazLibrary\Render\BasicDraw.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
-=======
     <ClCompile Include="Game\Stage\StageManager.cpp" />
     <ClCompile Include="Game\Stage\StageModel.cpp" />
     <ClCompile Include="KazLibrary\Render\GenerateRender.cpp" />
->>>>>>> 4efa8318049b23ed4dc527d8c32c2a03ca6e98de
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Game\Enemy\PatrolData.cpp" />
     <ClCompile Include="Game\Enemy\PatrolDraw.cpp" />
     <ClCompile Include="Game\Enemy\PatrolConfig.cpp" />
-=======
     <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="Game\Menu\Menu.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Scene\StageSelectScene.cpp" />
->>>>>>> 4efa8318049b23ed4dc527d8c32c2a03ca6e98de
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -232,31 +226,25 @@
     <ClInclude Include="Game\Scene\DemoScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="KazLibrary\Render\BasicDraw.h" />
-<<<<<<< HEAD
     <ClInclude Include="Game\Enemy\Enemy.h" />
     <ClInclude Include="Game\Enemy\EnemyManager.h" />
-=======
     <ClInclude Include="Game\Stage\StageManager.h" />
     <ClInclude Include="Game\Stage\StageModel.h" />
     <ClInclude Include="KazLibrary\Render\GenerateRender.h" />
->>>>>>> 4efa8318049b23ed4dc527d8c32c2a03ca6e98de
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\MapLoader\MapLoader.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
-<<<<<<< HEAD
     <ClInclude Include="Game\Enemy\PatrolData.h" />
     <ClInclude Include="Game\Enemy\EnemyConfig.h" />
     <ClInclude Include="Game\Enemy\PatrolConfig.h" />
     <ClInclude Include="Game\Enemy\PatrolDraw.h" />
-=======
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Menu\Menu.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Scene\StageSelectScene.h" />
->>>>>>> 4efa8318049b23ed4dc527d8c32c2a03ca6e98de
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -31,9 +31,6 @@ void Camera::Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<Mesh
 	//“ü—Í‚ðŽæ‚éB
 	Input();
 
-	//ˆÊ’u‚ð‚¿‚å‚Á‚Æã‚É‚¸‚ç‚·B
-	arg_playerTransform.pos.y += 2.5f;
-
 	//ADS‚µ‚½uŠÔ or ‚â‚ß‚½uŠÔ‚¾‚Á‚½‚ç
 	if ((arg_isADS && !m_isOldADS) || (!arg_isADS && m_isOldADS)) {
 

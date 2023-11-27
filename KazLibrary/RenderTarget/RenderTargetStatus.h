@@ -68,21 +68,21 @@ public:
 	void SetDepth(RESOURCE_HANDLE RENDERTARGET_HANDLE);
 
 
-	RESOURCE_HANDLE CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const DirectX::XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
-	std::vector<RESOURCE_HANDLE> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA, const DXGI_FORMAT &FORMAT);
-	std::vector<RESOURCE_HANDLE> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA);
-	ID3D12Resource *GetBufferData(RESOURCE_HANDLE HANDLE)const;
-	const KazBufferHelper::BufferData &GetBuffer(RESOURCE_HANDLE HANDLE);
+	RESOURCE_HANDLE CreateRenderTarget(const KazMath::Vec2<UINT>& GRAPH_SIZE, const DirectX::XMFLOAT3& CLEAR_COLOR, const DXGI_FORMAT& FORMAT);
+	std::vector<RESOURCE_HANDLE> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData>& MULTIRENDER_TARGET_DATA, const DXGI_FORMAT& FORMAT);
+	std::vector<RESOURCE_HANDLE> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData>& MULTIRENDER_TARGET_DATA);
+	ID3D12Resource* GetBufferData(RESOURCE_HANDLE HANDLE)const;
+	const KazBufferHelper::BufferData& GetBuffer(RESOURCE_HANDLE HANDLE);
 	D3D12_GPU_DESCRIPTOR_HANDLE GetViewData(RESOURCE_HANDLE HANDLE);
 
 
 	void DeleteRenderTarget(RESOURCE_HANDLE HANDLE);
-	void DeleteMultiRenderTarget(const std::vector<RESOURCE_HANDLE> &HANDLE);
+	void DeleteMultiRenderTarget(const std::vector<RESOURCE_HANDLE>& HANDLE);
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> copyBuffer;
 
 	GraphicsDepthTest gDepth;
-	RESOURCE_HANDLE handle, handle2;
+	RESOURCE_HANDLE handle;
 
 	HandleMaker renderTargetHandle;
 	std::vector<KazBufferHelper::BufferData> buffers;
@@ -93,7 +93,7 @@ public:
 	//レンダーターゲットのハンドルからパス数を記録した配列
 	std::array<std::vector<RESOURCE_HANDLE>, RENDERTARGET_MAX_NUM>renderTargetData;
 
-	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE);
+	void ChangeBarrier(ID3D12Resource* RESOURCE, const D3D12_RESOURCE_STATES& BEFORE_STATE, const D3D12_RESOURCE_STATES& AFTER_STATE);
 
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeaps;
@@ -119,6 +119,6 @@ private:
 	};
 	std::vector<RESOURCE_HANDLE> CountPass(RESOURCE_HANDLE HANDLE);
 
-	RESOURCE_HANDLE GenerateRenderTargetBuffer(const MultiRenderTargetData &arg_renderTargetBufferData);
+	RESOURCE_HANDLE GenerateRenderTargetBuffer(const MultiRenderTargetData& arg_renderTargetBufferData);
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle(RESOURCE_HANDLE arg_handle);
 };

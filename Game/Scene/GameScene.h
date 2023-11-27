@@ -16,6 +16,10 @@ class Player;
 class Camera;
 class MeshCollision;
 class BulletMgr;
+class ThrowableObjectController;
+
+//デバッグ用
+class PreEnemy;
 
 class GameScene :public SceneBase
 {
@@ -43,13 +47,7 @@ private:
 	DebugCamera m_debuCamera;
 	std::shared_ptr<Camera> m_camera;
 
-	//描画--------------------------
-	BasicDraw::BasicTextureRender m_2DSprite, m_3DSprite;
-	KazMath::Transform3D m_3DSpriteTransform;
-	KazMath::Transform2D m_2DSpriteTransform;
-
-	BasicDraw::BasicModelRender m_modelAnimationRender, m_modelRender;
-	KazMath::Transform3D m_modelAnimationTransform, m_modelTransform;
+	std::array<std::shared_ptr<PreEnemy>, 3> m_preEnemy;
 
 	KazMath::Transform3D m_stageTransform;
 
@@ -59,7 +57,11 @@ private:
 	std::shared_ptr<Player> m_player;
 	std::shared_ptr<MeshCollision> m_stageMeshCollision;
 	std::shared_ptr<BulletMgr> m_bulletMgr;
+<<<<<<< HEAD
 	std::shared_ptr<EnemyManager> m_enemyManager;
+=======
+	std::shared_ptr<ThrowableObjectController> m_throwableObjectController;
+>>>>>>> 19baaf15d010f09cb408cb87ccb1568eb191ccc4
 
 	int m_sceneNum;
 	int m_stageNum;
@@ -80,12 +82,17 @@ private:
 
 	BasicDraw::BasicLineRender m_line;
 	BasicDraw::BasicModelRender m_stage;
+	//BasicDraw::BasicTextureRender m_outlineTex;
 
 	StageManager m_stageManager;
 	
 	WeponUIManager m_uiManager;
 	GadgetUIManager m_gadgetMaanager;
 	HPUI m_HPBarManager;
+	ResultUI m_resultManager;
+
+
+	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
 	HeartRate m_heartRateManager;
 	Menu m_menu;
 };

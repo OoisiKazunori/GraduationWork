@@ -29,12 +29,15 @@ public:
 private:
 		//•`‰æ--------------------------
 	BasicDraw::BasicTextureRender m_2DSprite;
+	BasicDraw::BasicTextureRender m_space;
 	KazMath::Transform2D m_2DSpriteTransform;
-
+	KazMath::Transform2D m_spaceTransform;
 
 	std::shared_ptr<Player> m_player;
 
 	int m_sceneNum;
-
-
+	int m_inputDiray = 0;
+	const int C_InputDiray = 45;
+	int m_spaceColor = 255;
+	int m_spaceAddColor = 2;
 };

@@ -223,10 +223,9 @@ void DrawFuncHelper::ModelRender::Load(const std::string& arg_fileDir, const std
 void DrawFuncHelper::ModelRender::Load(const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
 {
 	m_modelInfo = arg_modelInfomation;
-
+	m_drawCommand = arg_drawCall;
 	Error();
 	LoadAnimation();
-	m_drawCommand = arg_drawCall;
 }
 
 bool DrawFuncHelper::ModelRender::LoadAnimation()
@@ -310,6 +309,7 @@ void DrawFuncHelper::LineRender::Generate(DrawingByRasterize& arg_rasterize, con
 	//’¸“_î•ñ‚ð—pˆÓ‚·‚é
 	m_drawCommand.m_modelVertDataHandle = VertexBufferMgr::Instance()->GenerateBuffer(data, false);
 	m_drawCommand.drawInstanceCommandData = VertexBufferMgr::Instance()->GetVertexBuffer(m_drawCommand.m_modelVertDataHandle).instanceData;
+	m_drawCommand.drawInstanceCommandData.topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 	m_drawCommand.pipelineData.desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);

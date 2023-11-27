@@ -115,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			GetWindowRect(winApi.hwnd, &wrc);
 
 			//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
-			const LONG OFFSET = 5;
+			const LONG OFFSET = 200;
 			wrc.left += OFFSET;
 			wrc.right -= OFFSET;
 			wrc.bottom -= OFFSET;

@@ -32,9 +32,12 @@ public:
 
 	void ObjectRender(const DrawFuncData::DrawData* arg_drawData);
 	void UIRender(const DrawFuncData::DrawData* arg_drawData);
+	void StaticUIRender(const DrawFuncData::DrawData* arg_drawData);
 
 	void SortAndRender();
 	void UISortAndRender();
+	void StaticSortAndRender();
+
 
 
 	const DrawFuncData::DrawData* GenerateSceneChangePipeline(DrawFuncData::DrawCallData*arg_drawCall);
@@ -48,6 +51,7 @@ private:
 	//描画命令のキュー
 	std::list<const DrawFuncData::DrawData*>m_stackDataArray;
 	std::list<const DrawFuncData::DrawData*>m_uiStackDataArray;
+	std::list<const DrawFuncData::DrawData*>m_staticUiStackDataArray;
 	//削除された描画情報のハンドル
 	std::vector<int>m_deleteHandleArray;
 	//削除されたハンドルから描画パイプライン生成ハンドル
@@ -63,6 +67,16 @@ private:
 	RootSignatureDuplicateBlocking rootSignatureBufferMgr;
 
 	//パイプラインの情報----------------------------------------
+
+
+
+	//パイプラインの情報(static)----------------------------------------
+
+	PipelineDuplicateBlocking m_staticPiplineBufferMgr;
+	ShaderDuplicateBlocking m_staticShaderBufferMgr;
+	RootSignatureDuplicateBlocking m_staticRootSignatureBufferMgr;
+
+	//パイプラインの情報(static)----------------------------------------
 
 	//レンダーターゲット情報----------------------------------------
 	RESOURCE_HANDLE prevRenderTargetHandle;

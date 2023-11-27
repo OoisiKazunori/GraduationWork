@@ -28,6 +28,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 
 	//ステージの切り替え処理
 	m_stage->Update();
+	m_goal->Update();
 	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Update();
@@ -44,7 +45,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
 	{
 		(*itr)->Update();
-	}
+}
 	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
 	{
 		(*itr)->Update();
@@ -86,6 +87,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	m_stage->Draw(arg_rasterize, arg_blasVec);
+	m_goal->Draw(arg_rasterize, arg_blasVec);
 	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
@@ -102,7 +104,7 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
 	{
 		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
+}
 	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
 	{
 		(*itr)->Draw(arg_rasterize, arg_blasVec);
@@ -157,7 +159,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	m_tree.clear();
 	m_stone.clear();
 	m_stage.reset();
-
+	m_goal.reset();
 	m_block01.clear();
 
 	m_plane.clear();
@@ -194,6 +196,11 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
+		else if (l_mapItr->m_objetName.starts_with("Goal") == true)
+		{
+			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
 		else if (l_mapItr->m_objetName.starts_with("Block01") == true)
 		{
 			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/StageBlock01/", "StageBlock01.gltf",
@@ -209,9 +216,11 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		{
 			m_Wall_C.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_C/", "Wall_C.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+			
+
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_C.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_C.begin())->m_transform);
+			collision->Setting((*m_Wall_C.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_C.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wall_four-forked_road") == true)
@@ -220,7 +229,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_Four_Forked_Road.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_Four_Forked_Road.begin())->m_transform);
+			collision->Setting((*m_Wall_Four_Forked_Road.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_Four_Forked_Road.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wall_River") == true)
@@ -229,7 +238,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 		
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_River.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_River.begin())->m_transform);
+			collision->Setting((*m_Wall_River.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_River.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallH") == true)
@@ -238,7 +247,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_H.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_H.begin())->m_transform);
+			collision->Setting((*m_Wall_H.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_H.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 
@@ -248,7 +257,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_I.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_I.begin())->m_transform);
+			collision->Setting((*m_Wall_I.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_I.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_LPost") == true)
@@ -257,7 +266,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_L_LPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_L_LPost.begin())->m_transform);
+			collision->Setting((*m_Wall_L_LPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_L_LPost.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_NonPost") == true)
@@ -266,7 +275,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_NonPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_NonPost.begin())->m_transform);
+			collision->Setting((*m_Wall_NonPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_NonPost.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallL_Post") == true)
@@ -275,7 +284,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_L_Post.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_L_Post.begin())->m_transform);
+			collision->Setting((*m_Wall_L_Post.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_L_Post.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("wallT") == true)
@@ -284,10 +293,10 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
 
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_Wall_T.begin())->m_transform);
+			collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_T.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
-	}
+		}
 	//emptyなら入れる
 	if (!m_stage)
 	{

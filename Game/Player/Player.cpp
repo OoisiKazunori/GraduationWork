@@ -5,9 +5,12 @@
 #include "../Bullet/BulletMgr.h"
 #include "../Camera.h"
 #include "../KazLibrary/PostEffect/Outline.h"
+#include "../Echo/EchoArray.h"
+#include "../ThrowableObject/ThrowableObjectController.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
-	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
+	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
+	m_mk23Model(arg_rasterize, "Resource/Weapon/Mk23/", "Mk23.gltf")
 {
 	m_transform = f_startPos;
 	m_transform.pos.y = 20.0f;
@@ -21,24 +24,25 @@ void Player::Init()
 	m_onGround = false;
 	m_isADS = false;
 	m_gravity = 0.0f;
+	m_gunReaction = KazMath::Vec3<float>();
 
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollision> arg_stageMeshCollision, std::weak_ptr<BulletMgr> arg_bulletMgr, std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
+void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
 {
 
 	//動かす前の座標。
 	m_prevPos = m_transform.pos;
 
 	//入力処理
-	Input(arg_camera, arg_bulletMgr);
+	Input(arg_camera, arg_bulletMgr, arg_weaponNumber);
 
 	/*for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr)
 	{
 		Collision(*itr);
 	}*/
 	//当たり判定
-	Collision(arg_stageMeshCollision);
+	Collision(f_stageColliders);
 
 	//重力をかける。
 	if (!m_onGround) {
@@ -74,34 +78,81 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, std::weak_ptr<MeshCollisio
 	//アウトラインを出す中心点代入
 	GBufferMgr::Instance()->m_outline->SetOutlineCenterPos(m_transform.pos);
 
-	//エコーを描画
+	////エコーを描画
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
+
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_center = m_transform.pos;
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius = 0.0f;
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = 0.2f;
+
+	//}
+	//else if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE)) {
+
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius += 8.0f;
+
+	//}
+	//else {
+
+	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = std::clamp(GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha - 0.01f, 0.0f, 1.0f);
+
+	//}
+
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
 
-		GBufferMgr::Instance()->m_outline->m_echoData.m_center = m_transform.pos;
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius = 0.0f;
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = 0.2f;
+		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
 
 	}
-	else if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE)) {
 
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius += 8.0f;
+	arg_throwableObjectController.lock()->InputHold(KeyBoradInputManager::Instance()->InputState(DIK_E));
+
+
+	m_weaponTransform.pos = m_transform.pos;
+	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f);
+	//武器を持っていなかったら
+	if (arg_weaponNumber == WeponUIManager::e_NonWepon) {
+
+		m_weaponPosOffset.x += (3.0f - m_weaponPosOffset.x) / 10.0f;
+		m_weaponPosOffset.y += (3.0f - m_weaponPosOffset.y) / 10.0f;
+		m_weaponPosOffset.z += (3.0f - m_weaponPosOffset.z) / 10.0f;
+
+	}
+	else if (m_isADS) {
+
+		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) / 2.0f;
+		m_weaponPosOffset.y += (0.3f - m_weaponPosOffset.y) / 2.0f;
+		m_weaponPosOffset.z += (0.0f - m_weaponPosOffset.z) / 2.0f;
 
 	}
 	else {
 
-		GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = std::clamp(GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha - 0.01f, 0.0f, 1.0f);
+		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) / 2.0f;
+		m_weaponPosOffset.y += (0.5f - m_weaponPosOffset.y) / 2.0f;
+		m_weaponPosOffset.z += (0.5f - m_weaponPosOffset.z) / 2.0f;
 
 	}
 
+	KazMath::Vec3<float> baseWeaponOffsetPos = KazMath::Vec3<float>();
+	baseWeaponOffsetPos += m_weaponTransform.GetFront() * m_weaponPosOffset.x;
+	baseWeaponOffsetPos -= m_weaponTransform.GetUp() * m_weaponPosOffset.y;
+	baseWeaponOffsetPos += m_weaponTransform.GetRight() * m_weaponPosOffset.z;
+	m_weaponTransform.pos += baseWeaponOffsetPos;
+	m_weaponTransform.pos += m_gunReaction;
+
+	//銃の反動を更新。
+	if (0.01f < m_gunReaction.Length()) {
+
+		m_gunReaction -= m_gunReaction / 5.0f;
+
+	}
 
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	//m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+	m_mk23Model.m_model.Draw(arg_rasterize, arg_blasVec, m_weaponTransform);
 }
 
-void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr)
+void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber)
 {
 
 	m_transform.quaternion = arg_camera.lock()->GetShotQuaternion().quaternion;
@@ -150,9 +201,23 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	m_isADS = KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
 
 	//弾をうつ入力も受け付ける。
-	if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
+	if (m_isADS && arg_weaponNumber != WeponUIManager::e_NonWepon && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
 
-		arg_bulletMgr.lock()->Genrate(m_transform.pos, arg_camera.lock()->GetShotQuaternion().GetFront());
+		bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
+
+		arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
+
+		//銃の反動を追加。
+		if (isEchoBullet) {
+
+			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION * 3.0f;
+
+		}
+		else {
+
+			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION;
+
+		}
 
 	}
 
@@ -192,46 +257,52 @@ void Player::Rotate(std::weak_ptr<Camera> arg_camera)
 
 }
 
-void Player::Collision(std::weak_ptr<MeshCollision> arg_meshCollision)
+void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
 {
 
 
-	const float RAY_LENGTH = 5.0f;
+	const float RAY_LENGTH = 8.0f;
 
 	//地面と当たり判定を行う。
 	m_onGround = false;
+
+
 	const float GROUND_RAY_OFFSET = 5.0f;
-	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
-	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH + GROUND_RAY_OFFSET) {
+	for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr) {
 
-		//押し戻し。
-		m_transform.pos += rayResult.m_normal * (RAY_LENGTH + GROUND_RAY_OFFSET - rayResult.m_distance);
-		m_onGround = true;
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH + GROUND_RAY_OFFSET) {
 
-	}
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH + GROUND_RAY_OFFSET - rayResult.m_distance);
+			m_onGround = true;
 
-	//当たり判定を計算。
-	rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_transform.GetFront());
-	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+		}
 
-		//押し戻し。
-		m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+		//当たり判定を計算。
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetFront());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
-	}
-	//右方向
-	rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_transform.GetRight());
-	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
 
-		//押し戻し。
-		m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+		}
+		//右方向
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetRight());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
-	}
-	//左方向
-	rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, -m_transform.GetRight());
-	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
 
-		//押し戻し。
-		m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+		}
+		//左方向
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetRight());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+
+		}
 
 	}
 

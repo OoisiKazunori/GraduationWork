@@ -41,6 +41,8 @@ class MapManager
 	static std::list<std::list<EnemyData>> m_enemys;
 	//フォルダ内のファイルネームを取得
 	static bool GetFileNames(std::string f_folderPath, std::list<std::string>& f_fileNames);
+	static std::list<DirectX::XMINT2> m_mapSize;
+	static std::list<std::list<DirectX::XMINT2>> m_mapChips;
 public:
 	//jsonの読み込みをここで行っている
 	static void Init();
@@ -59,6 +61,15 @@ public:
 	static std::list<EnemyData> GetEnemyData(int f_stageNum)
 	{
 		std::list<std::list<EnemyData>>::iterator l_itr = m_enemys.begin();
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		return *l_itr;
+	};
+	static DirectX::XMINT2 GetMapSizeData(int f_stageNum)
+	{
+		std::list<DirectX::XMINT2>::iterator l_itr = m_mapSize.begin();
 		for (int i = 0; i < f_stageNum; i++)
 		{
 			l_itr++;

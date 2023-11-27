@@ -116,16 +116,20 @@
   <ItemGroup>
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
+    <ClCompile Include="Game\Bullet\EchoBullet.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Debug\DebugCamera.cpp" />
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
+    <ClCompile Include="Game\Echo\Echo.cpp" />
+    <ClCompile Include="Game\Echo\EchoArray.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Enemy\PatrolData.cpp" />
     <ClCompile Include="Game\Enemy\PatrolConfig.cpp" />
     <ClCompile Include="Game\Enemy\PatrolDraw.cpp" />
+    <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Game\Menu\Menu.cpp" />
@@ -136,6 +140,8 @@
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Stage\StageManager.cpp" />
     <ClCompile Include="Game\Stage\StageModel.cpp" />
+    <ClCompile Include="Game\ThrowableObject\ThrowableObject.cpp" />
+    <ClCompile Include="Game\ThrowableObject\ThrowableObjectController.cpp" />
     <ClCompile Include="Game\Tool\SplineRail.cpp" />
     <ClCompile Include="Game\Tool\ModelTool.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
@@ -230,10 +236,13 @@
     <ClInclude Include="..\Mineral\Game\Effect\ChromaticAberration.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
+    <ClInclude Include="Game\Bullet\EchoBullet.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Debug\DebugCamera.h" />
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
+    <ClInclude Include="Game\Echo\Echo.h" />
+    <ClInclude Include="Game\Echo\EchoArray.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
@@ -242,6 +251,7 @@
     <ClInclude Include="Game\Enemy\PatrolData.h" />
     <ClInclude Include="Game\Enemy\PatrolConfig.h" />
     <ClInclude Include="Game\Enemy\PatrolDraw.h" />
+    <ClInclude Include="Game\Enemy\PreEnemy.h" />
     <ClInclude Include="Game\Input\Input.h" />
     <ClInclude Include="Game\MapLoader\MapLoader.h" />
     <ClInclude Include="Game\Menu\Menu.h" />
@@ -252,6 +262,8 @@
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Stage\StageManager.h" />
     <ClInclude Include="Game\Stage\StageModel.h" />
+    <ClInclude Include="Game\ThrowableObject\ThrowableObject.h" />
+    <ClInclude Include="Game\ThrowableObject\ThrowableObjectController.h" />
     <ClInclude Include="Game\Tool\SplineRail.h" />
     <ClInclude Include="Game\Tool\ModelTool.h" />
     <ClInclude Include="Game\UI\UI.h" />

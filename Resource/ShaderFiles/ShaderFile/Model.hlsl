@@ -26,7 +26,7 @@ struct PosUvNormalOutput
     float3 worldPos : POSITION;
 };
 
-//ライトなし頂点変換
+//ライトなし�?�点変換
 PosUvNormalOutput VSPosNormalUvmain(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD, float3 tangent : TANGENT, float3 binormal : BINORMAL)
 {
     PosUvNormalOutput op;
@@ -57,7 +57,7 @@ struct ModelWithLightOutputData
     float3 worldPos : POSITION;
 };
 
-//ライトあり頂点返還
+//ライトあり�?�点返還
 ModelWithLightOutputData VSPosNormalUvLightMain(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD, float3 tangent : TANGENT, float3 binormal : BINORMAL)
 {
     ModelWithLightOutputData op;
@@ -109,7 +109,7 @@ struct PosUvNormalTangentBinormalOutput
     float3 binormal : BINORMAL;
 };
 
-//ディファードレンダリング対応
+//�?ィファードレンダリング対�?
 PosUvNormalTangentBinormalOutput VSDefferdMain(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD, float3 tangent : TANGENT, float3 binormal : BINORMAL)
 {
     PosUvNormalTangentBinormalOutput op;
@@ -130,7 +130,7 @@ cbuffer ColorBuffer : register(b2)
     float4 color;
 }
 
-//ディファードレンダリング対応
+//�?ィファードレンダリング対�?
 GBufferOutput PSDefferdMain(PosUvNormalTangentBinormalOutput input) : SV_TARGET
 {
     float4 normalColor = NormalTex.Sample(smp, input.uv);
@@ -172,7 +172,7 @@ cbuffer EmissiveBuffer : register(b3)
     float4 emissiveColorAndStrength;
 }
 
-//ディファードレンダリング対応、ブルーム付き
+//�?ィファードレンダリング対応、ブルー�?付き
 GBufferOutput PSDefferdBloomMain(PosUvNormalTangentBinormalOutput input) : SV_TARGET
 {
     float4 normalColor = NormalTex.Sample(smp, input.uv);
@@ -228,7 +228,7 @@ cbuffer cbuff4 : register(b3)
     matrix bones[256];
 }
 
-//モデルのアニメーション
+//モ�?ルのアニメーション
 PosUvNormalTangentBinormalOutput VSDefferdAnimationMain(VertexData input)
 {
     float4 resultPos = input.pos;
@@ -277,7 +277,7 @@ GBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput input) : S
     }
 
     GBufferOutput output;
-    output.albedo = texColor * color;
+    output.albedo = float4(1,1,1,1) * color;
     output.normal = float4(normal, 1.0f);
     output.metalnessRoughness = float4(0, 0, 0, 0);
     output.world = float4(input.worldPos, 1.0f);

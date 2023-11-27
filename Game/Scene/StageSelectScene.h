@@ -51,7 +51,7 @@ public:
 		//マウス感度調整
 		MouseSens,
 		//ボリューム調整
-		Volume,
+		//Volume,
 	};
 	
 	
@@ -88,7 +88,8 @@ private:
 
 	bool isMouseReversal = false;
 
-	static int startStageNum;
+	int inputDeray = 0;
+	const int C_InputDeray = 45;
 
 	SelectSceneSprite m_backSp;
 	SelectSceneSprite m_backBarSp;
@@ -110,7 +111,11 @@ private:
 	SelectSceneSprite m_FlipCheckBoxSp;
 	SelectSceneSprite m_MouseFlipCheckSp;
 
+	SelectSceneSprite m_escSp;
+
 	public :
+	static int startStageNum;
+	static const int C_StageMaxNum;
 	static float GetVolune(){return volume;};
 	static int GetStartStageNum(){return startStageNum;};
 };
