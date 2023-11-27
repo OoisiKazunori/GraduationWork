@@ -40,6 +40,7 @@ void Player::Init()
 	m_gravity = 0.0f;
 	m_heatbeatTimer = 0;
 	m_gunReaction = KazMath::Vec3<float>();
+	m_shotDelay = SHOT_DELAY;
 
 }
 
@@ -168,6 +169,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	}
 
+	//銃の連射の遅延を更新。
+	m_shotDelay = std::clamp(m_shotDelay + 1, 0, SHOT_DELAY);
+
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -245,7 +249,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	case WeponUIManager::e_Hundgun:
 
 		//弾をうつ入力も受け付ける。
-		if (m_isADS && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
+		if (m_isADS && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
 
 			bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 
@@ -264,6 +268,8 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 				SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
 
 			}
+
+			m_shotDelay = 0;
 
 		}
 

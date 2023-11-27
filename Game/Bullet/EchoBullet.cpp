@@ -3,10 +3,12 @@
 #include "../Echo/EchoArray.h"
 
 EchoBullet::EchoBullet(DrawingByRasterize& arg_rasterize) :
-	m_model(arg_rasterize, "Resource/Bullet/", "EchoBullet.gltf") {
+	m_model(arg_rasterize, "Resource/Weapon/EchoBullet/", "Bullet.gltf") {
 
 	m_echoSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/EchoBullet.wav");
 	m_echoSE.volume = 0.05f;
+
+	m_transform.scale = KazMath::Vec3<float>(10.0f, 10.0f, 10.0f);
 
 }
 
@@ -46,7 +48,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				m_transform.pos = rayResult.m_position;
 
 				//まずは最初にエコーを出す。
-				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
+				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
 				--m_echoCount;
 
 				SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
@@ -80,7 +82,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 		++m_echoSpan;
 		if (ECHO_SPAN <= m_echoSpan) {
 
-			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
+			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
 			--m_echoCount;
 			m_echoSpan = 0.0f;
 
