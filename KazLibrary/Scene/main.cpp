@@ -107,16 +107,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	RECT wrc = { 0,0,1280,720 };
 	OutputDebugStringA("ゲームのメインループを開始します\n");
+
+	bool isWindowClip = false;
+
 	while (CheckMessageFlag)
 	{
-#ifdef DEBUG
-		if (!KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
+#ifdef _DEBUG
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_9)) {
+			isWindowClip = !isWindowClip;
+		}
+		if (isWindowClip)
 		{
 
 			GetWindowRect(winApi.hwnd, &wrc);
 
 			//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
-			const LONG OFFSET = 200;
+			const LONG OFFSET = 300;
 			wrc.left += OFFSET;
 			wrc.right -= OFFSET;
 			wrc.bottom -= OFFSET;

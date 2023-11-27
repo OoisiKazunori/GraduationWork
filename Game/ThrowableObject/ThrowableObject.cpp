@@ -6,6 +6,10 @@ ThrowableObject::ThrowableObject(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Bullet/", "EchoBullet.gltf")
 {
 
+
+	m_objectSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Object.wav");
+	m_objectSE.volume = 0.05f;
+
 	Init();
 
 }
@@ -70,6 +74,8 @@ void ThrowableObject::Update(std::list<std::shared_ptr<MeshCollision>> f_stageCo
 
 				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
 				Init();
+
+				SoundManager::Instance()->SoundPlayerWave(m_objectSE, 0);
 
 			}
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <Render/BasicDraw.h>
 #include "../KazLibrary/Math/KazMath.h"
+#include "../KazLibrary/Sound/SoundManager.h"
 
 class MeshCollision;
 
@@ -21,6 +22,8 @@ private:
 	const float ECHO_SPAN = 120.0f;
 	int m_disappearTimer;
 	const int DESAPPEAR_TIMER = 60;
+
+	SoundData m_echoSE;
 
 public:
 

@@ -4,6 +4,10 @@
 
 EchoBullet::EchoBullet(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Bullet/", "EchoBullet.gltf") {
+
+	m_echoSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/EchoBullet.wav");
+	m_echoSE.volume = 0.05f;
+
 }
 
 void EchoBullet::Init()
@@ -45,6 +49,8 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
 				--m_echoCount;
 
+				SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
+
 				m_isCollision = false;
 				isHit = true;
 
@@ -77,6 +83,8 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
 			--m_echoCount;
 			m_echoSpan = 0.0f;
+
+			SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
 
 			if (m_echoCount <= 0) {
 

@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/Render/BasicDraw.h"
 #include "../KazLibrary/Math/KazMath.h"
+#include "../KazLibrary/Sound/SoundManager.h"
 
 class UI2DElement
 {
@@ -89,6 +90,9 @@ private:
 	void EaseInit();
 	//‚±‚Á‚¿‚ªƒvƒŒƒCƒ„[‚É“n‚·•û
 	WeponNumber m_nowWepon;
+
+	SoundData m_changeWeaponSE;
+
 public:
 
 	WeponUIManager(DrawingByRasterize& arg_rasterize);
