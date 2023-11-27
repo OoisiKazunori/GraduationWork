@@ -211,6 +211,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	}
 	m_goalPoint.Update();
 
+	//プレイヤーとゴールの当たり判定
+	KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
+	KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
+	KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
+
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
