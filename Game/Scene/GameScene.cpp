@@ -164,10 +164,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
 		{
-			//m_resultManager.ShowResult();
+			m_resultManager.ShowResult();
 
 			//次のシーンに進むテスト
-			if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
+			/*if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 			{
 				m_resultManager.ShowResult();
 				m_resultManager.SetClear();
@@ -184,7 +184,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				{
 					m_sceneNum = 3;
 				}
-			}
+			}*/
 		}
 	}
 	//リザルト出す
@@ -197,10 +197,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_sceneNum = 0;
 		}
 	}
-	auto hogehoge = MapManager::GetEnemyData(m_stageNum);
-
-	int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
-	int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
 	m_menu.Update();
 
 	m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
@@ -230,8 +226,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//描画命令発行
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
-	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち

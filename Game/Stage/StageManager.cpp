@@ -87,7 +87,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	m_stage->Draw(arg_rasterize, arg_blasVec);
-	m_goal->Draw(arg_rasterize, arg_blasVec);
+	//m_goal->Draw(arg_rasterize, arg_blasVec);
 	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
@@ -201,10 +201,14 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		else if (l_mapItr->m_objetName.starts_with("Block01") == true)
+		else if (l_mapItr->m_objetName.starts_with("Block") == true)
 		{
-			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/StageBlock01/", "StageBlock01.gltf",
+			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_block01.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_block01.end())->m_transform);
+			m_collisions.push_back(collision);
 		}
 
 		else if (l_mapItr->m_objetName.starts_with("plane") == true)
@@ -278,7 +282,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			collision->Setting((*m_Wall_NonPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_NonPost.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
-		else if (l_mapItr->m_objetName.starts_with("wallL_Post") == true)
+		else if (l_mapItr->m_objetName.starts_with("Wall_L_Post") == true)
 		{
 			m_Wall_L_Post.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_Post/", "Wall_L_Post.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));

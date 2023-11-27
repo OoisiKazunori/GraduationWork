@@ -113,6 +113,10 @@ private:
 
 	SelectSceneSprite m_escSp;
 
+	SoundData m_selectSE;
+	SoundData m_upDownSE;
+
+
 	public :
 	static int startStageNum;
 	static const int C_StageMaxNum;
