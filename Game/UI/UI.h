@@ -175,6 +175,9 @@ class HPUI
 	static int m_hp;
 	static int m_redHP;
 	const int MaxHP = 100;
+
+	static int redWaitTime;
+	static const int redTime = 1;
 public:
 	HPUI(DrawingByRasterize& arg_rasterize);
 
