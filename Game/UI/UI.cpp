@@ -5,6 +5,8 @@
 int HPUI::m_hp = 100;
 int HPUI::m_redHP = 0;
 
+int HPUI::redWaitTime = 0;
+
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
 	m_2DSprite(arg_rasterize, f_filePath, true)
 {
@@ -159,12 +161,16 @@ void WeponUIManager::Update()
 	if (KeyBoradInputManager::Instance()->InputState(DIK_TAB))
 	{
 		m_showUITime = c_ShowTime;
+	}
+	if (m_showUITime > 0)
+	{
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber < m_haveWepons.size() - 1)
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber + 1;
 				isDirty = true;
+				m_showUITime = c_ShowTime;
 			}
 			easeTimer = 0.0f;
 
@@ -177,6 +183,7 @@ void WeponUIManager::Update()
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber - 1;
 				isDirty = true;
+				m_showUITime = c_ShowTime;
 			}
 			easeTimer = 0.0f;
 
@@ -229,7 +236,6 @@ void WeponUIManager::EaseInit()
 			GetUI((*itr).first).EasePosInit({ xPos , yPos + (yOffset * sub) });
 			hoge++;
 		}
-
 	}
 }
 
@@ -462,20 +468,11 @@ void HPUI::Init()
 
 void HPUI::Update(const int f_playerHP)
 {
-	static int redWaitTime = 0;
-	const int redTime = 1;
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
+	//HPŒ¸‚ç‚·‚Æ‚«‚Í‚±‚±‚ðŽQÆI
+	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		HitDamage(10, 10);
-		if (m_hp > 0)
-		{
-			redWaitTime = 45;
-		}
-		else
-		{
-			redWaitTime = 0;
-		}
-	}
+	}*/
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
@@ -561,6 +558,14 @@ void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 	else
 	{
 		//m_redHP = 0;
+	}
+	if (m_hp > 0)
+	{
+		redWaitTime = 45;
+	}
+	else
+	{
+		redWaitTime = 0;
 	}
 }
 
