@@ -46,7 +46,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	m_prevPos = m_transform.pos;
 
 	//“ü—Íˆ—
-	Input(arg_camera, arg_bulletMgr, arg_weaponNumber);
+	Input(arg_camera, arg_bulletMgr, arg_weaponNumber, arg_throwableObjectController);
 
 	/*for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr)
 	{
@@ -115,9 +115,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	}
 
-	arg_throwableObjectController.lock()->InputHold(KeyBoradInputManager::Instance()->InputState(DIK_E));
-
-
 	m_weaponTransform.pos = m_transform.pos;
 	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f);
 	//•Ší‚ğ‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç
@@ -171,7 +168,7 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 	m_mk23Model.m_model.Draw(arg_rasterize, arg_blasVec, m_weaponTransform);
 }
 
-void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber)
+void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController)
 {
 
 	m_transform.quaternion = arg_camera.lock()->GetShotQuaternion().quaternion;
@@ -223,28 +220,47 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		SoundManager::Instance()->SoundPlayerWave(m_adsSE, 0);
 	}
 
-	//’e‚ğ‚¤‚Â“ü—Í‚àó‚¯•t‚¯‚éB
-	if (m_isADS && arg_weaponNumber != WeponUIManager::e_NonWepon && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
+	switch (arg_weaponNumber)
+	{
+	case WeponUIManager::e_NonWepon:
 
-		bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
+		arg_throwableObjectController.lock()->InputHold(KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_LEFT));
 
-		arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
+		break;
+	case WeponUIManager::e_Echo:
+	case WeponUIManager::e_Hundgun:
 
-		//e‚Ì”½“®‚ğ’Ç‰ÁB
-		if (isEchoBullet) {
+		//’e‚ğ‚¤‚Â“ü—Í‚àó‚¯•t‚¯‚éB
+		if (m_isADS && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT)) {
 
-			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION * 3.0f;
-			SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
+			bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
+
+			arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
+
+			//e‚Ì”½“®‚ğ’Ç‰ÁB
+			if (isEchoBullet) {
+
+				m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION * 3.0f;
+				SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
+
+			}
+			else {
+
+				m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION;
+				SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
+
+			}
 
 		}
-		else {
 
-			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION;
-			SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
-
-		}
-
+		break;
+	case WeponUIManager::e_WeponMax:
+		break;
+	default:
+		break;
 	}
+
+
 
 }
 
