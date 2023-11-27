@@ -96,8 +96,10 @@ void EnemyManager::SetMapData(
 					PatrolConfig::AstarType::Move);
 			}
 			else  if (*j == 1) {
+				/*m_config->SetType(l_x, l_y,
+					PatrolConfig::AstarType::UnMove);*/
 				m_config->SetType(l_x, l_y,
-					PatrolConfig::AstarType::UnMove);
+					PatrolConfig::AstarType::Move);
 			}
 
 			l_y++;
