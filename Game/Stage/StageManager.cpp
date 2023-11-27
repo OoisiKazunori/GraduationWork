@@ -87,7 +87,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	m_stage->Draw(arg_rasterize, arg_blasVec);
-	m_goal->Draw(arg_rasterize, arg_blasVec);
+	//m_goal->Draw(arg_rasterize, arg_blasVec);
 	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
