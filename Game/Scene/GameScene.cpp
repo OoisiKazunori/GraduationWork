@@ -119,7 +119,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
 			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 			m_bulletMgr->Update(m_stageManager.GetColliders());
-
 			m_stageManager.Update(arg_rasterize);
 
 			static bool flag = false;
@@ -191,6 +190,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	{
 		index->CheckInEcho(m_stageMeshCollision);
 	}
+	m_stageManager.CheckInEcho(m_stageMeshCollision);
+
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
 
@@ -214,8 +215,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_HPBarManager.Draw(arg_rasterize);
 		//m_heartRateManager.Draw(arg_rasterize);
 	}
+
+	m_goalPoint.Draw(arg_rasterize);
+
 	//m_menu.Draw(arg_rasterize);
-	
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);
@@ -224,8 +227,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		m_resultManager.Draw(arg_rasterize);
 	}
-
-	m_goalPoint.Draw(arg_rasterize);
 
 	for (auto& index : m_preEnemy) {
 
