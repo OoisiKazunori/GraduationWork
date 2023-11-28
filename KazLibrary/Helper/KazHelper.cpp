@@ -165,3 +165,9 @@ std::wstring KazHelper::GetWideStrFromStr(const std::string& arg_str)
 
 	return wstr;
 }
+
+std::string KazHelper::GetExtension(const std::string& arg_path)
+{
+	int idx = static_cast<int>(arg_path.rfind('.'));
+	return arg_path.substr(idx + 1, arg_path.length() - idx - 1);
+};

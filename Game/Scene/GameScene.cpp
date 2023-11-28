@@ -21,8 +21,6 @@
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
-	m_line(arg_rasterize),
-	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
@@ -67,6 +65,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	}
 
+	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
+	m_axixTransform.scale.z += 1.0f;
 }
 
 GameScene::~GameScene()
@@ -214,6 +214,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_HPBarManager.Draw(arg_rasterize);
 		//m_heartRateManager.Draw(arg_rasterize);
 	}
+
+	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
 	m_goalPoint.Draw(arg_rasterize);
 

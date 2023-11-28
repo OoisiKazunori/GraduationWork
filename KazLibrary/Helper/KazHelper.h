@@ -67,7 +67,7 @@ namespace KazHelper
 	std::vector<char>CovertStringToChar(std::string STRING);
 
 	std::wstring GetWideStrFromStr(const std::string& arg_str);
-
+	std::string GetExtension(const std::string& arg_path);
 }
 
 

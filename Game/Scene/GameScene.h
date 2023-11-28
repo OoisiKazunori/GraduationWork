@@ -11,6 +11,7 @@
 #include "../UI/UI.h"
 #include "../Menu/Menu.h"
 #include"../Game/UI/CheckPoint.h"
+#include"../KazLibrary/Render/BasicDraw.h"
 
 class Player;
 class Camera;
@@ -75,10 +76,8 @@ private:
 		return result;
 
 	}
-
-	BasicDraw::BasicLineRender m_line;
-	BasicDraw::BasicModelRender m_stage;
-	//BasicDraw::BasicTextureRender m_outlineTex;
+	BasicDraw::BasicModelRender m_axis;
+	KazMath::Transform3D m_axixTransform;
 
 	StageManager m_stageManager;
 	
