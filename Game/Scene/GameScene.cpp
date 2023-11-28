@@ -17,6 +17,7 @@
 #include "StageSelectScene.h"
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
+#include"../KazLibrary/Debug/DebugKey.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
@@ -91,11 +92,9 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//ゲームシーンへ
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
-	{
-		m_sceneNum = 0;
-	}
+	//デバックキーのサンプル
+	DebugKey::Instance()->DebugKeyTrigger(DIK_0, "Input", "DIK_0");
+	DebugKey::Instance()->DebugKeyTrigger(DIK_1, "Output", "DIK_1");
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -232,6 +231,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 		//index->Draw(arg_rasterize, arg_blasVec);
 	}
+
+	DebugKey::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()

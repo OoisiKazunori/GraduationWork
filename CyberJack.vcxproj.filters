@@ -115,6 +115,7 @@
     <ClCompile Include="Game\ThrowableObject\ThrowableObjectController.cpp" />
     <ClCompile Include="Game\ThrowableObject\ThrowableObject.cpp" />
     <ClCompile Include="Game\UI\CheckPoint.cpp" />
+    <ClCompile Include="KazLibrary\Debug\DebugKey.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="Game\ThrowableObject\ThrowableObjectController.h" />
     <ClInclude Include="Game\ThrowableObject\ThrowableObject.h" />
     <ClInclude Include="Game\UI\CheckPoint.h" />
+    <ClInclude Include="KazLibrary\Debug\DebugKey.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
