@@ -6,6 +6,9 @@
 #include "../KazLibrary/Buffer/GBufferMgr.h"
 #include <algorithm>
 
+float Camera::CameraSensitivity = 1.0f;
+bool  Camera::isFlip = false;
+
 Camera::Camera()
 {
 
@@ -27,9 +30,6 @@ void Camera::Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<Mesh
 
 	//入力を取る。
 	Input();
-
-	//位置をちょっと上にずらす。
-	arg_playerTransform.pos.y += 2.5f;
 
 	//ADSした瞬間 or やめた瞬間だったら
 	if ((arg_isADS && !m_isOldADS) || (!arg_isADS && m_isOldADS)) {
@@ -106,11 +106,17 @@ void Camera::Input()
 {
 
 	//左右のカメラ操作
-	m_shotQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * 0.001f);
+	m_shotQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * (0.001f * CameraSensitivity));
 
 	//上下のカメラ操作
-	m_cameraXAngle = std::clamp(m_cameraXAngle + KeyBoradInputManager::Instance()->GetMouseVel().y * 0.001f, -1.0f, 1.0f);
-
+	if (!isFlip)
+	{
+		m_cameraXAngle = std::clamp(m_cameraXAngle + KeyBoradInputManager::Instance()->GetMouseVel().y * (0.001f * CameraSensitivity), -1.0f, 1.0f);
+	}
+	else
+	{
+		m_cameraXAngle = std::clamp(m_cameraXAngle - KeyBoradInputManager::Instance()->GetMouseVel().y * (0.001f * CameraSensitivity), -1.0f, 1.0f);
+	}
 }
 
 KazMath::Vec3<float> Camera::GetCameraVec()

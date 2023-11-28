@@ -10,11 +10,14 @@
 #include"../Stage/StageManager.h"
 #include "../UI/UI.h"
 #include "../Menu/Menu.h"
+#include"../Game/UI/CheckPoint.h"
+#include"../KazLibrary/Render/BasicDraw.h"
 
 class Player;
 class Camera;
 class MeshCollision;
 class BulletMgr;
+class ThrowableObjectController;
 
 //デバッグ用
 class PreEnemy;
@@ -22,7 +25,7 @@ class PreEnemy;
 class GameScene :public SceneBase
 {
 public:
-	GameScene(DrawingByRasterize& arg_rasterize);
+	GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber);
 	~GameScene();
 
 	void Init();
@@ -55,8 +58,10 @@ private:
 	std::shared_ptr<Player> m_player;
 	std::shared_ptr<MeshCollision> m_stageMeshCollision;
 	std::shared_ptr<BulletMgr> m_bulletMgr;
+	std::shared_ptr<ThrowableObjectController> m_throwableObjectController;
 
 	int m_sceneNum;
+	int m_stageNum;
 
 	int GetDigits(int arg_value, int arg_m, int arg_n) {
 		int mod_value;
@@ -71,18 +76,21 @@ private:
 		return result;
 
 	}
-
-	BasicDraw::BasicLineRender m_line;
-	BasicDraw::BasicModelRender m_stage;
-	BasicDraw::BasicTextureRender m_outlineTex;
+	BasicDraw::BasicModelRender m_axis;
+	KazMath::Transform3D m_axixTransform;
 
 	StageManager m_stageManager;
 	
 	WeponUIManager m_uiManager;
 	GadgetUIManager m_gadgetMaanager;
 	HPUI m_HPBarManager;
+	ResultUI m_resultManager;
+
 
 	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
 	HeartRate m_heartRateManager;
 	Menu m_menu;
+
+	CheckPoint m_goalPoint;
+	bool m_isClear = false;
 };

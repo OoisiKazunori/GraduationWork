@@ -33,7 +33,10 @@ public:
 	void Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<MeshCollision> arg_stageMeshCollision, bool arg_isADS);
 
 	KazMath::Transform3D GetShotQuaternion();
+	KazMath::Vec3<float> GetEyePos() { return m_eye; }
 
+	static float CameraSensitivity;
+	static bool isFlip;
 private:
 
 	void Input();

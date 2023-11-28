@@ -107,15 +107,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	RECT wrc = { 0,0,1280,720 };
 	OutputDebugStringA("ゲームのメインループを開始します\n");
+
+	bool isWindowClip = false;
+
 	while (CheckMessageFlag)
 	{
-		if (!KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
+#ifdef _DEBUG
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_9)) {
+			isWindowClip = !isWindowClip;
+		}
+		if (isWindowClip)
 		{
-
 			GetWindowRect(winApi.hwnd, &wrc);
 
 			//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
-			const LONG OFFSET = 5;
+			const LONG OFFSET = 300;
 			wrc.left += OFFSET;
 			wrc.right -= OFFSET;
 			wrc.bottom -= OFFSET;
@@ -124,7 +130,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ClipCursor(&wrc);
 			//マウス非表示
 			ShowCursor(false);
-
 		}
 		else
 		{
@@ -132,7 +137,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ClipCursor(nullptr);
 			ShowCursor(true);
 		}
+#endif // _DEBUG
 
+//#ifdef DEBUG
+		GetWindowRect(winApi.hwnd, &wrc);
+
+		//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
+		const LONG OFFSET = 300;
+		wrc.left += OFFSET;
+		wrc.right -= OFFSET;
+		wrc.bottom -= OFFSET;
+		wrc.top += OFFSET;
+
+		ClipCursor(&wrc);
+		//マウス非表示
+		ShowCursor(false);
+//#endif // _DEBUG
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
@@ -147,10 +167,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			sm.Draw();
 		}
 
-		if (sm.endGameFlag || KeyBoradInputManager::Instance()->InputTrigger(DIK_F3) || Menu::GetIsGameEnd())
+		if (sm.endGameFlag || Menu::GetIsGameEnd())
 		{
 			break;
 		}
+		/*if (sm.endGameFlag || KeyBoradInputManager::Instance()->InputTrigger(DIK_F3) || Menu::GetIsGameEnd())
+		{
+			break;
+		}*/
 
 
 		imgui.Set();

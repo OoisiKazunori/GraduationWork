@@ -63,13 +63,13 @@ void BulletMgr::Genrate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_d
 
 }
 
-void BulletMgr::Update(std::weak_ptr<MeshCollision> arg_meshCollision) {
+void BulletMgr::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders) {
 
 	for (auto& index : m_bullet) {
 
 		if (!index->GetIsActive()) continue;
 
-		index->Update(arg_meshCollision);
+		index->Update(arg_stageColliders);
 
 	}
 
@@ -77,7 +77,7 @@ void BulletMgr::Update(std::weak_ptr<MeshCollision> arg_meshCollision) {
 
 		if (!index->GetIsActive()) continue;
 
-		index->Update(arg_meshCollision);
+		index->Update(arg_stageColliders);
 
 	}
 

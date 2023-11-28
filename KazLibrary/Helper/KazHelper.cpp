@@ -147,3 +147,27 @@ void KazHelper::ConvertStringToWchar_t(std::string STRING, wchar_t* WCHAR_STRING
 {
 	MultiByteToWideChar(CP_ACP, 0, STRING.c_str(), -1, WCHAR_STRING, static_cast<INT>(ARRAY_SIZE));
 }
+
+std::wstring KazHelper::GetWideStrFromStr(const std::string& arg_str)
+{
+	auto num1 = MultiByteToWideChar(
+		CP_ACP, MB_PRECOMPOSED | MB_ERR_INVALID_CHARS,
+		arg_str.c_str(), -1, nullptr, 0);
+
+	std::wstring wstr;
+	wstr.resize(num1);
+
+	auto num2 = MultiByteToWideChar(
+		CP_ACP, MB_PRECOMPOSED | MB_ERR_INVALID_CHARS,
+		arg_str.c_str(), -1, &wstr[0], num1);
+
+	assert(num1 == num2);
+
+	return wstr;
+}
+
+std::string KazHelper::GetExtension(const std::string& arg_path)
+{
+	int idx = static_cast<int>(arg_path.rfind('.'));
+	return arg_path.substr(idx + 1, arg_path.length() - idx - 1);
+};

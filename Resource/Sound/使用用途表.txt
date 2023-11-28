@@ -1,0 +1,9 @@
+発見：Discovery
+銃撃(プレイヤー)：Shot_Player
+銃撃(敵)：Shot_Enemy
+エコー弾：EchoBullet
+エコーロケーション：Sonar
+ADS(覗き込み)：ADS
+武器切り替え：ChangeWeapon
+通常BGM(環境音?)：NormalBGM1、NormalBGM2
+発見時BGM：EmergencyBGM

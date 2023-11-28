@@ -25,12 +25,15 @@ namespace BasicDraw
 		BasicTextureRender(DrawingByRasterize &arg_rasterize, const char *arg_filePass, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
 		BasicTextureRender(DrawingByRasterize &arg_rasterize, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
 		BasicTextureRender(DrawingByRasterize &arg_rasterize, const DrawFuncData::DrawCallData &arg_drawCall, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
+		BasicTextureRender();
 		DrawFuncHelper::TextureRender m_tex;
 	};
 
 	struct BasicLineRender
 	{
 		BasicLineRender(DrawingByRasterize &arg_rasterize);
+		BasicLineRender();
+		void Generate(DrawingByRasterize& arg_rasterize);
 		DrawFuncHelper::LineRender m_render;
 	};
 

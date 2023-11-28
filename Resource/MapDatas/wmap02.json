@@ -1,0 +1,357 @@
+{
+    "name": "scene",
+    "Objects": [
+        {
+            "type": "MESH",
+            "name": "円",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    34.0,
+                    0.0,
+                    15.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Goal",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    8.0,
+                    2.0,
+                    30.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallC.003",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallI.006",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    10.00
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallT.005",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    20.0
+                ],
+                "rotation": [
+                    0.0,
+                    90.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallT.006",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    10.0,
+                    0.0,
+                    20.0
+                ],
+                "rotation": [
+                    0.0,
+                    180.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallI.007",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    10.0,
+                    0.0,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Wall_L_Post.003",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    10.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Wall_L_Post.005",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    20.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -90.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallT.007",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    20.0,
+                    0.0,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    90.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Wall_L_Post.006",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    30.0,
+                    0.0,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    -90.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Wall_L_Post.007",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    30.0,
+                    0.0,
+                    20.00
+                ],
+                "rotation": [
+                    0.0,
+                    180.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wall_four-forked_road.001",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    20.0,
+                    0.0,
+                    20.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Wall_L_Post.008",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    20.0,
+                    0.0,
+                    30.0
+                ],
+                "rotation": [
+                    0.0,
+                    180.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallC.005",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    10.0,
+                    0.0,
+                    30.0
+                ],
+                "rotation": [
+                    0.0,
+                    90.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallC.004",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    30.0
+                ],
+                "rotation": [
+                    0.0,
+                    180.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        }
+    ]
+}

@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/Render/BasicDraw.h"
 #include "../KazLibrary/Math/KazMath.h"
+#include "../KazLibrary/Sound/SoundManager.h"
 
 class UI2DElement
 {
@@ -14,19 +15,33 @@ class UI2DElement
 	KazMath::Vec2<float> m_easeScaleEnd;
 	KazMath::Vec2<float> m_nowScale;
 	float m_easeScaleTimer;
+
+	
+	KazMath::Color m_easeStartColor;
+	KazMath::Color m_easeEndColor;
+	KazMath::Color m_easeAddColor = {0, 0, 0, 1};
+
+	bool m_isColorEase = false;
 public:
+	KazMath::Color m_color;
 	UI2DElement(DrawingByRasterize& arg_rasterize, const char *f_filePath);
 	void Init(DrawingByRasterize& arg_rasterize, std::string f_filePath);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
-
+	KazMath::Vec2<float> GetNowPos(){ return m_nowPos; };
 	void SetEasePosAddTime(float f_easePosTimer){ m_easePosTimerAdd = f_easePosTimer;}
 	float GetPosEaseTimer(){ return m_easePosTimer; }
 	void SetPosition(KazMath::Vec2<float> f_nowPos);
 	void EasePosInit(KazMath::Vec2<float> f_easeEnd);
 	void EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2<float> f_easeEnd, float f_timer);
 	void SetScale(KazMath::Vec2<float> f_nowScale);
+
+	void SetColor(KazMath::Color &f_color);
+	void SetAddColor(KazMath::Color &f_addColor);
+	void SetColorEaseEnd(KazMath::Color &f_endColor);
 	BasicDraw::BasicTextureRender m_2DSprite;
+	KazMath::Vec2<float> GetNowScale() { return m_nowScale; };
+	KazMath::Vec2<float> GetNowPosition() { return m_nowPos; };
 };
 
 class WeponUIManager
@@ -35,20 +50,37 @@ public:
 	enum WeponNumber
 	{
 		e_NonWepon,
-		e_Knife,
+		e_Echo,
 		e_Hundgun,
-		e_Rifle,
 		e_WeponMax,
 	};
 private:
 	std::list<UI2DElement> m_UIs;
 	UI2DElement m_nonWepon;
-	UI2DElement m_knife;
+	UI2DElement m_echo;
+	UI2DElement m_echoBulletInf;
 	UI2DElement m_hundgun;
+	UI2DElement m_hundgunBulletInf;
+
+	UI2DElement m_TabSp;
+	UI2DElement m_qSp;
+	UI2DElement m_eSp;
+
+	UI2DElement m_aimTop;
+	UI2DElement m_aimSideR;
+	UI2DElement m_aimSideL;
+	UI2DElement m_aimSideU;
+	UI2DElement m_aimSideB;
+
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
-	static const int c_BaseUIX = 1095;
+	static const int c_BaseUIX = 1075;
 	static const int c_BaseUIY = 630;
+
+	const float c_aimDis = 6.0f;
+
+	static const int c_BulletNumOffsetX = 85;
+	static const int c_BulletNumOffsetY = 30;
 	
 	//こっちはUI用
 	int m_nowSelectWeponNumber;
@@ -61,6 +93,11 @@ private:
 
 	UI2DElement &GetUI(WeponNumber f_wepon);
 	void EaseInit();
+	//こっちがプレイヤーに渡す方
+	WeponNumber m_nowWepon;
+
+	SoundData m_changeWeaponSE;
+
 public:
 
 	WeponUIManager(DrawingByRasterize& arg_rasterize);
@@ -68,9 +105,8 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 
+	WeponNumber GetNowWepon() { return m_nowWepon; };
 	
-	//こっちがプレイヤーに渡す方
-	WeponNumber m_nowWepon;
 	//好きなタイミングで武器追加
 	void AddWepon(WeponNumber f_wepon);
 
@@ -95,7 +131,7 @@ private:
 	UI2DElement m_sonar;
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
-	static const int c_BaseUIX = 185;
+	static const int c_BaseUIX = 205;
 	static const int c_BaseUIY = 630;
 
 	//こっちはUI用
@@ -141,9 +177,12 @@ class HPUI
 	static const int c_UITexY = 14;
 	static const int c_BaseUIX = c_UITexX / 2 + c_texOffset;
 	static const int c_BaseUIY = c_UITexY / 2 + c_texOffset;
-	int m_hp = 100;
-	int m_redHP = 0;
+	static int m_hp;
+	static int m_redHP;
 	const int MaxHP = 100;
+
+	static int redWaitTime;
+	static const int redTime = 1;
 public:
 	HPUI(DrawingByRasterize& arg_rasterize);
 
@@ -152,6 +191,11 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize);
 
 	void HitDamage(int f_mainDamage, int f_redZone);
+
+	static void InitHP();
+
+	int GetHP(){ return m_hp; };
+	int RedHP(){ return m_redHP; };
 };
 
 class HeartRate
@@ -185,4 +229,37 @@ public:
 	void Init();
 	void Update(int f_heartRate);
 	void Draw(DrawingByRasterize& arg_rasterize);
+};
+
+class ResultUI
+{
+	//背景
+	UI2DElement m_back;
+	//リザルトって書いてあるやつ
+	UI2DElement m_ResultStrSp;
+	//ミッションクリア
+	UI2DElement m_missionClearSp;
+	//ミッション失敗
+	UI2DElement m_missionFailedSp;
+	UI2DElement m_pushSpaceSp;
+
+	bool m_isResultShow = false;
+
+	bool m_isClear = false;
+
+	int m_faliedColor = 100;
+
+	int m_spaceAddColor = 1;
+	int m_spaceColor = 180;
+	const int C_spaceColorUnder = 180;
+	const int C_spaceColorUpper = 255;
+public:
+	ResultUI(DrawingByRasterize & arg_rasterize);
+
+	void Init();
+	void Update();
+	void Draw(DrawingByRasterize& arg_rasterize);
+	bool GetResultShow() { return m_isResultShow; };
+	void ShowResult(){ m_isResultShow = true; };
+	void SetClear(){ m_isClear = true; };
 };

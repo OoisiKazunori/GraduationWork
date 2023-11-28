@@ -22,7 +22,7 @@ void DebugCamera::Camera(bool arg_zoomFlag, bool arg_targetPosFlag, bool arg_rot
 	float angleX = 0;
 	float angleY = 0;
 
-	const KazMath::Vec2<float> SCALE = { 0.01f,0.01f };
+	const KazMath::Vec2<float> SCALE = { 0.001f,0.001f };
 
 
 	// マウスの左ボタンが押されていたらカメラを回転させる
@@ -38,8 +38,8 @@ void DebugCamera::Camera(bool arg_zoomFlag, bool arg_targetPosFlag, bool arg_rot
 	// マウスの中ボタンが押されていたらカメラを並行移動させる
 	if (arg_zoomFlag)
 	{
-		float dx = arg_mouseVel.x / 100.0f;
-		float dy = arg_mouseVel.y / 100.0f;
+		float dx = arg_mouseVel.x / 80.0f;
+		float dy = arg_mouseVel.y / 80.0f;
 
 		DirectX::XMVECTOR move = { -dx, +dy, 0, 0 };
 		move = DirectX::XMVector3Transform(move, m_matRot);

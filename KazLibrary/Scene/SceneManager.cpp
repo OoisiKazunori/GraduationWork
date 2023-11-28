@@ -13,6 +13,7 @@
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Buffer/UavViewHandleMgr.h"
 #include"../Game/Echo/EchoArray.h"
+#include"../KazLibrary/Debug/DebugKey.h"
 
 SceneManager::SceneManager() :gameFirstInitFlag(false)
 {
@@ -114,9 +115,9 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	m_debugLineScale = 0;
 
 	//BGMの再生
-	m_Title = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Title.wav");
+	m_Title = SoundManager::Instance()->SoundLoadWave("Resource/Sound/NormalBGM1.wav");
+	m_Title.volume = 0.5f;
 	SoundManager::Instance()->SoundPlayerWave(m_Title, 100);
-	m_Title.source->SetVolume(0.1f);
 
 
 	//通常エコー用構造体を設定。
@@ -131,6 +132,7 @@ SceneManager::~SceneManager()
 
 void SceneManager::Update()
 {
+	DebugKey::Instance()->CountReset();
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 
 	if (StopMgr::Instance()->IsHitStop()) {
@@ -231,7 +233,7 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
-//	m_sceneChange->Draw(m_rasterize);
+	m_sceneChange->Draw(m_rasterize);
 
 	m_nowScene->Draw(m_rasterize, m_blasVector);
 	//ラスタライザ描画
@@ -247,4 +249,5 @@ void SceneManager::Draw()
 	}
 	//UI用の描画
 	m_rasterize.UISortAndRender();
+	m_rasterize.StaticSortAndRender();
 }

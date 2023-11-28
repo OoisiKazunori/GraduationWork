@@ -2,6 +2,11 @@
 #include "../Input/Input.h"
 #include "../KazLibrary/Easing/easing.h"
 
+int HPUI::m_hp = 100;
+int HPUI::m_redHP = 0;
+
+int HPUI::redWaitTime = 0;
+
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
 	m_2DSprite(arg_rasterize, f_filePath, true)
 {
@@ -29,13 +34,26 @@ void UI2DElement::Update()
 	}
 	auto sub = m_easePosEnd - m_easePosStart;
 	m_nowPos = m_easePosStart + (sub * EasingMaker(EasingType::In, EaseInType::Quad, m_easePosTimer));
+	if (!m_isColorEase)return;
+	if (m_easeEndColor.color.a - m_color.color.a < 0)
+	{
+		m_color.color.a -= m_easeAddColor.color.a;
+	}
+	else
+	{
+		m_color.color.a += m_easeAddColor.color.a;
+	}
+	if (m_color.color.a - m_easeEndColor.color.a == 0)
+	{
+		m_isColorEase = false;
+	}
 }
 
 void UI2DElement::Draw(DrawingByRasterize& arg_rasterize)
 {
 	KazMath::Transform2D l_trans = KazMath::Transform2D(m_nowPos, m_nowScale);
 
-	m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+	m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, m_color);
 }
 
 void UI2DElement::SetScale(KazMath::Vec2<float> f_nowScale)
@@ -64,17 +82,67 @@ void UI2DElement::EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2
 	m_easePosStart = f_easeStartPos;
 }
 
+void UI2DElement::SetColor(KazMath::Color& f_color)
+{
+	m_color = f_color;
+}
+
+void UI2DElement::SetAddColor(KazMath::Color& f_addColor)
+{
+	m_easeAddColor = f_addColor;
+}
+
+void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
+{
+	m_easeStartColor = m_color;
+	m_easeEndColor = f_endColor;
+	m_isColorEase = true;
+}
+
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
-	m_knife(arg_rasterize, "Resource/UITexture/UI_Knife.png"),
-	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png")
+	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
+	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png"),
+	m_TabSp(arg_rasterize, "Resource/UITexture/Tab.png"),
+	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),
+	m_eSp(arg_rasterize, "Resource/UITexture/E.png"),
+	m_aimTop(arg_rasterize, "Resource/UITexture/gunAim.png"),
+	m_aimSideR(arg_rasterize, "Resource/UITexture/aimSideR.png"),
+	m_aimSideL(arg_rasterize, "Resource/UITexture/aimSideL.png"),
+	m_aimSideU(arg_rasterize, "Resource/UITexture/aimSideU.png"),
+	m_aimSideB(arg_rasterize, "Resource/UITexture/aimSideB.png"),
+	m_echoBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
+	m_hundgunBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
-	m_haveWepons.push_back({ WeponNumber::e_Knife, 1 });
-	//m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_haveWepons.push_back({ WeponNumber::e_Echo, 1 });
+	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
+	m_TabSp.SetPosition({ 1243.0f, 675.0f });
+	m_TabSp.SetScale({ 0.5f, 0.5f });
+	m_qSp.SetPosition({ 920.0f, 675.0f });
+	m_qSp.SetScale({ 0.5f, 0.5f });
+	m_eSp.SetPosition({ 1230.0f, 580.0f });
+	m_eSp.SetScale({ 0.5f, 0.5f });
+
+	m_aimTop.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_aimTop.SetScale({ 0.06f, 0.06f });
+
+	m_aimSideR.SetPosition({ 1280.0f / 2.0f + c_aimDis, 720.0f / 2.0f });
+	m_aimSideL.SetPosition({ 1280.0f / 2.0f - c_aimDis, 720.0f / 2.0f });
+	m_aimSideU.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f - c_aimDis });
+	m_aimSideB.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + c_aimDis });
+	float scl = 0.3f;
+	m_aimSideR.SetScale({ scl, scl });
+	m_aimSideL.SetScale({ scl, scl });
+	m_aimSideU.SetScale({ scl, scl });
+	m_aimSideB.SetScale({ scl, scl });
+
+	m_changeWeaponSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ChangeWeapon.wav");
+	m_changeWeaponSE.volume = 0.05f;
+
 }
 
 void WeponUIManager::Init()
@@ -82,8 +150,8 @@ void WeponUIManager::Init()
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.clear();
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
-	m_haveWepons.push_back({ WeponNumber::e_Knife, 1 });
-	//m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_haveWepons.push_back({ WeponNumber::e_Echo, 1 });
+	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
 	EaseInit();
@@ -95,14 +163,21 @@ void WeponUIManager::Update()
 	if (KeyBoradInputManager::Instance()->InputState(DIK_TAB))
 	{
 		m_showUITime = c_ShowTime;
+	}
+	if (m_showUITime > 0)
+	{
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber < m_haveWepons.size() - 1)
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber + 1;
 				isDirty = true;
+				m_showUITime = c_ShowTime;
 			}
 			easeTimer = 0.0f;
+
+			SoundManager::Instance()->SoundPlayerWave(m_changeWeaponSE, 0);
+
 		}
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_Q) && easeTimer > 0.6f)
 		{
@@ -110,8 +185,12 @@ void WeponUIManager::Update()
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber - 1;
 				isDirty = true;
+				m_showUITime = c_ShowTime;
 			}
 			easeTimer = 0.0f;
+
+			SoundManager::Instance()->SoundPlayerWave(m_changeWeaponSE, 0);
+
 		}
 	}
 	//てすと
@@ -159,29 +238,67 @@ void WeponUIManager::EaseInit()
 			GetUI((*itr).first).EasePosInit({ xPos , yPos + (yOffset * sub) });
 			hoge++;
 		}
-
 	}
 }
 
 void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 {
+
 	m_showUITime--;
 	if (m_showUITime < 0)
 	{
+		m_TabSp.m_color = { 255, 255, 255, 150 };
+		m_TabSp.Draw(arg_rasterize);
 		auto itr = m_haveWepons.begin();
 		//所持している武器までイテレーターを回す
 		for (int i = 0; i < m_nowSelectWeponNumber; i++)
 		{
 			itr++;
 		}
+		if ((*itr).first == e_Echo)
+		{
+			m_echoBulletInf.SetPosition({ m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
+			m_echoBulletInf.Draw(arg_rasterize);
+		}
+		else if ((*itr).first == e_Hundgun)
+		{
+			m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
+			m_hundgunBulletInf.Draw(arg_rasterize);
+		}
 		GetUI((*itr).first).Draw(arg_rasterize);
 	}
 	else
 	{
+		m_TabSp.m_color = { 255, 255, 255, 255 };
+		m_TabSp.Draw(arg_rasterize);
+		m_qSp.Draw(arg_rasterize);
+		m_eSp.Draw(arg_rasterize);
 		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 		{
+			if ((*itr).first == e_Echo)
+			{
+				m_echoBulletInf.SetPosition({m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
+					m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
+				m_echoBulletInf.Draw(arg_rasterize);
+			}
+			else if ((*itr).first == e_Hundgun)
+			{
+				m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
+				m_hundgunBulletInf.Draw(arg_rasterize);
+			}
 			GetUI((*itr).first).Draw(arg_rasterize);
 		}
+	}
+	if (m_nowSelectWeponNumber == e_Echo || m_nowSelectWeponNumber == e_Hundgun)
+	{
+		m_aimTop.Draw(arg_rasterize);
+		m_aimSideR.Draw(arg_rasterize);
+		m_aimSideL.Draw(arg_rasterize);
+		m_aimSideU.Draw(arg_rasterize);
+		m_aimSideB.Draw(arg_rasterize);
 	}
 }
 
@@ -206,9 +323,9 @@ UI2DElement& WeponUIManager::GetUI(WeponNumber f_wepon)
 	{
 		return m_nonWepon;
 	}
-	else if (f_wepon == WeponNumber::e_Knife)
+	else if (f_wepon == WeponNumber::e_Echo)
 	{
-		return m_knife;
+		return m_echo;
 	}
 	else if (f_wepon == WeponNumber::e_Hundgun)
 	{
@@ -377,20 +494,11 @@ void HPUI::Init()
 
 void HPUI::Update(const int f_playerHP)
 {
-	static int redWaitTime = 0;
-	const int redTime = 1;
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
+	//HP減らすときはここを参照！
+	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		HitDamage(10, 10);
-		if (m_hp > 0)
-		{
-			redWaitTime = 45;
-		}
-		else
-		{
-			redWaitTime = 0;
-		}
-	}
+	}*/
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
@@ -477,6 +585,20 @@ void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 	{
 		//m_redHP = 0;
 	}
+	if (m_hp > 0)
+	{
+		redWaitTime = 45;
+	}
+	else
+	{
+		redWaitTime = 0;
+	}
+}
+
+void HPUI::InitHP()
+{
+	m_hp = 100;
+	m_redHP = 0;
 }
 
 HeartRate::HeartRate(DrawingByRasterize& arg_rasterize) :
@@ -529,6 +651,71 @@ void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 
 	m_HeartRateFrameUI.SetPosition({ c_BaseUIX , c_BaseUIY });
 	m_HeartRateFrameUI.Draw(arg_rasterize);
-	
-	
+
+
+}
+
+ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
+	m_back(arg_rasterize, "Resource/MenuTex/MenuBackTex.png"),
+	m_ResultStrSp(arg_rasterize, "Resource/UITexture/Result.png"),
+	m_missionClearSp(arg_rasterize, "Resource/UITexture/Succses.png"),
+	m_missionFailedSp(arg_rasterize, "Resource/UITexture/Defeat.png"),
+	m_pushSpaceSp(arg_rasterize, "Resource/UITexture/PushSpace.png")
+{
+	m_pushSpaceSp.SetPosition({ 1280.0 / 2.0f, 800.0f });
+	m_pushSpaceSp.EasePosInit({ 1280.0 / 2.0f, 720.0f / 2.0f + 250.0f });
+	m_back.SetPosition({ 1280.0 / 2.0f, 720.0f / 2.0f });
+	m_ResultStrSp.SetPosition({ -300.0f, 100.0f });
+	m_ResultStrSp.EasePosInit({ 300.0f, 100.0f });
+
+	m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + 60.0f });
+	m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_missionFailedSp.SetScale({ 2.0f, 2.0f });
+	m_missionFailedSp.SetEasePosAddTime(0.04f);
+	m_faliedColor = 100;
+
+	m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 0.0f });
+	m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_missionClearSp.SetScale({ 2.0f, 2.0f });
+	m_missionClearSp.SetEasePosAddTime(0.5f);
+}
+
+void ResultUI::Init()
+{
+}
+
+void ResultUI::Update()
+{
+	m_pushSpaceSp.Update();
+	m_ResultStrSp.Update();
+
+	//m_missionFailedSp.Update();
+
+}
+
+void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
+{
+	if (m_spaceColor > C_spaceColorUpper || m_spaceColor < C_spaceColorUnder)
+	{
+		m_spaceAddColor = -m_spaceAddColor;
+	}
+
+	m_spaceColor += m_spaceAddColor;
+	m_pushSpaceSp.m_color = { 255, 255, 255, m_spaceColor };
+	m_pushSpaceSp.Draw(arg_rasterize);
+	m_ResultStrSp.Draw(arg_rasterize);
+
+	if (m_isResultShow && !m_isClear)
+	{
+		m_faliedColor += 1;
+		m_missionFailedSp.m_color = { 255, 255, 255, m_faliedColor };
+		m_missionFailedSp.Update();
+		m_missionFailedSp.Draw(arg_rasterize);
+	}
+	else if (m_isClear)
+	{
+		m_missionClearSp.Update();
+		m_missionClearSp.Draw(arg_rasterize);
+	}
+	m_back.Draw(arg_rasterize);
 }

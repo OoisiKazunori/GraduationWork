@@ -4,6 +4,10 @@
 
 EchoBullet::EchoBullet(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Bullet/", "EchoBullet.gltf") {
+
+	m_echoSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/EchoBullet.wav");
+	m_echoSE.volume = 0.05f;
+
 }
 
 void EchoBullet::Init()
@@ -25,27 +29,36 @@ void EchoBullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg
 	m_disappearTimer = 0;
 }
 
-void EchoBullet::Update(std::weak_ptr<MeshCollision> arg_meshCollision)
+void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders)
 {
 
 	//当たり判定がまだ終わってなかったら
 	if (m_isCollision) {
 
-		//進行方向にレイを飛ばして当たり判定を行う。
-		MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_dir);
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED) {
+		bool isHit = false;
+		for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
 
-			//当たっていたらその位置に弾を設定してエコーを出す状態に遷移させる。
-			m_transform.pos = rayResult.m_position;
+			//進行方向にレイを飛ばして当たり判定を行う。
+			MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos, m_dir);
+			if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED) {
 
-			//まずは最初にエコーを出す。
-			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
-			--m_echoCount;
+				//当たっていたらその位置に弾を設定してエコーを出す状態に遷移させる。
+				m_transform.pos = rayResult.m_position;
 
-			m_isCollision = false;
+				//まずは最初にエコーを出す。
+				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
+				--m_echoCount;
+
+				SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
+
+				m_isCollision = false;
+				isHit = true;
+
+			}
 
 		}
-		else {
+
+		if (!isHit) {
 
 			//弾を移動させる。
 			m_transform.pos += m_dir * BULLET_SPEED;
@@ -70,6 +83,8 @@ void EchoBullet::Update(std::weak_ptr<MeshCollision> arg_meshCollision)
 			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
 			--m_echoCount;
 			m_echoSpan = 0.0f;
+
+			SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
 
 			if (m_echoCount <= 0) {
 

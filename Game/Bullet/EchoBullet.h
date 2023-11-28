@@ -1,6 +1,7 @@
 #pragma once
 #include <Render/BasicDraw.h>
 #include "../KazLibrary/Math/KazMath.h"
+#include "../KazLibrary/Sound/SoundManager.h"
 
 class MeshCollision;
 
@@ -22,12 +23,14 @@ private:
 	int m_disappearTimer;
 	const int DESAPPEAR_TIMER = 60;
 
+	SoundData m_echoSE;
+
 public:
 
 	EchoBullet(DrawingByRasterize& arg_rasterize);
 	void Init();
 	void Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir);
-	void Update(std::weak_ptr<MeshCollision> arg_meshCollision);
+	void Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	bool GetIsActive() { return m_isActive; };
