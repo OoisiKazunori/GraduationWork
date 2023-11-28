@@ -17,11 +17,10 @@
 #include "StageSelectScene.h"
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
+#include"../KazLibrary/Debug/DebugKey.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
-	m_line(arg_rasterize),
-	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
@@ -66,6 +65,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	}
 
+	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
+	m_axixTransform.scale.z += 1.0f;
 }
 
 GameScene::~GameScene()
@@ -91,11 +92,9 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//ゲームシーンへ
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
-	{
-		m_sceneNum = 0;
-	}
+	//デバックキーのサンプル
+	DebugKey::Instance()->DebugKeyTrigger(DIK_0, "Input", "DIK_0");
+	DebugKey::Instance()->DebugKeyTrigger(DIK_1, "Output", "DIK_1");
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -234,6 +233,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		//m_heartRateManager.Draw(arg_rasterize);
 	}
 
+	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
+
 	m_goalPoint.Draw(arg_rasterize);
 
 	//m_menu.Draw(arg_rasterize);
@@ -250,6 +251,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 		//index->Draw(arg_rasterize, arg_blasVec);
 	}
+
+	DebugKey::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()

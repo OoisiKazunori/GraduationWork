@@ -157,6 +157,7 @@
     <ClCompile Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.cpp" />
     <ClCompile Include="KazLibrary\Collision\BoundingBox.cpp" />
     <ClCompile Include="KazLibrary\Collision\CollisionManager.cpp" />
+    <ClCompile Include="KazLibrary\Debug\DebugKey.cpp" />
     <ClCompile Include="KazLibrary\DirectXCommon\DirectX12.cpp" />
     <ClCompile Include="KazLibrary\DirectXCommon\DirectX12CmdList.cpp" />
     <ClCompile Include="KazLibrary\DirectXCommon\DirectX12Device.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.h" />
     <ClInclude Include="KazLibrary\Collision\BoundingBox.h" />
     <ClInclude Include="KazLibrary\Collision\CollisionManager.h" />
+    <ClInclude Include="KazLibrary\Debug\DebugKey.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\Base.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\d3dx12.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\DirectX12.h" />
