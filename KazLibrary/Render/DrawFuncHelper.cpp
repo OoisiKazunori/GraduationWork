@@ -415,7 +415,7 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, 
 		-upHalfScale.y,
 		0.0f
 		},
-		lUv[0]
+		lUv[1]
 	};
 	//¶‰º
 	posArray[1] = {
@@ -424,7 +424,7 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, 
 		downHalfScale.y,
 		0.0f
 		},
-		lUv[1]
+		lUv[0]
 	};
 	//‰Eã
 	posArray[2] = {
@@ -433,7 +433,7 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, 
 		-upHalfScale.y,
 		0.0f
 		},
-		lUv[2]
+		lUv[3]
 	};
 	//‰E‰º
 	posArray[3] = {
@@ -442,12 +442,13 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, 
 		downHalfScale.y,
 		0.0f
 		},
-		lUv[3]
+		lUv[2]
 	};
 	//vertBuffer->bufferWrapper->TransData(posArray.data(), sizeof(SpriteVertex) * 4);
-
+	KazMath::Transform3D transform;
+	transform.
 	DirectX::XMMATRIX mat(
-		KazMath::Transform3D(arg_pos, KazMath::Vec3<float>(10.0f, 10.0f, 10.0f)).GetMat(CameraMgr::Instance()->GetMatBillBoard())
+		transform.GetMat(CameraMgr::Instance()->GetMatBillBoard())
 		* CameraMgr::Instance()->GetViewMatrix()
 		* CameraMgr::Instance()->GetPerspectiveMatProjection());
 	m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));

@@ -93,8 +93,10 @@ void GameScene::Finalize()
 void GameScene::Input()
 {
 	//デバックキーのサンプル
-	DebugKey::Instance()->DebugKeyTrigger(DIK_0, "Input", "DIK_0");
-	DebugKey::Instance()->DebugKeyTrigger(DIK_1, "Output", "DIK_1");
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_0, "GenerateEnemy", "DIK_0"))
+	{
+		m_preEnemy[0]->SetPos({ 0.0f,-45.0f,0.0f });
+	}
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -141,7 +143,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
 			KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
 			if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
-			
+
 				//すべてのステージクリア
 				if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 				{
@@ -232,7 +234,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	for (auto& index : m_preEnemy) {
 
-		//index->Draw(arg_rasterize, arg_blasVec);
+		index->Draw(arg_rasterize, arg_blasVec);
 	}
 
 	DebugKey::Instance()->DrawImGui();
