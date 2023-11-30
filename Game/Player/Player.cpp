@@ -46,7 +46,6 @@ void Player::Init()
 	m_heatbeatTimer = 0;
 	m_gunReaction = KazMath::Vec3<float>();
 	m_shotDelay = SHOT_DELAY;
-	m_hp = DEFAULT_HP;
 
 }
 
@@ -186,7 +185,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	if (0 < hitCount) {
 
 		//ダメージを受けています。
-		m_hp -= 10;
 		arg_hpUI.HitDamage(10, 10);
 
 	}

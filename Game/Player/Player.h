@@ -51,10 +51,6 @@ private:
 	SoundData m_sonarSE;
 	SoundData m_adsSE;
 
-	//HP
-	float m_hp;
-	const float DEFAULT_HP = 100;
-
 	//姿勢のステータス
 	enum class PlayerAttitude {
 		STAND,
