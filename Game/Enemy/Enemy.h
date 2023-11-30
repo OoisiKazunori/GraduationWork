@@ -81,7 +81,8 @@ private:
 		KazMath::Vec3<float> arg_prevPos);
 	void Collision(
 		std::list<std::shared_ptr<MeshCollision>>
-		arg_stageColliders);
+		arg_stageColliders,
+		std::weak_ptr<BulletMgr> arg_bulletMgr);
 	void RotateEye();
 	bool CheckDistXZ(
 		std::pair<float, float> arg_checkPos, float arg_dist);
