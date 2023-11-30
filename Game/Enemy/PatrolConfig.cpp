@@ -77,6 +77,7 @@ void PatrolConfig::Update()
 			//箱トランスフォーム
 			KazMath::Transform3D l_trans;
 
+			//仮
 			l_trans.pos = {
 				i * m_chipSize + l_offset_x,
 				-20.0f,

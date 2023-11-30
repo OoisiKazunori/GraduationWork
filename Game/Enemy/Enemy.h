@@ -49,12 +49,16 @@ private:
 	const float GRAVITY = 0.05f;
 
 	const  int MAX_RATE = 120;
-	const int MAX_HP = 100;
+	const int MAX_HP = 2;
 	int m_hp;
 	int m_rate;
+
+	const int MAX_EYE_DELAY = 120;
+	int m_checkEyeDelay;
+
+	//どうしよう
 	float m_angle = 0.0f;
 	DirectX::XMVECTOR m_oldQuaternion;
-
 
 
 	//敵が弾を撃つ遅延 デバッグ用 後で書き換えてください

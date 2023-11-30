@@ -96,6 +96,8 @@ void Enemy::Init()
 	m_rate = MAX_RATE;
 	m_angle = 0.0f;
 
+	m_checkEyeDelay = MAX_EYE_DELAY;
+
 	m_shotDelay = 0;
 
 }
@@ -153,13 +155,18 @@ void Enemy::Update(
 				m_isCheckPoint = false;
 			}
 		}
-		else if (m_rootPos.size() > 0)
+
+		//’Êí
+		else if (
+			m_rootPos.size() > 0 &&
+			m_checkEyeDelay == MAX_EYE_DELAY)
 		{
 			m_trans.pos = {
 				m_rootPos[m_count].first,
 				m_trans.pos.y,
 				m_rootPos[m_count].second
 			};
+
 			if (m_count < m_rootPos.size() - 1) {
 				m_count++;
 			}
@@ -214,15 +221,29 @@ void Enemy::Update(
 		}
 	}
 
+	//Ž€–S
+	else { return; }
+
 	//Ž‹ü”ÍˆÍ“à‚©
 	m_isCombat = false;
 	if (CheckDistXZ(
 		l_pPos, EnemyConfig::eyeCheckDist) &&
 		CheckEye(arg_playerPos, arg_stageColliders))
 	{
-		m_isCombat = true;
-		m_state = State::Combat;
-		m_rate = MAX_RATE;
+		m_checkEyeDelay--;
+
+		//ˆê’èŽžŠÔ”ÍˆÍ“à‚¾‚Á‚½‚ç
+		if (m_checkEyeDelay <= 0)
+		{
+			m_isCombat = true;
+			m_state = State::Combat;
+			m_rate = MAX_RATE;
+			m_checkEyeDelay = MAX_EYE_DELAY;
+		}
+	}
+	else
+	{
+		m_checkEyeDelay = MAX_EYE_DELAY;
 	}
 
 	//‰ñ“]
@@ -258,17 +279,16 @@ void Enemy::Update(
 	//”»’è(ƒƒbƒVƒ…)
 	Collision(arg_stageColliders, arg_bulletMgr);
 
-
 	//ˆê’UYŒÅ’è
 	m_trans.pos.y = -43.0f;
-
 }
 
 void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
 	Raytracing::BlasVector& arg_blasVec)
 {
-	if (m_rootPos.size() > 0)
+	if (m_rootPos.size() > 0 &&
+		m_state != State::Death)
 	{
 		KazMath::Color l_player = { 0, 255, 255,255 };
 
@@ -319,7 +339,7 @@ DirectX::XMVECTOR Enemy::CalMoveQuaternion(
 
 void Enemy::Collision(
 	std::list<std::shared_ptr<MeshCollision>>
-	arg_stageColliders, 
+	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr)
 {
 
@@ -419,12 +439,12 @@ void Enemy::Collision(
 	//“G–{‘Ì‚Æ’e‚Ì“–‚½‚è”»’è‚ðs‚¤B
 	int hitCount = arg_bulletMgr.lock()->CheckMeshCollision(m_meshCol, true);
 	if (0 < hitCount) {
-		//--m_hp;
-		m_hp -= 50;
+		--m_hp;
+		//m_hp -= 50;
 	}
 
 	if (m_hp <= 0) {
-		Init();
+		m_state = State::Death;
 	}
 
 }
@@ -501,7 +521,7 @@ bool Enemy::CheckEye(
 		else
 		{
 		}
-	
+
 	}
 
 	return !isHit;

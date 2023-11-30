@@ -84,28 +84,28 @@ void EnemyManager::SetMapData(
 	//マップデータ
 	std::list<std::list<int>> l_mapChips =
 		MapManager::GetMapChips(arg_stageNum);
+
 	int l_x = 0;
+	int l_y = 0;
 	for (auto i = l_mapChips.begin(); i != l_mapChips.end(); ++i)
 	{
-		int l_y = 0;
+		l_x = 0;
 
 		for (auto j = i->begin(); j != i->end(); ++j)
 		{
-			if (*j == 0) {
+			if (*j == 1) {
 				m_config->SetType(l_x, l_y,
-					PatrolConfig::AstarType::Move);
+					PatrolConfig::AstarType::UnMove);
 			}
-			else  if (*j == 1) {
-				/*m_config->SetType(l_x, l_y,
-					PatrolConfig::AstarType::UnMove);*/
+			else {
 				m_config->SetType(l_x, l_y,
 					PatrolConfig::AstarType::Move);
 			}
 
-			l_y++;
+			l_x++;
 		}
 
-		l_x++;
+		l_y++;
 	}
 
 	//マップデータが来てから初期化
