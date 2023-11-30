@@ -276,6 +276,10 @@ DirectX::XMVECTOR Enemy::CalMoveQuaternion(
 	KazMath::Vec3<float> arg_pos,
 	KazMath::Vec3<float> arg_prevPos)
 {
+	//Y軸方向の移動量を書き消す。
+	arg_pos.y = 0;
+	arg_prevPos.y = 0;
+
 	//動いた方向に傾ける。
 	KazMath::Vec3<float> moveVec = arg_pos - arg_prevPos;
 	//動いた方向ベクトルを正規化する。

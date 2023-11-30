@@ -2,20 +2,7 @@
 
 DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 {
-	if (arg_isUIFlag)
-	{
-		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		m_drawCommand.renderTargetHandle = -1;
-	}
-	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaShader());
-	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
-	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
-	Error();
-	m_textureSize =
-	{
-		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Width),
-		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Height)
-	};
+	Load(arg_rasterize, arg_textureFilePass, arg_isUIFlag, arg_deletePipelineInScene);
 }
 
 DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
@@ -56,6 +43,28 @@ DrawFuncHelper::TextureRender::TextureRender(DrawingByRasterize& arg_rasterize, 
 	}
 	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteShader());
 	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
+}
+
+DrawFuncHelper::TextureRender::TextureRender()
+{
+}
+
+void DrawFuncHelper::TextureRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+{
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		m_drawCommand.renderTargetHandle = -1;
+	}
+	m_drawCommand = DrawFuncData::SetSpriteAlphaData(DrawFuncData::GetSpriteAlphaShader());
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
+	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
+	Error();
+	m_textureSize =
+	{
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Width),
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Height)
+	};
 }
 
 void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData& rhs)

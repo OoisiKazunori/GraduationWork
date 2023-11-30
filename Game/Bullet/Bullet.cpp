@@ -19,7 +19,7 @@ void Bullet::Init() {
 
 }
 
-void Bullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir) {
+void Bullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir, bool arg_isEnemyBullet) {
 
 	m_disappearTimer = 0;
 	m_isActive = true;
@@ -28,6 +28,7 @@ void Bullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir
 	m_dir = arg_dir;
 	m_collisionEndPos = m_collisionStartPos + m_dir * 100000.0f;
 	m_bulletPos = arg_pos + m_dir * 5.0f;
+	m_isEnemyBullet = arg_isEnemyBullet;
 
 }
 
@@ -84,6 +85,10 @@ void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders
 
 void Bullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec) {
 
-	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_bulletPos, m_bulletPos + m_dir * BULLET_LENGTH, KazMath::Color(255, 255, 255, 255));
+	KazMath::Color bulletColor = KazMath::Color(255, 255, 255, 255);
+	if (m_isEnemyBullet) {
+		bulletColor = KazMath::Color(255, 0, 0, 255);
+	}
+	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_bulletPos, m_bulletPos + m_dir * BULLET_LENGTH, bulletColor);
 
 }

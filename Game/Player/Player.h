@@ -33,6 +33,10 @@ private:
 	const float MOVE_SPEED_SQUAT = 0.3f;
 	const float MOVE_SPEED_CREEPING = 0.15f;
 
+	//発射の遅延
+	int m_shotDelay;
+	const int SHOT_DELAY = 120;
+
 	//心音のタイマー
 	int m_heatbeatTimer;
 	const int HEATBEAT_TIMER = 90;

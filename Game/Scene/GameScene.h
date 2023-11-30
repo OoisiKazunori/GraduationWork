@@ -95,4 +95,5 @@ private:
 	Menu m_menu;
 
 	CheckPoint m_goalPoint;
+	bool m_isClear = false;
 };

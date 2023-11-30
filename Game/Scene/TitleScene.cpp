@@ -9,6 +9,8 @@ TitleScene::TitleScene(DrawingByRasterize& arg_rasterize) :
 	m_2DSpriteTransform.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
 	m_spaceTransform.pos = { 1280.0f / 2.0f, 720.0f / 2.0f + 250.0f };
 	m_spaceTransform.scale = { 1.2f, 1.2f };
+	m_selectSE = SoundManager::Instance()->SoundLoadWave("Resource/sound/UI_Click.wav");
+	m_selectSE.volume = 0.15f;
 }
 
 TitleScene::~TitleScene()
@@ -39,6 +41,7 @@ void TitleScene::Input()
 		//ƒQ[ƒ€ƒV[ƒ“‚Ö
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 		{
+			SoundManager::Instance()->SoundPlayerWave(m_selectSE, 0);
 			m_sceneNum = 2;
 		}
 	}

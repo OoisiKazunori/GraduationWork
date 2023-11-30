@@ -5,6 +5,8 @@
 int HPUI::m_hp = 100;
 int HPUI::m_redHP = 0;
 
+int HPUI::redWaitTime = 0;
+
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
 	m_2DSprite(arg_rasterize, f_filePath, true)
 {
@@ -100,7 +102,7 @@ void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
 	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
-	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_hand.png"),
+	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_Stone.png"),
 	m_TabSp(arg_rasterize, "Resource/UITexture/Tab.png"),
 	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),
 	m_eSp(arg_rasterize, "Resource/UITexture/E.png"),
@@ -108,7 +110,10 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_aimSideR(arg_rasterize, "Resource/UITexture/aimSideR.png"),
 	m_aimSideL(arg_rasterize, "Resource/UITexture/aimSideL.png"),
 	m_aimSideU(arg_rasterize, "Resource/UITexture/aimSideU.png"),
-	m_aimSideB(arg_rasterize, "Resource/UITexture/aimSideB.png")
+	m_aimSideB(arg_rasterize, "Resource/UITexture/aimSideB.png"),
+	m_echoBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
+	m_hundgunBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
+	m_StoneInf(arg_rasterize, "Resource/UITexture/Infinity.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
@@ -159,12 +164,16 @@ void WeponUIManager::Update()
 	if (KeyBoradInputManager::Instance()->InputState(DIK_TAB))
 	{
 		m_showUITime = c_ShowTime;
+	}
+	if (m_showUITime > 0)
+	{
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber < m_haveWepons.size() - 1)
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber + 1;
 				isDirty = true;
+				m_showUITime = c_ShowTime;
 			}
 			easeTimer = 0.0f;
 
@@ -177,6 +186,7 @@ void WeponUIManager::Update()
 			{
 				m_nowSelectWeponNumber = m_nowSelectWeponNumber - 1;
 				isDirty = true;
+				m_showUITime = c_ShowTime;
 			}
 			easeTimer = 0.0f;
 
@@ -229,7 +239,6 @@ void WeponUIManager::EaseInit()
 			GetUI((*itr).first).EasePosInit({ xPos , yPos + (yOffset * sub) });
 			hoge++;
 		}
-
 	}
 }
 
@@ -247,6 +256,24 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		{
 			itr++;
 		}
+		if ((*itr).first == e_NonWepon)
+		{
+			m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
+			m_StoneInf.Draw(arg_rasterize);
+		}
+		else if ((*itr).first == e_Echo)
+		{
+			m_echoBulletInf.SetPosition({ m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
+			m_echoBulletInf.Draw(arg_rasterize);
+		}
+		else if ((*itr).first == e_Hundgun)
+		{
+			m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
+			m_hundgunBulletInf.Draw(arg_rasterize);
+		}
 		GetUI((*itr).first).Draw(arg_rasterize);
 	}
 	else
@@ -257,6 +284,24 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		m_eSp.Draw(arg_rasterize);
 		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 		{
+			if ((*itr).first == e_NonWepon)
+			{
+				m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
+				m_StoneInf.Draw(arg_rasterize);
+			}
+			else if ((*itr).first == e_Echo)
+			{
+				m_echoBulletInf.SetPosition({m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
+					m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
+				m_echoBulletInf.Draw(arg_rasterize);
+			}
+			else if ((*itr).first == e_Hundgun)
+			{
+				m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
+				m_hundgunBulletInf.Draw(arg_rasterize);
+			}
 			GetUI((*itr).first).Draw(arg_rasterize);
 		}
 	}
@@ -452,6 +497,15 @@ HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
 	m_HPFrame2(arg_rasterize, "Resource/UITexture/HPBer1.png")
 {
 	m_hp = 100;
+	m_hitDamage[0] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit01.wav");
+	m_hitDamage[0].volume = 0.1f;
+	m_hitDamage[1] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit02.wav");
+	m_hitDamage[1].volume = 0.1f;
+	m_hitDamage[2] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit03.wav");
+	m_hitDamage[2].volume = 0.1f;
+	m_hitDamage[3] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit04.wav");
+	m_hitDamage[3].volume = 0.1f;
+
 }
 
 void HPUI::Init()
@@ -462,20 +516,11 @@ void HPUI::Init()
 
 void HPUI::Update(const int f_playerHP)
 {
-	static int redWaitTime = 0;
-	const int redTime = 1;
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
+	//HPŒ¸‚ç‚·‚Æ‚«‚Í‚±‚±‚ðŽQÆI
+	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		HitDamage(10, 10);
-		if (m_hp > 0)
-		{
-			redWaitTime = 45;
-		}
-		else
-		{
-			redWaitTime = 0;
-		}
-	}
+	}*/
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
@@ -542,6 +587,8 @@ void HPUI::Draw(DrawingByRasterize& arg_rasterize)
 void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 {
 	m_hp -= f_mainDamage;
+	int num = rand() % 4;
+	SoundManager::Instance()->SoundPlayerWave(m_hitDamage[num], 0);
 	//m_hp -= m_redHP;
 	if (m_hp < 0)
 	{
@@ -561,6 +608,14 @@ void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 	else
 	{
 		//m_redHP = 0;
+	}
+	if (m_hp > 0)
+	{
+		redWaitTime = 45;
+	}
+	else
+	{
+		redWaitTime = 0;
 	}
 }
 
