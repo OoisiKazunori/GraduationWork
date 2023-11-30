@@ -17,8 +17,8 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	//ƒ‚ƒfƒ‹‚Ì”z’u
 	m_modelInstanceRenderArray[0].m_modelInstanceRender.Load(arg_rasterize, "Resource/DefferdRendering/Avocado/", "Avocado.gltf", false);
 	m_modelInstanceRenderArray[0].m_modelInstanceRender.m_transformBuffer.GenerateBuffer(sizeof(CoordinateSpaceMatData), 20);
-
-
+	m_modelInstanceRenderArray[0].m_modelInstanceRender.m_transformBuffer.m_vramBuffer.rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+	m_modelInstanceRenderArray[0].m_modelInstanceRender.m_transformBuffer.m_vramBuffer.rootParamType = GRAPHICS_PRAMTYPE_DATA;
 
 	m_renderTransform.pos = { WIN_X / 2,WIN_Y / 2 };
 	m_gBufferType = 0;
@@ -80,17 +80,11 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	//transform.pos = { static_cast<float>(0) * 30.0f,0.0f,static_cast<float>(0) * 30.0f };
 	//m_modelInstanceRenderArray[0].m_model.Draw(arg_rasterize, arg_blasVec, transform);
 
-	for (int x = 0; x < m_modelInstanceRenderArray.size(); ++x)
-	{
-		for (int z = 0; z < m_modelInstanceRenderArray[x].m_transform.size(); ++z)
-		{
-			KazMath::Transform3D transform;
-			transform.pos = { static_cast<float>(x) * 30.0f,0.0f,static_cast<float>(z) * 30.0f };
-	
-			m_modelDrawArray[x][z].m_model.Draw(arg_rasterize, arg_blasVec, transform);
-		}
-	}
-	m_modelInstanceRenderArray[x].m_modelInstanceRender.Draw(arg_rasterize, arg_blasVec);
+	//for (auto& obj : m_modelInstanceRenderArray)
+	//{
+	//	obj.m_modelInstanceRender.Draw(arg_rasterize, arg_blasVec);
+	//}
+	m_modelInstanceRenderArray[0].m_modelInstanceRender.Draw(arg_rasterize, arg_blasVec);
 }
 
 int RenderScene::SceneChange()
