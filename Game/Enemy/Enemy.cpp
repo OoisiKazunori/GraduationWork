@@ -435,10 +435,9 @@ void Enemy::RotateEye()
 	//m_oldQuaternion = m_trans.quaternion;
 
 	//30“x
-	float l_rad = 30.0f;
-	l_rad = l_rad * (3.14f / 180.0f);
-	l_rad *= std::sinf(m_angle);
 	m_angle += 0.01f;
+	float l_rad = DirectX::XMConvertToRadians(30.0f);
+	l_rad *= std::sinf(m_angle);
 
 	//ƒ‰ƒWƒAƒ“‚ğ‰ÁZ
 	KazMath::Transform3D l_trans = m_trans;

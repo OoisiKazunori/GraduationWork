@@ -139,7 +139,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_uiManager.Update();
 			m_gadgetMaanager.Update();
 
-			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
+			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
 			m_enemyManager->Update(
 				m_stageManager.GetColliders(),
 				m_bulletMgr,

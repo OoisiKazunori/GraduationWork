@@ -46,10 +46,11 @@ void Player::Init()
 	m_heatbeatTimer = 0;
 	m_gunReaction = KazMath::Vec3<float>();
 	m_shotDelay = SHOT_DELAY;
+	m_hp = DEFAULT_HP;
 
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
+void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI)
 {
 
 	//動かす前の座標。
@@ -185,7 +186,8 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	if (0 < hitCount) {
 
 		//ダメージを受けています。
-		int a = 0;
+		m_hp -= 10;
+		arg_hpUI.HitDamage(10, 10);
 
 	}
 

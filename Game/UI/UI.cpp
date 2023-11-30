@@ -517,10 +517,10 @@ void HPUI::Init()
 void HPUI::Update(const int f_playerHP)
 {
 	//HPŒ¸‚ç‚·‚Æ‚«‚Í‚±‚±‚ðŽQÆI
-	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		HitDamage(10, 10);
-	}*/
+	}
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
