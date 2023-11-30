@@ -16,6 +16,8 @@ private:
 	bool m_isCollision;					//当たり判定を行うことができるか？のフラグ。軽量化で一回しか当たり判定を行わないために使用する。
 	BasicDraw::BasicLineRender m_line;
 
+	bool m_isEnemyBullet;
+
 	//消えるまでのタイマー
 	int m_disappearTimer;
 	const int DISAPPEAR_TIMER = 120;
@@ -27,10 +29,12 @@ public:
 
 	Bullet(DrawingByRasterize& arg_rasterize);
 	void Init();
-	void Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir);
+	void Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir, bool arg_isEnemyBullet = false);
 	void Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	bool GetIsActive() { return m_isActive; };
+
+	bool CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision);
 
 };

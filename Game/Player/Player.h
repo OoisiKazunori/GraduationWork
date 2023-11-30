@@ -25,6 +25,10 @@ private:
 	bool m_onGround;
 	bool m_isADS;		//銃を構えている状態か？
 
+	//当たり判定用のモデル
+	BasicDraw::BasicModelRender m_collisionModel;	//使用するモデル
+	std::shared_ptr<MeshCollision> m_meshCollision;
+
 	float m_gravity;
 	const float GRAVITY = 0.05f;
 
@@ -32,6 +36,10 @@ private:
 	const float MOVE_SPEED_STAND = 0.5f;
 	const float MOVE_SPEED_SQUAT = 0.3f;
 	const float MOVE_SPEED_CREEPING = 0.15f;
+
+	//発射の遅延
+	int m_shotDelay;
+	const int SHOT_DELAY = 120;
 
 	//心音のタイマー
 	int m_heatbeatTimer;

@@ -1,6 +1,7 @@
 #include "StageManager.h"
 #include"Input/KeyBoradInputManager.h"
 #include "../MapLoader/MapLoader.h"
+#include "../Echo/EchoArray.h"
 
 StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
@@ -201,10 +202,16 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		else if (l_mapItr->m_objetName.starts_with("Block01") == true)
+		else if (l_mapItr->m_objetName.starts_with("Block") == true)
 		{
-			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/StageBlock01/", "StageBlock01.gltf",
+			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			m_block01.back()->m_echoFlag = true;
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_block01.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_block01.end())->m_transform);
+			m_collisions.push_back(collision);
 		}
 
 		else if (l_mapItr->m_objetName.starts_with("plane") == true)
@@ -301,8 +308,44 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	if (!m_stage)
 	{
 		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
-			DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 10.0f, 75.0f));
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 4.4f, 75.0f));
+		auto collision = std::make_shared<MeshCollision>();
+		collision->Setting(m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stage->m_transform);
+		m_collisions.push_back(collision);
 	}
+}
+
+void StageManager::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision)
+{
+	for (auto& obj : m_block01)
+	{
+		//全てのEchoとチェック
+		obj->m_isDrawFlag = false;
+		for (auto& index : EchoArray::Instance()->GetEcho()) {
+
+			//エコーが生成されていなかったら。
+			if (!index.GetIsActive()) continue;
+			if (index.GetNowRadius() <= 0.1f) continue;
+
+			//まずは球で当たり判定を行う。
+			KazMath::Vec3<float> echoVec = obj->m_transform.pos - index.GetPos();
+			float distance = echoVec.Length();
+			if (index.GetNowRadius() <= distance) continue;
+
+			//次にレイを飛ばして当たり判定を行う。
+			MeshCollision::CheckHitResult result = arg_stageMeshCollision.lock()->CheckHitRay(index.GetPos(), echoVec.GetNormal());
+
+			//当たっていたら
+			if (!result.m_isHit || (result.m_isHit && distance <= fabs(result.m_distance))) {
+
+				obj->m_isDrawFlag = true;
+				break;
+
+			}
+
+		}
+	}
+
 }
 
 void StageManager::ChangeScene(DrawingByRasterize& arg_rasterize)

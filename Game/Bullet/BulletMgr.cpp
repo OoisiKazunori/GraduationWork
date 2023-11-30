@@ -63,6 +63,21 @@ void BulletMgr::Genrate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_d
 
 }
 
+void BulletMgr::GenerateEnemyBullet(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir)
+{
+
+	for (auto& index : m_bullet) {
+
+		if (index->GetIsActive()) continue;
+
+		index->Generate(arg_pos, arg_dir, true);
+
+		break;
+
+	}
+
+}
+
 void BulletMgr::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders) {
 
 	for (auto& index : m_bullet) {
@@ -100,5 +115,24 @@ void BulletMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		index->Draw(arg_rasterize, arg_blasVec);
 
 	}
+
+}
+
+int BulletMgr::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision)
+{
+
+	int hitCount = 0;
+	for (auto& index : m_bullet) {
+
+		if (!index->GetIsActive()) continue;
+
+		bool isHit = index->CheckMeshCollision(arg_meshCollision);
+		if (isHit) {
+			++hitCount;
+		}
+
+	}
+
+	return hitCount;
 
 }

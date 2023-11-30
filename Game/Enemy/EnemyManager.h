@@ -20,6 +20,7 @@ public:
 	void Update(
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
+		std::weak_ptr<BulletMgr> arg_bulletMgr,
 		KazMath::Vec3<float> arg_playerPos);
 	void Draw(
 		DrawingByRasterize& arg_rasterize,
