@@ -1,6 +1,7 @@
 #pragma once
 #include "Enemy.h"
 #include "PatrolDraw.h"
+#include"../KazLibrary/Sound/SoundManager.h"
 
 class EnemyData;
 
@@ -12,6 +13,8 @@ private:
 	std::shared_ptr<PatrolConfig> m_config;
 
 	PatrolDraw m_patrolDraw;
+
+	SoundData m_checkSound;
 
 public:
 	EnemyManager();

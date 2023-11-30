@@ -4,6 +4,9 @@
 
 EnemyManager::EnemyManager()
 {
+	m_checkSound =
+		SoundManager::Instance()->SoundLoadWave("Resource/Sound/Discovery.wav");
+	m_checkSound.volume = 0.05f;
 }
 
 EnemyManager::~EnemyManager()
@@ -166,6 +169,12 @@ void EnemyManager::Update(
 			arg_stageColliders,
 			arg_bulletMgr,
 			arg_playerPos);
+
+		//”­Œ©Žž
+		if (m_enemys[i].IsDiscovery()) {
+			SoundManager::Instance()->
+				SoundPlayerWave(m_checkSound, 0);
+		}
 	}
 
 	//”»’è

@@ -53,6 +53,7 @@ private:
 	int m_hp;
 	int m_rate;
 
+	//ƒoƒŒ‚é‚Ü‚Å‚ÌŽžŠÔ
 	const int MAX_EYE_DELAY = 120;
 	int m_checkEyeDelay;
 
@@ -98,6 +99,10 @@ private:
 public:
 	KazMath::Transform3D GetTrans() { return m_trans; }
 	KazMath::Vec3<float> GetPos() { return m_trans.pos; }
+	bool IsDiscovery() {
+		if (m_isCombat) { return true; }
+		return false;
+	}
 
 public:
 	void SetData(
