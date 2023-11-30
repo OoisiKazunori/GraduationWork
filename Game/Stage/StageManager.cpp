@@ -303,7 +303,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_T.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
-		}
+	}
 	//empty‚È‚ç“ü‚ê‚é
 	if (!m_stage)
 	{
@@ -345,7 +345,6 @@ void StageManager::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollisi
 
 		}
 	}
-
 }
 
 void StageManager::ChangeScene(DrawingByRasterize& arg_rasterize)

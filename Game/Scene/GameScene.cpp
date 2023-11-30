@@ -199,7 +199,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
 
-
 	//デバッグ用で弾を飛ばす。
 	static int testTimer = 0;
 	++testTimer;
@@ -211,7 +210,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		testTimer = 0;
 
 	}
-
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
