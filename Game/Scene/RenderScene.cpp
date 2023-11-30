@@ -28,7 +28,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_sceneNum = -1;
 
 	m_sponzaModelTransform.scale = { 0.1f,0.1f,0.1f };
-	m_axisRender.Load(arg_rasterize, "Resource/Test/", "Axis.glb", false);
+	m_axisRender.Load(arg_rasterize, "Resource/DefferdRendering/Axis/", "Axis.gltf", false);
 }
 
 RenderScene::~RenderScene()
@@ -81,8 +81,9 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 			m_modelDrawArray[x][z].m_model.Draw(arg_rasterize, arg_blasVec, transform);
 		}
 	}
-
-	m_axisRender.m_model.Draw(arg_rasterize, arg_blasVec, KazMath::Transform3D());
+	KazMath::Transform3D t;
+	t.scale.z = 5.0f;
+	m_axisRender.m_model.Draw(arg_rasterize, arg_blasVec, t);
 	//KazMath::Transform3D transform;
 	//transform.pos = { static_cast<float>(0) * 30.0f,0.0f,static_cast<float>(0) * 30.0f };
 	//m_modelInstanceRenderArray[0].m_model.Draw(arg_rasterize, arg_blasVec, transform);
