@@ -118,7 +118,7 @@ void BulletMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 }
 
-int BulletMgr::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision)
+int BulletMgr::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision, bool arg_isEnemyObject)
 {
 
 	int hitCount = 0;
@@ -126,7 +126,7 @@ int BulletMgr::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision
 
 		if (!index->GetIsActive()) continue;
 
-		bool isHit = index->CheckMeshCollision(arg_meshCollision);
+		bool isHit = index->CheckMeshCollision(arg_meshCollision, arg_isEnemyObject);
 		if (isHit) {
 			++hitCount;
 		}

@@ -178,7 +178,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	m_shotDelay = std::clamp(m_shotDelay + 1, 0, SHOT_DELAY);
 
 	//メッシュコライダーにトランスフォームを適用
-	m_meshCollision->Transform(m_transform);
+	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 
 	//弾とプレイヤーの当たり判定
 	int hitCount = arg_bulletMgr.lock()->CheckMeshCollision(m_meshCollision);

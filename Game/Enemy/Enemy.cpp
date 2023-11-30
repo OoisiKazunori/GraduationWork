@@ -46,8 +46,8 @@ void Enemy::SetData(
 	m_enemyBox =
 		std::make_unique<BasicDraw::BasicModelRender>(
 			arg_rasterize,
-			"Resource/Test/Virus/",
-			"virus_cur.gltf"
+			"Resource/Enemy/",
+			"Enemy.gltf"
 			);
 
 	m_meshCol = std::make_shared<MeshCollision>();
@@ -256,7 +256,7 @@ void Enemy::Update(
 	}
 
 	//判定(メッシュ)
-	Collision(arg_stageColliders);
+	Collision(arg_stageColliders, arg_bulletMgr);
 
 
 	//一旦Y固定
@@ -279,12 +279,12 @@ void Enemy::Draw(
 			l_player);
 	}
 
-	if (m_isCombat) {
-		m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 0, 0, 255));
-	}
-	else {
-		m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 255, 255, 255));
-	}
+	//if (m_isCombat) {
+	//	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 0, 0, 255));
+	//}
+	//else {
+	//	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 255, 255, 255));
+	//}
 
 }
 
@@ -319,8 +319,15 @@ DirectX::XMVECTOR Enemy::CalMoveQuaternion(
 
 void Enemy::Collision(
 	std::list<std::shared_ptr<MeshCollision>>
-	arg_stageColliders)
+	arg_stageColliders, 
+	std::weak_ptr<BulletMgr> arg_bulletMgr)
 {
+
+	m_meshCol->Setting(
+		m_enemyBox.get()->m_model.
+		m_modelInfo->modelData[0].vertexData,
+		m_trans);
+
 	const float RAY_LENGTH = 8.0f;
 
 	//地面と当たり判定を行う。
@@ -408,6 +415,18 @@ void Enemy::Collision(
 				(RAY_LENGTH - rayResult.m_distance);
 		}
 	}
+
+	//敵本体と弾の当たり判定を行う。
+	int hitCount = arg_bulletMgr.lock()->CheckMeshCollision(m_meshCol, true);
+	if (0 < hitCount) {
+		//--m_hp;
+		m_hp -= 50;
+	}
+
+	if (m_hp <= 0) {
+		Init();
+	}
+
 }
 
 void Enemy::RotateEye()

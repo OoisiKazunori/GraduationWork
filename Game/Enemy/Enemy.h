@@ -48,7 +48,7 @@ private:
 	float m_gravity;
 	const float GRAVITY = 0.05f;
 
-	const  int MAX_RATE = 1200;
+	const  int MAX_RATE = 120;
 	const int MAX_HP = 100;
 	int m_hp;
 	int m_rate;
@@ -81,7 +81,8 @@ private:
 		KazMath::Vec3<float> arg_prevPos);
 	void Collision(
 		std::list<std::shared_ptr<MeshCollision>>
-		arg_stageColliders);
+		arg_stageColliders,
+		std::weak_ptr<BulletMgr> arg_bulletMgr);
 	void RotateEye();
 	bool CheckDistXZ(
 		std::pair<float, float> arg_checkPos, float arg_dist);
