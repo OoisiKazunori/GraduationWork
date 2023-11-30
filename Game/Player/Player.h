@@ -25,6 +25,10 @@ private:
 	bool m_onGround;
 	bool m_isADS;		//銃を構えている状態か？
 
+	//当たり判定用のモデル
+	BasicDraw::BasicModelRender m_collisionModel;	//使用するモデル
+	std::shared_ptr<MeshCollision> m_meshCollision;
+
 	float m_gravity;
 	const float GRAVITY = 0.05f;
 

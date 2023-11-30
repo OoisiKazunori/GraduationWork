@@ -12,6 +12,7 @@
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
+	m_collisionModel(arg_rasterize, "Resource/Player/Collision/", "collision.gltf"),
 	m_mk23Model(arg_rasterize, "Resource/Weapon/Mk23/", "Mk23.gltf")
 {
 
@@ -26,6 +27,9 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 
 	m_heatbeatSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Heartbeat.wav");
 	m_heatbeatSE.volume = 0.2f;
+
+	m_meshCollision = std::make_shared<MeshCollision>();
+	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 
 	m_transform = f_startPos;
 	m_transform.pos.y = 20.0f;
@@ -172,6 +176,18 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	//銃の連射の遅延を更新。
 	m_shotDelay = std::clamp(m_shotDelay + 1, 0, SHOT_DELAY);
+
+	//メッシュコライダーにトランスフォームを適用
+	m_meshCollision->Transform(m_transform);
+
+	//弾とプレイヤーの当たり判定
+	int hitCount = arg_bulletMgr.lock()->CheckMeshCollision(m_meshCollision);
+	if (0 < hitCount) {
+
+		//ダメージを受けています。
+		int a = 0;
+
+	}
 
 }
 

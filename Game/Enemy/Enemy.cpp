@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "EnemyConfig.h"
-#include"../Game/Collision/MeshCollision.h"
+#include "../Game/Collision/MeshCollision.h"
+#include "../Game/Bullet/BulletMgr.h"
 
 Enemy::Enemy()
 {
@@ -58,6 +59,9 @@ void Enemy::SetData(
 
 	m_line.Generate(arg_rasterize);
 
+
+	m_shotDelay = 0;
+
 }
 
 void Enemy::SetCheckPointDelay(
@@ -91,11 +95,15 @@ void Enemy::Init()
 	m_hp = MAX_HP;
 	m_rate = MAX_RATE;
 	m_angle = 0.0f;
+
+	m_shotDelay = 0;
+
 }
 
 void Enemy::Update(
 	std::list<std::shared_ptr<MeshCollision>>
 	arg_stageColliders,
+	std::weak_ptr<BulletMgr> arg_bulletMgr,
 	KazMath::Vec3<float> arg_playerPos)
 {
 	//プレイヤーXZ座標
@@ -185,6 +193,14 @@ void Enemy::Update(
 			m_trans.quaternion = CalMoveQuaternion(arg_playerPos, m_trans.pos);
 
 			//射撃
+			++m_shotDelay;
+			if (SHOT_DELAY < m_shotDelay) {
+
+				arg_bulletMgr.lock()->GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
+
+				m_shotDelay = 0;
+
+			}
 		}
 
 		else

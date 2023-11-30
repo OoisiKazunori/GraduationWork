@@ -35,4 +35,6 @@ public:
 
 	bool GetIsActive() { return m_isActive; };
 
+	bool CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision);
+
 };

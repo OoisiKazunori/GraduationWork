@@ -3,6 +3,7 @@
 #include "PatrolData.h"
 
 class MeshCollision;
+class BulletMgr;
 
 class Enemy
 {
@@ -54,6 +55,12 @@ private:
 	float m_angle = 0.0f;
 	DirectX::XMVECTOR m_oldQuaternion;
 
+
+
+	//敵が弾を撃つ遅延 デバッグ用 後で書き換えてください
+	int m_shotDelay;
+	const int SHOT_DELAY = 120;
+
 public:
 	Enemy();
 	~Enemy();
@@ -61,6 +68,7 @@ public:
 	void Update(
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
+		std::weak_ptr<BulletMgr> arg_bulletMgr,
 		KazMath::Vec3<float> arg_playerPos
 	);
 	void Draw(

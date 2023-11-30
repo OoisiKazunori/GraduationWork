@@ -142,10 +142,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
 			m_enemyManager->Update(
 				m_stageManager.GetColliders(),
+				m_bulletMgr,
 				m_player->GetTransform().pos);
 			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-			m_bulletMgr->Update(m_stageManager.GetColliders());
 			m_stageManager.Update(arg_rasterize);
+			m_bulletMgr->Update(m_stageManager.GetColliders());
 
 			static bool flag = false;
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))

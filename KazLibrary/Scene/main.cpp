@@ -140,18 +140,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif // _DEBUG
 
 //#ifdef DEBUG
-		GetWindowRect(winApi.hwnd, &wrc);
+		//GetWindowRect(winApi.hwnd, &wrc);
 
-		//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
-		const LONG OFFSET = 300;
-		wrc.left += OFFSET;
-		wrc.right -= OFFSET;
-		wrc.bottom -= OFFSET;
-		wrc.top += OFFSET;
+		////ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
+		//const LONG OFFSET = 300;
+		//wrc.left += OFFSET;
+		//wrc.right -= OFFSET;
+		//wrc.bottom -= OFFSET;
+		//wrc.top += OFFSET;
 
-		ClipCursor(&wrc);
-		//マウス非表示
-		ShowCursor(false);
+		//ClipCursor(&wrc);
+		////マウス非表示
+		//ShowCursor(false);
 //#endif // _DEBUG
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
