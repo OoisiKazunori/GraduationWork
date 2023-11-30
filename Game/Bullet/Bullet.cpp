@@ -15,7 +15,6 @@ void Bullet::Init() {
 
 	m_disappearTimer = 0;
 	m_isActive = false;
-	m_isCollision = false;
 
 }
 
@@ -23,7 +22,6 @@ void Bullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir
 
 	m_disappearTimer = 0;
 	m_isActive = true;
-	m_isCollision = true;
 	m_collisionStartPos = arg_pos;
 	m_dir = arg_dir;
 	m_collisionEndPos = m_collisionStartPos + m_dir * 100000.0f;
@@ -36,40 +34,28 @@ void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders
 
 	if (!m_isActive) return;
 
-	//まだ当たり判定を行っていなかったら当たり判定を計算。
-	if (m_isCollision) {
+	//弾を動かす。
+	m_bulletPos += m_dir * BULLET_SPEED;
 
-		for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
+	//弾が当たったオブジェクトに到達していたら。
+	if (KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).Length() <= KazMath::Vec3<float>(m_bulletPos - m_collisionStartPos).Length()) {
 
-			const float RAY_LENGTH = KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).Length();
-			MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_collisionStartPos, KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).GetNormal());
-			if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+		EchoArray::Instance()->Generate(m_collisionEndPos, 60.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
 
-				//当たった地点を保存。
-				m_collisionEndPos = rayResult.m_position;
-
-			}
-
-		}
-
-		m_isCollision = false;
+		Init();
 
 	}
-	//当たり判定が終わっていたら。
-	else {
 
-		//弾を動かす。
-		m_bulletPos += m_dir * BULLET_SPEED;
+	for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
 
-		//弾が当たったオブジェクトに到達していたら。
-		if (KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).Length() <= KazMath::Vec3<float>(m_bulletPos - m_collisionStartPos).Length()) {
+		const float RAY_LENGTH = KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).Length();
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_collisionStartPos, KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).GetNormal());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
-			EchoArray::Instance()->Generate(m_collisionEndPos, 60.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
-
-			Init();
+			//当たった地点を保存。
+			m_collisionEndPos = rayResult.m_position;
 
 		}
-
 
 	}
 
@@ -91,4 +77,21 @@ void Bullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 	}
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_bulletPos, m_bulletPos + m_dir * BULLET_LENGTH, bulletColor);
 
+}
+
+bool Bullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision, bool arg_isEnemyObject)
+{
+
+	if (m_isEnemyBullet == arg_isEnemyObject) return false;
+
+	const float RAY_LENGTH = KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).Length();
+	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_collisionStartPos, KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).GetNormal());
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		Init();
+		return true;
+
+	}
+
+	return false;
 }

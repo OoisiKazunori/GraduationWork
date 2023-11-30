@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
@@ -95,6 +95,8 @@
     <ClCompile Include="Game\Scene\DemoScene.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="KazLibrary\Render\BasicDraw.cpp" />
+    <ClCompile Include="Game\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Stage\StageManager.cpp" />
     <ClCompile Include="Game\Stage\StageModel.cpp" />
     <ClCompile Include="KazLibrary\Render\GenerateRender.cpp" />
@@ -104,9 +106,9 @@
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
-    <ClCompile Include="Game\Echo\Echo.cpp" />
-    <ClCompile Include="Game\Echo\EchoArray.cpp" />
-    <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\PatrolData.cpp" />
+    <ClCompile Include="Game\Enemy\PatrolDraw.cpp" />
+    <ClCompile Include="Game\Enemy\PatrolConfig.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="Game\Menu\Menu.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
@@ -229,6 +231,8 @@
     <ClInclude Include="Game\Scene\DemoScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="KazLibrary\Render\BasicDraw.h" />
+    <ClInclude Include="Game\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Stage\StageManager.h" />
     <ClInclude Include="Game\Stage\StageModel.h" />
     <ClInclude Include="KazLibrary\Render\GenerateRender.h" />
@@ -238,9 +242,10 @@
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
-    <ClInclude Include="Game\Echo\Echo.h" />
-    <ClInclude Include="Game\Echo\EchoArray.h" />
-    <ClInclude Include="Game\Enemy\PreEnemy.h" />
+    <ClInclude Include="Game\Enemy\PatrolData.h" />
+    <ClInclude Include="Game\Enemy\EnemyConfig.h" />
+    <ClInclude Include="Game\Enemy\PatrolConfig.h" />
+    <ClInclude Include="Game\Enemy\PatrolDraw.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Menu\Menu.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />

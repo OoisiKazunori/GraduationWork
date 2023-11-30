@@ -2,6 +2,7 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../UI/UI.h"
 #include"../KazLibrary/Sound/SoundManager.h"
+#include"../Game/UI/UI.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -24,6 +25,10 @@ private:
 
 	bool m_onGround;
 	bool m_isADS;		//銃を構えている状態か？
+
+	//当たり判定用のモデル
+	BasicDraw::BasicModelRender m_collisionModel;	//使用するモデル
+	std::shared_ptr<MeshCollision> m_meshCollision;
 
 	float m_gravity;
 	const float GRAVITY = 0.05f;
@@ -59,7 +64,7 @@ public:
 
 	void Init();
 
-	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
+	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

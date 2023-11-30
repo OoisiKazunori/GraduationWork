@@ -18,10 +18,11 @@
 #include "StageSelectScene.h"
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
-#include"../KazLibrary/Debug/DebugKey.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
+	m_line(arg_rasterize),
+	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
@@ -71,8 +72,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	}
 
-	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
-	m_axixTransform.scale.z += 1.0f;
 }
 
 GameScene::~GameScene()
@@ -100,9 +99,11 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//デバックキーのサンプル
-	DebugKey::Instance()->DebugKeyTrigger(DIK_0, "Input", "DIK_0");
-	DebugKey::Instance()->DebugKeyTrigger(DIK_1, "Output", "DIK_1");
+	//ゲームシーンへ
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	{
+		m_sceneNum = 0;
+	}
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -138,14 +139,13 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_uiManager.Update();
 			m_gadgetMaanager.Update();
 
-			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
+			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
 			m_enemyManager->Update(
 				m_stageManager.GetColliders(),
-				m_bulletMgr,
 				m_player->GetTransform().pos);
 			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-			m_stageManager.Update(arg_rasterize);
 			m_bulletMgr->Update(m_stageManager.GetColliders());
+			m_stageManager.Update(arg_rasterize);
 
 			static bool flag = false;
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
@@ -226,6 +226,20 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
+
+
+	//デバッグ用で弾を飛ばす。
+	static int testTimer = 0;
+	++testTimer;
+	if (90 < testTimer) {
+
+		KazMath::Vec3<float> dir = m_player->GetTransform().pos.GetNormal();
+
+		m_bulletMgr->GenerateEnemyBullet(KazMath::Vec3<float>(), dir);
+		testTimer = 0;
+
+	}
+
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -238,7 +252,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
-	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
+	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 	//m_player->Draw(arg_rasterize, arg_blasVec);
@@ -249,7 +263,14 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
+<<<<<<< HEAD
+	m_uiManager.Draw(arg_rasterize);
+	m_gadgetMaanager.Draw(arg_rasterize);
+	m_HPBarManager.Draw(arg_rasterize);
+	m_heartRateManager.Draw(arg_rasterize);
+=======
 	m_menu.Draw(arg_rasterize);
+>>>>>>> origin/dev_Menu
 	if (!m_resultManager.GetResultShow())
 	{
 		m_uiManager.Draw(arg_rasterize);
@@ -257,8 +278,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_HPBarManager.Draw(arg_rasterize);
 		//m_heartRateManager.Draw(arg_rasterize);
 	}
-
-	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
 	m_goalPoint.Draw(arg_rasterize);
 
@@ -276,8 +295,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 		//index->Draw(arg_rasterize, arg_blasVec);
 	}
-
-	DebugKey::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()

@@ -7,7 +7,6 @@
 #include"Math/KazMath.h"
 #include"../Game/Input/Input.h"
 #include"../Game/Player/Player.h"
-#include "../Enemy/EnemyManager.h"
 #include"../Game/Camera.h"
 #include"../Game/Collision/MeshCollision.h"
 #include"../Bullet/BulletMgr.h"
@@ -18,10 +17,11 @@
 #include "StageSelectScene.h"
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
-#include"../KazLibrary/Debug/DebugKey.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
+	m_line(arg_rasterize),
+	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
@@ -53,9 +53,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_stageMeshCollision = std::make_shared<MeshCollision>();
 	m_stageMeshCollision->Setting(m_stageManager.m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stageManager.m_stage->m_transform);
 
-	m_enemyManager = std::make_shared<EnemyManager>();
-	auto l_enemyData = MapManager::GetEnemyData(m_stageNum);
-	m_enemyManager->SetMapData(m_stageNum, l_enemyData, arg_rasterize);
 
 	m_player = std::make_shared<Player>(arg_rasterize, MapManager::GetPlayerStartPosition(0));
 	m_camera = std::make_shared<Camera>();
@@ -63,16 +60,12 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_throwableObjectController = std::make_shared<ThrowableObjectController>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
-
-	//マップデータ
 	for (auto& index : m_preEnemy) {
 
 		index = std::make_shared<PreEnemy>(arg_rasterize);
 
 	}
 
-	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
-	m_axixTransform.scale.z += 1.0f;
 }
 
 GameScene::~GameScene()
@@ -81,8 +74,6 @@ GameScene::~GameScene()
 
 void GameScene::Init()
 {
-	m_enemyManager->Init();
-
 	m_sceneNum = SCENE_NONE;
 	m_bulletMgr->Init();
 	m_uiManager.Init();
@@ -100,9 +91,11 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//デバックキーのサンプル
-	DebugKey::Instance()->DebugKeyTrigger(DIK_0, "Input", "DIK_0");
-	DebugKey::Instance()->DebugKeyTrigger(DIK_1, "Output", "DIK_1");
+	//ゲームシーンへ
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	{
+		m_sceneNum = 0;
+	}
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -123,29 +116,15 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	//メニューが開かれていない時に更新を通す
 	if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 	{
-		//m_uiManager.Update();
-		//m_gadgetMaanager.Update();
-		//m_HPBarManager.Update(0);
-
-		//m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
-		//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-		//m_bulletMgr->Update(m_stageMeshCollision);
-
-		m_stageManager.Update(arg_rasterize);
-
 		if (m_HPBarManager.GetHP() > 0)
 		{
 			m_uiManager.Update();
 			m_gadgetMaanager.Update();
 
-			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
-			m_enemyManager->Update(
-				m_stageManager.GetColliders(),
-				m_bulletMgr,
-				m_player->GetTransform().pos);
+			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders());
 			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-			m_stageManager.Update(arg_rasterize);
 			m_bulletMgr->Update(m_stageManager.GetColliders());
+			m_stageManager.Update(arg_rasterize);
 
 			static bool flag = false;
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
@@ -208,12 +187,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_sceneNum = 0;
 		}
 	}
-
-	//auto hogehoge = MapManager::GetEnemyData(m_stageNum);
-
-	//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
-	//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
-
 	m_menu.Update();
 
 	m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
@@ -226,24 +199,27 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
+
+
+	//デバッグ用で弾を飛ばす。
+	static int testTimer = 0;
+	++testTimer;
+	if (90 < testTimer) {
+
+		KazMath::Vec3<float> dir = m_player->GetTransform().pos.GetNormal();
+
+		m_bulletMgr->GenerateEnemyBullet(KazMath::Vec3<float>(), dir);
+		testTimer = 0;
+
+	}
+
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	//描画命令発行
-		//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-		//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-		//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
-
-	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
-	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
-
-	//m_player->Draw(arg_rasterize, arg_blasVec);
-	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
@@ -257,8 +233,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_HPBarManager.Draw(arg_rasterize);
 		//m_heartRateManager.Draw(arg_rasterize);
 	}
-
-	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
 	m_goalPoint.Draw(arg_rasterize);
 
@@ -276,8 +250,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 		//index->Draw(arg_rasterize, arg_blasVec);
 	}
-
-	DebugKey::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()

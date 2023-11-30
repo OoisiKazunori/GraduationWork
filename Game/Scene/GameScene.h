@@ -13,6 +13,7 @@
 #include"../Game/UI/CheckPoint.h"
 #include"../KazLibrary/Render/BasicDraw.h"
 
+class EnemyManager;
 class Player;
 class Camera;
 class MeshCollision;
@@ -58,6 +59,7 @@ private:
 	std::shared_ptr<Player> m_player;
 	std::shared_ptr<MeshCollision> m_stageMeshCollision;
 	std::shared_ptr<BulletMgr> m_bulletMgr;
+	std::shared_ptr<EnemyManager> m_enemyManager;
 	std::shared_ptr<ThrowableObjectController> m_throwableObjectController;
 
 	int m_sceneNum;

@@ -13,7 +13,6 @@ private:
 	KazMath::Vec3<float> m_dir;			//弾を射出する方向。
 	KazMath::Vec3<float> m_bulletPos;
 	bool m_isActive;					//有効化されているかのフラグ
-	bool m_isCollision;					//当たり判定を行うことができるか？のフラグ。軽量化で一回しか当たり判定を行わないために使用する。
 	BasicDraw::BasicLineRender m_line;
 
 	bool m_isEnemyBullet;
@@ -23,7 +22,7 @@ private:
 	const int DISAPPEAR_TIMER = 120;
 
 	const float BULLET_SPEED = 20.0f;	//描画にのみ使用する弾の移動速度。当たり判定は射出地点からめっちゃ遠くにレイを飛ばす形式なので、これは使わない。
-	const float BULLET_LENGTH = 10.0f;	//弾の大きさ。描画でのみ使用する。
+	const float BULLET_LENGTH = 20.0f;	//弾の大きさ。描画でのみ使用する。
 
 public:
 
@@ -34,5 +33,7 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	bool GetIsActive() { return m_isActive; };
+
+	bool CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision, bool arg_isEnemyObject);
 
 };

@@ -31,5 +31,12 @@ public:
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="arg_meshCollision"> 当たり判定を行う対象のメッシュコライダー </param>
+	/// <returns> 衝突判定が通った弾の数 </returns>
+	int CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision, bool arg_isEnemyObject = false);
+
 
 };

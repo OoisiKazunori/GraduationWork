@@ -124,6 +124,11 @@
     <ClCompile Include="Game\Echo\Echo.cpp" />
     <ClCompile Include="Game\Echo\EchoArray.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
+    <ClCompile Include="Game\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Game\Enemy\PatrolData.cpp" />
+    <ClCompile Include="Game\Enemy\PatrolConfig.cpp" />
+    <ClCompile Include="Game\Enemy\PatrolDraw.cpp" />
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
@@ -242,6 +247,12 @@
     <ClInclude Include="Game\Echo\EchoArray.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
+    <ClInclude Include="Game\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Enemy\EnemyConfig.h" />
+    <ClInclude Include="Game\Enemy\EnemyManager.h" />
+    <ClInclude Include="Game\Enemy\PatrolData.h" />
+    <ClInclude Include="Game\Enemy\PatrolConfig.h" />
+    <ClInclude Include="Game\Enemy\PatrolDraw.h" />
     <ClInclude Include="Game\Enemy\PreEnemy.h" />
     <ClInclude Include="Game\Input\Input.h" />
     <ClInclude Include="Game\MapLoader\MapLoader.h" />
