@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/Render/BasicDraw.h"
 #include "PatrolData.h"
+#include"../KazLibrary/Sound/SoundManager.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -36,6 +37,8 @@ private:
 	int m_delay;
 	bool m_isCheckPoint;
 	bool m_onGround;
+
+	SoundData m_enemyShotSE;
 
 	std::vector<std::pair<float, float>> m_checkSoundPos;
 	int m_checkSoundCount;
