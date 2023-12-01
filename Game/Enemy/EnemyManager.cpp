@@ -130,7 +130,8 @@ void EnemyManager::Update(
 	std::list<std::shared_ptr<MeshCollision>>
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
-	KazMath::Vec3<float> arg_playerPos)
+	KazMath::Vec3<float> arg_playerPos,
+	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
 	bool isInput = false;
 	if (KeyBoradInputManager::
@@ -165,10 +166,14 @@ void EnemyManager::Update(
 		m_enemys[i].SetRootPos(m_patrolDatas[i].GetRootPos());
 		m_enemys[i].SetCheckPointDelay(
 			m_patrolDatas[i].GetCheckPointDelay());
+
+		m_enemys[i].CheckInEcho(arg_stageMeshCollision);
+
 		m_enemys[i].Update(
 			arg_stageColliders,
 			arg_bulletMgr,
-			arg_playerPos);
+			arg_playerPos,
+			arg_stageMeshCollision);
 
 		//”­Œ©Žž
 		if (m_enemys[i].IsDiscovery()) {

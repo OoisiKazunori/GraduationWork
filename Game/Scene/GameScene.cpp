@@ -143,7 +143,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_enemyManager->Update(
 				m_stageManager.GetColliders(),
 				m_bulletMgr,
-				m_player->GetTransform().pos);
+				m_player->GetTransform().pos,
+				m_stageMeshCollision);
 			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 			m_stageManager.Update(arg_rasterize);
 			m_bulletMgr->Update(m_stageManager.GetColliders());
@@ -251,10 +252,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
-	m_uiManager.Draw(arg_rasterize);
+	/*m_uiManager.Draw(arg_rasterize);
 	m_gadgetMaanager.Draw(arg_rasterize);
 	m_HPBarManager.Draw(arg_rasterize);
-	m_heartRateManager.Draw(arg_rasterize);
+	m_heartRateManager.Draw(arg_rasterize);*/
 	m_menu.Draw(arg_rasterize);
 	if (!m_resultManager.GetResultShow())
 	{

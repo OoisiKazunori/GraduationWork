@@ -1,6 +1,8 @@
 #pragma once
 #include"../KazLibrary/Render/BasicDraw.h"
 #include "PatrolData.h"
+#include "../Echo/EchoArray.h"
+#include "../Game/Collision/MeshCollision.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -48,7 +50,7 @@ private:
 	float m_gravity;
 	const float GRAVITY = 0.05f;
 
-	const  int MAX_RATE = 120;
+	const  int MAX_RATE = 300;
 	const int MAX_HP = 2;
 	int m_hp;
 	int m_rate;
@@ -64,8 +66,9 @@ private:
 
 	//敵が弾を撃つ遅延 デバッグ用 後で書き換えてください
 	int m_shotDelay;
-	const int SHOT_DELAY = 120;
+	const int SHOT_DELAY = 15;
 
+	bool m_inEcho = false;
 public:
 	Enemy();
 	~Enemy();
@@ -74,11 +77,42 @@ public:
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
 		std::weak_ptr<BulletMgr> arg_bulletMgr,
-		KazMath::Vec3<float> arg_playerPos
+		KazMath::Vec3<float> arg_playerPos,
+		std::weak_ptr<MeshCollision> arg_stageMeshCollision
 	);
 	void Draw(
 		DrawingByRasterize& arg_rasterize,
 		Raytracing::BlasVector& arg_blasVec);
+
+	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision)
+	{
+		//全てのEchoとチェック
+		m_inEcho = false;
+		for (auto& index : EchoArray::Instance()->GetEcho()) {
+
+			//エコーが生成されていなかったら。
+			if (!index.GetIsActive()) continue;
+			if (index.GetNowRadius() <= 0.1f) continue;
+
+			//まずは球で当たり判定を行う。
+			KazMath::Vec3<float> echoVec = m_trans.pos - index.GetPos();
+			float distance = echoVec.Length();
+			if (index.GetNowRadius() <= distance) continue;
+
+			//次にレイを飛ばして当たり判定を行う。
+			MeshCollision::CheckHitResult result = arg_stageMeshCollision.lock()->CheckHitRay(index.GetPos(), echoVec.GetNormal());
+
+			//当たっていたら
+			if (!result.m_isHit || (result.m_isHit && distance <= fabs(result.m_distance))) {
+
+				m_inEcho = true;
+				break;
+
+			}
+
+		}
+
+	}
 
 private:
 	DirectX::XMVECTOR CalMoveQuaternion(

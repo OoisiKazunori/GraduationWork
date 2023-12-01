@@ -1,6 +1,5 @@
 #include "Enemy.h"
 #include "EnemyConfig.h"
-#include "../Game/Collision/MeshCollision.h"
 #include "../Game/Bullet/BulletMgr.h"
 
 Enemy::Enemy()
@@ -106,7 +105,8 @@ void Enemy::Update(
 	std::list<std::shared_ptr<MeshCollision>>
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
-	KazMath::Vec3<float> arg_playerPos)
+	KazMath::Vec3<float> arg_playerPos,
+	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
@@ -287,6 +287,11 @@ void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
 	Raytracing::BlasVector& arg_blasVec)
 {
+	if (!m_inEcho)
+	{
+		return;
+	}
+
 	if (m_rootPos.size() > 0 &&
 		m_state != State::Death)
 	{
