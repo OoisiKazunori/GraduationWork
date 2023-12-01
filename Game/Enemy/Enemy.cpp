@@ -24,6 +24,9 @@ Enemy::Enemy()
 	m_hp = MAX_HP;
 	m_rate = MAX_RATE;
 	m_angle = 0.0f;
+
+	m_enemyShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
+	m_enemyShotSE.volume = 0.05f;
 }
 
 Enemy::~Enemy()
@@ -206,6 +209,8 @@ void Enemy::Update(
 				arg_bulletMgr.lock()->GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
 
 				m_shotDelay = 0;
+
+				SoundManager::Instance()->SoundPlayerWave(m_enemyShotSE, 0);
 
 			}
 		}
