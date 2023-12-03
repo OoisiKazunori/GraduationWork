@@ -58,14 +58,16 @@ namespace DrawFuncHelper
 		TextureRectRender(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag, bool arg_deletePipelineInScene = false);
 		TextureRectRender();
 
-		void Load(DrawingByRasterize &arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene = false);
+		void Load(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene = false);
+		void Load(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCallData, bool arg_isUIFlag, bool arg_deletePipelineInScene = false);
 
 		void Draw(DrawingByRasterize& arg_rasterize,
 			Raytracing::BlasVector& arg_blasVec,
 			const KazMath::Vec3<float>& arg_pos,
 			const KazMath::Vec2<float>& arg_upScale,
 			const KazMath::Vec2<float>& arg_downScale,
-			const KazBufferHelper::BufferData& arg_texBuffer
+			const KazBufferHelper::BufferData& arg_texBuffer,
+			float arg_angle
 		);
 
 		DrawFuncData::DrawCallData m_drawCommand;

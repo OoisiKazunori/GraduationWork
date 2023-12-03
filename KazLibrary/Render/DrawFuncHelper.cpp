@@ -391,7 +391,31 @@ void DrawFuncHelper::TextureRectRender::Load(DrawingByRasterize& arg_rasterize, 
 	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&color, sizeof(DirectX::XMFLOAT4));
 }
 
-void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_pos, const KazMath::Vec2<float>& arg_upScale, const KazMath::Vec2<float>& arg_downScale, const KazBufferHelper::BufferData& arg_texBuffer)
+void DrawFuncHelper::TextureRectRender::Load(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCallData, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+{
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		m_drawCommand.renderTargetHandle = -1;
+	}
+	m_drawCommand = arg_drawCallData;
+	m_vertexHandle = VertexBufferMgr::Instance()->GeneratePlaneBuffer();
+	m_drawCommand.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(m_vertexHandle).index;
+	m_drawCommand.m_modelVertDataHandle = m_vertexHandle;
+
+	m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
+
+
+	//s—ñî•ñ
+	DirectX::XMMATRIX mat = DirectX::XMMatrixIdentity();
+	m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+
+	KazMath::Vec4<float>color = { 1.0f,1.0f,1.0f,1.0f };
+	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&color, sizeof(DirectX::XMFLOAT4));
+}
+
+void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_pos, const KazMath::Vec2<float>& arg_upScale, const KazMath::Vec2<float>& arg_downScale, const KazBufferHelper::BufferData& arg_texBuffer, float arg_angle)
 {
 	m_textureSize.x = static_cast<float>(arg_texBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
 	m_textureSize.y = static_cast<float>(arg_texBuffer.bufferWrapper->GetBuffer()->GetDesc().Height);
@@ -446,7 +470,9 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, 
 	};
 	//vertBuffer->bufferWrapper->TransData(posArray.data(), sizeof(SpriteVertex) * 4);
 	KazMath::Transform3D transform;
-	transform.
+	transform.pos = arg_pos;
+	transform.scale = { 10.0f,10.0f,10.0f };
+	transform.Rotation({ 1.0f,0.0f,0.0f }, KazMath::AngleToRadian(arg_angle + 180.0f));
 	DirectX::XMMATRIX mat(
 		transform.GetMat(CameraMgr::Instance()->GetMatBillBoard())
 		* CameraMgr::Instance()->GetViewMatrix()

@@ -8,7 +8,7 @@
 class Reaction
 {
 public:
-	Reaction(DrawingByRasterize &arg_rasterize)
+	Reaction(DrawingByRasterize& arg_rasterize)
 	{
 		m_timer.Reset(120);
 		m_timer.ForciblyTimeUp();
@@ -45,13 +45,13 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 	{
 		//m_pos = { 0.0f,-47.2f,0.0f };
-		//if (!finishFlag)
+		if (!finishFlag)
 		{
-			m_render.Draw(arg_rasterize, arg_blasVec, m_pos, m_upScale, m_downScale, m_tex[m_index]);
+			m_render.Draw(arg_rasterize, arg_blasVec, m_pos, m_upScale, m_downScale, m_tex[m_index], 0.0f);
 		}
-		//else
+		else
 		{
-		//	m_pos = { 0.0f,0.0f,0.0f };
+			m_pos = { 0.0f,0.0f,0.0f };
 		}
 	}
 
