@@ -18,11 +18,10 @@
 #include "StageSelectScene.h"
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
+#include"../KazLibrary/Debug/DebugKey.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
-	m_line(arg_rasterize),
-	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
@@ -72,6 +71,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	}
 
+	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
+	m_axixTransform.scale.z += 1.0f;
 }
 
 GameScene::~GameScene()
@@ -99,10 +100,10 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//ゲームシーンへ
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	//デバックキーのサンプル
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_0, "GenerateEnemy", "DIK_0"))
 	{
-		m_sceneNum = 0;
+		m_preEnemy[0]->SetPos({ 0.0f,-45.0f,0.0f });
 	}
 }
 
@@ -170,7 +171,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
 			KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
 			if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
-			
+
 				//すべてのステージクリア
 				if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 				{
@@ -223,6 +224,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	for (auto& index : m_preEnemy)
 	{
 		index->CheckInEcho(m_stageMeshCollision);
+		index->Update();
 	}
 	m_stageManager.CheckInEcho(m_stageMeshCollision);
 
@@ -265,6 +267,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		//m_heartRateManager.Draw(arg_rasterize);
 	}
 
+	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
+
 	m_goalPoint.Draw(arg_rasterize);
 
 	//m_menu.Draw(arg_rasterize);
@@ -279,8 +283,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	for (auto& index : m_preEnemy) {
 
-		//index->Draw(arg_rasterize, arg_blasVec);
+		index->Draw(arg_rasterize, arg_blasVec);
 	}
+
+	DebugKey::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()

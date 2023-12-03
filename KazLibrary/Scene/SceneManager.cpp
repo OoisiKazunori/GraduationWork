@@ -13,6 +13,7 @@
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Buffer/UavViewHandleMgr.h"
 #include"../Game/Echo/EchoArray.h"
+#include"../KazLibrary/Debug/DebugKey.h"
 
 SceneManager::SceneManager() :gameFirstInitFlag(false)
 {
@@ -131,6 +132,7 @@ SceneManager::~SceneManager()
 
 void SceneManager::Update()
 {
+	DebugKey::Instance()->CountReset();
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 
 	if (StopMgr::Instance()->IsHitStop()) {
