@@ -70,6 +70,7 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	//G-Buffer‚Ì•`‰æ
 	m_gBufferRender[m_gBufferType].m_tex.Draw2D(arg_rasterize, m_renderTransform);
 
+	//ƒAƒ{ƒKƒh•`‰æ
 	for (int x = 0; x < m_modelDrawArray.size(); ++x)
 	{
 		for (int z = 0; z < m_modelDrawArray[x].size(); ++z)
@@ -84,21 +85,6 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	KazMath::Transform3D t;
 	t.scale.z = 5.0f;
 	m_axisRender.m_model.Draw(arg_rasterize, arg_blasVec, t);
-	//KazMath::Transform3D transform;
-	//transform.pos = { static_cast<float>(0) * 30.0f,0.0f,static_cast<float>(0) * 30.0f };
-	//m_modelInstanceRenderArray[0].m_model.Draw(arg_rasterize, arg_blasVec, transform);
-
-	//for (int x = 0; x < m_modelInstanceRenderArray.size(); ++x)
-	//{
-	//	for (int z = 0; z < m_modelInstanceRenderArray[x].m_transform.size(); ++z)
-	//	{
-	//		KazMath::Transform3D transform;
-	//		transform.pos = { static_cast<float>(x) * 30.0f,0.0f,static_cast<float>(z) * 30.0f };
-	//
-	//		m_modelDrawArray[x][z].m_model.Draw(arg_rasterize, arg_blasVec, transform);
-	//	}
-	//}
-	//m_modelInstanceRenderArray[x].m_modelInstanceRender.Draw(arg_rasterize, arg_blasVec);
 }
 
 int RenderScene::SceneChange()
