@@ -299,7 +299,7 @@ void Enemy::Update(
 			m_reaction.Init(EnemyReaction::WARING, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
 			break;
 		case Enemy::State::Combat:
-			m_reaction.Init(EnemyReaction::COMBAT, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 0, 0, 255));
+			m_reaction.Init(EnemyReaction::COMBAT, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
 			break;
 		case Enemy::State::Holdup:
 			break;
