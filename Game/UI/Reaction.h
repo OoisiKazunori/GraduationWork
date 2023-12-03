@@ -5,23 +5,32 @@
 #include"../KazLibrary/Easing/easing.h"
 #include"../KazLibrary/Render/DrawFuncHelper.h"
 
+enum class EnemyReaction
+{
+	COMBAT,
+	WARING
+};
+
 class Reaction
 {
 public:
-	Reaction(DrawingByRasterize& arg_rasterize)
+	Reaction()
 	{
 		m_timer.Reset(120);
 		m_timer.ForciblyTimeUp();
 		m_tex.emplace_back(TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/UI/Reaction/!.png"));
 		m_tex.emplace_back(TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/UI/Reaction/Hatena.png"));
 		m_index = 0;
+	}
 
+	void Load(DrawingByRasterize& arg_rasterize)
+	{
 		m_render.Load(arg_rasterize, false, false);
 	}
 
-	void Init(int index, const KazMath::Vec3<float>& upVec)
+	void Init(EnemyReaction index, const KazMath::Vec3<float>& upVec, const KazMath::Color arg_color)
 	{
-		m_index = index;
+		m_index = static_cast<int>(index);
 		m_timer.Reset(120);
 		finishFlag = false;
 		m_appearFlag = true;
@@ -30,6 +39,8 @@ public:
 		m_baseScale = { 2.0f,5.0f };
 		m_downScale = m_baseScale;
 		m_upVec = upVec;
+
+		m_addColor = arg_color;
 	}
 
 	void Update(const KazMath::Vec3<float>& pos)
@@ -47,7 +58,8 @@ public:
 		//m_pos = { 0.0f,-47.2f,0.0f };
 		if (!finishFlag)
 		{
-			m_render.Draw(arg_rasterize, arg_blasVec, m_pos, m_upScale, m_downScale, m_tex[m_index], 0.0f);
+			m_render.Draw(arg_rasterize, arg_blasVec, m_pos, m_upScale, m_downScale, m_tex[m_index], 0.0f,
+				m_addColor);
 		}
 		else
 		{
@@ -69,7 +81,7 @@ private:
 	KazMath::Vec2<float>m_baseScale;
 	KazMath::Timer m_timer;
 	std::vector<KazBufferHelper::BufferData>m_tex;
-
+	KazMath::Color m_addColor;
 	//ï`âÊ
 	DrawFuncHelper::TextureRectRender m_render;
 
@@ -99,7 +111,7 @@ private:
 			{
 				m_appearFlag = false;
 				m_showEffectFlag = true;
-				m_scaleTimer.Reset(30);
+				m_scaleTimer.Reset(10);
 			}
 		}
 		//ébÇ≠å©ÇπÇÈ
@@ -109,7 +121,7 @@ private:
 			{
 				m_showEffectFlag = false;
 				m_preDissappearFlag = true;
-				m_scaleTimer.Reset(5);
+				m_scaleTimer.Reset(60);
 			}
 		}
 		//âBÇÍÇÈê°ëO
@@ -135,7 +147,8 @@ private:
 			if (m_scaleTimer.IsTimeUp())
 			{
 				m_disappearFlag = false;
-				m_scaleTimer.Reset(60);
+				finishFlag = true;
+				m_scaleTimer.Reset(10);
 			}
 		}
 	}

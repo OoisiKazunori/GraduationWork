@@ -67,7 +67,8 @@ namespace DrawFuncHelper
 			const KazMath::Vec2<float>& arg_upScale,
 			const KazMath::Vec2<float>& arg_downScale,
 			const KazBufferHelper::BufferData& arg_texBuffer,
-			float arg_angle
+			float arg_angle,
+			const KazMath::Color& arg_color = { 255,255,255,255 }
 		);
 
 		DrawFuncData::DrawCallData m_drawCommand;

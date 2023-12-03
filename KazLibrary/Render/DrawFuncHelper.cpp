@@ -415,7 +415,7 @@ void DrawFuncHelper::TextureRectRender::Load(DrawingByRasterize& arg_rasterize, 
 	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&color, sizeof(DirectX::XMFLOAT4));
 }
 
-void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_pos, const KazMath::Vec2<float>& arg_upScale, const KazMath::Vec2<float>& arg_downScale, const KazBufferHelper::BufferData& arg_texBuffer, float arg_angle)
+void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Vec3<float>& arg_pos, const KazMath::Vec2<float>& arg_upScale, const KazMath::Vec2<float>& arg_downScale, const KazBufferHelper::BufferData& arg_texBuffer, float arg_angle, const KazMath::Color& arg_color)
 {
 	m_textureSize.x = static_cast<float>(arg_texBuffer.bufferWrapper->GetBuffer()->GetDesc().Width);
 	m_textureSize.y = static_cast<float>(arg_texBuffer.bufferWrapper->GetBuffer()->GetDesc().Height);
@@ -471,13 +471,15 @@ void DrawFuncHelper::TextureRectRender::Draw(DrawingByRasterize& arg_rasterize, 
 	//vertBuffer->bufferWrapper->TransData(posArray.data(), sizeof(SpriteVertex) * 4);
 	KazMath::Transform3D transform;
 	transform.pos = arg_pos;
-	transform.scale = { 10.0f,10.0f,10.0f };
+	transform.scale = { 5.0f,5.0f,5.0f };
 	transform.Rotation({ 1.0f,0.0f,0.0f }, KazMath::AngleToRadian(arg_angle + 180.0f));
 	DirectX::XMMATRIX mat(
 		transform.GetMat(CameraMgr::Instance()->GetMatBillBoard())
 		* CameraMgr::Instance()->GetViewMatrix()
 		* CameraMgr::Instance()->GetPerspectiveMatProjection());
 	m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+
+	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&arg_color.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
 
 	//テクスチャ
 	m_drawCommand.extraBufferArray[2] = arg_texBuffer;

@@ -5,16 +5,16 @@
 #include"../KazLibrary/Debug/DebugKey.h"
 
 PreEnemy::PreEnemy(DrawingByRasterize& arg_rasterize) :
-	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
-	m_reactionRender(arg_rasterize)
+	m_modelRender(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf")
 {
+	m_reactionRender.Load(arg_rasterize);
 }
 
 void PreEnemy::Update()
 {
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_7, "EnemyReaction", "DIK_7"))
 	{
-		m_reactionRender.Init(0, KazMath::Vec3<float>(0.0f, 1.0f, 0.0f));
+		m_reactionRender.Init(EnemyReaction::WARING, KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), KazMath::Color(255, 255, 255, 255));
 	}
 	m_reactionRender.Update(m_modelTransform.pos);
 }

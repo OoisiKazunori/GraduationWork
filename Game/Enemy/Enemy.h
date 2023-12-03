@@ -4,6 +4,8 @@
 #include "../Echo/EchoArray.h"
 #include "../Game/Collision/MeshCollision.h"
 #include"../KazLibrary/Sound/SoundManager.h"
+#include"../Game/UI/Reaction.h"
+#include<memory>
 
 class MeshCollision;
 class BulletMgr;
@@ -33,7 +35,7 @@ private:
 	std::vector<std::pair<float, float>> m_rootPos;
 	std::vector<std::pair<int, int>> m_checkPointDelay;
 	KazMath::Transform3D m_trans;
-	State m_state;
+	State m_state,m_oldState;
 	int m_delayNum;
 	int m_count;
 	int m_delay;
@@ -72,6 +74,9 @@ private:
 	const int SHOT_DELAY = 15;
 
 	bool m_inEcho = false;
+
+	//UI
+	Reaction m_reaction;
 public:
 	Enemy();
 	~Enemy();
