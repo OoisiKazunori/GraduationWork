@@ -262,29 +262,30 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		arg_throwableObjectController.lock()->InputHold(KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_LEFT));
 
 		break;
-	case WeponUIManager::e_Echo:
+	//case WeponUIManager::e_Echo:
 	case WeponUIManager::e_Hundgun:
 
 		//’e‚ð‚¤‚Â“ü—Í‚àŽó‚¯•t‚¯‚éB
 		if (m_isADS && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
 
-			bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
+			//bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 
-			arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
+			//arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
+			arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), true);
 
 			//e‚Ì”½“®‚ð’Ç‰ÁB
-			if (isEchoBullet) {
+			/*if (isEchoBullet) {*/
 
 				m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION * 3.0f;
 				SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
 
-			}
+			/*}
 			else {
 
 				m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION;
 				SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
 
-			}
+			}*/
 
 			m_shotDelay = 0;
 

@@ -50,7 +50,7 @@ public:
 	enum WeponNumber
 	{
 		e_NonWepon,
-		e_Echo,
+		//e_Echo,
 		e_Hundgun,
 		e_WeponMax,
 	};

@@ -117,8 +117,7 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
-	m_haveWepons.push_back({ WeponNumber::e_Echo, 1 });
-	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 1 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
 	m_TabSp.SetPosition({ 1243.0f, 675.0f });
@@ -151,8 +150,7 @@ void WeponUIManager::Init()
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.clear();
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
-	m_haveWepons.push_back({ WeponNumber::e_Echo, 1 });
-	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 1 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
 	EaseInit();
@@ -161,13 +159,13 @@ void WeponUIManager::Init()
 void WeponUIManager::Update()
 {
 	bool isDirty = false;
-	if (KeyBoradInputManager::Instance()->InputState(DIK_TAB))
+	if (KeyBoradInputManager::Instance()->GetMouseVel().z != 0)
 	{
 		m_showUITime = c_ShowTime;
 	}
 	if (m_showUITime > 0)
 	{
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
+		if (KeyBoradInputManager::Instance()->GetMouseVel().z > 0 && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber < m_haveWepons.size() - 1)
 			{
@@ -180,7 +178,7 @@ void WeponUIManager::Update()
 			SoundManager::Instance()->SoundPlayerWave(m_changeWeaponSE, 0);
 
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_Q) && easeTimer > 0.6f)
+		if (KeyBoradInputManager::Instance()->GetMouseVel().z < 0 && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber > 0)
 			{
@@ -262,12 +260,6 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
 			m_StoneInf.Draw(arg_rasterize);
 		}
-		else if ((*itr).first == e_Echo)
-		{
-			m_echoBulletInf.SetPosition({ m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
-				m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
-			m_echoBulletInf.Draw(arg_rasterize);
-		}
 		else if ((*itr).first == e_Hundgun)
 		{
 			m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
@@ -290,12 +282,6 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
 				m_StoneInf.Draw(arg_rasterize);
 			}
-			else if ((*itr).first == e_Echo)
-			{
-				m_echoBulletInf.SetPosition({m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
-					m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
-				m_echoBulletInf.Draw(arg_rasterize);
-			}
 			else if ((*itr).first == e_Hundgun)
 			{
 				m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
@@ -305,7 +291,7 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 			GetUI((*itr).first).Draw(arg_rasterize);
 		}
 	}
-	if (m_nowSelectWeponNumber == e_Echo || m_nowSelectWeponNumber == e_Hundgun)
+	if (m_nowSelectWeponNumber == e_Hundgun)
 	{
 		m_aimTop.Draw(arg_rasterize);
 		m_aimSideR.Draw(arg_rasterize);
@@ -335,10 +321,6 @@ UI2DElement& WeponUIManager::GetUI(WeponNumber f_wepon)
 	if (f_wepon == WeponNumber::e_NonWepon)
 	{
 		return m_nonWepon;
-	}
-	else if (f_wepon == WeponNumber::e_Echo)
-	{
-		return m_echo;
 	}
 	else if (f_wepon == WeponNumber::e_Hundgun)
 	{

@@ -112,32 +112,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	while (CheckMessageFlag)
 	{
-//#ifdef _DEBUG
-//		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_9)) {
-//			isWindowClip = !isWindowClip;
-//		}
-//		if (isWindowClip)
-//		{
-//			GetWindowRect(winApi.hwnd, &wrc);
-//
-//			//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
-//			const LONG OFFSET = 300;
-//			wrc.left += OFFSET;
-//			wrc.right -= OFFSET;
-//			wrc.bottom -= OFFSET;
-//			wrc.top += OFFSET;
-//
-//			ClipCursor(&wrc);
-//			//マウス非表示
-//			ShowCursor(false);
-//		}
-//		else
-//		{
-//			//マウスを画面外に出す
-//			ClipCursor(nullptr);
-//			ShowCursor(true);
-//		}
-//#endif // _DEBUG
+#ifdef _DEBUG
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_9)) {
+			isWindowClip = !isWindowClip;
+		}
+		if (isWindowClip)
+		{
+			GetWindowRect(winApi.hwnd, &wrc);
+
+			//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
+			const LONG OFFSET = 300;
+			wrc.left += OFFSET;
+			wrc.right -= OFFSET;
+			wrc.bottom -= OFFSET;
+			wrc.top += OFFSET;
+
+			ClipCursor(&wrc);
+			//マウス非表示
+			ShowCursor(false);
+		}
+		else
+		{
+			//マウスを画面外に出す
+			ClipCursor(nullptr);
+			ShowCursor(true);
+		}
+#endif // _DEBUG
 //
 ////#ifdef DEBUG
 //		GetWindowRect(winApi.hwnd, &wrc);
