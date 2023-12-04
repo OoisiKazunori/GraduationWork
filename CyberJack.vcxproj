@@ -144,6 +144,7 @@
     <ClCompile Include="Game\ThrowableObject\ThrowableObjectController.cpp" />
     <ClCompile Include="Game\Tool\SplineRail.cpp" />
     <ClCompile Include="Game\Tool\ModelTool.cpp" />
+    <ClCompile Include="Game\UI\Reaction.cpp" />
     <ClCompile Include="Game\UI\CheckPoint.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="KazLibrary\Animation\AnimationData.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="KazLibrary\Loader\ObjResourceMgr.cpp" />
     <ClCompile Include="KazLibrary\Loader\TextureResourceMgr.cpp" />
     <ClCompile Include="KazLibrary\Math\KazMath.cpp" />
+    <ClCompile Include="KazLibrary\Math\Timer.cpp" />
     <ClCompile Include="KazLibrary\Pipeline\GraphicsDepthTest.cpp" />
     <ClCompile Include="KazLibrary\Pipeline\GraphicsPipeLineMgr.cpp" />
     <ClCompile Include="KazLibrary\Pipeline\GraphicsRootSignature.cpp" />
@@ -268,6 +270,7 @@
     <ClInclude Include="Game\ThrowableObject\ThrowableObjectController.h" />
     <ClInclude Include="Game\Tool\SplineRail.h" />
     <ClInclude Include="Game\Tool\ModelTool.h" />
+    <ClInclude Include="Game\UI\Reaction.h" />
     <ClInclude Include="Game\UI\CheckPoint.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="KazLibrary\Animation\AnimationData.h" />
@@ -329,6 +332,7 @@
     <ClInclude Include="KazLibrary\Loader\ObjResourceMgr.h" />
     <ClInclude Include="KazLibrary\Loader\TextureResourceMgr.h" />
     <ClInclude Include="KazLibrary\Math\KazMath.h" />
+    <ClInclude Include="KazLibrary\Math\Timer.h" />
     <ClInclude Include="KazLibrary\Pipeline\GraphicsDepthTest.h" />
     <ClInclude Include="KazLibrary\Pipeline\GraphicsPipeLineMgr.h" />
     <ClInclude Include="KazLibrary\Pipeline\GraphicsRootSignature.h" />

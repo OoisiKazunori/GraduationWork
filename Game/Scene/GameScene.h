@@ -49,7 +49,7 @@ private:
 	DebugCamera m_debuCamera;
 	std::shared_ptr<Camera> m_camera;
 
-	std::array<std::shared_ptr<PreEnemy>, 3> m_preEnemy;
+	std::array<std::shared_ptr<PreEnemy>, 1> m_preEnemy;
 
 	KazMath::Transform3D m_stageTransform;
 

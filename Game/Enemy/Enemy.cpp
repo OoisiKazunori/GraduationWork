@@ -1,6 +1,5 @@
 #include "Enemy.h"
 #include "EnemyConfig.h"
-#include "../Game/Collision/MeshCollision.h"
 #include "../Game/Bullet/BulletMgr.h"
 
 Enemy::Enemy()
@@ -25,6 +24,9 @@ Enemy::Enemy()
 	m_hp = MAX_HP;
 	m_rate = MAX_RATE;
 	m_angle = 0.0f;
+
+	m_enemyShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
+	m_enemyShotSE.volume = 0.05f;
 }
 
 Enemy::~Enemy()
@@ -48,7 +50,7 @@ void Enemy::SetData(
 			arg_rasterize,
 			"Resource/Enemy/",
 			"Enemy.gltf"
-			);
+		);
 
 	m_meshCol = std::make_shared<MeshCollision>();
 	m_meshCol->Setting(
@@ -59,7 +61,7 @@ void Enemy::SetData(
 
 	m_line.Generate(arg_rasterize);
 
-
+	m_reaction.Load(arg_rasterize);
 	m_shotDelay = 0;
 
 }
@@ -106,7 +108,8 @@ void Enemy::Update(
 	std::list<std::shared_ptr<MeshCollision>>
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
-	KazMath::Vec3<float> arg_playerPos)
+	KazMath::Vec3<float> arg_playerPos,
+	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
@@ -207,6 +210,8 @@ void Enemy::Update(
 
 				m_shotDelay = 0;
 
+				SoundManager::Instance()->SoundPlayerWave(m_enemyShotSE, 0);
+
 			}
 		}
 
@@ -281,12 +286,44 @@ void Enemy::Update(
 
 	//一旦Y固定
 	m_trans.pos.y = -43.0f;
+
+
+
+	if (m_state != m_oldState)
+	{
+		switch (m_state)
+		{
+		case Enemy::State::Patrol:
+			break;
+		case Enemy::State::Warning:
+			m_reaction.Init(EnemyReaction::WARING, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
+			break;
+		case Enemy::State::Combat:
+			m_reaction.Init(EnemyReaction::COMBAT, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
+			break;
+		case Enemy::State::Holdup:
+			break;
+		case Enemy::State::Death:
+			break;
+		default:
+			break;
+		}
+	}
+	m_oldState = m_state;
+
+	m_reaction.Update(m_trans.pos + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f));
 }
 
 void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
 	Raytracing::BlasVector& arg_blasVec)
 {
+	m_reaction.Draw(arg_rasterize, arg_blasVec);
+	if (!m_inEcho)
+	{
+		return;
+	}
+
 	if (m_rootPos.size() > 0 &&
 		m_state != State::Death)
 	{
@@ -298,6 +335,7 @@ void Enemy::Draw(
 			m_trans,
 			l_player);
 	}
+
 
 	//if (m_isCombat) {
 	//	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 0, 0, 255));

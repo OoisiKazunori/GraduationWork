@@ -101,8 +101,10 @@ void GameScene::Finalize()
 void GameScene::Input()
 {
 	//デバックキーのサンプル
-	DebugKey::Instance()->DebugKeyTrigger(DIK_0, "Input", "DIK_0");
-	DebugKey::Instance()->DebugKeyTrigger(DIK_1, "Output", "DIK_1");
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_0, "GenerateEnemy", "DIK_0"))
+	{
+		m_preEnemy[0]->SetPos({ 0.0f,-45.0f,0.0f });
+	}
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -142,7 +144,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_enemyManager->Update(
 				m_stageManager.GetColliders(),
 				m_bulletMgr,
-				m_player->GetTransform().pos);
+				m_player->GetTransform().pos,
+				m_stageMeshCollision);
 			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 			m_stageManager.Update(arg_rasterize);
 			m_bulletMgr->Update(m_stageManager.GetColliders());
@@ -168,7 +171,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
 			KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
 			if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
-			
+
 				//すべてのステージクリア
 				if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 				{
@@ -221,6 +224,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	for (auto& index : m_preEnemy)
 	{
 		index->CheckInEcho(m_stageMeshCollision);
+		index->Update();
 	}
 	m_stageManager.CheckInEcho(m_stageMeshCollision);
 
@@ -238,7 +242,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
-	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 	//m_player->Draw(arg_rasterize, arg_blasVec);
@@ -274,7 +277,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	for (auto& index : m_preEnemy) {
 
-		//index->Draw(arg_rasterize, arg_blasVec);
+		index->Draw(arg_rasterize, arg_blasVec);
 	}
 
 	DebugKey::Instance()->DrawImGui();
