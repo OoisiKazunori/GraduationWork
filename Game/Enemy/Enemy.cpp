@@ -63,7 +63,7 @@ void Enemy::SetData(
 
 	m_reaction.Load(arg_rasterize);
 	m_shotDelay = 0;
-
+	m_appearTimer = 0;
 }
 
 void Enemy::SetCheckPointDelay(
@@ -312,6 +312,17 @@ void Enemy::Update(
 	m_oldState = m_state;
 
 	m_reaction.Update(m_trans.pos + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f));
+
+	if (m_inEcho)
+	{
+		++m_appearTimer;
+	}
+
+	if (APPEAR_TIMER <= m_appearTimer)
+	{
+		m_appearTimer = 0;
+		m_inEcho = false;
+	}
 }
 
 void Enemy::Draw(

@@ -74,7 +74,8 @@ private:
 	const int SHOT_DELAY = 15;
 
 	bool m_inEcho = false;
-
+	int m_appearTimer; //敵が表示中の時間
+	static const int APPEAR_TIMER = 180;
 	//UI
 	Reaction m_reaction;
 public:
@@ -95,7 +96,6 @@ public:
 	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 	{
 		//全てのEchoとチェック
-		m_inEcho = false;
 		for (auto& index : EchoArray::Instance()->GetEcho()) {
 
 			//エコーが生成されていなかったら。
