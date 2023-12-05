@@ -32,6 +32,18 @@ private:
 	BasicDraw::BasicModelRender m_sponzaModelRender;//スポンザ描画
 	KazMath::Transform3D m_sponzaModelTransform;
 
+	class ParallelModels
+	{
+	public:
+		void Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName);
+		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec,float arg_zPos);
+
+	private:
+		//モデルの配置
+		std::array<std::array<BasicDraw::BasicModelRender, 4>, 10>m_modelDrawArray;
+	};
+
+	std::array<ParallelModels, 12> m_models;
 
 	std::array<std::array<BasicDraw::BasicModelRender, 4>, 10>m_modelDrawArray;
 	BasicDraw::BasicModelRender m_axisRender;

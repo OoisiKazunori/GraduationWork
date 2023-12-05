@@ -14,6 +14,10 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 		);
 	}
 
+	for (auto& modelType : m_models)
+	{
+		modelType.Load(arg_rasterize, "Resource/DefferdRendering/Avocado/", "Avocado.gltf");
+	}
 
 	for (auto& modelType : m_modelDrawArray)
 	{
@@ -76,11 +80,16 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 		for (int z = 0; z < m_modelDrawArray[x].size(); ++z)
 		{
 			KazMath::Transform3D transform;
-			transform.pos = { -300.0f + static_cast<float>(x) * 30.0f,10.0f,static_cast<float>(z) * 30.0f };
+			transform.pos = { -100.0f + static_cast<float>(x) * 30.0f,static_cast<float>(z) * 25.0f,-55.0f };
 			const float scale = 100.0f;
 			transform.scale = { scale,scale,scale };
-			m_modelDrawArray[x][z].m_model.Draw(arg_rasterize, arg_blasVec, transform);
+			//m_modelDrawArray[x][z].m_model.Draw(arg_rasterize, arg_blasVec, transform);
 		}
+	}
+
+	for (int z = 0; z < m_models.size(); ++z)
+	{
+		m_models[z].Draw(arg_rasterize, arg_blasVec, -55.0f + static_cast<float>(z) * 10.0f);
 	}
 	KazMath::Transform3D t;
 	t.scale.z = 5.0f;
@@ -96,4 +105,31 @@ int RenderScene::SceneChange()
 		return tmp;
 	}
 	return SCENE_NONE;
+}
+
+void RenderScene::ParallelModels::Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName)
+{
+	for (auto& modelType : m_modelDrawArray)
+	{
+		for (auto& modelInstance : modelType)
+		{
+			modelInstance.Load(arg_rasterize, arg_filePass, arg_fileName, false);
+		}
+	}
+}
+
+void RenderScene::ParallelModels::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, float arg_zPos)
+{
+	//ÉAÉ{ÉKÉhï`âÊ
+	for (int x = 0; x < m_modelDrawArray.size(); ++x)
+	{
+		for (int y = 0; y < m_modelDrawArray[x].size(); ++y)
+		{
+			KazMath::Transform3D transform;
+			transform.pos = { -100.0f + static_cast<float>(x) * 30.0f,static_cast<float>(y) * 25.0f,arg_zPos };
+			const float scale = 100.0f;
+			transform.scale = { scale,scale,scale };
+			m_modelDrawArray[x][y].m_model.Draw(arg_rasterize, arg_blasVec, transform);
+		}
+	}
 }
