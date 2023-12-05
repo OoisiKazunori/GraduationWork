@@ -80,6 +80,10 @@ private:
 	DrawFuncHelper::TextureRender m_finalRender;
 	int m_sceneNum;
 
+	//ƒ¿ƒ‚ƒfƒ‹
+	KazMath::Transform3D m_alphaTransform;
+	BasicDraw::BasicModelRender m_alphaModel;
+
 	//íœ—\’è
 	BasicDraw::BasicModelRender m_axisRender;
 };

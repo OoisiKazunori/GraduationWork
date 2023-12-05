@@ -17,7 +17,8 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 		);
 	}
 
-
+	m_alphaModel.Load(arg_rasterize, "Resource/DefferdRendering/AlphaSphere/", "Sphere.gltf", false);
+	m_alphaModel.m_model.m_drawCommand.depthHandle = 0;
 
 
 	const std::string filePass = "Resource/DefferdRendering/";
@@ -77,7 +78,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 		);
 	}
 	m_renderTransform.pos = { WIN_X / 2,WIN_Y / 2 };
-	m_gBufferType = 0;
+	m_gBufferType = 4;
 	m_sceneNum = -1;
 	m_drawLightFlag = false;
 
@@ -148,6 +149,8 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_finalRender.Load(arg_rasterize, drawCall, true);
 
 	m_lightData.m_lightRadius = 10.0f;
+
+	m_alphaTransform.scale = { 10.0f,10.0f,10.0f };
 }
 
 RenderScene::~RenderScene()
@@ -182,6 +185,7 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::RadioButton("GBuffer-Final", &m_gBufferType, 4);
 	ImGui::DragFloat("LightRadius", &m_lightData.m_lightRadius);
 	ImGui::Checkbox("DrawLight", &m_drawLightFlag);
+	KazImGuiHelper::InputTransform3D("AlphaModel", &m_alphaTransform);
 	ImGui::End();
 
 	m_finalRender.m_drawCommand.extraBufferArray.back().bufferWrapper->TransData(&m_lightData, sizeof(LightData));
@@ -221,6 +225,10 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 			m_lights[z].Draw(arg_rasterize, arg_blasVec);
 		}
 	}
+
+	//ƒ¿ƒ‚ƒfƒ‹
+	m_alphaModel.m_model.Draw(arg_rasterize, arg_blasVec, m_alphaTransform, KazMath::Color(0, 200, 0, 100));
+
 	KazMath::Transform3D t;
 	t.scale.z = 5.0f;
 	m_axisRender.m_model.Draw(arg_rasterize, arg_blasVec, t);

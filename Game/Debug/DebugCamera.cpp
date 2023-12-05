@@ -4,6 +4,30 @@
 
 DebugCamera::DebugCamera() :m_distance(20.0f), m_matRot(DirectX::XMMatrixIdentity()), m_target(0.0f, 1.0f, 0.0f)
 {
+	DirectX::XMVECTOR r1 = { -0.07f ,0.02f,0.99f,0.0f };
+	DirectX::XMVECTOR r2 = { -0.14f ,0.98f,-0.03f,0.0f };
+	DirectX::XMVECTOR r3 = { -0.98f ,-0.14f,-0.07f,0.0f };
+	DirectX::XMVECTOR r4 = { 0.0f ,0.0f,0.0f,1.0f };
+	m_matRot.r[0] = r1;
+	m_matRot.r[1] = r2;
+	m_matRot.r[2] = r3;
+	m_matRot.r[3] = r4;
+
+	m_distance = 117.0f;
+
+	// 注視点から視点へのベクトルと、上方向ベクトル
+	DirectX::XMVECTOR vTargetEye = { 0.0f, 0.0f, -m_distance, 1.0f };
+	DirectX::XMVECTOR vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+	// ベクトルを回転
+	vTargetEye = DirectX::XMVector3Transform(vTargetEye, m_matRot);
+	vUp = DirectX::XMVector3Transform(vUp, m_matRot);
+
+	// 注視点からずらした位置に視点座標を決定
+	const DirectX::XMFLOAT3& target = m_target.ConvertXMFLOAT3();
+	m_eye = { target.x + vTargetEye.m128_f32[0], target.y + vTargetEye.m128_f32[1], target.z + vTargetEye.m128_f32[2] };
+	m_up = { vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] };
+	CameraMgr::Instance()->Camera(m_eye, m_target, m_up);
 }
 
 void DebugCamera::Update()
