@@ -50,7 +50,7 @@ private:
 
 	//ƒ‰ƒCƒg‚ÌˆÊ’u
 	std::array<ParallelModels, 12> m_lights;
-
+	bool m_drawLightFlag;
 
 	//G-Buffer‚Ì•`‰æ--------------------------
 	enum GBufferTexEnum

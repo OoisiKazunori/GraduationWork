@@ -87,6 +87,7 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::RadioButton("GBuffer-Albedo", &m_gBufferType, 0);
 	ImGui::RadioButton("GBuffer-Normal", &m_gBufferType, 1);
 	ImGui::RadioButton("GBuffer-Final", &m_gBufferType, 2);
+	ImGui::Checkbox("DrawLight", &m_drawLightFlag);
 	ImGui::End();
 }
 
@@ -109,6 +110,7 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 
 
 	//ライトの配置
+	if(m_drawLightFlag)
 	{
 		KazMath::Transform3D transform;
 		transform.pos = { -100.0f,15.0f,-55.0f };
