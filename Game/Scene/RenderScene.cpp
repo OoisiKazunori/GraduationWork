@@ -4,8 +4,11 @@
 RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_sponzaModelRender(arg_rasterize, "Resource/DefferdRendering/Sponza/", "Sponza.gltf")
 {
+	m_sponzaModelTransform.scale = { 0.1f,0.1f,0.1f };
+
+
 	//書き込まれているGBufferを入手する
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < GBUFFER_MAX; ++i)
 	{
 		m_gBufferRender[i].m_tex.Load(
 			arg_rasterize,
@@ -14,8 +17,11 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 		);
 	}
 
+
+
+
 	const std::string filePass = "Resource/DefferdRendering/";
-	std::array<std::string, 12> modelFilePassArray;
+	std::array<std::string, MODEL_MAX_NUM> modelFilePassArray;
 	modelFilePassArray[0] = filePass + "Avocado/";
 	modelFilePassArray[1] = filePass + "BoomBox/";
 	modelFilePassArray[2] = filePass + "Corset/";
@@ -23,7 +29,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	modelFilePassArray[4] = filePass + "WaterBottle/";
 	modelFilePassArray[5] = filePass + "BarramundiFish/";
 	modelFilePassArray[6] = filePass + "Lantern/";
-	std::array<std::string, 12> modelFileNameArray;
+	std::array<std::string, MODEL_MAX_NUM> modelFileNameArray;
 	modelFileNameArray[0] = "Avocado.gltf";
 	modelFileNameArray[1] = "BoomBox.gltf";
 	modelFileNameArray[2] = "Corset.gltf";
@@ -31,7 +37,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	modelFileNameArray[4] = "WaterBottle.gltf";
 	modelFileNameArray[5] = "BarramundiFish.gltf";
 	modelFileNameArray[6] = "Lantern.gltf";
-	std::array<float, 12>scaleArray;
+	std::array<float, MODEL_MAX_NUM>scaleArray;
 	scaleArray[0] = 100.0f;
 	scaleArray[1] = 500.0f;
 	scaleArray[2] = 100.0f;
@@ -76,10 +82,10 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_drawLightFlag = false;
 
 
-	m_sponzaModelTransform.scale = { 0.1f,0.1f,0.1f };
 	m_axisRender.Load(arg_rasterize, "Resource/DefferdRendering/Axis/", "Axis.gltf", false);
 
-	//ライト座標のアップロード
+
+	//ライト座標をVRAMに上げる--------------------------------
 	m_uploadLightBuffer = KazBufferHelper::SetUploadBufferData(
 		KazBufferHelper::GetBufferSize<BUFFER_SIZE>(
 			m_lights[0].GetPosArray().size() * m_lights.size(),
@@ -101,6 +107,40 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	}
 	m_uploadLightBuffer.bufferWrapper->TransData(lightPosArray.data(), KazBufferHelper::GetBufferSize<unsigned int>(m_lights[0].GetPosArray().size() * m_lights.size(), sizeof(DirectX::XMFLOAT3)));
 	m_defaultLightBuffer.bufferWrapper->CopyBuffer(m_uploadLightBuffer.bufferWrapper->GetBuffer());
+	m_defaultLightBuffer.bufferWrapper->ChangeBarrierUAV();
+	//ライト座標をVRAMに上げる--------------------------------
+
+
+	DrawFuncData::PipelineGenerateData pipelineData;
+	pipelineData.desc = DrawFuncPipelineData::SetTex();
+	pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "GBufferDrawFinal.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+	pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "GBufferDrawFinal.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+	pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::NONE;
+	DrawFuncData::DrawCallData drawCall = DrawFuncData::SetSpriteAlphaData(pipelineData);
+	//ライトの配列数
+	drawCall.extraBufferArray[1].~BufferData();
+	drawCall.extraBufferArray[1] = KazBufferHelper::SetConstBufferData(sizeof(int));
+	drawCall.extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+	drawCall.extraBufferArray[1].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+	//ライトの座標
+	drawCall.extraBufferArray[2] = m_defaultLightBuffer;
+	drawCall.extraBufferArray[2].rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+	drawCall.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+	//ALBEDO
+	drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::ALBEDO]));
+	drawCall.extraBufferArray[3].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+	drawCall.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+	//NORMAL
+	drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::NORMAL]));
+	drawCall.extraBufferArray[4].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+	drawCall.extraBufferArray[4].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+	//WORLD
+	drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::WORLD]));
+	drawCall.extraBufferArray[5].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+	drawCall.extraBufferArray[5].rootParamType = GRAPHICS_PRAMTYPE_DATA3;
+
+	m_finalRender.Load(arg_rasterize, drawCall, true);
 }
 
 RenderScene::~RenderScene()
@@ -131,7 +171,8 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::Begin("DemoInspector");
 	ImGui::RadioButton("GBuffer-Albedo", &m_gBufferType, 0);
 	ImGui::RadioButton("GBuffer-Normal", &m_gBufferType, 1);
-	ImGui::RadioButton("GBuffer-Final", &m_gBufferType, 2);
+	ImGui::RadioButton("GBuffer-World", &m_gBufferType, 3);
+	ImGui::RadioButton("GBuffer-World", &m_gBufferType, 4);
 	ImGui::Checkbox("DrawLight", &m_drawLightFlag);
 	ImGui::End();
 }
@@ -140,8 +181,18 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 {
 	//スポンザの描画
 	m_sponzaModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_sponzaModelTransform);
+
 	//G-Bufferの描画
-	m_gBufferRender[m_gBufferType].m_tex.Draw2D(arg_rasterize, m_renderTransform);
+	if (m_gBufferType == 4)
+	{
+		//合成結果
+		m_finalRender.Draw2D(arg_rasterize, m_renderTransform);
+	}
+	else
+	{
+		//レンダーターゲットごとの描画
+		m_gBufferRender[m_gBufferType].m_tex.Draw2D(arg_rasterize, m_renderTransform);
+	}
 
 	//モデル配置
 	for (int z = 0; z < m_models.size(); ++z)

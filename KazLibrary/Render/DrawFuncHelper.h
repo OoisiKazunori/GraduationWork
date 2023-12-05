@@ -32,6 +32,7 @@ namespace DrawFuncHelper
 
 		void Load(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, bool arg_isUIFlag);
 		void Load(DrawingByRasterize& arg_rasterize, const KazBufferHelper::BufferData& arg_textureBuffer, bool arg_isUIFlag);
+		void Load(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag);
 
 		void operator=(const KazBufferHelper::BufferData& rhs);
 

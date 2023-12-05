@@ -92,6 +92,16 @@ void DrawFuncHelper::TextureRender::Load(DrawingByRasterize& arg_rasterize, cons
 	};
 }
 
+void DrawFuncHelper::TextureRender::Load(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag)
+{
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.renderTargetHandle = -1;
+	}
+	m_drawCommand = arg_drawCall;
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand);
+}
+
 void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData& rhs)
 {
 	m_textureBuffer = rhs;

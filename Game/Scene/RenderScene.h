@@ -52,7 +52,8 @@ private:
 		//座標のみの抽出
 		std::array<KazMath::Vec3<float>, X_ARRAY* Y_ARRAY>m_posArray;
 	};
-	std::array<ParallelModels, 7> m_models;
+	static const int MODEL_MAX_NUM = 7;
+	std::array<ParallelModels, MODEL_MAX_NUM> m_models;
 
 	//ライトの位置
 	KazBufferHelper::BufferData m_uploadLightBuffer, m_defaultLightBuffer;
@@ -64,13 +65,14 @@ private:
 	{
 		GBUFFER_ALBEDO,
 		GBUFFER_NORMAL,
-		GBUFFER_FINAL,
+		GBUFFER_MR,
+		GBUFFER_WORLD,
 		GBUFFER_MAX
 	};
 	int m_gBufferType;
 	KazMath::Transform2D m_renderTransform;
 	std::array<BasicDraw::BasicTextureRender, GBUFFER_MAX>m_gBufferRender;//GBufferに書き込まれたテクスチャの描画
-
+	DrawFuncHelper::TextureRender m_finalRender;
 	int m_sceneNum;
 
 	//削除予定
