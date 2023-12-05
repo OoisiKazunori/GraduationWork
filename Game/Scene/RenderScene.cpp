@@ -41,21 +41,66 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	scaleArray[6] = 0.5f;
 
 	int index = 0;
-	for (auto& modelType : m_models)
+	//モデル生成
+	for (int z = 0; z < m_models.size(); ++z)
 	{
-		modelType.Load(arg_rasterize, modelFilePassArray[index], modelFileNameArray[index], scaleArray[index]);
+		KazMath::Transform3D transform(
+			KazMath::Vec3<float>(-100.0f, 4.5f, -55.0f + static_cast<float>(z) * 17.0f),
+			KazMath::Vec3<float>(scaleArray[index], scaleArray[index], scaleArray[index])
+		);
+		m_models[z].Load(
+			arg_rasterize,
+			modelFilePassArray[index],
+			modelFileNameArray[index],
+			transform
+		);
 		++index;
 	}
-	for (auto& modelType : m_lights)
+	//ライト用のモデル生成
+	for (int z = 0; z < m_lights.size(); ++z)
 	{
-		modelType.Load(arg_rasterize, "Resource/DefferdRendering/BoxTextured/", "BoxTextured.gltf", 1.0f);
+		KazMath::Transform3D transform(
+			KazMath::Vec3<float>(-100.0f, 15.0f, -55.0f + static_cast<float>(z) * 10.0f),
+			KazMath::Vec3<float>(1.0f, 1.0f, 1.0f)
+		);
+		m_lights[z].Load(
+			arg_rasterize,
+			"Resource/DefferdRendering/BoxTextured/",
+			"BoxTextured.gltf",
+			transform
+		);
 	}
 	m_renderTransform.pos = { WIN_X / 2,WIN_Y / 2 };
 	m_gBufferType = 0;
 	m_sceneNum = -1;
+	m_drawLightFlag = false;
+
 
 	m_sponzaModelTransform.scale = { 0.1f,0.1f,0.1f };
 	m_axisRender.Load(arg_rasterize, "Resource/DefferdRendering/Axis/", "Axis.gltf", false);
+
+	//ライト座標のアップロード
+	m_uploadLightBuffer = KazBufferHelper::SetUploadBufferData(
+		KazBufferHelper::GetBufferSize<BUFFER_SIZE>(
+			m_lights[0].GetPosArray().size() * m_lights.size(),
+			sizeof(DirectX::XMFLOAT3))
+	);
+	m_defaultLightBuffer = KazBufferHelper::SetGPUBufferData(
+		KazBufferHelper::GetBufferSize<BUFFER_SIZE>(
+			m_lights[0].GetPosArray().size() * m_lights.size(),
+			sizeof(DirectX::XMFLOAT3))
+	);
+
+	std::vector<KazMath::Vec3<float>>lightPosArray;
+	for (int i = 0; i < m_lights.size(); ++i)
+	{
+		for (int posIndex = 0; posIndex < m_lights[i].GetPosArray().size(); ++posIndex)
+		{
+			lightPosArray.emplace_back(m_lights[i].GetPosArray()[posIndex]);
+		}
+	}
+	m_uploadLightBuffer.bufferWrapper->TransData(lightPosArray.data(), KazBufferHelper::GetBufferSize<unsigned int>(m_lights[0].GetPosArray().size() * m_lights.size(), sizeof(DirectX::XMFLOAT3)));
+	m_defaultLightBuffer.bufferWrapper->CopyBuffer(m_uploadLightBuffer.bufferWrapper->GetBuffer());
 }
 
 RenderScene::~RenderScene()
@@ -97,27 +142,19 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	m_sponzaModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_sponzaModelTransform);
 	//G-Bufferの描画
 	m_gBufferRender[m_gBufferType].m_tex.Draw2D(arg_rasterize, m_renderTransform);
+
 	//モデル配置
+	for (int z = 0; z < m_models.size(); ++z)
 	{
-		KazMath::Transform3D transform;
-		transform.pos = { -100.0f,4.5f,-55.0f };
-		for (int z = 0; z < m_models.size(); ++z)
-		{
-			transform.pos.z = -55.0f + static_cast<float>(z) * 17.0f;
-			m_models[z].Draw(arg_rasterize, arg_blasVec, transform);
-		}
+		m_models[z].Draw(arg_rasterize, arg_blasVec);
 	}
 
-
 	//ライトの配置
-	if(m_drawLightFlag)
+	if (m_drawLightFlag)
 	{
-		KazMath::Transform3D transform;
-		transform.pos = { -100.0f,15.0f,-55.0f };
 		for (int z = 0; z < m_lights.size(); ++z)
 		{
-			transform.pos.z = -55.0f + static_cast<float>(z) * 10.0f;
-			m_lights[z].Draw(arg_rasterize, arg_blasVec, transform);
+			m_lights[z].Draw(arg_rasterize, arg_blasVec);
 		}
 	}
 	KazMath::Transform3D t;
@@ -136,30 +173,35 @@ int RenderScene::SceneChange()
 	return SCENE_NONE;
 }
 
-void RenderScene::ParallelModels::Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName, float arg_scale)
+void RenderScene::ParallelModels::Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName, const KazMath::Transform3D& arg_baseTransform)
 {
-	for (auto& modelType : m_modelDrawArray)
-	{
-		for (auto& modelInstance : modelType)
-		{
-			modelInstance.Load(arg_rasterize, arg_filePass, arg_fileName, false);
-		}
-	}
-	m_scale = arg_scale;
-}
-
-void RenderScene::ParallelModels::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D& arg_baseTransform)
-{
-	//アボガド描画
 	for (int x = 0; x < m_modelDrawArray.size(); ++x)
 	{
 		for (int y = 0; y < m_modelDrawArray[x].size(); ++y)
 		{
-			KazMath::Transform3D transform = arg_baseTransform;
-			transform.pos.x += static_cast<float>(x) * 30.0f;
-			transform.pos.y += static_cast<float>(y) * 20.0f;
-			transform.scale = { m_scale ,m_scale ,m_scale };
-			m_modelDrawArray[x][y].m_model.Draw(arg_rasterize, arg_blasVec, transform);
+			m_modelDrawArray[x][y].Load(arg_rasterize, arg_filePass, arg_fileName, false);
+
+			m_modelTransformArray[x][y] = arg_baseTransform;
+			m_modelTransformArray[x][y].pos.x += static_cast<float>(x) * 30.0f;
+			m_modelTransformArray[x][y].pos.y += static_cast<float>(y) * 20.0f;
+			//座標記録
+			m_posArray[x * Y_ARRAY + y] = m_modelTransformArray[x][y].pos;
 		}
 	}
+}
+
+void RenderScene::ParallelModels::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
+{
+	for (int x = 0; x < m_modelDrawArray.size(); ++x)
+	{
+		for (int y = 0; y < m_modelDrawArray[x].size(); ++y)
+		{
+			m_modelDrawArray[x][y].m_model.Draw(arg_rasterize, arg_blasVec, m_modelTransformArray[x][y]);
+		}
+	}
+}
+
+std::array<KazMath::Vec3<float>, RenderScene::ParallelModels::X_ARRAY* RenderScene::ParallelModels::Y_ARRAY> RenderScene::ParallelModels::GetPosArray()
+{
+	return m_posArray;
 }

@@ -37,18 +37,25 @@ private:
 	/// </summary>
 	class ParallelModels
 	{
+		static const int X_ARRAY = 10;
+		static const int Y_ARRAY = 4;
 	public:
-		void Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName,float arg_scale);
-		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D &arg_baseTransform);
+		void Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName, const KazMath::Transform3D& arg_baseTransform);
+		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
+		std::array<KazMath::Vec3<float>, X_ARRAY* Y_ARRAY> GetPosArray();
 	private:
-		float m_scale;
 		//モデルの配置
-		std::array<std::array<BasicDraw::BasicModelRender, 4>, 10>m_modelDrawArray;
+		std::array<std::array<BasicDraw::BasicModelRender, Y_ARRAY>, X_ARRAY>m_modelDrawArray;
+		//モデルのtransform
+		std::array<std::array<KazMath::Transform3D, Y_ARRAY>, X_ARRAY>m_modelTransformArray;
+		//座標のみの抽出
+		std::array<KazMath::Vec3<float>, X_ARRAY* Y_ARRAY>m_posArray;
 	};
 	std::array<ParallelModels, 7> m_models;
 
 	//ライトの位置
+	KazBufferHelper::BufferData m_uploadLightBuffer, m_defaultLightBuffer;
 	std::array<ParallelModels, 12> m_lights;
 	bool m_drawLightFlag;
 
