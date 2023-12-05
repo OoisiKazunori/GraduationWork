@@ -45,7 +45,6 @@ private:
 
 	std::array<ParallelModels, 12> m_models;
 
-	std::array<std::array<BasicDraw::BasicModelRender, 4>, 10>m_modelDrawArray;
 	BasicDraw::BasicModelRender m_axisRender;
 
 	//G-Buffer‚Ì•`‰æ
