@@ -66,7 +66,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	for (int z = 0; z < m_lights.size(); ++z)
 	{
 		KazMath::Transform3D transform(
-			KazMath::Vec3<float>(-100.0f, 15.0f, -55.0f + static_cast<float>(z) * 10.0f),
+			KazMath::Vec3<float>(-100.0f, 5.0f, -45.0f + static_cast<float>(z) * 20.0f),
 			KazMath::Vec3<float>(1.0f, 1.0f, 1.0f)
 		);
 		m_lights[z].Load(
@@ -123,10 +123,12 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	drawCall.extraBufferArray[1] = KazBufferHelper::SetConstBufferData(sizeof(int));
 	drawCall.extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 	drawCall.extraBufferArray[1].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+	int num = static_cast<int>(m_lights[0].GetPosArray().size() * m_lights.size());
+	drawCall.extraBufferArray[1].bufferWrapper->TransData(&num, sizeof(int));
 	//ライトの座標
 	drawCall.extraBufferArray[2] = m_defaultLightBuffer;
 	drawCall.extraBufferArray[2].rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
-	drawCall.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+	drawCall.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 	//ALBEDO
 	drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::ALBEDO]));
 	drawCall.extraBufferArray[3].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
@@ -139,8 +141,13 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::WORLD]));
 	drawCall.extraBufferArray[5].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 	drawCall.extraBufferArray[5].rootParamType = GRAPHICS_PRAMTYPE_DATA3;
-
+	//ライトの状態
+	drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(LightData)));
+	drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+	drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA3;
 	m_finalRender.Load(arg_rasterize, drawCall, true);
+
+	m_lightData.m_lightRadius = 10.0f;
 }
 
 RenderScene::~RenderScene()
@@ -172,9 +179,12 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::RadioButton("GBuffer-Albedo", &m_gBufferType, 0);
 	ImGui::RadioButton("GBuffer-Normal", &m_gBufferType, 1);
 	ImGui::RadioButton("GBuffer-World", &m_gBufferType, 3);
-	ImGui::RadioButton("GBuffer-World", &m_gBufferType, 4);
+	ImGui::RadioButton("GBuffer-Final", &m_gBufferType, 4);
+	ImGui::DragFloat("LightRadius", &m_lightData.m_lightRadius);
 	ImGui::Checkbox("DrawLight", &m_drawLightFlag);
 	ImGui::End();
+
+	m_finalRender.m_drawCommand.extraBufferArray.back().bufferWrapper->TransData(&m_lightData, sizeof(LightData));
 }
 
 void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -186,7 +196,10 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	if (m_gBufferType == 4)
 	{
 		//合成結果
-		m_finalRender.Draw2D(arg_rasterize, m_renderTransform);
+		KazMath::Transform2D transform(KazMath::Vec2<float>(1280.0f / 2.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f, 720.0f));
+		DirectX::XMMATRIX mat = transform.GetMat() * CameraMgr::Instance()->GetOrthographicMatProjection();
+		m_finalRender.m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+		arg_rasterize.UIRender(m_finalRender.m_drawCommandData);
 	}
 	else
 	{

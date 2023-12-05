@@ -56,8 +56,13 @@ private:
 	std::array<ParallelModels, MODEL_MAX_NUM> m_models;
 
 	//ƒ‰ƒCƒg‚ÌˆÊ’u
+	struct LightData
+	{
+		float m_lightRadius;
+	};
+	LightData m_lightData;
 	KazBufferHelper::BufferData m_uploadLightBuffer, m_defaultLightBuffer;
-	std::array<ParallelModels, 12> m_lights;
+	std::array<ParallelModels, 6> m_lights;
 	bool m_drawLightFlag;
 
 	//G-Buffer‚Ì•`‰æ--------------------------

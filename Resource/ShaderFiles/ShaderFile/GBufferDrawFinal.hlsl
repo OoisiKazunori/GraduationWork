@@ -15,12 +15,17 @@ cbuffer MatBuffer : register(b0)
     matrix Mat;
 }
 
-cbuffer LightDir : register(b1)
+cbuffer LightNum : register(b1)
 {
     int lightArrayNum;
 }
 
-RWStructuredBuffer<float3>LightBuffer:register(u1);
+cbuffer LightStatus : register(b2)
+{
+    float lightRadius;
+}
+
+RWStructuredBuffer<float3>LightBuffer:register(u0);
 
 VSOutput VSmain(float4 pos : POSITION, float2 uv : TEXCOORD)
 {
@@ -33,7 +38,6 @@ VSOutput VSmain(float4 pos : POSITION, float2 uv : TEXCOORD)
 Texture2D<float4> AlbedoTex : register(t0);
 Texture2D<float4> NormalTex : register(t1);
 Texture2D<float4> WorldTex : register(t2);
-RWTexture2D<float4> finalTex : register(u0);
 SamplerState smp : register(s0);
 
 float4 PSmain(VSOutput input) : SV_TARGET
@@ -54,7 +58,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
         float3 lightV = LightBuffer[i] - worldPos.xyz;
         float len = length(lightV);
         //距離が20以上なら計算しない。
-        if(100.0f <= len)
+        if(lightRadius <= len)
         {
             continue;
         }
@@ -68,11 +72,9 @@ float4 PSmain(VSOutput input) : SV_TARGET
         float ambient = 0.5f;
         bright = clamp(bright,ambient,1.0f);
         float3 light = (bright * atten + ambient) * lightColor;
-    
         lightOutput = saturate(light);
         break;
     }
     float4 outputColor = float4(albedoColor.xyz * lightOutput, 1.0f);
-    finalTex[input.uv * uint2(1280,720)] = outputColor;
     return outputColor;
 }
