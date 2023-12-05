@@ -32,22 +32,27 @@ private:
 	BasicDraw::BasicModelRender m_sponzaModelRender;//スポンザ描画
 	KazMath::Transform3D m_sponzaModelTransform;
 
+	/// <summary>
+	/// モデルをXY上に並べた配置するクラス
+	/// </summary>
 	class ParallelModels
 	{
 	public:
-		void Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName);
-		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec,float arg_zPos);
+		void Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName,float arg_scale);
+		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, const KazMath::Transform3D &arg_baseTransform);
 
 	private:
+		float m_scale;
 		//モデルの配置
 		std::array<std::array<BasicDraw::BasicModelRender, 4>, 10>m_modelDrawArray;
 	};
+	std::array<ParallelModels, 7> m_models;
 
-	std::array<ParallelModels, 12> m_models;
+	//ライトの位置
+	std::array<ParallelModels, 12> m_lights;
 
-	BasicDraw::BasicModelRender m_axisRender;
 
-	//G-Bufferの描画
+	//G-Bufferの描画--------------------------
 	enum GBufferTexEnum
 	{
 		GBUFFER_ALBEDO,
@@ -60,5 +65,8 @@ private:
 	std::array<BasicDraw::BasicTextureRender, GBUFFER_MAX>m_gBufferRender;//GBufferに書き込まれたテクスチャの描画
 
 	int m_sceneNum;
+
+	//削除予定
+	BasicDraw::BasicModelRender m_axisRender;
 };
 
