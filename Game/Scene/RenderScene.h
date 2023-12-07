@@ -38,7 +38,7 @@ private:
 	class ParallelModels
 	{
 		static const int X_ARRAY = 10;
-		static const int Y_ARRAY = 4;
+		static const int Y_ARRAY = 1;
 	public:
 		void Load(DrawingByRasterize& arg_rasterize, std::string arg_filePass, std::string arg_fileName, const KazMath::Transform3D& arg_baseTransform);
 		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
