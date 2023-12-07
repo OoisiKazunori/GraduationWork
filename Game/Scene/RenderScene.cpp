@@ -253,10 +253,13 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 		KazMath::Transform2D transform(KazMath::Vec2<float>(1280.0f / 2.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f, 720.0f));
 		DirectX::XMMATRIX mat = transform.GetMat() * CameraMgr::Instance()->GetOrthographicMatProjection();
 		m_finalRender.m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
-		arg_rasterize.UIRender(m_finalRender.m_drawCommandData);
 
 		//FXAA合成とディファーレンダリングの描画比較
 		m_fxAAFinalRender.m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+
+
+		arg_rasterize.UIRender(m_finalRender.m_drawCommandData);
+
 		arg_rasterize.UIRender(m_fxAAFinalRender.m_drawCommandData);
 	}
 	else

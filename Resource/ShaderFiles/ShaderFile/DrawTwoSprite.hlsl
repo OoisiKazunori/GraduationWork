@@ -74,11 +74,11 @@ float4 PSmain(ColorOutput input) : SV_TARGET
             GetBright(GBuffer[input.uv * uint2(1280 + 1,720 + 1)])
         );
 
-        float3x3 result = mul(target,xEdge) + mul(yEdge,target);
+        float3x3 result = mul(xEdge,target) + mul(target,yEdge);
 
         
         //アンチエイリアスの描画
-        output = float4(bright,bright,bright,1);
+        output = float4(result[1].y,result[1].y,result[1].y,1);
         return output;
     }
 }
