@@ -5,7 +5,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_sponzaModelRender(arg_rasterize, "Resource/DefferdRendering/Sponza/", "Sponza.gltf")
 {
 	m_sponzaModelTransform.scale = { 0.1f,0.1f,0.1f };
-
+	m_sponzaModelTransform.Rotation(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), KazMath::AngleToRadian(90.0f));
 
 	//èëÇ´çûÇ‹ÇÍÇƒÇ¢ÇÈGBufferÇì¸éËÇ∑ÇÈ
 	for (int i = 0; i < GBUFFER_MAX; ++i)
@@ -51,7 +51,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	for (int z = 0; z < m_models.size(); ++z)
 	{
 		KazMath::Transform3D transform(
-			KazMath::Vec3<float>(-100.0f, 4.5f, -55.0f + static_cast<float>(z) * 17.0f),
+			KazMath::Vec3<float>(-55.0f + static_cast<float>(z) * 17.0f, 4.5f, -55.0f),
 			KazMath::Vec3<float>(scaleArray[index], scaleArray[index], scaleArray[index])
 		);
 		m_models[z].Load(
@@ -66,7 +66,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	for (int z = 0; z < m_lights.size(); ++z)
 	{
 		KazMath::Transform3D transform(
-			KazMath::Vec3<float>(-100.0f, 5.0f, -45.0f + static_cast<float>(z) * 20.0f),
+			KazMath::Vec3<float>(-55.0f + static_cast<float>(z) * 20.0f, 5.0f, -55.0f),
 			KazMath::Vec3<float>(1.0f, 1.0f, 1.0f)
 		);
 		m_lights[z].Load(
@@ -253,7 +253,7 @@ void RenderScene::ParallelModels::Load(DrawingByRasterize& arg_rasterize, std::s
 			m_modelDrawArray[x][y].Load(arg_rasterize, arg_filePass, arg_fileName, false);
 
 			m_modelTransformArray[x][y] = arg_baseTransform;
-			m_modelTransformArray[x][y].pos.x += static_cast<float>(x) * 30.0f;
+			m_modelTransformArray[x][y].pos.z += static_cast<float>(x) * 30.0f;
 			m_modelTransformArray[x][y].pos.y += static_cast<float>(y) * 20.0f;
 			//ç¿ïWãLò^
 			m_posArray[x * Y_ARRAY + y] = m_modelTransformArray[x][y].pos;
