@@ -2,8 +2,13 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 
 RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
-	m_sponzaModelRender(arg_rasterize, "Resource/DefferdRendering/Sponza/", "Sponza.gltf")
+	m_sponzaModelRender(arg_rasterize, "Resource/DefferdRendering/Sponza/", "Sponza.gltf"),
+	m_aliasingTexture(arg_rasterize, "Resource/FXAA/circle.png")
 {
+	m_aliasingTexTransform.pos = { -3.5f,30.0f,100.0f };
+	m_aliasingTexTransform.scale = { 0.2f,0.2f,1.0f };
+	m_aliasingTexAngle = 0.0f;
+
 	m_sponzaModelTransform.scale = { 0.1f,0.1f,0.1f };
 	m_sponzaModelTransform.Rotation(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), KazMath::AngleToRadian(90.0f));
 
@@ -224,6 +229,14 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 			m_lights[z].Draw(arg_rasterize, arg_blasVec);
 		}
 	}
+	m_aliasingTexAngle += 0.1f;
+	m_aliasingTexTransform.quaternion =
+		DirectX::XMQuaternionMultiply(
+			DirectX::XMQuaternionIdentity(),
+			DirectX::XMQuaternionRotationAxis(KazMath::Vec3<float>(0.0f, 0.0f, 1.0f).ConvertXMVECTOR(),
+				KazMath::AngleToRadian(m_aliasingTexAngle))
+		);
+	m_aliasingTexture.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_aliasingTexTransform);
 
 	//ƒ¿ƒ‚ƒfƒ‹
 	m_alphaModel.m_model.Draw(arg_rasterize, arg_blasVec, m_alphaTransform, KazMath::Color(0, 200, 0, 100));

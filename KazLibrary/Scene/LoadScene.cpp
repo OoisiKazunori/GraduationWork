@@ -1,7 +1,7 @@
 #include "LoadScene.h"
 #include"../KazLibrary/Singlton/LoadingBar.h"
 
-LoadScene::LoadScene() :m_bar(m_rasterize, "Resource/")
+LoadScene::LoadScene() :m_bar(m_rasterize, "Resource/FXAA/circle.png")
 {
 	//•`‰æî•ñ¶¬
 	//ƒo[

@@ -86,5 +86,15 @@ private:
 
 	//削除予定
 	BasicDraw::BasicModelRender m_axisRender;
+
+
+	//FXAA--------------------------------------
+	BasicDraw::BasicTextureRender m_aliasingTexture;//エイリアシングが起きているテクスチャ
+	KazMath::Transform3D m_aliasingTexTransform;
+	float m_aliasingTexAngle;
+
+	BasicDraw::BasicTextureRender m_edgeRender;		//エッジ検出の描画
+	DrawFuncHelper::TextureRender m_fxAAFinalRender;//FXAAの最終合成
+	
 };
 
