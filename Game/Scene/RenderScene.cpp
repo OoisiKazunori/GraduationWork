@@ -26,27 +26,26 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	modelFilePassArray[0] = filePass + "Avocado/";
 	modelFilePassArray[1] = filePass + "BoomBox/";
 	modelFilePassArray[2] = filePass + "Corset/";
-	modelFilePassArray[3] = filePass + "Suzanne/";
-	modelFilePassArray[4] = filePass + "WaterBottle/";
-	modelFilePassArray[5] = filePass + "BarramundiFish/";
-	modelFilePassArray[6] = filePass + "Lantern/";
+	modelFilePassArray[3] = filePass + "WaterBottle/";
+	modelFilePassArray[4] = filePass + "BarramundiFish/";
+	modelFilePassArray[5] = filePass + "Lantern/";
+	modelFilePassArray[6] = filePass + "Suzanne/";
 	std::array<std::string, MODEL_MAX_NUM> modelFileNameArray;
 	modelFileNameArray[0] = "Avocado.gltf";
 	modelFileNameArray[1] = "BoomBox.gltf";
 	modelFileNameArray[2] = "Corset.gltf";
-	modelFileNameArray[3] = "Suzanne.gltf";
-	modelFileNameArray[4] = "WaterBottle.gltf";
-	modelFileNameArray[5] = "BarramundiFish.gltf";
-	modelFileNameArray[6] = "Lantern.gltf";
+	modelFileNameArray[3] = "WaterBottle.gltf";
+	modelFileNameArray[4] = "BarramundiFish.gltf";
+	modelFileNameArray[5] = "Lantern.gltf";
+	modelFileNameArray[6] = "Suzanne.gltf";
 	std::array<float, MODEL_MAX_NUM>scaleArray;
 	scaleArray[0] = 100.0f;
 	scaleArray[1] = 500.0f;
 	scaleArray[2] = 100.0f;
-	scaleArray[3] = 5.0f;
-	scaleArray[4] = 25.0f;
-	scaleArray[5] = 10.0f;
-	scaleArray[6] = 0.5f;
-
+	scaleArray[3] = 25.0f;
+	scaleArray[4] = 10.0f;
+	scaleArray[5] = 0.5f;
+	scaleArray[6] = 5.0f;
 	int index = 0;
 	//ÉÇÉfÉãê∂ê¨
 	for (int z = 0; z < m_models.size(); ++z)
