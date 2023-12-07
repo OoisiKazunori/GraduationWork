@@ -467,7 +467,14 @@ void KazBufferHelper::BufferData::CreateUAVView()
 {
 	RESOURCE_HANDLE handle = UavViewHandleMgr::Instance()->GetHandle();
 	D3D12_UNORDERED_ACCESS_VIEW_DESC desc = KazBufferHelper::SetUnorderedAccessView(structureSize, elementNum);
-	DescriptorHeapMgr::Instance()->CreateBufferView(handle, desc, bufferWrapper->GetBuffer().Get(), counterWrapper->GetBuffer().Get());
+	if (!counterWrapper)
+	{
+		DescriptorHeapMgr::Instance()->CreateBufferView(handle, desc, bufferWrapper->GetBuffer().Get(), nullptr);
+	}
+	else
+	{
+		DescriptorHeapMgr::Instance()->CreateBufferView(handle, desc, bufferWrapper->GetBuffer().Get(), counterWrapper->GetBuffer().Get());
+	}
 	bufferWrapper->CreateViewHandle(handle);
 }
 

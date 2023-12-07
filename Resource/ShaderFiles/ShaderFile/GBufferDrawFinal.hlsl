@@ -39,6 +39,7 @@ Texture2D<float4> AlbedoTex : register(t0);
 Texture2D<float4> NormalTex : register(t1);
 Texture2D<float4> WorldTex : register(t2);
 SamplerState smp : register(s0);
+RWTexture2D<float4> GBuffer : register(u1);
 
 float4 PSmain(VSOutput input) : SV_TARGET
 {
@@ -49,6 +50,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
     //法線マップを使わないならAlbedoを出力する
     if(IsEnableToUseMaterialTex(worldNormalVec))
     {
+        GBuffer[input.uv * float2(1280.0f,720.0f)] = albedoColor;
         return albedoColor;
     }
     
@@ -76,5 +78,6 @@ float4 PSmain(VSOutput input) : SV_TARGET
         break;
     }
     float4 outputColor = float4(albedoColor.xyz * lightOutput, 1.0f);
+    GBuffer[input.uv * float2(1280.0f,720.0f)] = outputColor;
     return outputColor;
 }

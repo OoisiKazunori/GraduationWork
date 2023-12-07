@@ -1,5 +1,7 @@
 #include "RenderScene.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Buffer/UavViewHandleMgr.h"
+#include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 
 RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_sponzaModelRender(arg_rasterize, "Resource/DefferdRendering/Sponza/", "Sponza.gltf"),
@@ -115,46 +117,83 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_defaultLightBuffer.bufferWrapper->ChangeBarrierUAV();
 	//ライト座標をVRAMに上げる--------------------------------
 
+	{
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetTex();
+		pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "GBufferDrawFinal.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "GBufferDrawFinal.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::NONE;
+		DrawFuncData::DrawCallData drawCall = DrawFuncData::SetSpriteAlphaData(pipelineData);
+		//ライトの配列数
+		drawCall.extraBufferArray[1].~BufferData();
+		drawCall.extraBufferArray[1] = KazBufferHelper::SetConstBufferData(sizeof(int));
+		drawCall.extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray[1].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+		int num = static_cast<int>(m_lights[0].GetPosArray().size() * m_lights.size());
+		drawCall.extraBufferArray[1].bufferWrapper->TransData(&num, sizeof(int));
+		//ライトの座標
+		drawCall.extraBufferArray[2] = m_defaultLightBuffer;
+		drawCall.extraBufferArray[2].rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+		drawCall.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		//ALBEDO
+		drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::ALBEDO]));
+		drawCall.extraBufferArray[3].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+		drawCall.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		//NORMAL
+		drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::NORMAL]));
+		drawCall.extraBufferArray[4].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+		drawCall.extraBufferArray[4].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+		//WORLD
+		drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::WORLD]));
+		drawCall.extraBufferArray[5].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+		drawCall.extraBufferArray[5].rootParamType = GRAPHICS_PRAMTYPE_DATA3;
+		//ライトの状態
+		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(LightData)));
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA3;
 
-	DrawFuncData::PipelineGenerateData pipelineData;
-	pipelineData.desc = DrawFuncPipelineData::SetTex();
-	pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-	pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "GBufferDrawFinal.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-	pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "GBufferDrawFinal.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
-	pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::NONE;
-	DrawFuncData::DrawCallData drawCall = DrawFuncData::SetSpriteAlphaData(pipelineData);
-	//ライトの配列数
-	drawCall.extraBufferArray[1].~BufferData();
-	drawCall.extraBufferArray[1] = KazBufferHelper::SetConstBufferData(sizeof(int));
-	drawCall.extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-	drawCall.extraBufferArray[1].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
-	int num = static_cast<int>(m_lights[0].GetPosArray().size() * m_lights.size());
-	drawCall.extraBufferArray[1].bufferWrapper->TransData(&num, sizeof(int));
-	//ライトの座標
-	drawCall.extraBufferArray[2] = m_defaultLightBuffer;
-	drawCall.extraBufferArray[2].rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
-	drawCall.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA;
-	//ALBEDO
-	drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::ALBEDO]));
-	drawCall.extraBufferArray[3].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
-	drawCall.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA;
-	//NORMAL
-	drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::NORMAL]));
-	drawCall.extraBufferArray[4].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
-	drawCall.extraBufferArray[4].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
-	//WORLD
-	drawCall.extraBufferArray.emplace_back(RenderTargetStatus::Instance()->GetBuffer(GBufferMgr::Instance()->GetRenderTarget()[GBufferMgr::WORLD]));
-	drawCall.extraBufferArray[5].rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
-	drawCall.extraBufferArray[5].rootParamType = GRAPHICS_PRAMTYPE_DATA3;
-	//ライトの状態
-	drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(LightData)));
-	drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-	drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA3;
-	m_finalRender.Load(arg_rasterize, drawCall, true);
+		//最終合成結果
+		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetUAVTexBuffer(1280, 720));
+		drawCall.extraBufferArray.back().bufferWrapper->ChangeBarrierUAV();
+		drawCall.extraBufferArray.back().elementNum = 1280 * 720;
+		drawCall.extraBufferArray.back().structureSize = sizeof(DirectX::XMFLOAT4);
+		drawCall.extraBufferArray.back().bufferWrapper->CreateViewHandle(UavViewHandleMgr::Instance()->GetHandle());
+		DescriptorHeapMgr::Instance()->CreateBufferView(
+			drawCall.extraBufferArray.back().bufferWrapper->GetViewHandle(),
+			KazBufferHelper::SetUnorderedAccessTextureView(sizeof(DirectX::XMFLOAT4), 1280 * 720),
+			drawCall.extraBufferArray.back().bufferWrapper->GetBuffer().Get()
+		);
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
 
+		//描画情報生成
+		m_finalRender.Load(arg_rasterize, drawCall, true);
+	}
 	m_lightData.m_lightRadius = 10.0f;
 
 	m_alphaTransform.scale = { 10.0f,10.0f,10.0f };
+
+	{
+		DrawFuncData::PipelineGenerateData pipelineData;
+		pipelineData.desc = DrawFuncPipelineData::SetTex();
+		pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "DrawTwoSprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "DrawTwoSprite.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::NONE;
+		DrawFuncData::DrawCallData drawCall = DrawFuncData::SetSpriteAlphaData(pipelineData);
+		//画像の切り替えの割合
+		drawCall.extraBufferArray[1].~BufferData();
+		drawCall.extraBufferArray[1] = KazBufferHelper::SetConstBufferData(sizeof(float));
+		drawCall.extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray[1].rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+		//ディファーレンダリングの最終合成結果
+		drawCall.extraBufferArray[2] = m_finalRender.m_drawCommand.extraBufferArray.back();
+		drawCall.extraBufferArray[2].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		drawCall.extraBufferArray[2].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		m_fxAAFinalRender.Load(arg_rasterize, drawCall, true);
+	}
+	m_finalRenderDrawRate = 0.5f;
 }
 
 RenderScene::~RenderScene()
@@ -192,7 +231,11 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	KazImGuiHelper::InputTransform3D("AlphaModel", &m_alphaTransform);
 	ImGui::End();
 
-	m_finalRender.m_drawCommand.extraBufferArray.back().bufferWrapper->TransData(&m_lightData, sizeof(LightData));
+	m_finalRender.m_drawCommand.extraBufferArray[6].bufferWrapper->TransData(&m_lightData, sizeof(LightData));
+	m_fxAAFinalRender.m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&m_finalRenderDrawRate, sizeof(float));
+
+
+
 }
 
 void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -229,6 +272,10 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 			m_lights[z].Draw(arg_rasterize, arg_blasVec);
 		}
 	}
+
+
+	//FXAA---------------------------------------
+	//円テクスチャの板ポリ描画
 	m_aliasingTexAngle += 0.1f;
 	m_aliasingTexTransform.quaternion =
 		DirectX::XMQuaternionMultiply(
@@ -240,6 +287,9 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 
 	//αモデル
 	m_alphaModel.m_model.Draw(arg_rasterize, arg_blasVec, m_alphaTransform, KazMath::Color(0, 200, 0, 100));
+
+	//m_fxAAFinalRender;
+
 
 	KazMath::Transform3D t;
 	t.scale.z = 5.0f;

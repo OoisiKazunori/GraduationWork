@@ -95,6 +95,6 @@ private:
 
 	BasicDraw::BasicTextureRender m_edgeRender;		//エッジ検出の描画
 	DrawFuncHelper::TextureRender m_fxAAFinalRender;//FXAAの最終合成
-	
+	float m_finalRenderDrawRate;					//FXAAとnoAAの画像の比較するための割合
 };
 
