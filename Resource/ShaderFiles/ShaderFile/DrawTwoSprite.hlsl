@@ -25,6 +25,12 @@ cbuffer Range : register(b1)
     float rate;
 }
 
+float GetBright(float4 color)
+{
+    float4 result = color * float4(0.299f,0.587f,0.114f,1.0f);
+    return result.x + result.y + result.z;
+}
+
 float4 PSmain(ColorOutput input) : SV_TARGET
 {
     float4 output = GBuffer[input.uv * uint2(1280,720)];
@@ -41,8 +47,38 @@ float4 PSmain(ColorOutput input) : SV_TARGET
     }
     else
     {
+        float bright = GetBright(output);
+
+        float3x3 xEdge;
+        xEdge[0] = float3(1,0,-1);
+        xEdge[1] = float3(2,0,-2);
+        xEdge[2] = float3(1,0,-1);
+        float3x3 yEdge;
+        yEdge[0] = float3(1,2,1);
+        yEdge[1] = float3(0,0,0);
+        yEdge[2] = float3(-1,-2,-1);
+        float3x3 target;
+        target[0] = float3(
+            GetBright(GBuffer[input.uv * uint2(1280 - 1,720 - 1)]),
+            GetBright(GBuffer[input.uv * uint2(1280 - 1,720)]),
+            GetBright(GBuffer[input.uv * uint2(1280 - 1,720 + 1)])
+            );
+        target[1] = float3(
+            GetBright(GBuffer[input.uv * uint2(1280 - 1,720)]),
+            GetBright(GBuffer[input.uv * uint2(1280,720)]),
+            GetBright(GBuffer[input.uv * uint2(1280 + 1,720)])
+        );
+        target[2] = float3(
+            GetBright(GBuffer[input.uv * uint2(1280 - 1,720 + 1)]),
+            GetBright(GBuffer[input.uv * uint2(1280,720 + 1)]),
+            GetBright(GBuffer[input.uv * uint2(1280 + 1,720 + 1)])
+        );
+
+        float3x3 result = mul(target,xEdge) + mul(yEdge,target);
+
+        
         //アンチエイリアスの描画
-        output = float4(0,0,0,1);
+        output = float4(bright,bright,bright,1);
         return output;
     }
 }
