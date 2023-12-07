@@ -234,12 +234,11 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::Begin("DemoFXAAInspector");
 	ImGui::Checkbox("CheckAA", &m_checkAAFlag);
 	ImGui::SliderFloat("Slider", &m_finalRenderDrawRate, 0.0f, 1.0f);
+	ImGui::SliderFloat("rotaion", &m_aliasingTexAngle, 0.0f, 360.0f);
 	ImGui::End();
 
 	m_finalRender.m_drawCommand.extraBufferArray[6].bufferWrapper->TransData(&m_lightData, sizeof(LightData));
 	m_fxAAFinalRender.m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&m_finalRenderDrawRate, sizeof(float));
-
-
 
 }
 
@@ -247,8 +246,6 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 {
 	//スポンザの描画
 	m_sponzaModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_sponzaModelTransform);
-
-
 
 	if (m_checkAAFlag)
 	{
@@ -299,7 +296,6 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 
 	//FXAA---------------------------------------
 	//円テクスチャの板ポリ描画
-	m_aliasingTexAngle += 0.1f;
 	m_aliasingTexTransform.quaternion =
 		DirectX::XMQuaternionMultiply(
 			DirectX::XMQuaternionIdentity(),
