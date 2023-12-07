@@ -231,6 +231,11 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	KazImGuiHelper::InputTransform3D("AlphaModel", &m_alphaTransform);
 	ImGui::End();
 
+	ImGui::Begin("DemoFXAAInspector");
+	ImGui::Checkbox("CheckAA", &m_checkAAFlag);
+	ImGui::SliderFloat("Slider", &m_finalRenderDrawRate, 0.0f, 1.0f);
+	ImGui::End();
+
 	m_finalRender.m_drawCommand.extraBufferArray[6].bufferWrapper->TransData(&m_lightData, sizeof(LightData));
 	m_fxAAFinalRender.m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&m_finalRenderDrawRate, sizeof(float));
 
@@ -243,20 +248,38 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	//スポンザの描画
 	m_sponzaModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_sponzaModelTransform);
 
-	//G-Bufferの描画
-	if (m_gBufferType == 4)
+
+
+	if (m_checkAAFlag)
 	{
 		//合成結果
 		KazMath::Transform2D transform(KazMath::Vec2<float>(1280.0f / 2.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f, 720.0f));
 		DirectX::XMMATRIX mat = transform.GetMat() * CameraMgr::Instance()->GetOrthographicMatProjection();
 		m_finalRender.m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
 		arg_rasterize.UIRender(m_finalRender.m_drawCommandData);
+
+		//FXAA合成とディファーレンダリングの描画比較
+		m_fxAAFinalRender.m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+		arg_rasterize.UIRender(m_fxAAFinalRender.m_drawCommandData);
 	}
 	else
 	{
-		//レンダーターゲットごとの描画
-		m_gBufferRender[m_gBufferType].m_tex.Draw2D(arg_rasterize, m_renderTransform);
+		//G-Bufferの描画
+		if (m_gBufferType == 4)
+		{
+			//合成結果
+			KazMath::Transform2D transform(KazMath::Vec2<float>(1280.0f / 2.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f, 720.0f));
+			DirectX::XMMATRIX mat = transform.GetMat() * CameraMgr::Instance()->GetOrthographicMatProjection();
+			m_finalRender.m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+			arg_rasterize.UIRender(m_finalRender.m_drawCommandData);
+		}
+		else
+		{
+			//レンダーターゲットごとの描画
+			m_gBufferRender[m_gBufferType].m_tex.Draw2D(arg_rasterize, m_renderTransform);
+		}
 	}
+
 
 	//モデル配置
 	for (int z = 0; z < m_models.size(); ++z)
@@ -288,7 +311,6 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	//αモデル
 	m_alphaModel.m_model.Draw(arg_rasterize, arg_blasVec, m_alphaTransform, KazMath::Color(0, 200, 0, 100));
 
-	//m_fxAAFinalRender;
 
 
 	KazMath::Transform3D t;

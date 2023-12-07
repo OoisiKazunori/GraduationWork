@@ -28,7 +28,7 @@ cbuffer Range : register(b0)
 float4 PSmain(ColorOutput input) : SV_TARGET
 {
     float4 output = GBuffer[input.uv * uint2(1280,720)];
-    if(input.uv.x <= rate)
+    if(input.uv.x <= 0.5f)
     {
         //ディファーレンダリングの描画
         return output;
