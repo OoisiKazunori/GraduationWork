@@ -60,25 +60,25 @@ float4 PSmain(ColorOutput input) : SV_TARGET
         float3x3 target;
         target[0] = float3(
             GetBright(GBuffer[input.uv * uint2(1280 - 1,720 - 1)]),
-            GetBright(GBuffer[input.uv * uint2(1280 - 1,720)]),
-            GetBright(GBuffer[input.uv * uint2(1280 - 1,720 + 1)])
+            GetBright(GBuffer[input.uv * uint2(1280,    720 - 1)]),
+            GetBright(GBuffer[input.uv * uint2(1280 + 1,720 - 1)])
             );
         target[1] = float3(
             GetBright(GBuffer[input.uv * uint2(1280 - 1,720)]),
-            GetBright(GBuffer[input.uv * uint2(1280,720)]),
+            GetBright(GBuffer[input.uv * uint2(1280,    720)]),
             GetBright(GBuffer[input.uv * uint2(1280 + 1,720)])
         );
         target[2] = float3(
             GetBright(GBuffer[input.uv * uint2(1280 - 1,720 + 1)]),
-            GetBright(GBuffer[input.uv * uint2(1280,720 + 1)]),
+            GetBright(GBuffer[input.uv * uint2(1280,    720 + 1)]),
             GetBright(GBuffer[input.uv * uint2(1280 + 1,720 + 1)])
         );
 
-        float3x3 result = mul(xEdge,target) + mul(target,yEdge);
+        float3x3 result = mul(xEdge,target) + mul(yEdge,target);
 
         
         //アンチエイリアスの描画
-        output = float4(result[1].y,result[1].y,result[1].y,1);
+        output = float4(result[1][1],result[1][1],result[1][1],1);
         return output;
     }
 }
