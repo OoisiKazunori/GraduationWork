@@ -27,8 +27,7 @@ cbuffer Range : register(b1)
 
 float GetBright(float4 color)
 {
-    float4 result = color * float4(0.299f,0.587f,0.114f,1.0f);
-    return result.x + result.y + result.z;
+    return dot(color,float4(0.299f,0.587f,0.114f,1.0f));
 }
 
 float4 PSmain(ColorOutput input) : SV_TARGET
@@ -75,7 +74,6 @@ float4 PSmain(ColorOutput input) : SV_TARGET
         );
 
         float3x3 result = mul(xEdge,target) + mul(yEdge,target);
-
         
         //アンチエイリアスの描画
         output = float4(result[1][1],result[1][1],result[1][1],1);
