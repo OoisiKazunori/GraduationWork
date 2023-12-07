@@ -7,10 +7,7 @@
 #include"../KazLibrary/Render/DrawingByRasterize.h"
 #include "../KazLibrary/Sound/SoundManager.h"
 #include "../KazLibrary/Raytracing/RayPipeline.h"
-#include"../Game/Scene/GameScene.h"
-#include"../Game/Scene/DemoScene.h"
 #include"../KazLibrary/Scene/LoadScene.h"
-#include"../Game/Scene/TitleScene.h"
 #include"../Game/Scene/RenderScene.h"
 
 class SceneManager
@@ -32,9 +29,6 @@ private:
 
 	bool itisInArrayFlag;
 	bool gameFirstInitFlag;
-
-	//SE
-	SoundData m_Title;
 
 
 
@@ -111,14 +105,13 @@ private:
 			return std::make_shared<RenderScene>(m_rasterize);
 			break;
 		case 1:
-			return std::make_shared<GameScene>(m_rasterize);
 			break;
 		case 2:
 			break;
 		default:
 			break;
 		}
-		return std::make_shared<DemoScene>(m_rasterize);
+		return std::make_shared<RenderScene>(m_rasterize);
 	}
 
 	void AssetLoad();

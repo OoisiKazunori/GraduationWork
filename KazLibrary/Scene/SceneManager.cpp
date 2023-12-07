@@ -116,11 +116,6 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	//OnOffデバッグ用のパラメーターを用意。
 	m_rayPipeline->SetDebugOnOffConstData(&m_debugRaytracingParamData);
 	m_debugLineScale = 0;
-
-	//BGMの再生
-	m_Title = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Title.wav");
-	SoundManager::Instance()->SoundPlayerWave(m_Title, 100);
-	m_Title.source->SetVolume(0.1f);
 }
 
 SceneManager::~SceneManager()
