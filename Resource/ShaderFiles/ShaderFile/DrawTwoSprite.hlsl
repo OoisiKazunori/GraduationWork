@@ -50,28 +50,28 @@ float4 PSmain(ColorOutput input) : SV_TARGET
         float bright = GetBright(output);
 
         float3x3 xEdge;
-        xEdge[0] = float3(1,0,-1);
-        xEdge[1] = float3(2,0,-2);
-        xEdge[2] = float3(1,0,-1);
+        xEdge[0] = float3(-1,0,1);
+        xEdge[1] = float3(-2,0,2);
+        xEdge[2] = float3(-1,0,1);
         float3x3 yEdge;
-        yEdge[0] = float3(1,2,1);
+        yEdge[0] = float3(-1,-2,-1);
         yEdge[1] = float3(0,0,0);
-        yEdge[2] = float3(-1,-2,-1);
+        yEdge[2] = float3(1,2,1);
         float3x3 target;
         target[0] = float3(
-            GetBright(GBuffer[input.uv * uint2(1280 - 1,720 - 1)]),
-            GetBright(GBuffer[input.uv * uint2(1280,    720 - 1)]),
-            GetBright(GBuffer[input.uv * uint2(1280 + 1,720 - 1)])
+            GetBright(GBuffer[input.uv * float2(1280 - 1,720 - 1)]),
+            GetBright(GBuffer[input.uv * float2(1280,    720 - 1)]),
+            GetBright(GBuffer[input.uv * float2(1280 + 1,720 - 1)])
             );
         target[1] = float3(
-            GetBright(GBuffer[input.uv * uint2(1280 - 1,720)]),
-            GetBright(GBuffer[input.uv * uint2(1280,    720)]),
-            GetBright(GBuffer[input.uv * uint2(1280 + 1,720)])
+            GetBright(GBuffer[input.uv * float2(1280 - 1,720)]),
+            GetBright(GBuffer[input.uv * float2(1280,    720)]),
+            GetBright(GBuffer[input.uv * float2(1280 + 1,720)])
         );
         target[2] = float3(
-            GetBright(GBuffer[input.uv * uint2(1280 - 1,720 + 1)]),
-            GetBright(GBuffer[input.uv * uint2(1280,    720 + 1)]),
-            GetBright(GBuffer[input.uv * uint2(1280 + 1,720 + 1)])
+            GetBright(GBuffer[input.uv * float2(1280 - 1,720 + 1)]),
+            GetBright(GBuffer[input.uv * float2(1280,    720 + 1)]),
+            GetBright(GBuffer[input.uv * float2(1280 + 1,720 + 1)])
         );
 
         float3x3 result = mul(xEdge,target) + mul(yEdge,target);
