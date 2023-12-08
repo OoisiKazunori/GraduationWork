@@ -5,6 +5,7 @@
 
 StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
+
 }
 
 void StageManager::Init(DrawingByRasterize& arg_rasterize, int f_stageNum)
@@ -344,7 +345,6 @@ void StageManager::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollisi
 
 				obj->m_isDrawFlag = true;
 				break;
-
 			}
 
 		}

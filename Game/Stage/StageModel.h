@@ -19,8 +19,13 @@ public:
 	bool m_isDrawFlag = false;
 
 	float m_echoRad = 0.0f;
+	
 private:
 	bool m_prevIsDrawFlag = false;
-
+	
+	bool m_isSeen = false;
+	int m_seenTime = 0;
+	//Œ©‚½”»’è‚ÌŽžŠÔ”»’è
+	const int SeenTime = 300;
 };
 
