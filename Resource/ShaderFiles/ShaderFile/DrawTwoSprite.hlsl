@@ -49,11 +49,12 @@ float4 PSmain(ColorOutput input) : SV_TARGET
     }
     else
     {
-        float nw = GetBright(GBuffer[input.uv * float2(1280.0f - 1.0f,720.0f - 1.0f)]);
-        float ne = GetBright(GBuffer[input.uv * float2(1280.0f + 1.0f,720.0f - 1.0f)]);
-        float sw = GetBright(GBuffer[input.uv * float2(1280.0f - 1.0f,720.0f + 1.0f)]);
-        float se = GetBright(GBuffer[input.uv * float2(1280.0f + 1.0f,720.0f + 1.0f)]);
-        float m  = GetBright(GBuffer[input.uv * float2(1280.0f,720.0f)]);
+        float2 inputUV = input.uv * float2(1280.0f,720.0f);
+        float nw = GetBright(GBuffer[inputUV + float2(-1.0f,-1.0f)]);
+        float ne = GetBright(GBuffer[inputUV + float2( 1.0f,-1.0f)]);
+        float sw = GetBright(GBuffer[inputUV + float2(-1.0f, 1.0f)]);
+        float se = GetBright(GBuffer[inputUV + float2( 1.0f, 1.0f)]);
+        float m  = GetBright(GBuffer[inputUV]);
         
         //輝度の最大値--------------------------------
         float luma1 = max(
