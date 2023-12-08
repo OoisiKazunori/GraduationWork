@@ -685,6 +685,7 @@ namespace KazMath
 		{
 			pos = OBJ.pos;
 			scale = OBJ.scale;
+			quaternion = OBJ.quaternion;
 		}
 		DirtyFlag<Vec3<float>>positionDirtyFlag;
 		DirtyFlag<Vec3<float>>scaleDirtyFlag;
