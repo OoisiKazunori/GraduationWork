@@ -44,7 +44,7 @@ private:
 
 	//心音のタイマー
 	int m_heatbeatTimer;
-	const int HEATBEAT_TIMER = 90;
+	const int HEATBEAT_TIMER = 45;
 	SoundData m_heatbeatSE;
 
 	SoundData m_playerShotSE;

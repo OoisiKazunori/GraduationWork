@@ -169,7 +169,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	if (HEATBEAT_TIMER <= m_heatbeatTimer) {
 
 		SoundManager::Instance()->SoundPlayerWave(m_heatbeatSE, 0);
-		EchoArray::Instance()->Generate(m_transform.pos, 20.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
 		m_heatbeatTimer = 0;
 
 	}
