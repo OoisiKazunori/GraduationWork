@@ -122,11 +122,11 @@ int BulletMgr::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision
 {
 
 	int hitCount = 0;
-	for (auto& index : m_bullet) {
+	for (auto& index : m_echoBullet) {
 
 		if (!index->GetIsActive()) continue;
 
-		bool isHit = index->CheckMeshCollision(arg_meshCollision, arg_isEnemyObject);
+		bool isHit = index->CheckMeshCollision(arg_meshCollision);
 		if (isHit) {
 			++hitCount;
 		}
