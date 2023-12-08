@@ -118,12 +118,12 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	//}
 
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
 
-		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
-		SoundManager::Instance()->SoundPlayerWave(m_sonarSE, 0);
+	//	EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+	//	SoundManager::Instance()->SoundPlayerWave(m_sonarSE, 0);
 
-	}
+	//}
 
 	m_weaponTransform.pos = m_transform.pos;
 	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f);
