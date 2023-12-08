@@ -13,7 +13,7 @@ private:
 	//’nŒ`‚Ìƒ‚ƒfƒ‹
 
 	std::list<std::unique_ptr<StageModel>> m_tree;
-	std::list<std::unique_ptr<StageModel>> m_stone;
+	std::list<std::unique_ptr<StageModel>> m_cylinder;
 
 	std::list<std::unique_ptr<StageModel>> m_block01;
 

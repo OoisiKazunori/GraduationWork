@@ -34,7 +34,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	{
 		(*l_treeItr)->Update();
 	}
-	for (auto l_stoneItr = m_stone.begin(); l_stoneItr != m_stone.end(); ++l_stoneItr)
+	for (auto l_stoneItr = m_cylinder.begin(); l_stoneItr != m_cylinder.end(); ++l_stoneItr)
 	{
 		(*l_stoneItr)->Update();
 	}
@@ -93,7 +93,7 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	{
 		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
 	}
-	for (auto l_stoneItr = m_stone.begin(); l_stoneItr != m_stone.end(); ++l_stoneItr)
+	for (auto l_stoneItr = m_cylinder.begin(); l_stoneItr != m_cylinder.end(); ++l_stoneItr)
 	{
 		(*l_stoneItr)->Draw(arg_rasterize, arg_blasVec);
 	}
@@ -158,7 +158,7 @@ bool StageManager::ChangeSceneTrigger()
 void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum)
 {
 	m_tree.clear();
-	m_stone.clear();
+	m_cylinder.clear();
 	m_stage.reset();
 	m_goal.reset();
 	m_block01.clear();
@@ -187,10 +187,14 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			collision->Setting((*m_tree.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_tree.begin())->m_transform);
 			m_collisions.push_back(collision);
 		}
-		else if (l_mapItr->m_objetName.starts_with("stone") == true)
+		else if (l_mapItr->m_objetName.starts_with("cylinder") == true)
 		{
-			m_stone.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/stone/", "stone.gltf",
+			m_cylinder.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/cylinder/", "cylinder.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting((*m_cylinder.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_cylinder.end())->m_transform);
+			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("stage") == true)
 		{
