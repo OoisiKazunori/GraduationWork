@@ -266,7 +266,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	case WeponUIManager::e_Hundgun:
 
 		//’e‚ð‚¤‚Â“ü—Í‚àŽó‚¯•t‚¯‚éB
-		if (m_isADS && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
+		if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
 
 			//bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 
