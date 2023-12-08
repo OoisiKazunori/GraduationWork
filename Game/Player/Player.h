@@ -55,7 +55,6 @@ private:
 	enum class PlayerAttitude {
 		STAND,
 		SQUAT,
-		CREEPING,
 	}m_playerAttitude;
 
 public:
