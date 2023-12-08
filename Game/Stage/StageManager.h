@@ -12,7 +12,8 @@ private:
 	bool m_changeSceneTriggerFlag;
 	//’nŒ`‚Ìƒ‚ƒfƒ‹
 
-	std::list<std::unique_ptr<StageModel>> m_tree;
+	std::list<std::unique_ptr<StageModel>> m_phone;
+
 	std::list<std::unique_ptr<StageModel>> m_cylinder;
 
 	std::list<std::unique_ptr<StageModel>> m_block01;
@@ -48,7 +49,6 @@ public:
 	void AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum);
 
 	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision);
-
 	
 	std::list<std::shared_ptr<MeshCollision>> GetColliders(){ return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;

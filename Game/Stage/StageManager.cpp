@@ -30,13 +30,13 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	//ステージの切り替え処理
 	m_stage->Update();
 	m_goal->Update();
-	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
+	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Update();
 	}
-	for (auto l_stoneItr = m_cylinder.begin(); l_stoneItr != m_cylinder.end(); ++l_stoneItr)
+	for (auto l_cylinderItr = m_cylinder.begin(); l_cylinderItr != m_cylinder.end(); ++l_cylinderItr)
 	{
-		(*l_stoneItr)->Update();
+		(*l_cylinderItr)->Update();
 	}
 	for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
 	{
@@ -89,13 +89,13 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 {
 	m_stage->Draw(arg_rasterize, arg_blasVec);
 	//m_goal->Draw(arg_rasterize, arg_blasVec);
-	for (auto l_treeItr = m_tree.begin(); l_treeItr != m_tree.end(); ++l_treeItr)
+	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
 	}
-	for (auto l_stoneItr = m_cylinder.begin(); l_stoneItr != m_cylinder.end(); ++l_stoneItr)
+	for (auto l_cylinderItr = m_cylinder.begin(); l_cylinderItr != m_cylinder.end(); ++l_cylinderItr)
 	{
-		(*l_stoneItr)->Draw(arg_rasterize, arg_blasVec);
+		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
 	}
 	for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
 	{
@@ -157,7 +157,7 @@ bool StageManager::ChangeSceneTrigger()
 
 void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum)
 {
-	m_tree.clear();
+	m_phone.clear();
 	m_cylinder.clear();
 	m_stage.reset();
 	m_goal.reset();
@@ -178,13 +178,13 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
-		if (l_mapItr->m_objetName.starts_with("tree") == true)
+		if (l_mapItr->m_objetName.starts_with("phone") == true)
 		{
-			m_tree.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/tree/", "tree2.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+			m_phone.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/tree/", "tree2.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale, l_mapItr->echoScale));
 			
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_tree.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_tree.begin())->m_transform);
+			collision->Setting((*m_phone.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_phone.begin())->m_transform);
 			m_collisions.push_back(collision);
 		}
 		else if (l_mapItr->m_objetName.starts_with("cylinder") == true)
