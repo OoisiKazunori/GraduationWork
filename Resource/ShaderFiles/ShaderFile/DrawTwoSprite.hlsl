@@ -16,18 +16,21 @@ ColorOutput VSmain(float4 pos : POSITION, float2 uv : TEXCOORD)
     op.uv = uv;
     return op;
 }
-//ディファーレンダリングの結果
+//�?ィファーレンダリングの結果
 RWTexture2D<float4> GBuffer : register(u0);
 SamplerState smp : register(s0);
 
 cbuffer Range : register(b1)
 {
     float rate;
+    float treshold;
+    float minTreshold;
 }
 
 float GetBright(float4 color)
 {
-    return dot(color,float4(0.299f,0.587f,0.114f,1.0f));
+    float4 output = color * float4(0.299f,0.587f,0.114f,1.0f);
+    return output.x + output.y + output.z;
 }
 
 float4 PSmain(ColorOutput input) : SV_TARGET
@@ -36,47 +39,62 @@ float4 PSmain(ColorOutput input) : SV_TARGET
 
     if(input.uv.x - 0.001f <= rate && rate <= input.uv.x + 0.001f)
     {
-        //中間の線
+        //中間�?��?
         return float4(1.0f,1.0f,1.0f,1.0f);
     }
     else if(input.uv.x < rate)
     {
-        //ディファーレンダリングの描画
+        //�?ィファーレンダリングの描画
         return output;
     }
     else
     {
-        float bright = GetBright(output);
-
-        float3x3 xEdge;
-        xEdge[0] = float3(-1,0,1);
-        xEdge[1] = float3(-2,0,2);
-        xEdge[2] = float3(-1,0,1);
-        float3x3 yEdge;
-        yEdge[0] = float3(-1,-2,-1);
-        yEdge[1] = float3(0,0,0);
-        yEdge[2] = float3(1,2,1);
-        float3x3 target;
-        target[0] = float3(
-            GetBright(GBuffer[input.uv * float2(1280 - 1,720 - 1)]),
-            GetBright(GBuffer[input.uv * float2(1280,    720 - 1)]),
-            GetBright(GBuffer[input.uv * float2(1280 + 1,720 - 1)])
-            );
-        target[1] = float3(
-            GetBright(GBuffer[input.uv * float2(1280 - 1,720)]),
-            GetBright(GBuffer[input.uv * float2(1280,    720)]),
-            GetBright(GBuffer[input.uv * float2(1280 + 1,720)])
-        );
-        target[2] = float3(
-            GetBright(GBuffer[input.uv * float2(1280 - 1,720 + 1)]),
-            GetBright(GBuffer[input.uv * float2(1280,    720 + 1)]),
-            GetBright(GBuffer[input.uv * float2(1280 + 1,720 + 1)])
-        );
-
-        float3x3 result = mul(xEdge,target) + mul(yEdge,target);
+        float nw = GetBright(GBuffer[input.uv * float2(1280.0f - 1.0f,720.0f - 1.0f)]);
+        float ne = GetBright(GBuffer[input.uv * float2(1280.0f + 1.0f,720.0f - 1.0f)]);
+        float sw = GetBright(GBuffer[input.uv * float2(1280.0f - 1.0f,720.0f + 1.0f)]);
+        float se = GetBright(GBuffer[input.uv * float2(1280.0f + 1.0f,720.0f + 1.0f)]);
+        float m  = GetBright(GBuffer[input.uv * float2(1280.0f,720.0f)]);
         
-        //アンチエイリアスの描画
-        output = float4(result[1][1],result[1][1],result[1][1],1);
+        //輝度の最大値--------------------------------
+        float luma1 = max(
+            nw,
+            ne
+        );
+        float luma2 = max(
+            sw,
+            se
+        );
+        float maxLuma = max(luma1,luma2);
+        //輝度の最大値--------------------------------
+
+        //コントラストの差分--------------------------------
+        maxLuma = max(maxLuma,m);
+
+        float lumaMin1 = min(
+            nw,
+            ne
+        );
+        float lumaMin2 = min(
+            sw,
+            se
+        );
+        float minLuma = min(lumaMin1,lumaMin2);
+        minLuma = max(minLuma,m);
+
+        float contrast = maxLuma - minLuma;
+        //コントラストの差分--------------------------------
+
+        //AA検知--------------------------------
+        if(max(minTreshold,maxLuma * treshold) <= contrast)
+        {
+            output = float4(1,1,1,1);
+        }
+        else
+        {
+            output = float4(0,0,0,1);
+        }        
+        //AA検知--------------------------------
+        
         return output;
     }
 }

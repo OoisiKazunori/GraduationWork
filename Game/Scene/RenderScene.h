@@ -97,5 +97,16 @@ private:
 	DrawFuncHelper::TextureRender m_fxAAFinalRender;//FXAA‚ÌÅI‡¬
 	float m_finalRenderDrawRate;					//FXAA‚ÆnoAA‚Ì‰æ‘œ‚Ì”äŠr‚·‚é‚½‚ß‚ÌŠ„‡
 	bool m_checkAAFlag;
+
+	struct EdgeData
+	{
+		float rate;
+		float treshold;
+		float minTreshold;
+
+		EdgeData():rate(0.5f), treshold(0.5f), minTreshold(0.1f)
+		{}
+	};
+	EdgeData edgeData;
 };
 
