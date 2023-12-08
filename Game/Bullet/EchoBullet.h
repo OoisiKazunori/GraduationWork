@@ -19,7 +19,7 @@ private:
 	int m_echoCount;
 	const int ECHO_COUNT = 3;
 	float m_echoSpan;
-	const float ECHO_SPAN = 120.0f;
+	const float ECHO_SPAN = 60.0f;
 	int m_disappearTimer;
 	const int DESAPPEAR_TIMER = 60;
 

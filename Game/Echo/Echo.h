@@ -29,7 +29,7 @@ private:
 		EXIT,
 	}m_status;
 	float m_easingTimer;
-	const float APPEAR_EASING_TIMER = 30.0f;
+	const float APPEAR_EASING_TIMER = 15.0f;
 	const float EXIT_EASING_TIMER = 20.0f;
 	const float ALPHA = 0.12f;
 

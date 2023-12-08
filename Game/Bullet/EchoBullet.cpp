@@ -36,11 +36,11 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 
 	if (!m_isActive) return;
 
-	//’e‚ğ“®‚©‚·B
-	m_transform.pos += m_dir * BULLET_SPEED;
-
 	//“–‚½‚è”»’è‚ª‚Ü‚¾I‚í‚Á‚Ä‚È‚©‚Á‚½‚ç
 	if (m_isCollision) {
+
+		//’e‚ğ“®‚©‚·B
+		m_transform.pos += m_dir * BULLET_SPEED;
 
 		bool isHit = false;
 		for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
