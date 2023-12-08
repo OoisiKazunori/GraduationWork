@@ -25,11 +25,14 @@ cbuffer Range : register(b1)
     float rate;
     float treshold;
     float minTreshold;
+    float blur;
 }
+
+static const float4 LUMA = float4(0.299f,0.587f,0.114f,1.0f);
 
 float GetBright(float4 color)
 {
-    float4 output = color * float4(0.299f,0.587f,0.114f,1.0f);
+    float4 output = color * LUMA;
     return output.x + output.y + output.z;
 }
 
@@ -92,10 +95,39 @@ float4 PSmain(ColorOutput input) : SV_TARGET
         }
         else
         {
+            //AA必要なし
             output = float4(0,0,0,1);
+            return output;
         }        
         //AA検知--------------------------------
-        
-        return output;
+
+        //AA実行--------------------------------
+
+        //ベクトル算出
+        float2 dir;
+        dir.x = -((nw + ne)-(sw + se));
+        dir.y = -((nw + sw)-(ne + se));
+        dir.xy = normalize(dir.xy) * blur;
+
+
+        //最終ピクセル
+        float3 rgbA = (1.0f/2.0f) * (
+            GBuffer[inputUV + dir * (1.0f / 3.0f - 0.5f)].xyz +
+            GBuffer[inputUV + dir * (2.0f / 3.0f - 0.5f)].xyz);
+
+        float3 rgbB = rgbA * (1.0f/2.0f) + (1.0f/4.0f) * (
+            GBuffer[inputUV + dir * (0.0f / 3.0f - 0.5f)].xyz +
+            GBuffer[inputUV + dir * (3.0f / 3.0f - 0.5f)].xyz);
+
+        float lumaB = dot(rgbB,LUMA.xyz);
+
+        if((lumaB < minLuma) || (maxLuma < lumaB))
+        {
+            return float4(rgbA.xyz,1.0f);
+        }
+        else
+        {
+            return float4(rgbB.xyz,1.0f);
+        }
     }
 }

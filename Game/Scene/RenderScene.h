@@ -103,8 +103,8 @@ private:
 		float rate;
 		float treshold;
 		float minTreshold;
-
-		EdgeData():rate(0.5f), treshold(0.5f), minTreshold(0.1f)
+		float blur;
+		EdgeData():rate(0.5f), treshold(0.5f), minTreshold(0.1f), blur(0.0f)
 		{}
 	};
 	EdgeData edgeData;

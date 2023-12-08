@@ -236,6 +236,7 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::SliderFloat("Slider", &m_finalRenderDrawRate, 0.0f, 1.0f);
 	ImGui::SliderFloat("treshold", &edgeData.treshold, 0.0f, 1.0f);
 	ImGui::SliderFloat("minTreshold", &edgeData.minTreshold, 0.0f, 1.0f);
+	ImGui::SliderFloat("blur", &edgeData.blur, 0.0f, 1.0f);
 	ImGui::SliderFloat("rotaion", &m_aliasingTexAngle, 0.0f, 360.0f);
 	ImGui::End();
 
