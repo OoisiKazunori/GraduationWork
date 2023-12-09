@@ -87,11 +87,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		m_transform.scale.y += (0.5f - m_transform.scale.y) / 5.0f;
 		m_transform.scale.z += (1.0f - m_transform.scale.z) / 5.0f;
 		break;
-	case Player::PlayerAttitude::CREEPING:
-		m_transform.scale.x += (1.0f - m_transform.scale.x) / 5.0f;
-		m_transform.scale.y += (0.2f - m_transform.scale.y) / 5.0f;
-		m_transform.scale.z += (3.0f - m_transform.scale.z) / 5.0f;
-		break;
 	default:
 		break;
 	}
@@ -238,9 +233,6 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 			m_playerAttitude = PlayerAttitude::SQUAT;
 			break;
 		case Player::PlayerAttitude::SQUAT:
-			m_playerAttitude = PlayerAttitude::CREEPING;
-			break;
-		case Player::PlayerAttitude::CREEPING:
 			m_playerAttitude = PlayerAttitude::STAND;
 			break;
 		default:
@@ -339,21 +331,34 @@ void Player::Rotate(std::weak_ptr<Camera> arg_camera)
 void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
 {
 
+	float GROUND_RAY = 12.0f;
 
-	const float RAY_LENGTH = 8.0f;
+	switch (m_playerAttitude)
+	{
+	case Player::PlayerAttitude::STAND:
+		GROUND_RAY = 12.0f;
+		break;
+	case Player::PlayerAttitude::SQUAT:
+		GROUND_RAY = 6.0f;
+		break;
+	default:
+		break;
+	}
+
+	const float RAY_LENGTH = 4.0f;
 
 	//地面と当たり判定を行う。
 	m_onGround = false;
 
 
-	const float GROUND_RAY_OFFSET = 5.0f;
+	const float GROUND_RAY_OFFSET = -5.0f;
 	for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr) {
 
 		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH + GROUND_RAY_OFFSET) {
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY + GROUND_RAY_OFFSET) {
 
 			//押し戻し。
-			m_transform.pos += rayResult.m_normal * (RAY_LENGTH + GROUND_RAY_OFFSET - rayResult.m_distance);
+			m_transform.pos += rayResult.m_normal * (GROUND_RAY + GROUND_RAY_OFFSET - rayResult.m_distance);
 			m_onGround = true;
 
 		}
@@ -404,9 +409,6 @@ float Player::GetMoveSpeed()
 		break;
 	case Player::PlayerAttitude::SQUAT:
 		return MOVE_SPEED_SQUAT;
-		break;
-	case Player::PlayerAttitude::CREEPING:
-		return MOVE_SPEED_CREEPING;
 		break;
 	default:
 		break;
