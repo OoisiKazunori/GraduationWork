@@ -100,11 +100,12 @@ private:
 
 	struct EdgeData
 	{
-		float rate;
-		float treshold;
-		float minTreshold;
-		float blur;
-		EdgeData():rate(0.5f), treshold(0.5f), minTreshold(0.1f), blur(0.0f)
+		float m_rate;
+		float m_treshold;
+		float m_minTreshold;
+		float m_blur;
+		int m_isEdge;
+		EdgeData():m_rate(0.5f), m_treshold(0.5f), m_minTreshold(0.1f), m_blur(0.0f), m_isEdge(0)
 		{}
 	};
 	EdgeData edgeData;

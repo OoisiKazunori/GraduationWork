@@ -26,14 +26,14 @@ cbuffer Range : register(b1)
     float treshold;
     float minTreshold;
     float blur;
+    int isEdge;
 }
 
 static const float4 LUMA = float4(0.299f,0.587f,0.114f,1.0f);
 
 float GetBright(float4 color)
 {
-    float4 output = color * LUMA;
-    return output.x + output.y + output.z;
+    return dot(color.xyz,LUMA.xyz);
 }
 
 float4 PSmain(ColorOutput input) : SV_TARGET
@@ -52,7 +52,7 @@ float4 PSmain(ColorOutput input) : SV_TARGET
     }
     else
     {
-        float2 inputUV = input.uv * float2(1280.0f,720.0f);
+        const float2 inputUV = input.uv * float2(1280.0f,720.0f);
         float nw = GetBright(GBuffer[inputUV + float2(-1.0f,-1.0f)]);
         float ne = GetBright(GBuffer[inputUV + float2( 1.0f,-1.0f)]);
         float sw = GetBright(GBuffer[inputUV + float2(-1.0f, 1.0f)]);
@@ -96,7 +96,10 @@ float4 PSmain(ColorOutput input) : SV_TARGET
         else
         {
             //AA必要なし
-            output = float4(0,0,0,1);
+            if(isEdge)
+            {
+                output = float4(0,0,0,1);
+            }
             return output;
         }        
         //AA検知--------------------------------
@@ -112,14 +115,14 @@ float4 PSmain(ColorOutput input) : SV_TARGET
 
         //最終ピクセル
         float3 rgbA = (1.0f/2.0f) * (
-            GBuffer[inputUV + dir * (1.0f / 3.0f - 0.5f)].xyz +
-            GBuffer[inputUV + dir * (2.0f / 3.0f - 0.5f)].xyz);
+            GBuffer[float2(1280.0f,720.0f) * (input.uv + dir * float2(1.0f / 3.0f - 0.5f,1.0f / 3.0f - 0.5f))].xyz +
+            GBuffer[float2(1280.0f,720.0f) * (input.uv + dir * float2(2.0f / 3.0f - 0.5f,2.0f / 3.0f - 0.5f))].xyz);
 
         float3 rgbB = rgbA * (1.0f/2.0f) + (1.0f/4.0f) * (
-            GBuffer[inputUV + dir * (0.0f / 3.0f - 0.5f)].xyz +
-            GBuffer[inputUV + dir * (3.0f / 3.0f - 0.5f)].xyz);
+            GBuffer[float2(1280.0f,720.0f) * (input.uv + dir * float2(0.0f / 3.0f - 0.5f,0.0f / 3.0f - 0.5f))].xyz +
+            GBuffer[float2(1280.0f,720.0f) * (input.uv + dir * float2(3.0f / 3.0f - 0.5f,3.0f / 3.0f - 0.5f))].xyz);
 
-        float lumaB = dot(rgbB,LUMA.xyz);
+        float lumaB = GetBright(float4(rgbB,1.0));
 
         if((lumaB < minLuma) || (maxLuma < lumaB))
         {
