@@ -345,20 +345,19 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 		break;
 	}
 
-	const float RAY_LENGTH = 8.0f;
+	const float RAY_LENGTH = 4.0f;
 
 	//地面と当たり判定を行う。
 	m_onGround = false;
 
 
-	const float GROUND_RAY_OFFSET = 5.0f;
 	for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr) {
 
-		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY + GROUND_RAY_OFFSET) {
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetUp());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY) {
 
 			//押し戻し。
-			m_transform.pos += rayResult.m_normal * (GROUND_RAY + GROUND_RAY_OFFSET - rayResult.m_distance);
+			m_transform.pos += rayResult.m_normal * (GROUND_RAY - rayResult.m_distance);
 			m_onGround = true;
 
 		}
