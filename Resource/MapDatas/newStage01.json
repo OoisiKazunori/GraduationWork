@@ -1059,7 +1059,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.001",
+            "name": "cylinder.001",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1081,7 +1081,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.002",
+            "name": "cylinder.002",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1103,7 +1103,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.003",
+            "name": "cylinder.003",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1125,7 +1125,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.004",
+            "name": "cylinder.004",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1147,7 +1147,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.005",
+            "name": "cylinder.005",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1169,7 +1169,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.006",
+            "name": "cylinder.006",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1191,7 +1191,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.007",
+            "name": "cylinder.007",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1213,7 +1213,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.008",
+            "name": "cylinder.008",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1235,7 +1235,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.009",
+            "name": "cylinder.009",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -1257,7 +1257,7 @@
         },
         {
             "type": "MESH",
-            "name": "円柱.010",
+            "name": "cylinder.010",
             "echo": 0.0,
             "transform": {
                 "translation": [
