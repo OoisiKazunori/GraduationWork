@@ -118,12 +118,12 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	//}
 
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
 
-		EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
-		SoundManager::Instance()->SoundPlayerWave(m_sonarSE, 0);
+	//	EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+	//	SoundManager::Instance()->SoundPlayerWave(m_sonarSE, 0);
 
-	}
+	//}
 
 	m_weaponTransform.pos = m_transform.pos;
 	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f);
@@ -169,7 +169,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	if (HEATBEAT_TIMER <= m_heatbeatTimer) {
 
 		SoundManager::Instance()->SoundPlayerWave(m_heatbeatSE, 0);
-		EchoArray::Instance()->Generate(m_transform.pos, 20.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.7f, 0.7f, 0.7f));
 		m_heatbeatTimer = 0;
 
 	}
@@ -266,7 +266,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	case WeponUIManager::e_Hundgun:
 
 		//’e‚ð‚¤‚Â“ü—Í‚àŽó‚¯•t‚¯‚éB
-		if (m_isADS && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
+		if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
 
 			//bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 

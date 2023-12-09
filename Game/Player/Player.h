@@ -40,11 +40,11 @@ private:
 
 	//発射の遅延
 	int m_shotDelay;
-	const int SHOT_DELAY = 120;
+	const int SHOT_DELAY = 20;
 
 	//心音のタイマー
 	int m_heatbeatTimer;
-	const int HEATBEAT_TIMER = 90;
+	const int HEATBEAT_TIMER = 45;
 	SoundData m_heatbeatSE;
 
 	SoundData m_playerShotSE;

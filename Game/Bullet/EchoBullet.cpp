@@ -34,8 +34,13 @@ void EchoBullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg
 void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders)
 {
 
+	if (!m_isActive) return;
+
 	//“–‚½‚è”»’è‚ª‚Ü‚¾I‚í‚Á‚Ä‚È‚©‚Á‚½‚ç
 	if (m_isCollision) {
+
+		//’e‚ğ“®‚©‚·B
+		m_transform.pos += m_dir * BULLET_SPEED;
 
 		bool isHit = false;
 		for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
@@ -55,21 +60,6 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 
 				m_isCollision = false;
 				isHit = true;
-
-			}
-
-		}
-
-		if (!isHit) {
-
-			//’e‚ğˆÚ“®‚³‚¹‚éB
-			m_transform.pos += m_dir * BULLET_SPEED;
-
-			//ˆê’èŠÔ’e‚ª‚Ç‚ê‚É‚à“–‚½‚ç‚È‚©‚Á‚½‚çˆ—‚ğ”ò‚Î‚·B
-			++m_disappearTimer;
-			if (DESAPPEAR_TIMER < m_disappearTimer) {
-
-				Init();
 
 			}
 
@@ -105,5 +95,21 @@ void EchoBullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector&
 {
 
 	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+
+}
+
+bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision)
+{
+
+	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_dir);
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED) {
+
+		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+		Init();
+		return true;
+
+	}
+
+	return false;
 
 }

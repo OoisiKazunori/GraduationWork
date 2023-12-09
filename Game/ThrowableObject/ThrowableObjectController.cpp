@@ -6,9 +6,7 @@
 ThrowableObjectController::ThrowableObjectController(DrawingByRasterize& arg_rasterize)
 {
 
-	m_isHold = false;
-	m_isHoldOld = false;
-	generatePredictedObjectTimer = 0;
+	Init();
 
 	for (auto& index : m_throwableObject) {
 
@@ -24,6 +22,7 @@ void ThrowableObjectController::Init()
 	m_isHold = false;
 	m_isHoldOld = false;
 	generatePredictedObjectTimer = 0;
+	m_throwDelay = 0;
 
 }
 
@@ -34,6 +33,14 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 	arg_playerTransform.pos -= arg_playerTransform.GetUp() * 1.5f;
 	arg_playerTransform.pos -= arg_playerTransform.GetRight() * 4.0f;
 
+	//投げることができるまでのタイマーの遅延がまだ達していなかったら、HOLD状態を解除する。
+	if (0 < m_throwDelay) {
+
+		m_isHold = false;
+		--m_throwDelay;
+
+	}
+
 	//入力されていたら
 	if (!m_isHold && m_isHoldOld) {
 
@@ -42,6 +49,8 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 			if (index->GetIsActive()) continue;
 
 			index->Generate(arg_playerTransform, arg_throwVec, 5.0f, false);
+
+			m_throwDelay = THROW_DELAY;
 
 			break;
 
