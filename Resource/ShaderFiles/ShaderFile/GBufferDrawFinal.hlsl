@@ -71,7 +71,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
 
         float ambient = 0.5f;
         bright = clamp(bright,ambient,1.0f);
-        float3 light = (bright * atten + ambient) * lightColor;
+        float3 light = (bright * atten) * lightColor;
         lightOutput = saturate(light);
         break;
     }
