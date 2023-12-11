@@ -59,11 +59,15 @@ private:
 	struct LightData
 	{
 		float m_lightRadius;
+
+		LightData():m_lightRadius(13.0f)
+		{};
 	};
 	LightData m_lightData;
 	KazBufferHelper::BufferData m_uploadLightBuffer, m_defaultLightBuffer;
 	std::array<ParallelModels, 6> m_lights;
-	bool m_drawLightFlag;
+	bool m_drawLightFlag;		//ライトを描画する
+	bool m_drawLightPosFlag;	//ライトの座標を描画する
 
 	//G-Bufferの描画--------------------------
 	enum GBufferTexEnum

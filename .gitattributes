@@ -20,3 +20,8 @@
 *WaterBottle_occlusionRoughnessMetallic.png filter=lfs diff=lfs merge=lfs -text
 *Lantern_baseColor.png filter=lfs diff=lfs merge=lfs -text
 *Lantern_normal.png filter=lfs diff=lfs merge=lfs -text
+*camera_camera_Normal.png filter=lfs diff=lfs merge=lfs -text
+*camera_camera_Roughness.png filter=lfs diff=lfs merge=lfs -text
+*camera_tripod_Normal.png filter=lfs diff=lfs merge=lfs -text
+*camera_tripod_Roughness.png filter=lfs diff=lfs merge=lfs -text
+*camera_tripod_BaseColor.png filter=lfs diff=lfs merge=lfs -text

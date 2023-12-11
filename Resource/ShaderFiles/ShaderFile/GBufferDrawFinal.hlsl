@@ -52,29 +52,31 @@ float4 PSmain(VSOutput input) : SV_TARGET
         return albedoColor;
     }
     
-    float3 lightOutput = float3(0.5f,0.5f,0.5f);
+    float3 ambient = float3(0.3f,0.3f,0.3f);
+    float3 lightOutput = ambient;
     for(int i = 0; i < lightArrayNum; ++i)
     {
         float3 lightV = LightBuffer[i] - worldPos.xyz;
         float len = length(lightV);
-        //距離が20以上なら計算しない。
+        //距離がlightRadius以上なら計算しない。
         if(lightRadius <= len)
         {
             continue;
         }
- 
-        lightV = normalize(lightV);
-        float3 attenVec = float3(0.0f,0.0f,0.0f);
-        float atten = saturate(1.0f / (attenVec.x + attenVec.y * len + attenVec.z * len * len));
-        float bright = dot(normalize(worldNormalVec.xyz),lightV);
-        float3 lightColor = float3(1.0f,1.0f,1.0f);
 
-        float ambient = 0.5f;
-        bright = clamp(bright,ambient,1.0f);
-        float3 light = (bright * atten) * lightColor;
-        lightOutput = saturate(light);
-        break;
+        lightOutput += 1.0f - (len / lightRadius);
+        lightOutput = clamp(lightOutput,ambient,float3(1.0f,1.0f,1.0f));
+        //lightV = normalize(lightV);
+        //float3 attenVec = float3(0.3f,0.1f,0.1f);
+        //float atten = saturate(1.0f / (attenVec.x + attenVec.y * len + attenVec.z * len * len));
+        //float bright = dot(normalize(worldNormalVec.xyz),lightV);
+        //float3 lightColor = float3(1.0f,1.0f,1.0f);
+
+        //float ambient = 0.5f;
+        //bright = clamp(bright,ambient,1.0f);
+        //float3 light = (bright * atten) * lightColor;
+        //lightOutput = light;
     }
-    float4 outputColor = float4(albedoColor.xyz * lightOutput, 1.0f);
+    float4 outputColor = float4(albedoColor.xyz * lightOutput,1.0f);
     return outputColor;
 }

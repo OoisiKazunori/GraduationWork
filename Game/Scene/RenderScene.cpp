@@ -29,7 +29,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	modelFilePassArray[3] = filePass + "WaterBottle/";
 	modelFilePassArray[4] = filePass + "BarramundiFish/";
 	modelFilePassArray[5] = filePass + "Lantern/";
-	modelFilePassArray[6] = filePass + "Suzanne/";
+	modelFilePassArray[6] = filePass + "AntiqueCamera/";
 	std::array<std::string, MODEL_MAX_NUM> modelFileNameArray;
 	modelFileNameArray[0] = "Avocado.gltf";
 	modelFileNameArray[1] = "BoomBox.gltf";
@@ -37,7 +37,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	modelFileNameArray[3] = "WaterBottle.gltf";
 	modelFileNameArray[4] = "BarramundiFish.gltf";
 	modelFileNameArray[5] = "Lantern.gltf";
-	modelFileNameArray[6] = "Suzanne.gltf";
+	modelFileNameArray[6] = "AntiqueCamera.gltf";
 	std::array<float, MODEL_MAX_NUM>scaleArray;
 	scaleArray[0] = 100.0f;
 	scaleArray[1] = 500.0f;
@@ -45,13 +45,13 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	scaleArray[3] = 25.0f;
 	scaleArray[4] = 10.0f;
 	scaleArray[5] = 0.5f;
-	scaleArray[6] = 5.0f;
+	scaleArray[6] = 1.0f;
 	int index = 0;
 	//モデル生成
 	for (int z = 0; z < m_models.size(); ++z)
 	{
 		KazMath::Transform3D transform(
-			KazMath::Vec3<float>(-55.0f + static_cast<float>(z) * 17.0f, 4.5f, -55.0f),
+			KazMath::Vec3<float>(-55.0f + static_cast<float>(z) * 17.0f, 8.5f, -105.0f),
 			KazMath::Vec3<float>(scaleArray[index], scaleArray[index], scaleArray[index])
 		);
 		m_models[z].Load(
@@ -66,7 +66,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	for (int z = 0; z < m_lights.size(); ++z)
 	{
 		KazMath::Transform3D transform(
-			KazMath::Vec3<float>(-55.0f + static_cast<float>(z) * 20.0f, 5.0f, -55.0f),
+			KazMath::Vec3<float>(-55.0f + static_cast<float>(z) * 20.0f, 2.0f, -105.0f),
 			KazMath::Vec3<float>(1.0f, 1.0f, 1.0f)
 		);
 		m_lights[z].Load(
@@ -80,7 +80,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_gBufferType = 4;
 	m_sceneNum = -1;
 	m_drawLightFlag = false;
-
+	m_drawLightPosFlag = false;
 
 	m_axisRender.Load(arg_rasterize, "Resource/DefferdRendering/Axis/", "Axis.gltf", false);
 
@@ -147,8 +147,6 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA3;
 	m_finalRender.Load(arg_rasterize, drawCall, true);
 
-	m_lightData.m_lightRadius = 10.0f;
-
 	m_alphaTransform.scale = { 10.0f,10.0f,10.0f };
 }
 
@@ -184,6 +182,18 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::RadioButton("GBuffer-Final", &m_gBufferType, 4);
 	ImGui::DragFloat("LightRadius", &m_lightData.m_lightRadius);
 	ImGui::Checkbox("DrawLight", &m_drawLightFlag);
+	ImGui::Checkbox("DrawLightPos", &m_drawLightPosFlag);
+	if (m_drawLightFlag)
+	{
+		int num = static_cast<int>(m_lights[0].GetPosArray().size() * m_lights.size());
+		m_finalRender.m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&num, sizeof(int));
+	}
+	else
+	{
+		int num = 0;
+		m_finalRender.m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&num, sizeof(int));
+	}
+
 	KazImGuiHelper::InputTransform3D("AlphaModel", &m_alphaTransform);
 	ImGui::End();
 
@@ -217,7 +227,7 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	}
 
 	//ライトの配置
-	if (m_drawLightFlag)
+	if (m_drawLightPosFlag)
 	{
 		for (int z = 0; z < m_lights.size(); ++z)
 		{
@@ -253,8 +263,8 @@ void RenderScene::ParallelModels::Load(DrawingByRasterize& arg_rasterize, std::s
 			m_modelDrawArray[x][y].Load(arg_rasterize, arg_filePass, arg_fileName, false);
 
 			m_modelTransformArray[x][y] = arg_baseTransform;
-			m_modelTransformArray[x][y].pos.z += static_cast<float>(x) * 30.0f;
 			m_modelTransformArray[x][y].pos.y += static_cast<float>(y) * 20.0f;
+			m_modelTransformArray[x][y].pos.z += static_cast<float>(x) * 25.0f;
 			//座標記録
 			m_posArray[x * Y_ARRAY + y] = m_modelTransformArray[x][y].pos;
 		}

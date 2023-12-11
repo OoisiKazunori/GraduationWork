@@ -4,9 +4,9 @@
 
 DebugCamera::DebugCamera() :m_distance(20.0f), m_matRot(DirectX::XMMatrixIdentity()), m_target(0.0f, 1.0f, 0.0f)
 {
-	DirectX::XMVECTOR r1 = { -0.9f , -0.06f, -0.15f,0.0f };
-	DirectX::XMVECTOR r2 = { -0.04f , 0.98f, -0.12f,0.0f };
-	DirectX::XMVECTOR r3 = {  0.16f ,-0.11f,-0.97f,0.0f };
+	DirectX::XMVECTOR r1 = { 0.91f ,-0.05f, 0.07f,0.0f };
+	DirectX::XMVECTOR r2 = { 0.02f , 0.98f, 0.18f,0.0f };
+	DirectX::XMVECTOR r3 = {-0.08f ,-0.17f, 0.96f,0.0f };
 	DirectX::XMVECTOR r4 = { 0.0f ,0.0f,0.0f,1.0f };
 	m_matRot.r[0] = r1;
 	m_matRot.r[1] = r2;
