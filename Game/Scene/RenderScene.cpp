@@ -2,6 +2,7 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 
 RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
+	m_sceneNum(-1),
 	m_sponzaModelRender(arg_rasterize, "Resource/DefferdRendering/Sponza/", "Sponza.gltf")
 {
 	m_sponzaModelTransform.scale = { 0.1f,0.1f,0.1f };
@@ -77,12 +78,6 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 		);
 	}
 	m_renderTransform.pos = { WIN_X / 2,WIN_Y / 2 };
-	m_gBufferType = 4;
-	m_sceneNum = -1;
-	m_drawLightFlag = false;
-	m_drawLightPosFlag = false;
-
-	m_axisRender.Load(arg_rasterize, "Resource/DefferdRendering/Axis/", "Axis.gltf", false);
 
 
 	//ライト座標をVRAMに上げる--------------------------------
@@ -147,6 +142,10 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA3;
 	m_finalRender.Load(arg_rasterize, drawCall, true);
 
+	//ImGuiの項目で使用する変数の初期化--------------------------------
+	m_gBufferType = GBUFFER_MAX;
+	m_drawLightFlag = true;
+	m_drawLightPosFlag = false;
 	m_alphaTransform.scale = { 10.0f,10.0f,10.0f };
 }
 
@@ -172,7 +171,6 @@ void RenderScene::Input()
 
 void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 {
-	//デバック用のカメラワーク(操作はBlenderと同じ)
 	m_camera.Update();
 
 	ImGui::Begin("DemoInspector");
@@ -183,6 +181,9 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::DragFloat("LightRadius", &m_lightData.m_lightRadius);
 	ImGui::Checkbox("DrawLight", &m_drawLightFlag);
 	ImGui::Checkbox("DrawLightPos", &m_drawLightPosFlag);
+	KazImGuiHelper::InputTransform3D("AlphaModel", &m_alphaTransform);
+	ImGui::End();
+
 	if (m_drawLightFlag)
 	{
 		int num = static_cast<int>(m_lights[0].GetPosArray().size() * m_lights.size());
@@ -194,8 +195,6 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 		m_finalRender.m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&num, sizeof(int));
 	}
 
-	KazImGuiHelper::InputTransform3D("AlphaModel", &m_alphaTransform);
-	ImGui::End();
 
 	m_finalRender.m_drawCommand.extraBufferArray.back().bufferWrapper->TransData(&m_lightData, sizeof(LightData));
 }
@@ -237,10 +236,6 @@ void RenderScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 
 	//αモデル
 	m_alphaModel.m_model.Draw(arg_rasterize, arg_blasVec, m_alphaTransform, KazMath::Color(0, 200, 0, 100));
-
-	KazMath::Transform3D t;
-	t.scale.z = 5.0f;
-	m_axisRender.m_model.Draw(arg_rasterize, arg_blasVec, t);
 }
 
 int RenderScene::SceneChange()
