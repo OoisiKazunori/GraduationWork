@@ -229,9 +229,9 @@ void SceneManager::Draw()
 	m_rasterize.SortAndRender();
 
 	//Tlasを構築 or 再構築する。
-	m_tlas.Build(m_blasVector);
+	//m_tlas.Build(m_blasVector);
 	//レイトレ用のデータを構築。
-	m_rayPipeline->BuildShaderTable(m_blasVector);
+	//m_rayPipeline->BuildShaderTable(m_blasVector);
 	if (m_blasVector.GetBlasRefCount() != 0)
 	{
 	//	m_rayPipeline->TraceRay(m_tlas);
