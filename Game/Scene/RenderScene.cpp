@@ -87,7 +87,7 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 	m_gBufferType = 4;
 	m_sceneNum = -1;
 	m_drawLightFlag = false;
-
+	m_checkAAFlag = true;
 
 	m_axisRender.Load(arg_rasterize, "Resource/DefferdRendering/Axis/", "Axis.gltf", false);
 
@@ -178,8 +178,8 @@ RenderScene::RenderScene(DrawingByRasterize& arg_rasterize) :
 		DrawFuncData::PipelineGenerateData pipelineData;
 		pipelineData.desc = DrawFuncPipelineData::SetTex();
 		pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "DrawTwoSprite.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
-		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "DrawTwoSprite.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "FXAA/" + "FXAA.hlsl", "VSmain", "vs_6_4", SHADER_TYPE_VERTEX);
+		pipelineData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "FXAA/" + "FXAA.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
 		pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::NONE;
 		DrawFuncData::DrawCallData drawCall = DrawFuncData::SetSpriteAlphaData(pipelineData);
 		//‰æ‘œ‚ÌØ‚è‘Ö‚¦‚ÌŠ„‡
@@ -234,14 +234,14 @@ void RenderScene::Update(DrawingByRasterize& arg_rasterize)
 	ImGui::Begin("DemoFXAAInspector");
 	ImGui::Checkbox("CheckAA", &m_checkAAFlag);
 	ImGui::SliderFloat("Slider", &m_finalRenderDrawRate, 0.0f, 1.0f);
-	ImGui::SliderFloat("treshold", &edgeData.treshold, 0.0f, 1.0f);
-	ImGui::SliderFloat("minTreshold", &edgeData.minTreshold, 0.0f, 1.0f);
-	ImGui::SliderFloat("blur", &edgeData.blur, 0.0f, 1.0f);
+	ImGui::SliderFloat("treshold", &edgeData.m_treshold, 0.0f, 1.0f);
+	ImGui::SliderFloat("minTreshold", &edgeData.m_minTreshold, 0.0f, 1.0f);
+	ImGui::SliderFloat("blur", &edgeData.m_blur, 0.0f, 1.0f);
 	ImGui::SliderFloat("rotaion", &m_aliasingTexAngle, 0.0f, 360.0f);
-	ImGui::InputInt("Edge", &edgeData.isEdge);
+	ImGui::InputInt("Edge", &edgeData.m_isEdge);
 	ImGui::End();
 
-	edgeData.rate = m_finalRenderDrawRate;
+	edgeData.m_rate = m_finalRenderDrawRate;
 
 	m_finalRender.m_drawCommand.extraBufferArray[6].bufferWrapper->TransData(&m_lightData, sizeof(LightData));
 	m_fxAAFinalRender.m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&edgeData, sizeof(edgeData));

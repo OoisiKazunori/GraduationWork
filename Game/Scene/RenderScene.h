@@ -105,7 +105,7 @@ private:
 		float m_minTreshold;
 		float m_blur;
 		int m_isEdge;
-		EdgeData():m_rate(0.5f), m_treshold(0.5f), m_minTreshold(0.1f), m_blur(0.0f), m_isEdge(0)
+		EdgeData():m_rate(0.5f), m_treshold(0.508f), m_minTreshold(0.139f), m_blur(0.011f), m_isEdge(0)
 		{}
 	};
 	EdgeData edgeData;
