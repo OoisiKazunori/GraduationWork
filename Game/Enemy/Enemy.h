@@ -24,54 +24,39 @@ private:
 	std::shared_ptr<
 		BasicDraw::BasicModelRender> m_enemyBox;
 	std::shared_ptr<MeshCollision> m_meshCol;
-
 	BasicDraw::BasicLineRender m_line;
-
-	bool m_isCombat;
+	SoundData m_enemyShotSE;
 
 private:
 	std::vector<std::pair<float, float>> m_rootPos;
-	std::vector<std::pair<int, int>> m_checkPointDelay;
+	std::vector<std::pair<int, int>> m_checkPointDelays;
+	std::vector<std::pair<float, float>> m_checkSoundPos;
 	KazMath::Transform3D m_trans;
+	KazMath::Vec3<float> m_oldPos;
 	State m_state;
 	int m_delayNum;
 	int m_count;
-	int m_delay;
-	bool m_isCheckPoint;
-	bool m_onGround;
-
-	SoundData m_enemyShotSE;
-
-	std::vector<std::pair<float, float>> m_checkSoundPos;
+	int m_checkPointDelay;
+	int m_hp;
+	int m_changePatrolDelay;
+	int m_changeCombatDelay;
 	int m_checkSoundCount;
-	bool m_isReturn;
-	KazMath::Vec3<float> m_oldPos;
-
 	float m_offset_x;
 	float m_offset_y;
-
 	float m_gravity;
-	const float GRAVITY = 0.05f;
-
-	const  int MAX_RATE = 300;
-	const int MAX_HP = 2;
-	int m_hp;
-	int m_rate;
-
-	//バレるまでの時間
-	const int MAX_EYE_DELAY = 120;
-	int m_checkEyeDelay;
+	bool m_isCombatTri;
+	bool m_isCheckPoint;
+	bool m_onGround;
+	bool m_isReturn;
+	bool m_inEcho = false;
 
 	//どうしよう
 	float m_angle = 0.0f;
 	DirectX::XMVECTOR m_oldQuaternion;
 
-
 	//敵が弾を撃つ遅延 デバッグ用 後で書き換えてください
 	int m_shotDelay;
-	const int SHOT_DELAY = 15;
 
-	bool m_inEcho = false;
 public:
 	Enemy();
 	~Enemy();
@@ -133,11 +118,19 @@ private:
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders);
 
+private:
+	void Patrol(std::pair<float, float> arg_pPos);
+	void Combat(
+		KazMath::Vec3<float>& arg_pPos,
+		std::weak_ptr<BulletMgr>& arg_bulletMgr,
+		std::list<std::shared_ptr<MeshCollision>>
+		& arg_stageColliders);
+
 public:
 	KazMath::Transform3D GetTrans() { return m_trans; }
 	KazMath::Vec3<float> GetPos() { return m_trans.pos; }
 	bool IsDiscovery() {
-		if (m_isCombat) { return true; }
+		if (m_isCombatTri) { return true; }
 		return false;
 	}
 

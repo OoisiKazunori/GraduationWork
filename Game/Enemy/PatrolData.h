@@ -13,7 +13,7 @@ private:	//è¡ÇµÇΩÇ¢
 	std::vector<std::pair<int, int>> m_checkPoints;
 	std::vector<std::pair<float, float>> m_rootPos;
 
-	std::vector<std::pair<int, int>> m_checkPointDelay;
+	std::vector<std::pair<int, int>> m_checkPointDelays;
 
 public:
 	PatrolData();
@@ -25,7 +25,7 @@ public:
 	const std::vector<std::pair<float, float>>
 		& GetRootPos() { return m_rootPos; }
 	const std::vector<std::pair<int, int>>
-		& GetCheckPointDelay() { return m_checkPointDelay; }
+		& GetCheckPointDelay() { return m_checkPointDelays; }
 
 public:
 	void SetData(std::weak_ptr<PatrolConfig> arg_config);

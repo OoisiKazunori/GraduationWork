@@ -340,7 +340,7 @@ PatrolData::CalcRootPos(
 		(l_chipSize / EnemyConfig::speed);
 
 	//スタート地点
-	m_checkPointDelay.push_back(
+	m_checkPointDelays.push_back(
 		std::make_pair(
 			0, 0));
 
@@ -460,7 +460,7 @@ PatrolData::CalcRootPos(
 				//チェックポイント通過(過去)
 				if (j == l_moveFrame &&
 					IsCheckPoint(l_end_x, l_end_y)) {
-					m_checkPointDelay.push_back(
+					m_checkPointDelays.push_back(
 						std::make_pair(
 							static_cast<int>(l_rootPos.size()),
 							0));
@@ -540,7 +540,7 @@ PatrolData::CalcRootPos(
 
 					//チェックポイント通過(過去)
 					if (j == l_moveFrame && l_isCheckPoint) {
-						m_checkPointDelay.push_back(
+						m_checkPointDelays.push_back(
 							std::make_pair(
 								static_cast<int>(l_rootPos.size()),
 								0)
