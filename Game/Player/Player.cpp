@@ -254,7 +254,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		arg_throwableObjectController.lock()->InputHold(KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_LEFT));
 
 		break;
-	//case WeponUIManager::e_Echo:
+		//case WeponUIManager::e_Echo:
 	case WeponUIManager::e_Hundgun:
 
 		//弾をうつ入力も受け付ける。
@@ -268,8 +268,8 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 			//銃の反動を追加。
 			/*if (isEchoBullet) {*/
 
-				m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION * 3.0f;
-				SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
+			m_gunReaction = -arg_camera.lock()->GetShotQuaternion().GetFront() * GUN_REACTION * 3.0f;
+			SoundManager::Instance()->SoundPlayerWave(m_playerShotSE, 0);
 
 			/*}
 			else {
@@ -345,7 +345,7 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 		break;
 	}
 
-	const float RAY_LENGTH = 4.0f;
+	const float RAY_LENGTH = 1.0f;
 
 	//地面と当たり判定を行う。
 	m_onGround = false;
@@ -364,35 +364,35 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 		}
 
 		//当たり判定を計算。
-		rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetFront());
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, 1.0f));
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 			//押し戻し。
-			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
 
 		}
 		//後ろ方向
-		rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetFront());
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, -1.0f));
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 			//押し戻し。
-			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
 
 		}
 		//右方向
-		rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetRight());
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 			//押し戻し。
-			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
 
 		}
 		//左方向
-		rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetRight());
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(-1.0f, 0.0f, 0.0f));
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 			//押し戻し。
-			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
 
 		}
 
