@@ -354,17 +354,8 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 	const float GROUND_RAY_OFFSET = -5.0f;
 	for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr) {
 
-		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY + GROUND_RAY_OFFSET) {
-
-			//押し戻し。
-			m_transform.pos += rayResult.m_normal * (GROUND_RAY + GROUND_RAY_OFFSET - rayResult.m_distance);
-			m_onGround = true;
-
-		}
-
 		//当たり判定を計算。
-		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, 1.0f));
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, 1.0f));
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 			//押し戻し。
@@ -393,6 +384,16 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 
 			//押し戻し。
 			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
+
+		}
+
+		//下方向の当たり判定
+		rayResult = (*itr)->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY + GROUND_RAY_OFFSET) {
+
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (GROUND_RAY + GROUND_RAY_OFFSET - rayResult.m_distance);
+			m_onGround = true;
 
 		}
 
