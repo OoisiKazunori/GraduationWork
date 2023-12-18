@@ -211,12 +211,22 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		}
 		else if (l_mapItr->m_objetName.starts_with("Block") == true)
 		{
+			auto pos = l_mapItr->m_position;
+			float a = 0.5f;
+			auto sca = l_mapItr->m_scale;
+			float b = 0.5f;
+			sca.x = sca.x * b;
+			sca.y = sca.y * (b);
+			sca.z = sca.z * (b);
+
+
 			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
+				pos, l_mapItr->m_rotition, sca));
 
 			m_block01.back()->m_echoFlag = true;
 
 			auto collision = std::make_shared<MeshCollision>();
+			auto trans = (*--m_block01.end())->m_transform;
 			collision->Setting((*m_block01.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_block01.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
@@ -234,6 +244,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 
 
 			auto collision = std::make_shared<MeshCollision>();
+			auto trans = (*--m_Wall_C.end())->m_transform;
 			collision->Setting((*m_Wall_C.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_C.end())->m_transform);
 			m_collisions.push_back(collision);
 		}
@@ -315,7 +326,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	if (!m_stage)
 	{
 		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
-			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 4.4f, 75.0f));
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 14.4f, 75.0f));
 		auto collision = std::make_shared<MeshCollision>();
 		collision->Setting(m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stage->m_transform);
 		m_collisions.push_back(collision);
