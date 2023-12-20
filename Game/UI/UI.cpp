@@ -7,9 +7,9 @@ int HPUI::m_redHP = 0;
 
 int HPUI::redWaitTime = 0;
 
-int WeponUIManager::m_magazinSize = 10;
-int WeponUIManager::m_haveBulletNum = 123;
-int WeponUIManager::m_bulletCount = 10;
+int WeponUIManager::m_magazinSize = 15;
+int WeponUIManager::m_haveBulletNum = 150;
+int WeponUIManager::m_bulletCount = 15;
 bool WeponUIManager::m_isCanShot = true;
 
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
@@ -119,57 +119,7 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_echoBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
 	m_hundgunBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
 	m_StoneInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
-	m_slash(arg_rasterize, "Resource/Number/slash.png"),
-	m_bulletNum00(arg_rasterize, "Resource/Number/Number_0.png"),
-	m_bulletNum01(arg_rasterize, "Resource/Number/Number_1.png"),
-	m_bulletNum02(arg_rasterize, "Resource/Number/Number_2.png"),
-	m_bulletNum03(arg_rasterize, "Resource/Number/Number_3.png"),
-	m_bulletNum04(arg_rasterize, "Resource/Number/Number_4.png"),
-	m_bulletNum05(arg_rasterize, "Resource/Number/Number_5.png"),
-	m_bulletNum06(arg_rasterize, "Resource/Number/Number_6.png"),
-	m_bulletNum07(arg_rasterize, "Resource/Number/Number_7.png"),
-	m_bulletNum08(arg_rasterize, "Resource/Number/Number_8.png"),
-	m_bulletNum09(arg_rasterize, "Resource/Number/Number_9.png"),
-	m_bulletNum10(arg_rasterize, "Resource/Number/Number_0.png"),
-	m_bulletNum11(arg_rasterize, "Resource/Number/Number_1.png"),
-	m_bulletNum12(arg_rasterize, "Resource/Number/Number_2.png"),
-	m_bulletNum13(arg_rasterize, "Resource/Number/Number_3.png"),
-	m_bulletNum14(arg_rasterize, "Resource/Number/Number_4.png"),
-	m_bulletNum15(arg_rasterize, "Resource/Number/Number_5.png"),
-	m_bulletNum16(arg_rasterize, "Resource/Number/Number_6.png"),
-	m_bulletNum17(arg_rasterize, "Resource/Number/Number_7.png"),
-	m_bulletNum18(arg_rasterize, "Resource/Number/Number_8.png"),
-	m_bulletNum19(arg_rasterize, "Resource/Number/Number_9.png"),
-	m_magazinNum00(arg_rasterize, "Resource/Number/Number_0.png"),
-	m_magazinNum01(arg_rasterize, "Resource/Number/Number_1.png"),
-	m_magazinNum02(arg_rasterize, "Resource/Number/Number_2.png"),
-	m_magazinNum03(arg_rasterize, "Resource/Number/Number_3.png"),
-	m_magazinNum04(arg_rasterize, "Resource/Number/Number_4.png"),
-	m_magazinNum05(arg_rasterize, "Resource/Number/Number_5.png"),
-	m_magazinNum06(arg_rasterize, "Resource/Number/Number_6.png"),
-	m_magazinNum07(arg_rasterize, "Resource/Number/Number_7.png"),
-	m_magazinNum08(arg_rasterize, "Resource/Number/Number_8.png"),
-	m_magazinNum09(arg_rasterize, "Resource/Number/Number_9.png"),
-	m_magazinNum10(arg_rasterize, "Resource/Number/Number_0.png"),
-	m_magazinNum11(arg_rasterize, "Resource/Number/Number_1.png"),
-	m_magazinNum12(arg_rasterize, "Resource/Number/Number_2.png"),
-	m_magazinNum13(arg_rasterize, "Resource/Number/Number_3.png"),
-	m_magazinNum14(arg_rasterize, "Resource/Number/Number_4.png"),
-	m_magazinNum15(arg_rasterize, "Resource/Number/Number_5.png"),
-	m_magazinNum16(arg_rasterize, "Resource/Number/Number_6.png"),
-	m_magazinNum17(arg_rasterize, "Resource/Number/Number_7.png"),
-	m_magazinNum18(arg_rasterize, "Resource/Number/Number_8.png"),
-	m_magazinNum19(arg_rasterize, "Resource/Number/Number_9.png"),
-	m_magazinNum20(arg_rasterize, "Resource/Number/Number_0.png"),
-	m_magazinNum21(arg_rasterize, "Resource/Number/Number_1.png"),
-	m_magazinNum22(arg_rasterize, "Resource/Number/Number_2.png"),
-	m_magazinNum23(arg_rasterize, "Resource/Number/Number_3.png"),
-	m_magazinNum24(arg_rasterize, "Resource/Number/Number_4.png"),
-	m_magazinNum25(arg_rasterize, "Resource/Number/Number_5.png"),
-	m_magazinNum26(arg_rasterize, "Resource/Number/Number_6.png"),
-	m_magazinNum27(arg_rasterize, "Resource/Number/Number_7.png"),
-	m_magazinNum28(arg_rasterize, "Resource/Number/Number_8.png"),
-	m_magazinNum29(arg_rasterize, "Resource/Number/Number_9.png")
+	m_slash(arg_rasterize, "Resource/Number/slash.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
@@ -201,7 +151,16 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 
 
 	m_slash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
-	
+
+	for (int k = 0; k < 5; k++)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			int rigit = 10 * k;
+			std::string hoge = "Resource/Number/Number_" + to_string(i) + ".png";
+			m_bulletNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+		}
+	}
 }
 
 void WeponUIManager::Shot()
@@ -221,8 +180,9 @@ void WeponUIManager::Reload()
 	if (m_bulletCount >= m_magazinSize) return;
 	if (m_magazinSize <= m_haveBulletNum)
 	{
-		m_bulletCount += m_magazinSize - m_bulletCount;
 		m_haveBulletNum -= m_magazinSize - m_bulletCount;
+		m_bulletCount += m_magazinSize - m_bulletCount;
+		
 		m_isCanShot = true;
 	}
 	else if (0 < m_haveBulletNum)
@@ -354,10 +314,33 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		}
 		else if ((*itr).first == e_Hundgun)
 		{
-			m_slash.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
+			m_slash.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
 				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
 			m_slash.Draw(arg_rasterize);
 
+
+			int num10 = m_bulletCount / 10;
+			KazMath::Transform2D l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 29,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, {1.0f, 1.0f});
+			m_bulletNum[num10].m_tex.Draw2D(arg_rasterize, l_trans);
+			int num1 = m_bulletCount % 10;
+			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 19,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[num1 + 10].m_tex.Draw2D(arg_rasterize, l_trans);
+
+
+			int mgnum100 = m_haveBulletNum / 100;
+			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 9,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+			int mgnum10 = m_haveBulletNum / 10 % 10;
+			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 19,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum10 + 30].m_tex.Draw2D(arg_rasterize, l_trans);
+			int mgnum1 = m_haveBulletNum % 10;
+			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 29,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum1 + 40].m_tex.Draw2D(arg_rasterize, l_trans);
 		}
 		GetUI((*itr).first).Draw(arg_rasterize);
 	}
@@ -377,11 +360,33 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 			}
 			else if ((*itr).first == e_Hundgun)
 			{
-				m_slash.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
-					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
+				m_slash.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
 				m_slash.Draw(arg_rasterize);
 
 
+				int num10 = m_bulletCount / 10;
+				KazMath::Transform2D l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 29,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[num10].m_tex.Draw2D(arg_rasterize, l_trans);
+				int num1 = m_bulletCount % 10;
+				l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 19,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[num1 + 10].m_tex.Draw2D(arg_rasterize, l_trans);
+
+
+				int mgnum100 = m_haveBulletNum / 100;
+				l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 9,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+				int mgnum10 = m_haveBulletNum / 10 % 10;
+				l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 19,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum10 + 30].m_tex.Draw2D(arg_rasterize, l_trans);
+				int mgnum1 = m_haveBulletNum % 10;
+				l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 29,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum1 + 40].m_tex.Draw2D(arg_rasterize, l_trans);
 			}
 			GetUI((*itr).first).Draw(arg_rasterize);
 		}
