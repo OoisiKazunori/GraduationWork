@@ -260,6 +260,8 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		//’e‚ð‚¤‚Â“ü—Í‚àŽó‚¯•t‚¯‚éB
 		if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
 
+			if (!WeponUIManager::GetCanShot()) return;
+			WeponUIManager::Shot();
 			//bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 
 			//arg_bulletMgr.lock()->Genrate(m_weaponTransform.pos, arg_camera.lock()->GetShotQuaternion().GetFront(), isEchoBullet);
@@ -282,6 +284,11 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 			m_shotDelay = 0;
 
 		}
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R)) 
+		{
+			WeponUIManager::Reload();
+		}
+
 
 		break;
 	case WeponUIManager::e_WeponMax:

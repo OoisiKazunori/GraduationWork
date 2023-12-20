@@ -55,7 +55,6 @@ public:
 		e_WeponMax,
 	};
 private:
-	std::list<UI2DElement> m_UIs;
 	UI2DElement m_nonWepon;
 	UI2DElement m_StoneInf;
 	UI2DElement m_echo;
@@ -72,6 +71,59 @@ private:
 	UI2DElement m_aimSideL;
 	UI2DElement m_aimSideU;
 	UI2DElement m_aimSideB;
+	UI2DElement m_slash;
+
+	UI2DElement m_bulletNum00;
+	UI2DElement m_bulletNum01;
+	UI2DElement m_bulletNum02;
+	UI2DElement m_bulletNum03;
+	UI2DElement m_bulletNum04;
+	UI2DElement m_bulletNum05;
+	UI2DElement m_bulletNum06;
+	UI2DElement m_bulletNum07;
+	UI2DElement m_bulletNum08;
+	UI2DElement m_bulletNum09;
+	UI2DElement m_bulletNum10;
+	UI2DElement m_bulletNum11;
+	UI2DElement m_bulletNum12;
+	UI2DElement m_bulletNum13;
+	UI2DElement m_bulletNum14;
+	UI2DElement m_bulletNum15;
+	UI2DElement m_bulletNum16;
+	UI2DElement m_bulletNum17;
+	UI2DElement m_bulletNum18;
+	UI2DElement m_bulletNum19;
+
+	UI2DElement m_magazinNum00;
+	UI2DElement m_magazinNum01;
+	UI2DElement m_magazinNum02;
+	UI2DElement m_magazinNum03;
+	UI2DElement m_magazinNum04;
+	UI2DElement m_magazinNum05;
+	UI2DElement m_magazinNum06;
+	UI2DElement m_magazinNum07;
+	UI2DElement m_magazinNum08;
+	UI2DElement m_magazinNum09;
+	UI2DElement m_magazinNum10;
+	UI2DElement m_magazinNum11;
+	UI2DElement m_magazinNum12;
+	UI2DElement m_magazinNum13;
+	UI2DElement m_magazinNum14;
+	UI2DElement m_magazinNum15;
+	UI2DElement m_magazinNum16;
+	UI2DElement m_magazinNum17;
+	UI2DElement m_magazinNum18;
+	UI2DElement m_magazinNum19;
+	UI2DElement m_magazinNum20;
+	UI2DElement m_magazinNum21;
+	UI2DElement m_magazinNum22;
+	UI2DElement m_magazinNum23;
+	UI2DElement m_magazinNum24;
+	UI2DElement m_magazinNum25;
+	UI2DElement m_magazinNum26;
+	UI2DElement m_magazinNum27;
+	UI2DElement m_magazinNum28;
+	UI2DElement m_magazinNum29;
 
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
@@ -82,6 +134,11 @@ private:
 
 	static const int c_BulletNumOffsetX = 85;
 	static const int c_BulletNumOffsetY = 30;
+	
+	static int m_magazinSize;
+	static int m_haveBulletNum;
+	static int m_bulletCount;
+	static bool m_isCanShot;
 	
 	//こっちはUI用
 	int m_nowSelectWeponNumber;
@@ -110,6 +167,10 @@ public:
 	
 	//好きなタイミングで武器追加
 	void AddWepon(WeponNumber f_wepon);
+
+	static void Shot();
+	static void Reload();
+	static bool GetCanShot(){ return m_isCanShot; };
 
 	//UIのサイズ
 	static KazMath::Vec2<float> GetUITextureSize(){return { c_UITexX , c_UITexY }; }

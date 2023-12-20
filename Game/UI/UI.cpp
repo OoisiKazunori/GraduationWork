@@ -7,6 +7,11 @@ int HPUI::m_redHP = 0;
 
 int HPUI::redWaitTime = 0;
 
+int WeponUIManager::m_magazinSize = 10;
+int WeponUIManager::m_haveBulletNum = 123;
+int WeponUIManager::m_bulletCount = 10;
+bool WeponUIManager::m_isCanShot = true;
+
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
 	m_2DSprite(arg_rasterize, f_filePath, true)
 {
@@ -113,7 +118,58 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_aimSideB(arg_rasterize, "Resource/UITexture/aimSideB.png"),
 	m_echoBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
 	m_hundgunBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
-	m_StoneInf(arg_rasterize, "Resource/UITexture/Infinity.png")
+	m_StoneInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
+	m_slash(arg_rasterize, "Resource/Number/slash.png"),
+	m_bulletNum00(arg_rasterize, "Resource/Number/Number_0.png"),
+	m_bulletNum01(arg_rasterize, "Resource/Number/Number_1.png"),
+	m_bulletNum02(arg_rasterize, "Resource/Number/Number_2.png"),
+	m_bulletNum03(arg_rasterize, "Resource/Number/Number_3.png"),
+	m_bulletNum04(arg_rasterize, "Resource/Number/Number_4.png"),
+	m_bulletNum05(arg_rasterize, "Resource/Number/Number_5.png"),
+	m_bulletNum06(arg_rasterize, "Resource/Number/Number_6.png"),
+	m_bulletNum07(arg_rasterize, "Resource/Number/Number_7.png"),
+	m_bulletNum08(arg_rasterize, "Resource/Number/Number_8.png"),
+	m_bulletNum09(arg_rasterize, "Resource/Number/Number_9.png"),
+	m_bulletNum10(arg_rasterize, "Resource/Number/Number_0.png"),
+	m_bulletNum11(arg_rasterize, "Resource/Number/Number_1.png"),
+	m_bulletNum12(arg_rasterize, "Resource/Number/Number_2.png"),
+	m_bulletNum13(arg_rasterize, "Resource/Number/Number_3.png"),
+	m_bulletNum14(arg_rasterize, "Resource/Number/Number_4.png"),
+	m_bulletNum15(arg_rasterize, "Resource/Number/Number_5.png"),
+	m_bulletNum16(arg_rasterize, "Resource/Number/Number_6.png"),
+	m_bulletNum17(arg_rasterize, "Resource/Number/Number_7.png"),
+	m_bulletNum18(arg_rasterize, "Resource/Number/Number_8.png"),
+	m_bulletNum19(arg_rasterize, "Resource/Number/Number_9.png"),
+	m_magazinNum00(arg_rasterize, "Resource/Number/Number_0.png"),
+	m_magazinNum01(arg_rasterize, "Resource/Number/Number_1.png"),
+	m_magazinNum02(arg_rasterize, "Resource/Number/Number_2.png"),
+	m_magazinNum03(arg_rasterize, "Resource/Number/Number_3.png"),
+	m_magazinNum04(arg_rasterize, "Resource/Number/Number_4.png"),
+	m_magazinNum05(arg_rasterize, "Resource/Number/Number_5.png"),
+	m_magazinNum06(arg_rasterize, "Resource/Number/Number_6.png"),
+	m_magazinNum07(arg_rasterize, "Resource/Number/Number_7.png"),
+	m_magazinNum08(arg_rasterize, "Resource/Number/Number_8.png"),
+	m_magazinNum09(arg_rasterize, "Resource/Number/Number_9.png"),
+	m_magazinNum10(arg_rasterize, "Resource/Number/Number_0.png"),
+	m_magazinNum11(arg_rasterize, "Resource/Number/Number_1.png"),
+	m_magazinNum12(arg_rasterize, "Resource/Number/Number_2.png"),
+	m_magazinNum13(arg_rasterize, "Resource/Number/Number_3.png"),
+	m_magazinNum14(arg_rasterize, "Resource/Number/Number_4.png"),
+	m_magazinNum15(arg_rasterize, "Resource/Number/Number_5.png"),
+	m_magazinNum16(arg_rasterize, "Resource/Number/Number_6.png"),
+	m_magazinNum17(arg_rasterize, "Resource/Number/Number_7.png"),
+	m_magazinNum18(arg_rasterize, "Resource/Number/Number_8.png"),
+	m_magazinNum19(arg_rasterize, "Resource/Number/Number_9.png"),
+	m_magazinNum20(arg_rasterize, "Resource/Number/Number_0.png"),
+	m_magazinNum21(arg_rasterize, "Resource/Number/Number_1.png"),
+	m_magazinNum22(arg_rasterize, "Resource/Number/Number_2.png"),
+	m_magazinNum23(arg_rasterize, "Resource/Number/Number_3.png"),
+	m_magazinNum24(arg_rasterize, "Resource/Number/Number_4.png"),
+	m_magazinNum25(arg_rasterize, "Resource/Number/Number_5.png"),
+	m_magazinNum26(arg_rasterize, "Resource/Number/Number_6.png"),
+	m_magazinNum27(arg_rasterize, "Resource/Number/Number_7.png"),
+	m_magazinNum28(arg_rasterize, "Resource/Number/Number_8.png"),
+	m_magazinNum29(arg_rasterize, "Resource/Number/Number_9.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
@@ -143,6 +199,42 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_changeWeaponSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ChangeWeapon.wav");
 	m_changeWeaponSE.volume = 0.05f;
 
+
+	m_slash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
+	
+}
+
+void WeponUIManager::Shot()
+{
+	if (m_isCanShot)
+	{
+		m_bulletCount--;
+		if (m_bulletCount <= 0)
+		{
+			m_isCanShot = false;
+		}
+	}
+}
+
+void WeponUIManager::Reload()
+{
+	if (m_bulletCount >= m_magazinSize) return;
+	if (m_magazinSize <= m_haveBulletNum)
+	{
+		m_bulletCount += m_magazinSize - m_bulletCount;
+		m_haveBulletNum -= m_magazinSize - m_bulletCount;
+		m_isCanShot = true;
+	}
+	else if (0 < m_haveBulletNum)
+	{
+		m_bulletCount = m_haveBulletNum;
+		m_haveBulletNum = 0;
+		m_isCanShot = true;
+	}
+	else
+	{
+
+	}
 }
 
 void WeponUIManager::Init()
@@ -262,9 +354,10 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		}
 		else if ((*itr).first == e_Hundgun)
 		{
-			m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
+			m_slash.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
 				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
-			m_hundgunBulletInf.Draw(arg_rasterize);
+			m_slash.Draw(arg_rasterize);
+
 		}
 		GetUI((*itr).first).Draw(arg_rasterize);
 	}
@@ -284,9 +377,11 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 			}
 			else if ((*itr).first == e_Hundgun)
 			{
-				m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_slash.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
 					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
-				m_hundgunBulletInf.Draw(arg_rasterize);
+				m_slash.Draw(arg_rasterize);
+
+
 			}
 			GetUI((*itr).first).Draw(arg_rasterize);
 		}
