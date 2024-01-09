@@ -10,6 +10,7 @@ int HPUI::redWaitTime = 0;
 int WeponUIManager::m_magazinSize = 15;
 int WeponUIManager::m_haveBulletNum = 150;
 int WeponUIManager::m_bulletCount = 15;
+int WeponUIManager::m_haveStone = 7;
 bool WeponUIManager::m_isCanShot = true;
 
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
@@ -119,7 +120,8 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_echoBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
 	m_hundgunBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
 	m_StoneInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
-	m_slash(arg_rasterize, "Resource/Number/slash.png")
+	m_slash(arg_rasterize, "Resource/Number/slash.png"),
+	m_stoneSlash(arg_rasterize, "Resource/Number/slash.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
@@ -151,7 +153,7 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 
 
 	m_slash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
-
+	m_stoneSlash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
 	for (int k = 0; k < 5; k++)
 	{
 		for (int i = 0; i < 10; i++)
@@ -159,6 +161,7 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 			int rigit = 10 * k;
 			std::string hoge = "Resource/Number/Number_" + to_string(i) + ".png";
 			m_bulletNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			m_stoneNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
 		}
 	}
 }
@@ -182,7 +185,7 @@ void WeponUIManager::Reload()
 	{
 		m_haveBulletNum -= m_magazinSize - m_bulletCount;
 		m_bulletCount += m_magazinSize - m_bulletCount;
-		
+
 		m_isCanShot = true;
 	}
 	else if (0 < m_haveBulletNum)
@@ -308,9 +311,24 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		}
 		if ((*itr).first == e_NonWepon)
 		{
-			m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+			KazMath::Transform2D l_trans;
+			/*m_stoneSlash.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
 				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
-			m_StoneInf.Draw(arg_rasterize);
+			m_stoneSlash.Draw(arg_rasterize);*/
+
+
+			int mgnum100 = m_haveStone / 100;
+			l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 10,
+				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+			int mgnum10 = m_haveStone / 10 % 10;
+			l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum10 + 30].m_tex.Draw2D(arg_rasterize, l_trans);
+			int mgnum1 = m_haveStone % 10;
+			l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX + 10,
+				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum1 + 40].m_tex.Draw2D(arg_rasterize, l_trans);
 		}
 		else if ((*itr).first == e_Hundgun)
 		{
@@ -321,7 +339,7 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 
 			int num10 = m_bulletCount / 10;
 			KazMath::Transform2D l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 29,
-				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, {1.0f, 1.0f});
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
 			m_bulletNum[num10].m_tex.Draw2D(arg_rasterize, l_trans);
 			int num1 = m_bulletCount % 10;
 			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 19,
@@ -354,9 +372,24 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		{
 			if ((*itr).first == e_NonWepon)
 			{
-				m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+				KazMath::Transform2D l_trans;
+				/*m_stoneSlash.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
 					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
-				m_StoneInf.Draw(arg_rasterize);
+				m_stoneSlash.Draw(arg_rasterize);*/
+
+
+				int mgnum100 = m_haveStone / 100;
+				l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 10,
+					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+				int mgnum10 = m_haveStone / 10 % 10;
+				l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum10 + 30].m_tex.Draw2D(arg_rasterize, l_trans);
+				int mgnum1 = m_haveStone % 10;
+				l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX + 10,
+					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum1 + 40].m_tex.Draw2D(arg_rasterize, l_trans);
 			}
 			else if ((*itr).first == e_Hundgun)
 			{
@@ -398,6 +431,16 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		m_aimSideL.Draw(arg_rasterize);
 		m_aimSideU.Draw(arg_rasterize);
 		m_aimSideB.Draw(arg_rasterize);
+	}
+}
+
+bool WeponUIManager::UseStone()
+{
+	if (m_haveStone <= 0) return false;
+	else
+	{
+		m_haveStone--;
+		return true;
 	}
 }
 

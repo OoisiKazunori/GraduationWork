@@ -16,30 +16,30 @@ class UI2DElement
 	KazMath::Vec2<float> m_nowScale;
 	float m_easeScaleTimer;
 
-	
+
 	KazMath::Color m_easeStartColor;
 	KazMath::Color m_easeEndColor;
-	KazMath::Color m_easeAddColor = {0, 0, 0, 1};
+	KazMath::Color m_easeAddColor = { 0, 0, 0, 1 };
 
 	bool m_isColorEase = false;
 public:
 	KazMath::Color m_color;
-	UI2DElement(DrawingByRasterize& arg_rasterize, const char *f_filePath);
+	UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath);
 	UI2DElement();
 	void Init(DrawingByRasterize& arg_rasterize, std::string f_filePath);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
-	KazMath::Vec2<float> GetNowPos(){ return m_nowPos; };
-	void SetEasePosAddTime(float f_easePosTimer){ m_easePosTimerAdd = f_easePosTimer;}
-	float GetPosEaseTimer(){ return m_easePosTimer; }
+	KazMath::Vec2<float> GetNowPos() { return m_nowPos; };
+	void SetEasePosAddTime(float f_easePosTimer) { m_easePosTimerAdd = f_easePosTimer; }
+	float GetPosEaseTimer() { return m_easePosTimer; }
 	void SetPosition(KazMath::Vec2<float> f_nowPos);
 	void EasePosInit(KazMath::Vec2<float> f_easeEnd);
 	void EasePosInit(KazMath::Vec2<float> f_easeStartPos, KazMath::Vec2<float> f_easeEnd, float f_timer);
 	void SetScale(KazMath::Vec2<float> f_nowScale);
 
-	void SetColor(KazMath::Color &f_color);
-	void SetAddColor(KazMath::Color &f_addColor);
-	void SetColorEaseEnd(KazMath::Color &f_endColor);
+	void SetColor(KazMath::Color& f_color);
+	void SetAddColor(KazMath::Color& f_addColor);
+	void SetColorEaseEnd(KazMath::Color& f_endColor);
 	BasicDraw::BasicTextureRender m_2DSprite;
 	KazMath::Vec2<float> GetNowScale() { return m_nowScale; };
 	KazMath::Vec2<float> GetNowPosition() { return m_nowPos; };
@@ -73,8 +73,9 @@ private:
 	UI2DElement m_aimSideU;
 	UI2DElement m_aimSideB;
 	UI2DElement m_slash;
-
+	UI2DElement m_stoneSlash;
 	std::array<BasicDraw::BasicTextureRender, 50> m_bulletNum;
+	std::array<BasicDraw::BasicTextureRender, 50> m_stoneNum;
 
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
@@ -85,12 +86,14 @@ private:
 
 	static const int c_BulletNumOffsetX = 85;
 	static const int c_BulletNumOffsetY = 30;
-	
+
 	static int m_magazinSize;
 	static int m_haveBulletNum;
 	static int m_bulletCount;
 	static bool m_isCanShot;
-	
+
+	static int m_haveStone;
+
 	//こっちはUI用
 	int m_nowSelectWeponNumber;
 
@@ -100,7 +103,7 @@ private:
 	float easeTimer = 0.0f;
 	std::list<std::pair<WeponNumber, int>> m_haveWepons;
 
-	UI2DElement &GetUI(WeponNumber f_wepon);
+	UI2DElement& GetUI(WeponNumber f_wepon);
 	void EaseInit();
 	//こっちがプレイヤーに渡す方
 	WeponNumber m_nowWepon;
@@ -115,16 +118,23 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize);
 
 	WeponNumber GetNowWepon() { return m_nowWepon; };
-	
+
 	//好きなタイミングで武器追加
 	void AddWepon(WeponNumber f_wepon);
 
 	static void Shot();
 	static void Reload();
-	static bool GetCanShot(){ return m_isCanShot; };
+	static bool GetCanShot() { return m_isCanShot; };
+
+	static bool UseStone();
+	static bool HaveStone()
+	{
+		if (m_haveStone > 0)return true;
+		else return false;
+	}
 
 	//UIのサイズ
-	static KazMath::Vec2<float> GetUITextureSize(){return { c_UITexX , c_UITexY }; }
+	static KazMath::Vec2<float> GetUITextureSize() { return { c_UITexX , c_UITexY }; }
 	//
 	static KazMath::Vec2<float> GetUIBasePos() { return { c_BaseUIX , c_BaseUIY }; }
 };
@@ -209,8 +219,8 @@ public:
 
 	static void InitHP();
 
-	int GetHP(){ return m_hp; };
-	int RedHP(){ return m_redHP; };
+	int GetHP() { return m_hp; };
+	int RedHP() { return m_redHP; };
 };
 
 class HeartRate
@@ -225,7 +235,7 @@ class HeartRate
 	static const int c_UITexX = 136;
 	static const int c_UITexY = 136;
 	static const int c_BaseUIX = 1280 - (c_UITexX / 2) - c_texOffset;
-	static const int c_BaseUIY = c_UITexY - c_texOffset ;
+	static const int c_BaseUIY = c_UITexY - c_texOffset;
 
 	int m_nowRateCount;
 	float m_nowRateScale = 0.0f;
@@ -269,12 +279,12 @@ class ResultUI
 	const int C_spaceColorUnder = 180;
 	const int C_spaceColorUpper = 255;
 public:
-	ResultUI(DrawingByRasterize & arg_rasterize);
+	ResultUI(DrawingByRasterize& arg_rasterize);
 
 	void Init();
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 	bool GetResultShow() { return m_isResultShow; };
-	void ShowResult(){ m_isResultShow = true; };
-	void SetClear(){ m_isClear = true; };
+	void ShowResult() { m_isResultShow = true; };
+	void SetClear() { m_isClear = true; };
 };

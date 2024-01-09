@@ -2,6 +2,7 @@
 #include "../Game/Collision/MeshCollision.h"
 #include "../KazLibrary/Imgui/imgui.h"
 #include "../Game/ThrowableObject/ThrowableObject.h"
+#include "../Game/UI/UI.h"
 
 ThrowableObjectController::ThrowableObjectController(DrawingByRasterize& arg_rasterize)
 {
@@ -42,12 +43,11 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 	}
 
 	//“ü—Í‚³‚ê‚Ä‚¢‚½‚ç
-	if (!m_isHold && m_isHoldOld) {
+	if (!m_isHold && m_isHoldOld && WeponUIManager::UseStone()) {
 
 		for (auto& index : m_throwableObject) {
 
 			if (index->GetIsActive()) continue;
-
 			index->Generate(arg_playerTransform, arg_throwVec, 5.0f, false);
 
 			m_throwDelay = THROW_DELAY;
@@ -57,7 +57,7 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 		}
 
 	}
-	else if (m_isHold) {
+	else if (m_isHold && WeponUIManager::HaveStone()) {
 
 		//“ü—Í‚³‚ê‘±‚Ä‚¢‚éó‘Ô‚¾‚Á‚½‚çB
 		++generatePredictedObjectTimer;
@@ -67,11 +67,8 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 			for (auto& index : m_throwableObject) {
 
 				if (index->GetIsActive()) continue;
-
 				index->Generate(arg_playerTransform, arg_throwVec, 5.0f, true);
-
 				break;
-
 			}
 
 			generatePredictedObjectTimer = 0;
