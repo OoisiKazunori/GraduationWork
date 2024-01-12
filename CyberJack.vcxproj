@@ -247,6 +247,8 @@
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Echo\Echo.h" />
     <ClInclude Include="Game\Echo\EchoArray.h" />
+    <ClInclude Include="Game\Effect\ChromaticAberration.h" />
+    <ClInclude Include="Game\Effect\HitStopParam.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
