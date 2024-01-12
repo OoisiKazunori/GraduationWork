@@ -45,16 +45,16 @@ void MapManager::Init()
 			l_obj.m_scale.y = l_mapData.doc["Objects"].GetArray()[o_counter]["transform"]["scaling"].GetArray()[1].GetFloat();
 			l_obj.m_scale.z = l_mapData.doc["Objects"].GetArray()[o_counter]["transform"]["scaling"].GetArray()[2].GetFloat();
 			//エコー範囲
-			//l_obj.echoScale = l_mapData.doc["Objects"].GetArray()[o_counter]["echo"].GetFloat();
+			l_obj.echoScale = l_mapData.doc["Objects"].GetArray()[o_counter]["echo"].GetFloat();
 			//名前
 			l_obj.m_objetName = l_mapData.doc["Objects"].GetArray()[o_counter]["name"].GetString();
 
 
 			//エコー範囲のあるものはここで登録していく
-			if (l_obj.m_objetName.starts_with("echo") == true)
+			/*if (l_obj.m_objetName.starts_with("echo") == true)
 			{
 				
-			}
+			}*/
 
 			m_objects.push_back(l_obj);
 		}

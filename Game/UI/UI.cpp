@@ -2,6 +2,7 @@
 #include "../Input/Input.h"
 #include "../KazLibrary/Easing/easing.h"
 
+
 int HPUI::m_hp = 100;
 int HPUI::m_redHP = 0;
 
@@ -211,9 +212,29 @@ void WeponUIManager::Init()
 	EaseInit();
 }
 
-void WeponUIManager::Update()
+void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D &f_playerTrans)
 {
 	bool isDirty = false;
+
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+	{
+		auto stoneItr = f_stageManager.GetStones().begin();
+		for (; stoneItr != f_stageManager.GetStones().end(); ++stoneItr)
+		{
+			float lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
+			float lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
+			float lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
+			lengX = (float)pow(lengX, 2);
+			lengY = (float)pow(lengY, 2);
+			lengZ = (float)pow(lengZ, 2);
+			float leng = sqrtf(lengX + lengY + lengZ);
+			float getLeng = 5.0f;
+			if (leng < getLeng)
+			{
+				GetStone(5);
+			}
+		}
+	}
 	if (KeyBoradInputManager::Instance()->GetMouseVel().z != 0)
 	{
 		m_showUITime = c_ShowTime;

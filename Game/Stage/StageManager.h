@@ -18,6 +18,8 @@ private:
 
 	std::list<std::unique_ptr<StageModel>> m_block01;
 
+	std::list<std::unique_ptr<StageModel>> m_stone;
+
 
 	std::list<std::unique_ptr<StageModel>> m_plane;
 	std::list<std::unique_ptr<StageModel>> m_Wall_C;
@@ -49,6 +51,8 @@ public:
 	void AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum);
 
 	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision);
+
+	std::list<std::unique_ptr<StageModel>> GetStones(){return m_stone;};
 	
 	std::list<std::shared_ptr<MeshCollision>> GetColliders(){ return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;
