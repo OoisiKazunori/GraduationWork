@@ -368,6 +368,7 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 			//‰Ÿ‚µ–ß‚µB
 			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
 
+
 		}
 		//Œã‚ë•ûŒü
 		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, -1.0f));
