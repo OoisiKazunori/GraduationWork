@@ -2,6 +2,7 @@
 #include "Buffer/DescriptorHeapMgr.h"
 #include "Buffer/UavViewHandleMgr.h"
 #include "../PostEffect/GaussianBlur.h"
+#include "../../Game/Player/PlayerStatus.h"
 
 PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld, KazBufferHelper::BufferData arg_outlineTargetNormal, KazBufferHelper::BufferData arg_silhouetteRenderTargetBuffer, KazBufferHelper::BufferData arg_eyeBuffer, KazBufferHelper::BufferData arg_silhouetteBuffer)
 {
@@ -31,6 +32,8 @@ PostEffect::Outline::Outline(KazBufferHelper::BufferData arg_outlineTargetWorld,
 	//アウトラインの色
 	m_outlineData.m_color = KazMath::Vec4<float>(0.90f, 0.94f, 0.94f, 1);
 	m_outlineData.m_outlineLength = 300.0f;
+	m_outlineData.m_isFound = false;
+	m_outlineData.m_screenEdge = 0;
 	m_outlineColorConstBuffer = KazBufferHelper::SetConstBufferData(sizeof(OutlineData));
 	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineData, sizeof(OutlineData));
 
@@ -106,7 +109,13 @@ void PostEffect::Outline::Apply()
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE));
 
 
-
+	m_outlineData.m_isFound = PlayerStatus::Instance()->m_isFound;
+	if (m_outlineData.m_isFound) {
+		m_outlineData.m_screenEdge += (5.0f - m_outlineData.m_screenEdge) / 5.0f;
+	}
+	else {
+		m_outlineData.m_screenEdge += (0.0f - m_outlineData.m_screenEdge) / 10.0f;
+	}
 	m_outlineColorConstBuffer.bufferWrapper->TransData(&m_outlineData, sizeof(OutlineData));
 	m_echoConstBuffer.bufferWrapper->TransData(&m_echoData, sizeof(EchoData));
 	DispatchData dispatchData;

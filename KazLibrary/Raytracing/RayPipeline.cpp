@@ -429,7 +429,7 @@ namespace Raytracing {
 		//アウトラインにかけるノイズの縦線の更新
 		float HORIZONAL_LINE_SPEED = 2.0f;
 		if (PlayerStatus::Instance()->m_isFound) {
-			HORIZONAL_LINE_SPEED = 8.0f;
+			HORIZONAL_LINE_SPEED = 4.0f;
 		}
 		m_outlineNoiseData.m_noiseHorizontalLine.x -= HORIZONAL_LINE_SPEED;
 		if (m_outlineNoiseData.m_noiseHorizontalLine.x < 0.0f) {
@@ -450,12 +450,12 @@ namespace Raytracing {
 
 		if (PlayerStatus::Instance()->m_isFound) {
 
-			m_outlineNoiseData.m_noisePower += (12.0f - m_outlineNoiseData.m_noisePower) / 2.0f;
+			m_outlineNoiseData.m_noisePower += (12.0f - m_outlineNoiseData.m_noisePower) / 4.0f;
 
 		}
 		else {
 
-			m_outlineNoiseData.m_noisePower += (4.0f - m_outlineNoiseData.m_noisePower) / 2.0f;
+			m_outlineNoiseData.m_noisePower += (4.0f - m_outlineNoiseData.m_noisePower) / 4.0f;
 
 		}
 
