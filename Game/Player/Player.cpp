@@ -50,9 +50,6 @@ void Player::Init()
 	m_gunReaction = KazMath::Vec3<float>();
 	m_shotDelay = SHOT_DELAY;
 
-	m_footprintSpan = 0;
-	m_footprintSpan = false;
-
 }
 
 void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI)
@@ -194,45 +191,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		//ダメージを受けています。
 		arg_hpUI.HitDamage(10, 10);
 
-	}
-
-
-	//仮で足跡を描画。
-	float moveLength = KazMath::Vec3<float>(KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).Length();
-	if (m_onGround) {
-		m_footprintSpan += moveLength;
-		if (FOOTPRINT_SPAN <= m_footprintSpan) {
-
-			KazMath::Transform3D footprintTransform = m_transform;
-
-			//地面に移動。
-			footprintTransform.pos.y = -49.0f;
-
-			//移動した方向から回転を計算する。上ベクトルは一旦固定。
-			KazMath::Vec3<float> axisX = KazMath::Vec3<float>(KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).GetNormal();
-			KazMath::Vec3<float> axisY = KazMath::Vec3<float>(0.0f, 1.0f, 0.0f);
-			KazMath::Vec3<float> axisZ = axisX.Cross(axisY);
-			DirectX::XMMATRIX rotationMat = DirectX::XMMatrixIdentity();
-			rotationMat.r[0] = { axisX.x, axisX.y, axisX.z, 0.0f };
-			rotationMat.r[1] = { axisY.x, axisY.y, axisY.z, 0.0f };
-			rotationMat.r[2] = { axisZ.x, axisZ.y, axisZ.z, 0.0f };
-			footprintTransform.quaternion = DirectX::XMQuaternionRotationMatrix(rotationMat);
-
-			//どっちの足の足跡を出すかを決める。
-			KazMath::Vec3<float> footprintSide = {};
-			if (m_footprintSide) {
-				footprintSide = footprintTransform.GetFront() * 1.0f;
-			}
-			else {
-				footprintSide = -footprintTransform.GetFront() * 1.0f;
-			}
-			footprintTransform.pos += footprintSide;
-
-			FootprintMgr::Instance()->Generate(footprintTransform);
-
-			m_footprintSpan = 0;
-			m_footprintSide = !m_footprintSide;
-		}
 	}
 
 

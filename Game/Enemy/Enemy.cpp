@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "EnemyConfig.h"
 #include "../Game/Bullet/BulletMgr.h"
+#include "../Footprint/FootprintMgr.h"
 
 Enemy::Enemy()
 {
@@ -102,6 +103,8 @@ void Enemy::Init()
 
 	m_shotDelay = 0;
 
+	m_footprintSpan = 0;
+
 }
 
 void Enemy::Update(
@@ -111,6 +114,10 @@ void Enemy::Update(
 	KazMath::Vec3<float> arg_playerPos,
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
+
+	//前フレーム座標(移動する前の座標)を保存。
+	m_prevPos = m_trans.pos;
+
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
 		std::make_pair(arg_playerPos.x, arg_playerPos.z);
@@ -323,6 +330,46 @@ void Enemy::Update(
 		m_appearTimer = 0;
 		m_inEcho = false;
 	}
+
+
+	//仮で足跡を描画。
+	float moveLength = KazMath::Vec3<float>(KazMath::Vec3<float>(m_trans.pos.x, 0.0f, m_trans.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).Length();
+	if (m_onGround) {
+		m_footprintSpan += moveLength;
+		if (FOOTPRINT_SPAN <= m_footprintSpan) {
+
+			KazMath::Transform3D footprintTransform = m_trans;
+
+			//地面に移動。
+			footprintTransform.pos.y = -49.0f;
+
+			//移動した方向から回転を計算する。上ベクトルは一旦固定。
+			KazMath::Vec3<float> axisX = KazMath::Vec3<float>(KazMath::Vec3<float>(m_trans.pos.x, 0.0f, m_trans.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).GetNormal();
+			KazMath::Vec3<float> axisY = KazMath::Vec3<float>(0.0f, 1.0f, 0.0f);
+			KazMath::Vec3<float> axisZ = axisX.Cross(axisY);
+			DirectX::XMMATRIX rotationMat = DirectX::XMMatrixIdentity();
+			rotationMat.r[0] = { axisX.x, axisX.y, axisX.z, 0.0f };
+			rotationMat.r[1] = { axisY.x, axisY.y, axisY.z, 0.0f };
+			rotationMat.r[2] = { axisZ.x, axisZ.y, axisZ.z, 0.0f };
+			footprintTransform.quaternion = DirectX::XMQuaternionRotationMatrix(rotationMat);
+
+			//どっちの足の足跡を出すかを決める。
+			KazMath::Vec3<float> footprintSide = {};
+			if (m_footprintSide) {
+				footprintSide = footprintTransform.GetFront() * 1.0f;
+			}
+			else {
+				footprintSide = -footprintTransform.GetFront() * 1.0f;
+			}
+			footprintTransform.pos += footprintSide;
+
+			FootprintMgr::Instance()->Generate(footprintTransform);
+
+			m_footprintSpan = 0;
+			m_footprintSide = !m_footprintSide;
+		}
+	}
+
 }
 
 void Enemy::Draw(
