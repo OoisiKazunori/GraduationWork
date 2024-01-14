@@ -1,6 +1,17 @@
 #include "FootprintMgr.h"
 #include "Footprint.h"
 
+void FootprintMgr::Setting(DrawingByRasterize& arg_rasterize)
+{
+
+	for (auto& index : m_footprints) {
+
+		index = std::make_shared<Footprint>(arg_rasterize);
+
+	}
+
+}
+
 void FootprintMgr::Init()
 {
 
@@ -25,7 +36,7 @@ void FootprintMgr::Update()
 
 }
 
-void FootprintMgr::Generate(KazMath::Transform3D arg_generateTransform, DrawingByRasterize& arg_rasterize)
+void FootprintMgr::Generate(KazMath::Transform3D arg_generateTransform)
 {
 
 	for (auto& index : m_footprints) {
@@ -33,13 +44,10 @@ void FootprintMgr::Generate(KazMath::Transform3D arg_generateTransform, DrawingB
 		if (index->IsActive()) continue;
 
 		index->Generate(arg_generateTransform);
-		
+
 		return;
 
 	}
-
-	m_footprints.emplace_back(std::make_shared<Footprint>(arg_rasterize));
-	m_footprints.back()->Generate(arg_generateTransform);
 
 }
 

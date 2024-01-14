@@ -9,15 +9,22 @@ Footprint::Footprint(DrawingByRasterize& arg_rasterize) :
 void Footprint::Init()
 {
 	m_isActive = false;
+	m_exitTimer = 0;
 }
 
 void Footprint::Generate(KazMath::Transform3D arg_generateTransform)
 {
+	m_transform = arg_generateTransform;
 	m_isActive = true;
+	m_exitTimer = 0;
 }
 
 void Footprint::Update()
 {
+	++m_exitTimer;
+	if (EXIT_TIMER < m_exitTimer) {
+		Init();
+	}
 }
 
 void Footprint::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)

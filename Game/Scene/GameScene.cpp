@@ -19,6 +19,7 @@
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
 #include"../KazLibrary/Debug/DebugKey.h"
+#include"../Footprint/FootprintMgr.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
@@ -73,6 +74,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
 	m_axixTransform.scale.z += 1.0f;
+
+	FootprintMgr::Instance()->Setting(arg_rasterize);
+
 }
 
 GameScene::~GameScene()
@@ -88,6 +92,7 @@ void GameScene::Init()
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
 	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+	FootprintMgr::Instance()->Init();
 }
 
 void GameScene::PreInit()
@@ -230,6 +235,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
+
+
+	FootprintMgr::Instance()->Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -264,6 +272,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
 	m_goalPoint.Draw(arg_rasterize);
+
+	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 	//m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));

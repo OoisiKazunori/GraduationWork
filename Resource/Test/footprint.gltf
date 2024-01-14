@@ -64,15 +64,15 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 158,
+            "count" : 160,
             "max" : [
                 0.7507994174957275,
-                0.17629918456077576,
+                0.047613028436899185,
                 0.32065024971961975
             ],
             "min" : [
                 -0.8716431856155396,
-                -0.1398276686668396,
+                -0.03776318579912186,
                 -0.32065024971961975
             ],
             "type" : "VEC3"
@@ -80,13 +80,13 @@
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 158,
+            "count" : 160,
             "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 158,
+            "count" : 160,
             "type" : "VEC3"
         },
         {
@@ -99,26 +99,26 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 1896,
+            "byteLength" : 1920,
             "byteOffset" : 0,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 1264,
-            "byteOffset" : 1896,
+            "byteLength" : 1280,
+            "byteOffset" : 1920,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 1896,
-            "byteOffset" : 3160,
+            "byteLength" : 1920,
+            "byteOffset" : 3200,
             "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 480,
-            "byteOffset" : 5056,
+            "byteOffset" : 5120,
             "target" : 34963
         }
     ],
@@ -130,7 +130,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 5536,
+            "byteLength" : 5600,
             "uri" : "footprint.bin"
         }
     ]
