@@ -130,6 +130,8 @@
     <ClCompile Include="Game\Enemy\PatrolConfig.cpp" />
     <ClCompile Include="Game\Enemy\PatrolDraw.cpp" />
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
+    <ClCompile Include="Game\Footprint\Footprint.cpp" />
+    <ClCompile Include="Game\Footprint\FootprintMgr.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Game\Menu\Menu.cpp" />
@@ -256,6 +258,8 @@
     <ClInclude Include="Game\Enemy\PatrolConfig.h" />
     <ClInclude Include="Game\Enemy\PatrolDraw.h" />
     <ClInclude Include="Game\Enemy\PreEnemy.h" />
+    <ClInclude Include="Game\Footprint\Footprint.h" />
+    <ClInclude Include="Game\Footprint\FootprintMgr.h" />
     <ClInclude Include="Game\Input\Input.h" />
     <ClInclude Include="Game\MapLoader\MapLoader.h" />
     <ClInclude Include="Game\Menu\Menu.h" />
