@@ -13,6 +13,7 @@
 #include "../PostEffect/LensFlare.h"
 #include <DirectXMath.h>
 #include"../PostEffect/Outline.h"
+#include "../Game/Player/PlayerStatus.h"
 
 DirectX12* Raytracing::RayPipeline::m_refDirectX12 = nullptr;
 
@@ -175,6 +176,7 @@ namespace Raytracing {
 		m_lensFlare = std::make_shared<PostEffect::LensFlare>(GBufferMgr::Instance()->GetLensFlareBuffer(), GBufferMgr::Instance()->GetEmissiveGBuffer());
 
 		m_outlineNoiseData.m_timer = 0.0f;
+		m_outlineNoiseData.m_noisePower = 4.0f;
 		m_outlineNoiseData.m_noiseHorizontalLine.x = 0.0f;
 		m_outlineNoiseData.m_noiseHorizontalLine.y = 720.0f / 4.0f * 1.0f;
 		m_outlineNoiseData.m_noiseHorizontalLine.z = 720.0f / 4.0f * 2.0f;
@@ -423,8 +425,12 @@ namespace Raytracing {
 		//アウトラインにかけるノイズのタイマーの更新。
 		m_outlineNoiseData.m_timer += 1.0f;
 
+
 		//アウトラインにかけるノイズの縦線の更新
-		const float HORIZONAL_LINE_SPEED = 2.0f;
+		float HORIZONAL_LINE_SPEED = 2.0f;
+		if (PlayerStatus::Instance()->m_isFound) {
+			HORIZONAL_LINE_SPEED = 8.0f;
+		}
 		m_outlineNoiseData.m_noiseHorizontalLine.x -= HORIZONAL_LINE_SPEED;
 		if (m_outlineNoiseData.m_noiseHorizontalLine.x < 0.0f) {
 			m_outlineNoiseData.m_noiseHorizontalLine.x = 720.0f;
@@ -440,6 +446,17 @@ namespace Raytracing {
 		m_outlineNoiseData.m_noiseHorizontalLine.a -= HORIZONAL_LINE_SPEED;
 		if (m_outlineNoiseData.m_noiseHorizontalLine.a < 0.0f) {
 			m_outlineNoiseData.m_noiseHorizontalLine.a = 720.0f;
+		}
+
+		if (PlayerStatus::Instance()->m_isFound) {
+
+			m_outlineNoiseData.m_noisePower += (12.0f - m_outlineNoiseData.m_noisePower) / 2.0f;
+
+		}
+		else {
+
+			m_outlineNoiseData.m_noisePower += (4.0f - m_outlineNoiseData.m_noisePower) / 2.0f;
+
 		}
 
 		m_outlineNoiseConstBufferData.bufferWrapper->TransData(&m_outlineNoiseData, sizeof(OutlineNoiseData));

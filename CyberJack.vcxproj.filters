@@ -265,8 +265,7 @@
     <ClInclude Include="Game\Echo\Echo.h" />
     <ClInclude Include="Game\Echo\EchoArray.h" />
     <ClInclude Include="Game\Enemy\PreEnemy.h" />
-    <ClInclude Include="Game\Effect\HitStopParam.h" />
-    <ClInclude Include="Game\Effect\ChromaticAberration.h" />
+    <ClInclude Include="Game\Player\PlayerStatus.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

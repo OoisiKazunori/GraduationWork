@@ -135,7 +135,7 @@ void SceneManager::Update()
 	DebugKey::Instance()->CountReset();
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 
-	if (StopMgr::Instance()->GetGameSpeed() <= 0.0f) {
+	if (StopMgr::Instance()->IsHitStop()) {
 		StopMgr::Instance()->Update();
 		m_blasVector.Update();
 		return;
