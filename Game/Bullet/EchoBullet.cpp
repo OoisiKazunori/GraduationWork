@@ -1,6 +1,7 @@
 #include "EchoBullet.h"
 #include "../Collision/MeshCollision.h"
 #include "../Echo/EchoArray.h"
+#include "../Effect/StopMgr.h"
 
 EchoBullet::EchoBullet(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Weapon/EchoBullet/", "Bullet.gltf") {
@@ -40,7 +41,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 	if (m_isCollision) {
 
 		//弾を動かす。
-		m_transform.pos += m_dir * BULLET_SPEED;
+		m_transform.pos += m_dir * BULLET_SPEED * StopMgr::Instance()->GetGameSpeed();
 
 		bool isHit = false;
 		for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
@@ -69,7 +70,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 	else {
 
 		//一定間隔でエコーを出す。エコー数が-1になったら初期化する。
-		++m_echoSpan;
+		m_echoSpan += 1.0f * StopMgr::Instance()->GetGameSpeed();
 		if (ECHO_SPAN <= m_echoSpan) {
 
 			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);

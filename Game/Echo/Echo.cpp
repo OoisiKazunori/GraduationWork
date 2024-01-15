@@ -1,5 +1,6 @@
 #include "Echo.h"
 #include "../KazLibrary/Easing/easing.h"
+#include "../Effect/StopMgr.h"
 #include <algorithm>
 
 Echo::Echo()
@@ -50,7 +51,7 @@ void Echo::Update()
 	case Echo::STATUS::APPEAR:
 	{
 
-		m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, APPEAR_EASING_TIMER);
+		m_easingTimer = std::clamp(m_easingTimer + 1.0f * StopMgr::Instance()->GetGameSpeed(), 0.0f, APPEAR_EASING_TIMER);
 
 		float easingAmount = EasingMaker(Out, Cubic, m_easingTimer / APPEAR_EASING_TIMER);
 		m_echoData.m_radius = m_maxEchoRadius * easingAmount;
@@ -74,7 +75,7 @@ void Echo::Update()
 			exitEasingTimer = EXIT_EASING_TIMER_MEMORY;
 		}
 
-		m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, exitEasingTimer);
+		m_easingTimer = std::clamp(m_easingTimer + 1.0f * StopMgr::Instance()->GetGameSpeed(), 0.0f, exitEasingTimer);
 
 		float easingAmount = EasingMaker(In, Cubic, m_easingTimer / exitEasingTimer);
 		m_echoData.m_alpha = (1.0f - easingAmount) * ALPHA;
