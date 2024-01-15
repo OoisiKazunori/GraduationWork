@@ -8,14 +8,20 @@ class Echo {
 
 public:
 
+	enum class COLOR {
+		WHITE = 0,
+		BLUE = 1,
+	};
+
 	/// <summary>
 	/// GPUに送るエコーの情報。EchoArrayにEchoクラスを渡すことでこの構造体の値が追加される。
 	/// </summary>
 	struct EchoData {
 		KazMath::Vec3<float> m_pos;
 		float m_radius;
-		KazMath::Vec3<float> m_color;
 		float m_alpha;
+		int m_colorID;
+		KazMath::Vec2<int> pad;
 	};
 
 private:
@@ -51,7 +57,7 @@ public:
 	/// </summary>
 	/// <param name="arg_maxEchoRadius"> エコーの到達半径 </param>
 	/// <param name="arg_echoColor"> エコーの色 </param>
-	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, KazMath::Vec3<float> arg_echoColor);
+	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR arg_echoColorID);
 
 	/// <summary>
 	/// 更新処理
@@ -62,7 +68,7 @@ public:
 	/// エコーの色を変更したいとき。
 	/// </summary>
 	/// <param name="arg_echoColor"> 適用したいエコーの色 </param>
-	void ChangeColor(KazMath::Vec3<float> arg_echoColor) { m_echoData.m_color = arg_echoColor; }
+	void ChangeColorID(COLOR arg_echoColorID) { m_echoData.m_colorID = static_cast<int>(arg_echoColorID); }
 
 	//各種ゲッタ
 	EchoData GetEchoData() { return m_echoData; }

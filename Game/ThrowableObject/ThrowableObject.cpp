@@ -73,7 +73,7 @@ void ThrowableObject::Update(std::list<std::shared_ptr<MeshCollision>> f_stageCo
 			MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(m_transform.pos - prevPos).GetNormal());
 			if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= KazMath::Vec3<float>(m_transform.pos - prevPos).Length()) {
 
-				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::WHITE);
 				Init();
 
 				SoundManager::Instance()->SoundPlayerWave(m_objectSE, 0);
