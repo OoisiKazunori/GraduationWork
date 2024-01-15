@@ -158,6 +158,9 @@ void mainRayGen()
     outlineAlbedoTexture[launchIndex.xy] = outlineColor;
     outlineEmissiveTexture[launchIndex.xy] = outlineColor;
     
+    finalColor[launchIndex.xy] = float4(0, 0, 0, 1);
+    emissiveTexture[launchIndex.xy] = float4(0, 0, 0, 1);
+    lensFlareTexture[launchIndex.xy] = float4(0, 0, 0, 1);
   
 }
 

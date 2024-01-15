@@ -10,7 +10,7 @@ void EchoArray::Setting()
 
 	//構造化バッファを生成。
 	m_echoStructuredBuffer = KazBufferHelper::SetConstBufferData(sizeof(Echo::EchoData) * MAX_ELEMENT_COUNT, "EchoData");
-
+	debugCounter = 0;
 }
 
 void EchoArray::Init()

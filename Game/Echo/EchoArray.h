@@ -23,6 +23,8 @@ private:
 	//構造化バッファ
 	KazBufferHelper::BufferData m_echoStructuredBuffer;
 
+	int debugCounter;
+
 
 public:
 
