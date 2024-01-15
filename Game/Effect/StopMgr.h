@@ -3,33 +3,26 @@
 #include"../KazLibrary/Helper/KazBufferHelper.h"
 #include"../KazLibrary/Math/KazMath.h"
 #include<memory>
-#include"HitStopParam.h"
 
-/// <summary>
-/// ゲームスピードを操るクラス
-/// </summary>
 class StopMgr :public ISingleton<StopMgr>
 {
 
 private:
 
-	//ゲーム内で流れる速度の割合
-	float m_gameSpeed;
+	int m_stopTimer;
 
-	//速度が変化している時間
-	int m_slowTimer;
+	const int ENEMY_HIT_STOP = 3;
+
 public:
 
 	void Init();
 
 	void Update();
 
-	/// <summary>
-	/// 引数で渡された値に合わせてヒットストップを実行する
-	/// </summary>
-	/// <param name="param">ヒットストップを発生させる値</param>
-	void HitStopStart(const HitStopParam &param);
+	void HitStopEnemy();
 
-	//ヒットストップ適用する際のゲームスピードを受け取る
-	float GetGameSpeed();
+	bool IsHitStop() {
+		return 0 < m_stopTimer;
+	}
+
 };

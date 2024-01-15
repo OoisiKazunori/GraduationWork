@@ -26,6 +26,8 @@ namespace PostEffect {
 			KazMath::Vec4<float> m_color;
 			KazMath::Vec3<float> m_outlineCenter;	//アウトラインを距離によってカリングする場合の中心地点
 			float m_outlineLength;
+			float m_isFound;
+			float m_screenEdge;
 		}m_outlineData;
 
 		KazBufferHelper::BufferData m_echoConstBuffer;	//アウトラインの色

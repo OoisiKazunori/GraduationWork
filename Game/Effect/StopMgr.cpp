@@ -3,28 +3,15 @@
 
 void StopMgr::Init()
 {
-	m_slowTimer = 0;
-	m_gameSpeed = 1.0f;
-
+	m_stopTimer = 0;
 }
 
 void StopMgr::Update()
 {
-	m_slowTimer = std::clamp(m_slowTimer - 1, 0, 10000);
+	m_stopTimer = std::clamp(m_stopTimer - 1, 0, 10000);
 }
 
-void StopMgr::HitStopStart(const HitStopParam &param)
+void StopMgr::HitStopEnemy()
 {
-	m_slowTimer = param.m_time;
-	m_gameSpeed = param.m_speed;
-}
-
-float StopMgr::GetGameSpeed()
-{
-	if (0 < m_slowTimer)
-	{
-		return m_gameSpeed;
-	}
-
-	return 1.0f;
+	m_stopTimer = ENEMY_HIT_STOP;
 }
