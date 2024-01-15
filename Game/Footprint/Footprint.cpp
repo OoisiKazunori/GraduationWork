@@ -38,7 +38,7 @@ void Footprint::Update()
 
 		m_inEcho = true;
 		m_invisibleTimer = INVISIBLE_TIMER;
-		return;
+		break;
 
 	}
 

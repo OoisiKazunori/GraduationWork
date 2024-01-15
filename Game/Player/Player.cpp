@@ -165,10 +165,10 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//心音のタイマー
 	++m_heatbeatTimer;
 	int heartBeatTimer = HEARTBEAT_TIMER;
-	float heartBeatRange = 40.0f;
+	float heartBeatRange = 60.0f;
 	if (m_isFoundToEnemy) {
 		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
-		heartBeatRange = 100.0f;
+		heartBeatRange = 150.0f;
 	}
 	if (heartBeatTimer <= m_heatbeatTimer) {
 
