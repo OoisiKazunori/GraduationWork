@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v3.4.50",
+        "generator" : "Khronos glTF Blender I/O v1.2.75",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -15,14 +15,23 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "\u5e73\u9762"
+            "name" : "Stage1.016"
         }
     ],
     "materials" : [
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Tex",
             "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0,
+                    "texCoord" : 0
+                },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.5
             }
@@ -30,14 +39,14 @@
     ],
     "meshes" : [
         {
-            "name" : "\u5e73\u9762",
+            "name" : "Cube.017",
             "primitives" : [
                 {
                     "attributes" : {
                         "POSITION" : 0,
-                        "TEXCOORD_0" : 1,
-                        "TEXCOORD_1" : 2,
-                        "NORMAL" : 3
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2,
+                        "TEXCOORD_1" : 3
                     },
                     "indices" : 4,
                     "material" : 0
@@ -45,84 +54,91 @@
             ]
         }
     ],
+    "textures" : [
+        {
+            "source" : 0
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "Tex",
+            "uri" : "Tex.png"
+        }
+    ],
     "accessors" : [
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 30546,
+            "count" : 7841,
             "max" : [
-                54.5,
-                12.956250190734863,
-                84.45000457763672
+                42,
+                4.909999847412109,
+                47
             ],
             "min" : [
-                -60.5,
-                -0.5,
-                -48
+                -48,
+                -1.5497207641601562e-06,
+                -33
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 30546,
-            "type" : "VEC2"
+            "count" : 7841,
+            "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 30546,
+            "count" : 7841,
             "type" : "VEC2"
         },
         {
             "bufferView" : 3,
             "componentType" : 5126,
-            "count" : 30546,
-            "type" : "VEC3"
+            "count" : 7841,
+            "type" : "VEC2"
         },
         {
             "bufferView" : 4,
             "componentType" : 5123,
-            "count" : 48450,
+            "count" : 13380,
             "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 366552,
-            "byteOffset" : 0,
-            "target" : 34962
+            "byteLength" : 94092,
+            "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 244368,
-            "byteOffset" : 366552,
-            "target" : 34962
+            "byteLength" : 94092,
+            "byteOffset" : 94092
         },
         {
             "buffer" : 0,
-            "byteLength" : 244368,
-            "byteOffset" : 610920,
-            "target" : 34962
+            "byteLength" : 62728,
+            "byteOffset" : 188184
         },
         {
             "buffer" : 0,
-            "byteLength" : 366552,
-            "byteOffset" : 855288,
-            "target" : 34962
+            "byteLength" : 62728,
+            "byteOffset" : 250912
         },
         {
             "buffer" : 0,
-            "byteLength" : 96900,
-            "byteOffset" : 1221840,
-            "target" : 34963
+            "byteLength" : 26760,
+            "byteOffset" : 313640
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 1318740,
-            "uri" : "Project_S_NewStage_0115_Test.bin"
+            "byteLength" : 340400,
+            "uri" : "Project_S_NewStage_0115_test2.bin"
         }
     ]
 }
