@@ -17,13 +17,17 @@ private:
 	static const int MAX_ELEMENT_COUNT = 64;
 	std::array<Echo::EchoData, MAX_ELEMENT_COUNT> m_echoArray;
 
+	//ラスタライズに送るEchoの記録情報
+	static const int MAX_MEMORY_ELEMENT_COUNT = 256;
+	std::array<Echo::EchoMemoryData, MAX_MEMORY_ELEMENT_COUNT> m_echoMemoryArray;
+
 	//Echoクラス
 	std::array<Echo, MAX_ELEMENT_COUNT> m_echo;
+	std::array<Echo, MAX_MEMORY_ELEMENT_COUNT> m_echoMemory;
 
 	//構造化バッファ
 	KazBufferHelper::BufferData m_echoStructuredBuffer;
-
-	int debugCounter;
+	KazBufferHelper::BufferData m_echoMemoryStructuredBuffer;
 
 
 public:

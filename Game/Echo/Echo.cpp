@@ -13,22 +13,32 @@ void Echo::Init()
 {
 
 	m_isActive = false;
+	m_echoMemoryData.m_isActive = false;
 
 }
 
-void Echo::Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR arg_echoColorID)
+void Echo::Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR arg_echoColorID, bool arg_isMemory)
 {
 
+	//通常のEchoの情報を詰め込んでおく。
 	m_echoData.m_pos = arg_pos;
 	m_echoData.m_radius = 0.0f;
 	m_echoData.m_alpha = ALPHA;
 	m_echoData.m_colorID = static_cast<int>(arg_echoColorID);
+
+	//記録用のEchoの情報を詰め込んでおく。
+	m_echoMemoryData.m_pos = arg_pos;
+	m_echoMemoryData.m_radius = 0.0f;
+	m_echoMemoryData.m_alpha = ALPHA;
+	m_echoMemoryData.m_isActive = true;
 
 	m_maxEchoRadius = arg_maxEchoRadius;
 	m_isActive = true;
 
 	m_status = STATUS::APPEAR;
 	m_easingTimer = 0.0f;
+
+	m_isMemory = arg_isMemory;
 
 }
 
@@ -44,6 +54,7 @@ void Echo::Update()
 
 		float easingAmount = EasingMaker(Out, Cubic, m_easingTimer / APPEAR_EASING_TIMER);
 		m_echoData.m_radius = m_maxEchoRadius * easingAmount;
+		m_echoMemoryData.m_radius = m_echoData.m_radius;
 
 		if (APPEAR_EASING_TIMER <= m_easingTimer) {
 
@@ -57,12 +68,18 @@ void Echo::Update()
 	case Echo::STATUS::EXIT:
 	{
 
-		m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, EXIT_EASING_TIMER);
+		//記録用かそうじゃないかで消えるまでのタイマーを変える。
+		float exitEasingTimer = EXIT_EASING_TIMER;
+		if (m_isMemory) {
+			exitEasingTimer = EXIT_EASING_TIMER_MEMORY;
+		}
 
-		float easingAmount = EasingMaker(In, Cubic, m_easingTimer / EXIT_EASING_TIMER);
+		m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, exitEasingTimer);
+
+		float easingAmount = EasingMaker(In, Cubic, m_easingTimer / exitEasingTimer);
 		m_echoData.m_alpha = (1.0f - easingAmount) * ALPHA;
 
-		if (EXIT_EASING_TIMER <= m_easingTimer) {
+		if (exitEasingTimer <= m_easingTimer) {
 
 			Init();
 
