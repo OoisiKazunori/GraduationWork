@@ -117,8 +117,9 @@ struct EchoData
 {
 	float3 m_pos;
     float m_radius;
-	float3 m_color;
     float m_alpha;
+	int m_colorID;
+    int2 pad;
 };
 struct EchoConstData
 {

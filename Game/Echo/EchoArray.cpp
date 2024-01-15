@@ -47,14 +47,14 @@ void EchoArray::Update()
 
 }
 
-void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, KazMath::Vec3<float> arg_color)
+void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo::COLOR arg_colorID)
 {
 
 	for (auto& index : m_echo) {
 
 		if (index.GetIsActive()) continue;
 
-		index.Generate(arg_pos, arg_maxRadius, arg_color);
+		index.Generate(arg_pos, arg_maxRadius, arg_colorID);
 
 		break;
 
