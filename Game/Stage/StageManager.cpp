@@ -94,63 +94,63 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 {
 	m_stage->Draw(arg_rasterize, arg_blasVec);
 	//m_goal->Draw(arg_rasterize, arg_blasVec);
-	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
-	{
-		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto l_cylinderItr = m_cylinder.begin(); l_cylinderItr != m_cylinder.end(); ++l_cylinderItr)
-	{
-		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
-	{
-		(*l_block01Itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto l_cylinderItr = m_stone.begin(); l_cylinderItr != m_stone.end(); ++l_cylinderItr)
-	{
-		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
-	}
+	//for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
+	//{
+	//	(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto l_cylinderItr = m_cylinder.begin(); l_cylinderItr != m_cylinder.end(); ++l_cylinderItr)
+	//{
+	//	(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
+	//{
+	//	(*l_block01Itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto l_cylinderItr = m_stone.begin(); l_cylinderItr != m_stone.end(); ++l_cylinderItr)
+	//{
+	//	(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
+	//}
 
-	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_River.begin(); itr != m_Wall_River.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_H.begin(); itr != m_Wall_H.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_I.begin(); itr != m_Wall_I.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_L_LPost.begin(); itr != m_Wall_L_LPost.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_NonPost.begin(); itr != m_Wall_NonPost.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_L_Post.begin(); itr != m_Wall_L_Post.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_T.begin(); itr != m_Wall_T.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
+	//for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_Wall_River.begin(); itr != m_Wall_River.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_Wall_H.begin(); itr != m_Wall_H.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_Wall_I.begin(); itr != m_Wall_I.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_Wall_L_LPost.begin(); itr != m_Wall_L_LPost.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_Wall_NonPost.begin(); itr != m_Wall_NonPost.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_Wall_L_Post.begin(); itr != m_Wall_L_Post.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_Wall_T.begin(); itr != m_Wall_T.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
+	//for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
+	//{
+	//	(*itr)->Draw(arg_rasterize, arg_blasVec);
+	//}
 }
 
 bool StageManager::ChangeSceneTrigger()
@@ -335,15 +335,21 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_collisions.push_back(collision);
 		}
 	}
-	//empty‚È‚ç“ü‚ê‚é
-	if (!m_stage)
-	{
-		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
-			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 14.4f, 75.0f));
+	////empty‚È‚ç“ü‚ê‚é
+	//if (!m_stage)
+	//{
+	//	m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
+	//		DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 14.4f, 75.0f));
+	//	auto collision = std::make_shared<MeshCollision>();
+	//	collision->Setting(m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stage->m_transform);
+	//	m_collisions.push_back(collision);
+	//}
+
+		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Test/", "Project_S_NewStage_0115_Test.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 		auto collision = std::make_shared<MeshCollision>();
 		collision->Setting(m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stage->m_transform);
 		m_collisions.push_back(collision);
-	}
 }
 
 void StageManager::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision)
