@@ -142,7 +142,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		if (m_HPBarManager.GetHP() > 0)
 		{
-			m_uiManager.Update();
+			m_uiManager.Update(m_stageManager, m_player->GetTransform());
 			m_gadgetMaanager.Update();
 
 			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);

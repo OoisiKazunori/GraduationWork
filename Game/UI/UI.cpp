@@ -2,14 +2,15 @@
 #include "../Input/Input.h"
 #include "../KazLibrary/Easing/easing.h"
 
+
 int HPUI::m_hp = 100;
 int HPUI::m_redHP = 0;
 
 int HPUI::redWaitTime = 0;
 
-int WeponUIManager::m_magazinSize = 15;
-int WeponUIManager::m_haveBulletNum = 150;
-int WeponUIManager::m_bulletCount = 15;
+int WeponUIManager::m_magazinSize = 10;
+int WeponUIManager::m_haveBulletNum = 20;
+int WeponUIManager::m_bulletCount = 10;
 int WeponUIManager::m_haveStone = 7;
 bool WeponUIManager::m_isCanShot = true;
 
@@ -211,9 +212,37 @@ void WeponUIManager::Init()
 	EaseInit();
 }
 
-void WeponUIManager::Update()
+void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& f_playerTrans)
 {
 	bool isDirty = false;
+
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+	{
+		auto stoneItr = f_stageManager.m_stone.begin();
+		auto eraseItr = f_stageManager.m_stone.begin();
+		bool l_isGet = false;
+		for (; stoneItr != f_stageManager.m_stone.end(); ++stoneItr)
+		{
+			float lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
+			float lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
+			float lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
+			lengX = (float)pow(lengX, 2);
+			lengY = (float)pow(lengY, 2);
+			lengZ = (float)pow(lengZ, 2);
+			float leng = sqrtf(lengX + lengY + lengZ);
+			float getLeng = 7.0f;
+			if (leng < getLeng)
+			{
+				GetStone(5);
+				eraseItr = stoneItr;
+				l_isGet = true;
+			}
+		}
+		if (l_isGet)
+		{
+			f_stageManager.m_stone.erase(eraseItr);
+		}
+	}
 	if (KeyBoradInputManager::Instance()->GetMouseVel().z != 0)
 	{
 		m_showUITime = c_ShowTime;
