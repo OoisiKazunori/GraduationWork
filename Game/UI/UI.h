@@ -2,6 +2,7 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 #include "../KazLibrary/Math/KazMath.h"
 #include "../KazLibrary/Sound/SoundManager.h"
+#include "../Stage/StageManager.h"
 
 class UI2DElement
 {
@@ -114,9 +115,9 @@ public:
 
 	WeponUIManager(DrawingByRasterize& arg_rasterize);
 	void Init();
-	void Update();
+	void Update(StageManager& f_stageManager, KazMath::Transform3D& f_playerTrans);
 	void Draw(DrawingByRasterize& arg_rasterize);
-
+	void GetStone(int f_getStone) { m_haveStone += f_getStone; };
 	WeponNumber GetNowWepon() { return m_nowWepon; };
 
 	//好きなタイミングで武器追加
