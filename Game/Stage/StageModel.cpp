@@ -3,7 +3,11 @@
 StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName,
 	DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, DirectX::XMFLOAT3 scale, float f_echo) :
 	//ステージに使用する描画情報は右端は必ずフラグを立てるようにする。
-	m_stageModelRender(arg_rasterize, arg_fileDir, arg_fileName, true)
+	m_stageModelRender(
+		arg_rasterize,
+		ModelLoader::Instance()->Load(arg_fileDir, arg_fileName),
+		DrawFuncData::SetDefferdRenderingModelAnimationAppearByEcho(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)),
+		true)
 {
 	const float l_stageScle = 5.2f;
 	const float yoffset = 50;
@@ -16,6 +20,12 @@ StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg
 	m_transform.Rotation({ axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2] }, KazMath::AngleToRadian(rot.y));
 	axis = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	m_transform.Rotation({ axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2] }, KazMath::AngleToRadian(rot.z));
+
+
+	m_stageModelRender.m_model.m_drawCommand.extraBufferArray[3] = EchoArray::Instance()->GetEchoMemoryStructuredBuffer();
+	m_stageModelRender.m_model.m_drawCommand.extraBufferArray[3].rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+	m_stageModelRender.m_model.m_drawCommand.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
 }
 
 void StageModel::Update()

@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/Loader/ModelLoader.h"
 #include"../KazLibrary/Render/BasicDraw.h"
+#include"../Game/Echo/EchoArray.h"
 
 /// <summary>
 /// ステージの大枠のパーツ
