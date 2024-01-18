@@ -11,6 +11,7 @@
 #include "../Game/Menu/Menu.h"
 #include "PlayerStatus.h"
 #include "../Footprint/FootprintMgr.h"
+#include "../Effect/StopMgr.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
@@ -81,14 +82,14 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	switch (m_playerAttitude)
 	{
 	case Player::PlayerAttitude::STAND:
-		m_transform.scale.x += (1.0f - m_transform.scale.x) / 5.0f;
-		m_transform.scale.y += (1.0f - m_transform.scale.y) / 5.0f;
-		m_transform.scale.z += (1.0f - m_transform.scale.z) / 5.0f;
+		m_transform.scale.x += (1.0f - m_transform.scale.x) / (5.0f * StopMgr::Instance()->GetGameSpeed());
+		m_transform.scale.y += (1.0f - m_transform.scale.y) / (5.0f * StopMgr::Instance()->GetGameSpeed());
+		m_transform.scale.z += (1.0f - m_transform.scale.z) / (5.0f * StopMgr::Instance()->GetGameSpeed());
 		break;
 	case Player::PlayerAttitude::SQUAT:
-		m_transform.scale.x += (1.0f - m_transform.scale.x) / 5.0f;
-		m_transform.scale.y += (0.5f - m_transform.scale.y) / 5.0f;
-		m_transform.scale.z += (1.0f - m_transform.scale.z) / 5.0f;
+		m_transform.scale.x += (1.0f - m_transform.scale.x) / (5.0f * StopMgr::Instance()->GetGameSpeed());
+		m_transform.scale.y += (0.5f - m_transform.scale.y) / (5.0f * StopMgr::Instance()->GetGameSpeed());
+		m_transform.scale.z += (1.0f - m_transform.scale.z) / (5.0f * StopMgr::Instance()->GetGameSpeed());
 		break;
 	default:
 		break;
@@ -124,27 +125,27 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//}
 
 	m_weaponTransform.pos = m_transform.pos;
-	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f);
+	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f * StopMgr::Instance()->GetGameSpeed());
 	//武器を持っていなかったら
 	if (arg_weaponNumber == WeponUIManager::e_NonWepon) {
 
-		m_weaponPosOffset.x += (3.0f - m_weaponPosOffset.x) / 10.0f;
-		m_weaponPosOffset.y += (3.0f - m_weaponPosOffset.y) / 10.0f;
-		m_weaponPosOffset.z += (3.0f - m_weaponPosOffset.z) / 10.0f;
+		m_weaponPosOffset.x += (3.0f - m_weaponPosOffset.x) * (0.2f * StopMgr::Instance()->GetGameSpeed());
+		m_weaponPosOffset.y += (3.0f - m_weaponPosOffset.y) * (0.2f * StopMgr::Instance()->GetGameSpeed());
+		m_weaponPosOffset.z += (3.0f - m_weaponPosOffset.z) * (0.2f * StopMgr::Instance()->GetGameSpeed());
 
 	}
 	else if (m_isADS) {
 
-		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) / 2.0f;
-		m_weaponPosOffset.y += (0.3f - m_weaponPosOffset.y) / 2.0f;
-		m_weaponPosOffset.z += (0.0f - m_weaponPosOffset.z) / 2.0f;
+		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) * (0.5f * StopMgr::Instance()->GetGameSpeed());
+		m_weaponPosOffset.y += (0.3f - m_weaponPosOffset.y) * (0.5f * StopMgr::Instance()->GetGameSpeed());
+		m_weaponPosOffset.z += (0.0f - m_weaponPosOffset.z) * (0.5f * StopMgr::Instance()->GetGameSpeed());
 
 	}
 	else {
 
-		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) / 2.0f;
-		m_weaponPosOffset.y += (0.5f - m_weaponPosOffset.y) / 2.0f;
-		m_weaponPosOffset.z += (0.5f - m_weaponPosOffset.z) / 2.0f;
+		m_weaponPosOffset.x += (1.5f - m_weaponPosOffset.x) * (0.5f * StopMgr::Instance()->GetGameSpeed());
+		m_weaponPosOffset.y += (0.5f - m_weaponPosOffset.y) * (0.5f * StopMgr::Instance()->GetGameSpeed());
+		m_weaponPosOffset.z += (0.5f - m_weaponPosOffset.z) * (0.5f * StopMgr::Instance()->GetGameSpeed());
 
 	}
 
@@ -158,13 +159,13 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//銃の反動を更新。
 	if (0.01f < m_gunReaction.Length()) {
 
-		m_gunReaction -= m_gunReaction / 5.0f;
+		m_gunReaction -= m_gunReaction * (0.5f * StopMgr::Instance()->GetGameSpeed());
 
 	}
 
 	//心音のタイマー
-	++m_heatbeatTimer;
-	int heartBeatTimer = HEARTBEAT_TIMER;
+	m_heatbeatTimer += 1.0f * StopMgr::Instance()->GetGameSpeed();
+	float heartBeatTimer = HEARTBEAT_TIMER;
 	float heartBeatRange = 60.0f;
 	if (m_isFoundToEnemy) {
 		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
@@ -179,7 +180,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	}
 
 	//銃の連射の遅延を更新。
-	m_shotDelay = std::clamp(m_shotDelay + 1, 0, SHOT_DELAY);
+	m_shotDelay = std::clamp(m_shotDelay + 1.0f * StopMgr::Instance()->GetGameSpeed(), 0.0f, SHOT_DELAY);
 
 	//メッシュコライダーにトランスフォームを適用
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
@@ -199,6 +200,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_I)) {
 		m_isFoundToEnemy = !m_isFoundToEnemy;
+		StopMgr::Instance()->HitStopStart({ 120, 0.1f });
 	}
 
 	PlayerStatus::Instance()->m_isFound = m_isFoundToEnemy;
@@ -242,7 +244,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	if (KeyBoradInputManager::Instance()->InputState(DIK_D)) {
 		inputMoveVec += rightVec;
 	}
-	m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed();
+	m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
 
 	//CTRLが押されたらステータスを切り返る。
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LCONTROL)) {
@@ -341,7 +343,7 @@ void Player::Rotate(std::weak_ptr<Camera> arg_camera)
 		DirectX::XMVECTOR rotateQ = DirectX::XMQuaternionRotationAxis({ cross.x, cross.y, cross.z }, angle);
 
 		//回転を適応
-		m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, rotateQ, 0.15f);
+		m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, rotateQ, 0.15f * StopMgr::Instance()->GetGameSpeed());
 
 	}
 

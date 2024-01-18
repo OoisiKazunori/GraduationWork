@@ -13,6 +13,7 @@ namespace BasicDraw
 	struct BasicModelRender
 	{
 		BasicModelRender(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName, bool arg_deletePipelineInScene = false);
+		BasicModelRender(DrawingByRasterize &arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_deletePipelineInScene = false);
 		BasicModelRender(DrawingByRasterize &arg_rasterize, bool arg_deletePipelineInScene = false);
 		BasicModelRender();
 		void Load(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName);

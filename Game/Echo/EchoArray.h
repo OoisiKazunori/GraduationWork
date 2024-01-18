@@ -17,11 +17,18 @@ private:
 	static const int MAX_ELEMENT_COUNT = 64;
 	std::array<Echo::EchoData, MAX_ELEMENT_COUNT> m_echoArray;
 
+	//ラスタライズに送るEchoの記録情報
+	static const int MAX_MEMORY_ELEMENT_COUNT = 256;
+	std::array<Echo::EchoMemoryData, MAX_MEMORY_ELEMENT_COUNT> m_echoMemoryArray;
+
 	//Echoクラス
 	std::array<Echo, MAX_ELEMENT_COUNT> m_echo;
+	std::array<Echo, MAX_MEMORY_ELEMENT_COUNT> m_echoMemory;
 
 	//構造化バッファ
 	KazBufferHelper::BufferData m_echoStructuredBuffer;
+	KazBufferHelper::BufferData m_echoMemoryStructuredBuffer;
+	KazBufferHelper::BufferData m_echoMemoryStructuredVRAMBuffer;
 
 
 public:
@@ -52,6 +59,7 @@ public:
 	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo::COLOR arg_colorID);
 
 	KazBufferHelper::BufferData* GetEchoStructuredBuffer() { return &m_echoStructuredBuffer; }
+	const KazBufferHelper::BufferData &GetEchoMemoryStructuredBuffer() { return m_echoMemoryStructuredVRAMBuffer; }
 	std::array<Echo, MAX_ELEMENT_COUNT>& GetEcho() { return m_echo; }
 
 
