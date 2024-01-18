@@ -17,6 +17,7 @@ public:
 	float GetWaringRate();
 
 	void DebugUpdate();
+	const float WARING_LEVEL = 0.5f;//Œx‰úó‘Ô‚ÉˆÚs‚·‚é’l
 private:
 	//“G‘S‘Ì‚ÌŒx‰ú“x
 	Gauge m_waringGauge;

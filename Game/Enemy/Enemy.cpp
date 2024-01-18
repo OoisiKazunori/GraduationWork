@@ -74,6 +74,7 @@ void Enemy::SetData(
 	m_debugData.m_status = &m_state;
 	m_debugData.m_gaugeData = m_findGauge.GetDebugData();
 	m_debugData.m_coneSightPointArray = m_coneSight.GetPointPosArray();
+	m_debugData.m_boxSightPointArray = m_boxSight.GetPointPosArray();
 	m_debugData.m_isFindFlag = &m_isInSightFlag;
 	EnemyDebugManager::Instance()->Generate(
 		&m_debugData
@@ -159,13 +160,29 @@ void Enemy::Update(
 	//	m_checkEyeDelay = MAX_EYE_DELAY;
 	//}
 
-	if (m_coneSight.Collision(arg_playerPos, m_trans.pos, m_trans.quaternion))
+	//åxâ˙èÛë‘
+	if (FieldAI::Instance()->WARING_LEVEL <= FieldAI::Instance()->GetWaringRate())
 	{
-		m_isInSightFlag = true;
+		if (m_boxSight.Collision(arg_playerPos, m_trans.pos, m_trans.quaternion))
+		{
+			m_isInSightFlag = true;
+		}
+		else
+		{
+			m_isInSightFlag = false;
+		}
 	}
+	//í èÌèÛë‘
 	else
 	{
-		m_isInSightFlag = false;
+		if (m_coneSight.Collision(arg_playerPos, m_trans.pos, m_trans.quaternion))
+		{
+			m_isInSightFlag = true;
+		}
+		else
+		{
+			m_isInSightFlag = false;
+		}
 	}
 
 	//åxâ˙ìx

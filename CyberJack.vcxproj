@@ -118,6 +118,7 @@
     <ClCompile Include="Game\AI\Evaluation\FieldAI.cpp" />
     <ClCompile Include="Game\AI\Gauge\FindGauge.cpp" />
     <ClCompile Include="Game\AI\Gauge\Gauge.cpp" />
+    <ClCompile Include="Game\AI\Sight\BoxTypeViewingAngle.cpp" />
     <ClCompile Include="Game\AI\Sight\ConeTypeViewingAngle.cpp" />
     <ClCompile Include="Game\AI\Sight\ISight.cpp" />
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="Game\AI\Evaluation\FieldAI.h" />
     <ClInclude Include="Game\AI\Gauge\FindGauge.h" />
     <ClInclude Include="Game\AI\Gauge\Gauge.h" />
+    <ClInclude Include="Game\AI\Sight\BoxTypeViewingAngle.h" />
     <ClInclude Include="Game\AI\Sight\ConeTypeViewingAngle.h" />
     <ClInclude Include="Game\AI\Sight\ISight.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />

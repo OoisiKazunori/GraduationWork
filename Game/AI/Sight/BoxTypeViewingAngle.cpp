@@ -1,13 +1,13 @@
-#include "ConeTypeViewingAngle.h"
+#include "BoxTypeViewingAngle.h"
 
-ConeTypeViewingAngle::ConeTypeViewingAngle() :m_rangeScale(1.0f), m_lengthScale(1.0f)
+BoxTypeViewingAngle::BoxTypeViewingAngle() :m_rangeScale(1.0f), m_lengthScale(1.0f)
 {
 	//near
 	m_baseNearPointPosArray[LEFT] = KazMath::Vec2<float>(-MIN_RANGE * m_rangeScale, 0.0f);
 	m_baseNearPointPosArray[RIGHT] = KazMath::Vec2<float>(MIN_RANGE * m_rangeScale, 0.0f);
 	//middle
-	m_baseMiddlePointPosArray[LEFT] = KazMath::Vec2<float>(-MAX_RANGE * m_rangeScale, MIDDLE_LENGTH);
-	m_baseMiddlePointPosArray[RIGHT] = KazMath::Vec2<float>(MAX_RANGE * m_rangeScale, MIDDLE_LENGTH);
+	m_baseMiddlePointPosArray[LEFT] = KazMath::Vec2<float>(-MIDDLE_RANGE * m_rangeScale, MIDDLE_LENGTH);
+	m_baseMiddlePointPosArray[RIGHT] = KazMath::Vec2<float>(MIDDLE_RANGE * m_rangeScale, MIDDLE_LENGTH);
 	//far
 	m_baseFarPointPosArray[LEFT] = KazMath::Vec2<float>(-MAX_RANGE * m_rangeScale, FAR_LENGTH);
 	m_baseFarPointPosArray[RIGHT] = KazMath::Vec2<float>(MAX_RANGE * m_rangeScale, FAR_LENGTH);
@@ -33,7 +33,7 @@ ConeTypeViewingAngle::ConeTypeViewingAngle() :m_rangeScale(1.0f), m_lengthScale(
 	}
 }
 
-bool ConeTypeViewingAngle::Collision(
+bool BoxTypeViewingAngle::Collision(
 	const KazMath::Vec3<float>& arg_playerPos,
 	const KazMath::Vec3<float>& arg_enemyPos,
 	const DirectX::XMVECTOR& arg_quaternion)

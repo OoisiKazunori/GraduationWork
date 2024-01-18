@@ -129,6 +129,7 @@
     <ClCompile Include="Game\Echo\EchoArray.cpp" />
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\AI\Sight\ISight.cpp" />
+    <ClCompile Include="Game\AI\Sight\BoxTypeViewingAngle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -279,6 +280,7 @@
     <ClInclude Include="Game\Enemy\PreEnemy.h" />
     <ClInclude Include="KazLibrary\Helper\ConvertEnumToString.h" />
     <ClInclude Include="Game\AI\Sight\ISight.h" />
+    <ClInclude Include="Game\AI\Sight\BoxTypeViewingAngle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

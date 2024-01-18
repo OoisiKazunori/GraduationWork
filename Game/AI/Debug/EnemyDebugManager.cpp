@@ -100,19 +100,39 @@ void EnemyDebugManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::Blas
 		lineColor = KazMath::Color::Color(255, 0, 0, 255);
 	}
 
-	for (int i = 0; i < m_coneSightArray.size(); ++i)
+	if (FieldAI::Instance()->WARING_LEVEL <= FieldAI::Instance()->GetWaringRate())
 	{
-		KazMath::Vec3<float>startPos(
-			m_debugData.m_coneSightPointArray[i * 2]->x,
-			m_debugData.m_transform->pos.y - 5.0f,
-			m_debugData.m_coneSightPointArray[i * 2]->y
-		);
-		KazMath::Vec3<float>endPos(
-			m_debugData.m_coneSightPointArray[i * 2 + 1]->x,
-			m_debugData.m_transform->pos.y - 5.0f,
-			m_debugData.m_coneSightPointArray[i * 2 + 1]->y
-		);
-		m_coneSightArray[i].m_render.Draw(arg_rasterize, arg_blasVec, startPos, endPos, lineColor);
+		for (int i = 0; i < m_coneSightArray.size(); ++i)
+		{
+			KazMath::Vec3<float>startPos(
+				m_debugData.m_boxSightPointArray[i * 2]->x,
+				m_debugData.m_transform->pos.y - 5.0f,
+				m_debugData.m_boxSightPointArray[i * 2]->y
+			);
+			KazMath::Vec3<float>endPos(
+				m_debugData.m_boxSightPointArray[i * 2 + 1]->x,
+				m_debugData.m_transform->pos.y - 5.0f,
+				m_debugData.m_boxSightPointArray[i * 2 + 1]->y
+			);
+			m_coneSightArray[i].m_render.Draw(arg_rasterize, arg_blasVec, startPos, endPos, lineColor);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < m_coneSightArray.size(); ++i)
+		{
+			KazMath::Vec3<float>startPos(
+				m_debugData.m_coneSightPointArray[i * 2]->x,
+				m_debugData.m_transform->pos.y - 5.0f,
+				m_debugData.m_coneSightPointArray[i * 2]->y
+			);
+			KazMath::Vec3<float>endPos(
+				m_debugData.m_coneSightPointArray[i * 2 + 1]->x,
+				m_debugData.m_transform->pos.y - 5.0f,
+				m_debugData.m_coneSightPointArray[i * 2 + 1]->y
+			);
+			m_coneSightArray[i].m_render.Draw(arg_rasterize, arg_blasVec, startPos, endPos, lineColor);
+		}
 	}
 }
 

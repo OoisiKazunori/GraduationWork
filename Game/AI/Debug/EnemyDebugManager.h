@@ -16,6 +16,7 @@ public:
 		const State* m_status;
 		const FindGaugeData* m_gaugeData;
 		std::array<KazMath::Vec2<float>*, 12>m_coneSightPointArray;
+		std::array<KazMath::Vec2<float>*, 12>m_boxSightPointArray;
 		bool *m_isFindFlag;
 
 		~EnemyDebugData()

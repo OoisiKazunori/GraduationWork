@@ -10,6 +10,7 @@
 #include"../Game/AI/Debug/EnemyDebugManager.h"
 #include"../Game/AI/Gauge/FindGauge.h"
 #include"../Game/AI/Sight/ConeTypeViewingAngle.h"
+#include"../Game/AI/Sight/BoxTypeViewingAngle.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -75,6 +76,7 @@ private:
 
 	bool m_isInSightFlag;//Ž‹ŠE“à‚É“ü‚Á‚½‚©
 	ConeTypeViewingAngle m_coneSight;
+	BoxTypeViewingAngle m_boxSight;
 
 	FindGauge m_findGauge;
 public:
