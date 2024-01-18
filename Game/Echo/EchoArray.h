@@ -28,6 +28,7 @@ private:
 	//構造化バッファ
 	KazBufferHelper::BufferData m_echoStructuredBuffer;
 	KazBufferHelper::BufferData m_echoMemoryStructuredBuffer;
+	KazBufferHelper::BufferData m_echoMemoryStructuredVRAMBuffer;
 
 
 public:
@@ -58,7 +59,7 @@ public:
 	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo::COLOR arg_colorID);
 
 	KazBufferHelper::BufferData* GetEchoStructuredBuffer() { return &m_echoStructuredBuffer; }
-	const KazBufferHelper::BufferData &GetEchoMemoryStructuredBuffer() { return m_echoMemoryStructuredBuffer; }
+	const KazBufferHelper::BufferData &GetEchoMemoryStructuredBuffer() { return m_echoMemoryStructuredVRAMBuffer; }
 	std::array<Echo, MAX_ELEMENT_COUNT>& GetEcho() { return m_echo; }
 
 

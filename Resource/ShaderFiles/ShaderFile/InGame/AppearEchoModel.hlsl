@@ -98,7 +98,7 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
 
     
     BasicDrawGBufferOutput output;
-    for(int i = 0;i < 256; ++i)
+    for(int i = 0;i < 100; ++i)
     {
         float distanceNum = distance(lightBuffer[i].m_pos,input.worldPos);
         //エコー範囲内なら描画する
@@ -115,20 +115,20 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
         }
     }
 
-    output.albedo = float4(1,1,1,1) * color;
-    output.normal = float4(normal, 1.0f);
-    output.metalnessRoughness = float4(0, 0, 0, 1);
-    output.world = float4(input.worldPos, 1.0f);
-    output.emissive = EmissiveTex.Sample(smp, input.uv);
-    output.outline = float4(0,0,0,1);
-    output.outlineWorld = float4(0,0,0,1);
-    //エコー範囲外は描画しない
-    //output.albedo = float4(0,0,0,0) * color;
-    //output.normal = float4(-1,-1,-1,1);
+    //output.albedo = float4(1,1,1,1) * color;
+    //output.normal = float4(normal, 1.0f);
     //output.metalnessRoughness = float4(0, 0, 0, 1);
     //output.world = float4(input.worldPos, 1.0f);
     //output.emissive = EmissiveTex.Sample(smp, input.uv);
     //output.outline = float4(0,0,0,1);
     //output.outlineWorld = float4(0,0,0,1);
+    //エコー範囲外は描画しない
+    output.albedo = float4(0,0,0,0) * color;
+    output.normal = float4(-1,-1,-1,1);
+    output.metalnessRoughness = float4(0, 0, 0, 1);
+    output.world = float4(input.worldPos, 1.0f);
+    output.emissive = EmissiveTex.Sample(smp, input.uv);
+    output.outline = float4(0,0,0,1);
+    output.outlineWorld = float4(0,0,0,1);
     return output;
 }
