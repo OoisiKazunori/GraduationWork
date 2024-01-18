@@ -19,6 +19,8 @@
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
 #include"../KazLibrary/Debug/DebugKey.h"
+#include"../Game/AI/Debug/EnemyDebugManager.h"
+#include"../Game/AI/Evaluation/FieldAI.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
@@ -73,6 +75,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
 	m_axixTransform.scale.z += 1.0f;
+
+
+	EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
 
 GameScene::~GameScene()
@@ -88,6 +93,7 @@ void GameScene::Init()
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
 	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+	m_debugCameraFlag = false;
 }
 
 void GameScene::PreInit()
@@ -105,6 +111,15 @@ void GameScene::Input()
 	{
 		m_preEnemy[0]->SetPos({ 0.0f,-45.0f,0.0f });
 	}
+
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_1, "DebugCamera", "DIK_1"))
+	{
+		m_debugCameraFlag = !m_debugCameraFlag;
+	}
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
+	{
+		EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
+	}
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -115,12 +130,13 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	CameraMgr::Instance()->Camera({}, {}, {});
 	*/
 	//デバック用のカメラワーク(操作はBlenderと同じ)
-	//m_debuCamera.Update();
+	//
 
 	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		m_HPBarManager.HitDamage(10, 10);
 	}*/
+
 
 	//メニューが開かれていない時に更新を通す
 	if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
@@ -146,7 +162,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				m_bulletMgr,
 				m_player->GetTransform().pos,
 				m_stageMeshCollision);
-			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+
+			if (m_debugCameraFlag)
+			{
+				m_debuCamera.Update();
+			}
+			else
+			{
+				m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+			}
+
 			m_stageManager.Update(arg_rasterize);
 			m_bulletMgr->Update(m_stageManager.GetColliders());
 
@@ -230,6 +255,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
+
+	EnemyDebugManager::Instance()->Update();
+	FieldAI::Instance()->DebugUpdate();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -280,7 +308,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		index->Draw(arg_rasterize, arg_blasVec);
 	}
 
+	EnemyDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
+
 	DebugKey::Instance()->DrawImGui();
+	EnemyDebugManager::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()

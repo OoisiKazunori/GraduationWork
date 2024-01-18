@@ -16,6 +16,7 @@ public:
 	/// </summary>
 	float GetWaringRate();
 
+	void DebugUpdate();
 private:
 	//“G‘S‘Ì‚ÌŒx‰ú“x
 	Gauge m_waringGauge;

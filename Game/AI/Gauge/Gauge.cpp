@@ -44,9 +44,23 @@ void Gauge::Reset()
 void Gauge::Incre(float arg_increNum)
 {
 	m_nowRate += arg_increNum;
+	Clamp();
 }
 
 void Gauge::Decre(float arg_decreNum)
 {
 	m_nowRate -= arg_decreNum;
+	Clamp();
+}
+
+void Gauge::Clamp()
+{
+	if (m_minRate != -1.0f)
+	{
+		m_nowRate = std::clamp(m_nowRate, 0.0f, m_maxRate);
+	}
+	else
+	{
+		m_nowRate = std::clamp(m_nowRate, -m_maxRate, m_maxRate);
+	}
 }

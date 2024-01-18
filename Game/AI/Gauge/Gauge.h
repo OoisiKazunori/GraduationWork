@@ -24,5 +24,7 @@ public:
 private:
 	float m_nowRate, m_minRate, m_maxRate;
 
+	void Clamp();
+
 };
 

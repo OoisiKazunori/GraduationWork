@@ -5,23 +5,17 @@
 #include "../Game/Collision/MeshCollision.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/Reaction.h"
+#include"../Game/AI/EnemyAIData.h"
 #include<memory>
+#include"../Game/AI/Debug/EnemyDebugManager.h"
+#include"../Game/AI/Gauge/FindGauge.h"
+#include"../Game/AI/Sight/ConeTypeViewingAngle.h"
 
 class MeshCollision;
 class BulletMgr;
 
 class Enemy
 {
-public:
-	enum struct State
-	{
-		Patrol,		//巡回
-		Warning,	//警戒
-		Combat,		//戦闘
-		Holdup,		//ホールドアップ(消えそう)
-		Death		//死亡
-	};
-
 private:
 	std::shared_ptr<
 		BasicDraw::BasicModelRender> m_enemyBox;
@@ -35,7 +29,7 @@ private:
 	std::vector<std::pair<float, float>> m_rootPos;
 	std::vector<std::pair<int, int>> m_checkPointDelay;
 	KazMath::Transform3D m_trans;
-	State m_state,m_oldState;
+	State m_state, m_oldState;
 	int m_delayNum;
 	int m_count;
 	int m_delay;
@@ -78,6 +72,11 @@ private:
 	static const int APPEAR_TIMER = 180;
 	//UI
 	Reaction m_reaction;
+
+	bool m_isInSightFlag;//視界内に入ったか
+	ConeTypeViewingAngle m_coneSight;
+
+	FindGauge m_findGauge;
 public:
 	Enemy();
 	~Enemy();
@@ -170,4 +169,11 @@ public:
 		m_offset_x = arg_offsets.first;
 		m_offset_y = arg_offsets.second;
 	}
+
+
+private:
+	//敵のデバック用
+	EnemyDebugManager::EnemyDebugData m_debugData;
+
+
 };

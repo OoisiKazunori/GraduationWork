@@ -2,12 +2,12 @@
 #include"Gauge.h"
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../Game/AI/Evaluation/FieldAI.h"
+#include"../Game/AI/EnemyAIData.h"
 
 class FindGauge
 {
 public:
 	FindGauge();
-
 	void Update(
 		const KazMath::Vec3<float>& arg_playerPos,
 		const KazMath::Vec3<float>& arg_enemyPos,
@@ -17,6 +17,16 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	bool IsFind();
+
+	float GetRate()
+	{
+		return m_gauge.GetRate();
+	}
+
+	const FindGaugeData *GetDebugData()
+	{
+		return &m_debugData;
+	}
 private:
 	Gauge m_gauge;
 
@@ -28,5 +38,7 @@ private:
 	const float GAUGE_DECRE_NUM;
 	//Œx‰ú‚É”­Œ©‚³‚ê‚½ê‡‚É‚Ç‚ê‚­‚ç‚¢’l‚ğ‘‚â‚·‚×‚«‚©
 	const float WARING_INCRE_MAX_NUM;
+
+	FindGaugeData m_debugData;
 };
 
