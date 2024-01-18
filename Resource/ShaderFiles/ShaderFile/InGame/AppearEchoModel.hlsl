@@ -14,6 +14,7 @@ struct EchoData
 	float m_radius;
 	float m_alpha;
 	int m_isActive;
+    uint2 pad;
 };
 RWStructuredBuffer<EchoData> lightBuffer:register(u0);
 
