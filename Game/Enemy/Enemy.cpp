@@ -8,6 +8,7 @@ Enemy::Enemy()
 	m_state = State::Patrol;
 	m_delayNum = 0;
 	m_count = 0;
+	m_changeCombatDelay = 0;
 	m_checkPointDelay = 0;
 	m_isCheckPoint = false;
 	m_onGround = false;
@@ -21,6 +22,8 @@ Enemy::Enemy()
 
 	m_gravity = 0.0f;
 
+	m_isCombatTri = false;
+
 	m_hp = EnemyConfig::maxHP;
 	m_changePatrolDelay = EnemyConfig::changePatrolDelay;
 	m_angle = 0.0f;
@@ -29,6 +32,10 @@ Enemy::Enemy()
 		SoundManager::Instance()->SoundLoadWave(
 			"Resource/Sound/Shot_Player.wav");
 	m_enemyShotSE.volume = 0.05f;
+
+	m_oldQuaternion = { -1.0f,-1.0f,-1.0f };
+
+	m_shotDelay = 0;
 }
 
 Enemy::~Enemy()
@@ -52,7 +59,7 @@ void Enemy::SetData(
 			arg_rasterize,
 			"Resource/Enemy/",
 			"Enemy.gltf"
-			);
+		);
 
 	m_meshCol = std::make_shared<MeshCollision>();
 	m_meshCol->Setting(
@@ -150,7 +157,6 @@ void Enemy::Update(
 			m_isCombatTri = true;
 			m_state = State::Combat;
 			m_changePatrolDelay = EnemyConfig::changePatrolDelay;
-			m_changeCombatDelay = EnemyConfig::changeCombatDelay;
 		}
 	}
 	else
@@ -229,32 +235,37 @@ void Enemy::Draw(
 //巡回
 void Enemy::Patrol(std::pair<float, float> arg_pPos)
 {
-	//音が鳴った場合
+	//音の範囲内の場合
 	if (CheckDistXZ(
-		arg_pPos, EnemyConfig::soundCheckDist) && false)
+		arg_pPos, EnemyConfig::soundCheckDist))
 	{
-		if (!m_isReturn) {
-			m_checkSoundCount++;
+		//未発見状態の場合(音が鳴った場合の条件を追加する)
+		if (m_changeCombatDelay ==
+			EnemyConfig::changeCombatDelay)
+		{
+			if (!m_isReturn) {
+				m_checkSoundCount++;
 
-			if (m_checkSoundCount ==
-				m_checkSoundPos.size() - 1) {
-				m_isReturn = true;
+				if (m_checkSoundCount ==
+					m_checkSoundPos.size() - 1) {
+					m_isReturn = true;
+				}
 			}
-		}
-		else {
-			m_checkSoundCount--;
+			else {
+				m_checkSoundCount--;
 
-			if (m_checkSoundCount == 0) {
-				m_state = State::Patrol;
-				m_isReturn = false;
+				if (m_checkSoundCount == 0) {
+					m_state = State::Patrol;
+					m_isReturn = false;
+				}
 			}
-		}
 
-		m_trans.pos = {
-				m_checkSoundPos[m_checkSoundCount].first,
-				0.0f,
-				m_checkSoundPos[m_checkSoundCount].second
-		};
+			m_trans.pos = {
+					m_checkSoundPos[m_checkSoundCount].first,
+					0.0f,
+					m_checkSoundPos[m_checkSoundCount].second
+			};
+		}
 	}
 
 	//チェックポイント

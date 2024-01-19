@@ -137,7 +137,7 @@ void EnemyManager::Update(
 	if (KeyBoradInputManager::
 		Instance()->InputTrigger(DIK_E))
 	{
-		//isInput = true;
+		isInput = true;
 	}
 
 	float l_offset_x = m_config.get()->GetOffsetX();
@@ -153,7 +153,7 @@ void EnemyManager::Update(
 			std::vector<std::pair<float, float>>
 				l_checkSoundPos =
 				m_patrolDatas[i].CheckSound(ePos, sPos);
-			m_enemys[i].SetState(Enemy::State::Warning);
+			//m_enemys[i].SetState(Enemy::State::Warning);
 			m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
 		}
 

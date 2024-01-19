@@ -45,11 +45,13 @@ private:
 	std::vector<std::pair<int, int>>
 		CalcChipRoots(
 			const std::vector<std::pair<int, int>>
-			& arg_checkPoints);
+			& arg_checkPoints,
+			bool arg_isPatrol = false);
 
 	void SortRoots(
 		std::vector<std::pair<int, int>>& arg_base_roots,
 		const std::vector<std::pair<int, int>>& arg_roots);
+
 	std::vector<std::pair<float, float>>
 		CalcRootPos(
 			std::vector<std::pair<int, int>> arg_roots,

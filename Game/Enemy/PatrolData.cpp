@@ -43,15 +43,18 @@ PatrolData::CheckSound(
 	float l_chipSize =
 		m_patrolConfig.lock()->GetChipSize();
 
-	//仮
+	//敵位置(オフセット込みのデータが来る為、除外)
 	l_checkPoints.push_back(
 		std::make_pair(
-			static_cast<int>(arg_enemyPos.first / l_chipSize),
-			static_cast<int>(arg_enemyPos.second / l_chipSize)));
+			static_cast<int>((arg_enemyPos.first -
+				m_patrolConfig.lock()->GetOffsetX()) / l_chipSize),
+			static_cast<int>((arg_enemyPos.second -
+				m_patrolConfig.lock()->GetOffsetY()) / l_chipSize)));
+	//音発生位置(仮)
 	l_checkPoints.push_back(
 		std::make_pair(5, 5));
 
-	l_base_chipRoots = CalcChipRoots(l_checkPoints);
+	l_base_chipRoots = CalcChipRoots(l_checkPoints, true);
 
 	//角をケアしながら通過座標の算出
 	std::vector<std::pair<float, float>> l_soundCheckPos;
@@ -63,7 +66,8 @@ PatrolData::CheckSound(
 std::vector<std::pair<int, int>>
 PatrolData::CalcChipRoots(
 	const std::vector<std::pair<int, int>>
-	& arg_checkPoints)
+	& arg_checkPoints,
+	bool arg_isPatrol)
 {
 	std::vector<std::pair<int, int>> l_base_chipRoots;
 	l_base_chipRoots.push_back(
@@ -254,7 +258,9 @@ PatrolData::CalcChipRoots(
 						l_x, l_y,
 						l_base_start_x, l_base_start_y))
 					{
-						SortRoots(l_base_chipRoots, l_chipRoots);
+						SortRoots(
+							l_base_chipRoots,
+							l_chipRoots);
 						l_isGoal = true;
 					}
 
@@ -281,6 +287,17 @@ PatrolData::CalcChipRoots(
 				}
 			}
 		}
+
+		//音が鳴った場合は片道の探索
+		if (arg_isPatrol) {
+			break;
+		}
+	}
+
+	//音が鳴ってない場合は最後の被り部分を削除
+	if (!arg_isPatrol) {
+		l_base_chipRoots.resize(
+			l_base_chipRoots.size() - 1);
 	}
 
 	return l_base_chipRoots;
