@@ -2,10 +2,17 @@
 #include "../Input/Input.h"
 #include "../KazLibrary/Easing/easing.h"
 
+
 int HPUI::m_hp = 100;
 int HPUI::m_redHP = 0;
 
 int HPUI::redWaitTime = 0;
+
+int WeponUIManager::m_magazinSize = 10;
+int WeponUIManager::m_haveBulletNum = 20;
+int WeponUIManager::m_bulletCount = 10;
+int WeponUIManager::m_haveStone = 7;
+bool WeponUIManager::m_isCanShot = true;
 
 UI2DElement::UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath) :
 	m_2DSprite(arg_rasterize, f_filePath, true)
@@ -113,12 +120,13 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_aimSideB(arg_rasterize, "Resource/UITexture/aimSideB.png"),
 	m_echoBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
 	m_hundgunBulletInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
-	m_StoneInf(arg_rasterize, "Resource/UITexture/Infinity.png")
+	m_StoneInf(arg_rasterize, "Resource/UITexture/Infinity.png"),
+	m_slash(arg_rasterize, "Resource/Number/slash.png"),
+	m_stoneSlash(arg_rasterize, "Resource/Number/slash.png")
 {
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
-	m_haveWepons.push_back({ WeponNumber::e_Echo, 1 });
-	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 1 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
 	m_TabSp.SetPosition({ 1243.0f, 675.0f });
@@ -144,6 +152,53 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_changeWeaponSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ChangeWeapon.wav");
 	m_changeWeaponSE.volume = 0.05f;
 
+
+	m_slash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
+	m_stoneSlash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
+	for (int k = 0; k < 5; k++)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			int rigit = 10 * k;
+			std::string hoge = "Resource/Number/Number_" + to_string(i) + ".png";
+			m_bulletNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			m_stoneNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+		}
+	}
+}
+
+void WeponUIManager::Shot()
+{
+	if (m_isCanShot)
+	{
+		m_bulletCount--;
+		if (m_bulletCount <= 0)
+		{
+			m_isCanShot = false;
+		}
+	}
+}
+
+void WeponUIManager::Reload()
+{
+	if (m_bulletCount >= m_magazinSize) return;
+	if (m_magazinSize <= m_haveBulletNum)
+	{
+		m_haveBulletNum -= m_magazinSize - m_bulletCount;
+		m_bulletCount += m_magazinSize - m_bulletCount;
+
+		m_isCanShot = true;
+	}
+	else if (0 < m_haveBulletNum)
+	{
+		m_bulletCount = m_haveBulletNum;
+		m_haveBulletNum = 0;
+		m_isCanShot = true;
+	}
+	else
+	{
+
+	}
 }
 
 void WeponUIManager::Init()
@@ -151,23 +206,50 @@ void WeponUIManager::Init()
 	m_nowWepon = e_NonWepon;
 	m_haveWepons.clear();
 	m_haveWepons.push_back({ WeponNumber::e_NonWepon, 0 });
-	m_haveWepons.push_back({ WeponNumber::e_Echo, 1 });
-	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 2 });
+	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 1 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
 	EaseInit();
 }
 
-void WeponUIManager::Update()
+void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& f_playerTrans)
 {
 	bool isDirty = false;
-	if (KeyBoradInputManager::Instance()->InputState(DIK_TAB))
+
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+	{
+		auto stoneItr = f_stageManager.m_stone.begin();
+		auto eraseItr = f_stageManager.m_stone.begin();
+		bool l_isGet = false;
+		for (; stoneItr != f_stageManager.m_stone.end(); ++stoneItr)
+		{
+			float lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
+			float lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
+			float lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
+			lengX = (float)pow(lengX, 2);
+			lengY = (float)pow(lengY, 2);
+			lengZ = (float)pow(lengZ, 2);
+			float leng = sqrtf(lengX + lengY + lengZ);
+			float getLeng = 7.0f;
+			if (leng < getLeng)
+			{
+				GetStone(5);
+				eraseItr = stoneItr;
+				l_isGet = true;
+			}
+		}
+		if (l_isGet)
+		{
+			f_stageManager.m_stone.erase(eraseItr);
+		}
+	}
+	if (KeyBoradInputManager::Instance()->GetMouseVel().z != 0)
 	{
 		m_showUITime = c_ShowTime;
 	}
 	if (m_showUITime > 0)
 	{
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
+		if (KeyBoradInputManager::Instance()->GetMouseVel().z > 0 && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber < m_haveWepons.size() - 1)
 			{
@@ -180,7 +262,7 @@ void WeponUIManager::Update()
 			SoundManager::Instance()->SoundPlayerWave(m_changeWeaponSE, 0);
 
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_Q) && easeTimer > 0.6f)
+		if (KeyBoradInputManager::Instance()->GetMouseVel().z < 0 && easeTimer > 0.6f)
 		{
 			if (m_nowSelectWeponNumber > 0)
 			{
@@ -258,21 +340,54 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		}
 		if ((*itr).first == e_NonWepon)
 		{
-			m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+			KazMath::Transform2D l_trans;
+			/*m_stoneSlash.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
 				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
-			m_StoneInf.Draw(arg_rasterize);
-		}
-		else if ((*itr).first == e_Echo)
-		{
-			m_echoBulletInf.SetPosition({ m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
-				m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
-			m_echoBulletInf.Draw(arg_rasterize);
+			m_stoneSlash.Draw(arg_rasterize);*/
+
+
+			int mgnum100 = m_haveStone / 100;
+			l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 10,
+				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+			int mgnum10 = m_haveStone / 10 % 10;
+			l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum10 + 30].m_tex.Draw2D(arg_rasterize, l_trans);
+			int mgnum1 = m_haveStone % 10;
+			l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX + 10,
+				m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum1 + 40].m_tex.Draw2D(arg_rasterize, l_trans);
 		}
 		else if ((*itr).first == e_Hundgun)
 		{
-			m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
+			m_slash.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
 				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
-			m_hundgunBulletInf.Draw(arg_rasterize);
+			m_slash.Draw(arg_rasterize);
+
+
+			int num10 = m_bulletCount / 10;
+			KazMath::Transform2D l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 29,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[num10].m_tex.Draw2D(arg_rasterize, l_trans);
+			int num1 = m_bulletCount % 10;
+			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 19,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[num1 + 10].m_tex.Draw2D(arg_rasterize, l_trans);
+
+
+			int mgnum100 = m_haveBulletNum / 100;
+			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 9,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+			int mgnum10 = m_haveBulletNum / 10 % 10;
+			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 19,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum10 + 30].m_tex.Draw2D(arg_rasterize, l_trans);
+			int mgnum1 = m_haveBulletNum % 10;
+			l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 29,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+			m_bulletNum[mgnum1 + 40].m_tex.Draw2D(arg_rasterize, l_trans);
 		}
 		GetUI((*itr).first).Draw(arg_rasterize);
 	}
@@ -286,32 +401,75 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		{
 			if ((*itr).first == e_NonWepon)
 			{
-				m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+				KazMath::Transform2D l_trans;
+				/*m_stoneSlash.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
 					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
-				m_StoneInf.Draw(arg_rasterize);
-			}
-			else if ((*itr).first == e_Echo)
-			{
-				m_echoBulletInf.SetPosition({m_echo.GetNowPos().x + (float)c_BulletNumOffsetX,
-					m_echo.GetNowPos().y + (float)c_BulletNumOffsetY });
-				m_echoBulletInf.Draw(arg_rasterize);
+				m_stoneSlash.Draw(arg_rasterize);*/
+
+
+				int mgnum100 = m_haveStone / 100;
+				l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 10,
+					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+				int mgnum10 = m_haveStone / 10 % 10;
+				l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
+					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum10 + 30].m_tex.Draw2D(arg_rasterize, l_trans);
+				int mgnum1 = m_haveStone % 10;
+				l_trans = KazMath::Transform2D({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX + 10,
+					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum1 + 40].m_tex.Draw2D(arg_rasterize, l_trans);
 			}
 			else if ((*itr).first == e_Hundgun)
 			{
-				m_hundgunBulletInf.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX,
-					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
-				m_hundgunBulletInf.Draw(arg_rasterize);
+				m_slash.SetPosition({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
+				m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY });
+				m_slash.Draw(arg_rasterize);
+
+
+				int num10 = m_bulletCount / 10;
+				KazMath::Transform2D l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 29,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[num10].m_tex.Draw2D(arg_rasterize, l_trans);
+				int num1 = m_bulletCount % 10;
+				l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX - 19,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[num1 + 10].m_tex.Draw2D(arg_rasterize, l_trans);
+
+
+				int mgnum100 = m_haveBulletNum / 100;
+				l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 9,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+				int mgnum10 = m_haveBulletNum / 10 % 10;
+				l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 19,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum10 + 30].m_tex.Draw2D(arg_rasterize, l_trans);
+				int mgnum1 = m_haveBulletNum % 10;
+				l_trans = KazMath::Transform2D({ m_hundgun.GetNowPos().x + (float)c_BulletNumOffsetX + 29,
+					m_hundgun.GetNowPos().y + (float)c_BulletNumOffsetY - 2 }, { 1.0f, 1.0f });
+				m_bulletNum[mgnum1 + 40].m_tex.Draw2D(arg_rasterize, l_trans);
 			}
 			GetUI((*itr).first).Draw(arg_rasterize);
 		}
 	}
-	if (m_nowSelectWeponNumber == e_Echo || m_nowSelectWeponNumber == e_Hundgun)
+	if (m_nowSelectWeponNumber == e_Hundgun)
 	{
 		m_aimTop.Draw(arg_rasterize);
 		m_aimSideR.Draw(arg_rasterize);
 		m_aimSideL.Draw(arg_rasterize);
 		m_aimSideU.Draw(arg_rasterize);
 		m_aimSideB.Draw(arg_rasterize);
+	}
+}
+
+bool WeponUIManager::UseStone()
+{
+	if (m_haveStone <= 0) return false;
+	else
+	{
+		m_haveStone--;
+		return true;
 	}
 }
 
@@ -335,10 +493,6 @@ UI2DElement& WeponUIManager::GetUI(WeponNumber f_wepon)
 	if (f_wepon == WeponNumber::e_NonWepon)
 	{
 		return m_nonWepon;
-	}
-	else if (f_wepon == WeponNumber::e_Echo)
-	{
-		return m_echo;
 	}
 	else if (f_wepon == WeponNumber::e_Hundgun)
 	{

@@ -18,11 +18,11 @@
 #include "StageSelectScene.h"
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
+#include"../KazLibrary/Debug/DebugKey.h"
+#include"../Footprint/FootprintMgr.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
-	m_line(arg_rasterize),
-	m_stage(arg_rasterize, "Resource/Stage/", "Stage.gltf"),
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
@@ -72,6 +72,11 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	}
 
+	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
+	m_axixTransform.scale.z += 1.0f;
+
+	FootprintMgr::Instance()->Setting(arg_rasterize);
+
 }
 
 GameScene::~GameScene()
@@ -87,6 +92,7 @@ void GameScene::Init()
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
 	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+	FootprintMgr::Instance()->Init();
 }
 
 void GameScene::PreInit()
@@ -99,10 +105,10 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//ゲームシーンへ
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	//デバックキーのサンプル
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_0, "GenerateEnemy", "DIK_0"))
 	{
-		m_sceneNum = 0;
+		m_preEnemy[0]->SetPos({ 0.0f,-45.0f,0.0f });
 	}
 }
 
@@ -136,7 +142,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		if (m_HPBarManager.GetHP() > 0)
 		{
-			m_uiManager.Update();
+			m_uiManager.Update(m_stageManager, m_player->GetTransform());
 			m_gadgetMaanager.Update();
 
 			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
@@ -170,7 +176,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
 			KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
 			if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
-			
+
 				//すべてのステージクリア
 				if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 				{
@@ -223,12 +229,15 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	for (auto& index : m_preEnemy)
 	{
 		index->CheckInEcho(m_stageMeshCollision);
+		index->Update();
 	}
 	m_stageManager.CheckInEcho(m_stageMeshCollision);
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
 
+
+	FootprintMgr::Instance()->Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -241,7 +250,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
-	m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 	//m_player->Draw(arg_rasterize, arg_blasVec);
@@ -252,10 +260,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
-	/*m_uiManager.Draw(arg_rasterize);
-	m_gadgetMaanager.Draw(arg_rasterize);
-	m_HPBarManager.Draw(arg_rasterize);
-	m_heartRateManager.Draw(arg_rasterize);*/
 	m_menu.Draw(arg_rasterize);
 	if (!m_resultManager.GetResultShow())
 	{
@@ -265,7 +269,11 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		//m_heartRateManager.Draw(arg_rasterize);
 	}
 
+	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
+
 	m_goalPoint.Draw(arg_rasterize);
+
+	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 	//m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
@@ -279,8 +287,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	for (auto& index : m_preEnemy) {
 
-		//index->Draw(arg_rasterize, arg_blasVec);
+		index->Draw(arg_rasterize, arg_blasVec);
 	}
+
+	DebugKey::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()

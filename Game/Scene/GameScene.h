@@ -11,6 +11,7 @@
 #include "../UI/UI.h"
 #include "../Menu/Menu.h"
 #include"../Game/UI/CheckPoint.h"
+#include"../KazLibrary/Render/BasicDraw.h"
 
 class EnemyManager;
 class Player;
@@ -48,7 +49,7 @@ private:
 	DebugCamera m_debuCamera;
 	std::shared_ptr<Camera> m_camera;
 
-	std::array<std::shared_ptr<PreEnemy>, 3> m_preEnemy;
+	std::array<std::shared_ptr<PreEnemy>, 1> m_preEnemy;
 
 	KazMath::Transform3D m_stageTransform;
 
@@ -77,10 +78,8 @@ private:
 		return result;
 
 	}
-
-	BasicDraw::BasicLineRender m_line;
-	BasicDraw::BasicModelRender m_stage;
-	//BasicDraw::BasicTextureRender m_outlineTex;
+	BasicDraw::BasicModelRender m_axis;
+	KazMath::Transform3D m_axixTransform;
 
 	StageManager m_stageManager;
 	

@@ -40,7 +40,7 @@ void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders
 	//弾が当たったオブジェクトに到達していたら。
 	if (KazMath::Vec3<float>(m_collisionEndPos - m_collisionStartPos).Length() <= KazMath::Vec3<float>(m_bulletPos - m_collisionStartPos).Length()) {
 
-		EchoArray::Instance()->Generate(m_collisionEndPos, 60.0f, KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+		EchoArray::Instance()->Generate(m_collisionEndPos, 60.0f, Echo::COLOR::WHITE);
 
 		Init();
 
@@ -94,4 +94,5 @@ bool Bullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision, 
 	}
 
 	return false;
+
 }

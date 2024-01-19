@@ -85,6 +85,7 @@ namespace Raytracing {
 		struct OutlineNoiseData {
 			KazMath::Vec4<float> m_noiseHorizontalLine;
 			float m_timer;
+			float m_noisePower;
 		}m_outlineNoiseData;
 
 		//レンズフレアクラス

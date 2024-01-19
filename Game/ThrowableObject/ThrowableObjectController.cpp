@@ -2,13 +2,12 @@
 #include "../Game/Collision/MeshCollision.h"
 #include "../KazLibrary/Imgui/imgui.h"
 #include "../Game/ThrowableObject/ThrowableObject.h"
+#include "../Game/UI/UI.h"
 
 ThrowableObjectController::ThrowableObjectController(DrawingByRasterize& arg_rasterize)
 {
 
-	m_isHold = false;
-	m_isHoldOld = false;
-	generatePredictedObjectTimer = 0;
+	Init();
 
 	for (auto& index : m_throwableObject) {
 
@@ -24,6 +23,7 @@ void ThrowableObjectController::Init()
 	m_isHold = false;
 	m_isHoldOld = false;
 	generatePredictedObjectTimer = 0;
+	m_throwDelay = 0;
 
 }
 
@@ -34,21 +34,30 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 	arg_playerTransform.pos -= arg_playerTransform.GetUp() * 1.5f;
 	arg_playerTransform.pos -= arg_playerTransform.GetRight() * 4.0f;
 
+	//投げることができるまでのタイマーの遅延がまだ達していなかったら、HOLD状態を解除する。
+	if (0 < m_throwDelay) {
+
+		m_isHold = false;
+		--m_throwDelay;
+
+	}
+
 	//入力されていたら
-	if (!m_isHold && m_isHoldOld) {
+	if (!m_isHold && m_isHoldOld && WeponUIManager::UseStone()) {
 
 		for (auto& index : m_throwableObject) {
 
 			if (index->GetIsActive()) continue;
-
 			index->Generate(arg_playerTransform, arg_throwVec, 5.0f, false);
+
+			m_throwDelay = THROW_DELAY;
 
 			break;
 
 		}
 
 	}
-	else if (m_isHold) {
+	else if (m_isHold && WeponUIManager::HaveStone()) {
 
 		//入力され続ている状態だったら。
 		++generatePredictedObjectTimer;
@@ -58,11 +67,8 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 			for (auto& index : m_throwableObject) {
 
 				if (index->GetIsActive()) continue;
-
 				index->Generate(arg_playerTransform, arg_throwVec, 5.0f, true);
-
 				break;
-
 			}
 
 			generatePredictedObjectTimer = 0;

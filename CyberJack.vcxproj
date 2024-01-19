@@ -130,6 +130,8 @@
     <ClCompile Include="Game\Enemy\PatrolConfig.cpp" />
     <ClCompile Include="Game\Enemy\PatrolDraw.cpp" />
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
+    <ClCompile Include="Game\Footprint\Footprint.cpp" />
+    <ClCompile Include="Game\Footprint\FootprintMgr.cpp" />
     <ClCompile Include="Game\Input\Input.cpp" />
     <ClCompile Include="Game\MapLoader\MapLoader.cpp" />
     <ClCompile Include="Game\Menu\Menu.cpp" />
@@ -144,6 +146,7 @@
     <ClCompile Include="Game\ThrowableObject\ThrowableObjectController.cpp" />
     <ClCompile Include="Game\Tool\SplineRail.cpp" />
     <ClCompile Include="Game\Tool\ModelTool.cpp" />
+    <ClCompile Include="Game\UI\Reaction.cpp" />
     <ClCompile Include="Game\UI\CheckPoint.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="KazLibrary\Animation\AnimationData.cpp" />
@@ -162,6 +165,7 @@
     <ClCompile Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.cpp" />
     <ClCompile Include="KazLibrary\Collision\BoundingBox.cpp" />
     <ClCompile Include="KazLibrary\Collision\CollisionManager.cpp" />
+    <ClCompile Include="KazLibrary\Debug\DebugKey.cpp" />
     <ClCompile Include="KazLibrary\DirectXCommon\DirectX12.cpp" />
     <ClCompile Include="KazLibrary\DirectXCommon\DirectX12CmdList.cpp" />
     <ClCompile Include="KazLibrary\DirectXCommon\DirectX12Device.cpp" />
@@ -196,6 +200,7 @@
     <ClCompile Include="KazLibrary\Loader\ObjResourceMgr.cpp" />
     <ClCompile Include="KazLibrary\Loader\TextureResourceMgr.cpp" />
     <ClCompile Include="KazLibrary\Math\KazMath.cpp" />
+    <ClCompile Include="KazLibrary\Math\Timer.cpp" />
     <ClCompile Include="KazLibrary\Pipeline\GraphicsDepthTest.cpp" />
     <ClCompile Include="KazLibrary\Pipeline\GraphicsPipeLineMgr.cpp" />
     <ClCompile Include="KazLibrary\Pipeline\GraphicsRootSignature.cpp" />
@@ -253,10 +258,13 @@
     <ClInclude Include="Game\Enemy\PatrolConfig.h" />
     <ClInclude Include="Game\Enemy\PatrolDraw.h" />
     <ClInclude Include="Game\Enemy\PreEnemy.h" />
+    <ClInclude Include="Game\Footprint\Footprint.h" />
+    <ClInclude Include="Game\Footprint\FootprintMgr.h" />
     <ClInclude Include="Game\Input\Input.h" />
     <ClInclude Include="Game\MapLoader\MapLoader.h" />
     <ClInclude Include="Game\Menu\Menu.h" />
     <ClInclude Include="Game\Player\Player.h" />
+    <ClInclude Include="Game\Player\PlayerStatus.h" />
     <ClInclude Include="Game\Scene\DemoScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Scene\StageSelectScene.h" />
@@ -267,6 +275,7 @@
     <ClInclude Include="Game\ThrowableObject\ThrowableObjectController.h" />
     <ClInclude Include="Game\Tool\SplineRail.h" />
     <ClInclude Include="Game\Tool\ModelTool.h" />
+    <ClInclude Include="Game\UI\Reaction.h" />
     <ClInclude Include="Game\UI\CheckPoint.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="KazLibrary\Animation\AnimationData.h" />
@@ -285,6 +294,7 @@
     <ClInclude Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.h" />
     <ClInclude Include="KazLibrary\Collision\BoundingBox.h" />
     <ClInclude Include="KazLibrary\Collision\CollisionManager.h" />
+    <ClInclude Include="KazLibrary\Debug\DebugKey.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\Base.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\d3dx12.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\DirectX12.h" />
@@ -327,6 +337,7 @@
     <ClInclude Include="KazLibrary\Loader\ObjResourceMgr.h" />
     <ClInclude Include="KazLibrary\Loader\TextureResourceMgr.h" />
     <ClInclude Include="KazLibrary\Math\KazMath.h" />
+    <ClInclude Include="KazLibrary\Math\Timer.h" />
     <ClInclude Include="KazLibrary\Pipeline\GraphicsDepthTest.h" />
     <ClInclude Include="KazLibrary\Pipeline\GraphicsPipeLineMgr.h" />
     <ClInclude Include="KazLibrary\Pipeline\GraphicsRootSignature.h" />

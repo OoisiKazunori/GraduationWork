@@ -1,6 +1,8 @@
 #include "EnemyManager.h"
+#include "EnemyConfig.h"
 #include "../KazLibrary/Input/KeyBoradInputManager.h"
 #include"../MapLoader/MapLoader.h"
+#include "../Echo/EchoArray.h"
 
 EnemyManager::EnemyManager()
 {
@@ -143,19 +145,56 @@ void EnemyManager::Update(
 	float l_offset_x = m_config.get()->GetOffsetX();
 	float l_offset_y = m_config.get()->GetOffsetY();
 
+	std::pair<float, float> active_sPos = { 0.0f,0.0f };
+	float active_sDist = 0.0f;
+
 	for (int i = 0; i < m_enemys.size(); ++i)
 	{
-		if (isInput) {
-			std::pair<float, float> ePos = {
+		std::pair<float, float> ePos = {
 				m_enemys[i].GetPos().x,
-				m_enemys[i].GetPos().z };
-			std::pair<float, float> sPos = { 0.0f,0.0f };
+				m_enemys[i].GetPos().z
+		};
+
+		//Echo判定
+		bool l_isSound = false;
+		for (auto& echo : EchoArray::Instance()->GetEcho())
+		{
+			//アクティブなら判定
+			if (echo.GetIsActive())
+			{
+				//判定(xとzでしか判定取ってない)
+				std::pair<float, float> sPos = {
+					echo.GetPos().x,
+					echo.GetPos().z
+				};
+
+				float l_dist = CircleCol2D(
+					ePos, EnemyConfig::soundCheckDist,
+					sPos, echo.GetNowRadius());
+				if (active_sDist < l_dist)
+				{
+					l_isSound = true;
+					active_sPos = sPos;
+				}
+			}
+		}
+
+		//仮
+		if (l_isSound || isInput) {
 			std::vector<std::pair<float, float>>
 				l_checkSoundPos =
-				m_patrolDatas[i].CheckSound(ePos, sPos);
+				m_patrolDatas[i].CheckSound(ePos, active_sPos);
 			//m_enemys[i].SetState(Enemy::State::Warning);
 			m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
 		}
+
+		//最短距離の音データをセット
+		std::vector<std::pair<float, float>>
+			l_checkSoundPos =
+			m_patrolDatas[i].CheckSound(
+				ePos, active_sPos);
+		//m_enemys[i].SetState(Enemy::State::Warning);
+		m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
 
 		//オフセット
 		m_enemys[i].SetOffset(std::make_pair(
@@ -203,4 +242,26 @@ void EnemyManager::Draw(
 	/*m_patrolDraw.Draw(
 		arg_rasterize,
 		arg_blasVec);*/
+}
+
+float EnemyManager::CircleCol2D(
+	std::pair<float, float> arg_pos1,
+	float arg_rad1,
+	std::pair<float, float> arg_pos2,
+	float arg_rad2)
+{
+	//2点間の距離
+	float l_dist = std::sqrtf(
+		powf(
+			(arg_pos1.first - arg_pos2.first), 2.0f) +
+		powf(
+			(arg_pos1.second - arg_pos2.second), 2.0f)
+	);
+
+	//半径の合計
+	float l_addRad = arg_rad1 + arg_rad2;
+
+	if (l_dist < l_addRad) { return l_dist; }
+
+	return -1.0f;
 }

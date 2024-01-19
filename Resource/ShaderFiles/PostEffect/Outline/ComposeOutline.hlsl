@@ -12,6 +12,7 @@ cbuffer NoiseData : register(b0)
 {
     float4 m_noiseHorizontalLine;
     float m_timer;
+    float m_noisePower;
 }
 
 //近くに横線があったらノイズを増やす。
@@ -57,21 +58,20 @@ void main(uint3 DTid : SV_DispatchThreadID)
     
     //横線の近くではさらにスケーリングする。
     const float HORIZONAL_SCALE_LENGTH = 70.0f;
-    const float HORIZONAL_SCALE_POWER = 4.0f;
     float3 color = float3(0, 0, 0);
-    CheckHorizonalLine(m_noiseHorizontalLine.x, uv.y, HORIZONAL_SCALE_LENGTH, HORIZONAL_SCALE_POWER, noiseValue);
-    CheckHorizonalLine(m_noiseHorizontalLine.y, uv.y, HORIZONAL_SCALE_LENGTH, HORIZONAL_SCALE_POWER, noiseValue);
-    CheckHorizonalLine(m_noiseHorizontalLine.z, uv.y, HORIZONAL_SCALE_LENGTH, HORIZONAL_SCALE_POWER, noiseValue);
-    CheckHorizonalLine(m_noiseHorizontalLine.w, uv.y, HORIZONAL_SCALE_LENGTH, HORIZONAL_SCALE_POWER, noiseValue);
+    CheckHorizonalLine(m_noiseHorizontalLine.x, uv.y, HORIZONAL_SCALE_LENGTH, m_noisePower, noiseValue);
+    CheckHorizonalLine(m_noiseHorizontalLine.y, uv.y, HORIZONAL_SCALE_LENGTH, m_noisePower, noiseValue);
+    CheckHorizonalLine(m_noiseHorizontalLine.z, uv.y, HORIZONAL_SCALE_LENGTH, m_noisePower, noiseValue);
+    CheckHorizonalLine(m_noiseHorizontalLine.w, uv.y, HORIZONAL_SCALE_LENGTH, m_noisePower, noiseValue);
 
     
     //それをUVに適用
     uv.x += noiseValue;
     
-    Albedo[DTid.xy] += OutlineAlbedo[uv];
-    Emissive[DTid.xy] += OutlineEmissive[uv];
-    
-    //Albedo[DTid.xy] += float4(noiseValue, noiseValue, noiseValue, 1.0f);
-    //Emissive[DTid.xy] += float4(0, 0, 0, 1.0f);
+    if (!(uv.x < 0 || 1280 < uv.x))
+    {
+        Albedo[DTid.xy] += OutlineAlbedo[uv];
+        Emissive[DTid.xy] += OutlineEmissive[uv];
+    }
     
 }

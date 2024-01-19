@@ -39,13 +39,16 @@ private:
 	const float MOVE_SPEED_CREEPING = 0.15f;
 
 	//発射の遅延
-	int m_shotDelay;
-	const int SHOT_DELAY = 120;
+	float m_shotDelay;
+	const float SHOT_DELAY = 20;
 
 	//心音のタイマー
-	int m_heatbeatTimer;
-	const int HEATBEAT_TIMER = 90;
-	SoundData m_heatbeatSE;
+	float m_heatbeatTimer;
+	const float HEARTBEAT_TIMER = 45;
+	const float HEARTBEAT_TIMER_FOUND = 32;
+	SoundData m_heartbeatSE;
+
+	bool m_isFoundToEnemy;
 
 	SoundData m_playerShotSE;
 	SoundData m_sonarSE;
@@ -55,8 +58,8 @@ private:
 	enum class PlayerAttitude {
 		STAND,
 		SQUAT,
-		CREEPING,
 	}m_playerAttitude;
+
 
 public:
 

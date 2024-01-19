@@ -1,6 +1,7 @@
 #include "ModelLoader.h"
 #include"Helper/OutPutDebugStringAndCheckResult.h"
 #include"../KazLibrary/Buffer/VertexBufferMgr.h"
+#include"../KazLibrary/Helper/KazHelper.h"
 
 ModelLoader::ModelLoader()
 {
@@ -152,8 +153,7 @@ std::vector<ModelMeshData> GLTFLoader::Load(std::string fileName, std::string fi
 	//std::string Ext(".glb");
 	std::string FileDir(fileDir);
 	std::string filepass(FileDir + fileName);
-	std::string Ext(".gltf");
-
+	std::string Ext("." + KazHelper::GetExtension(fileName));
 
 	//GLTFSDK‚©‚çˆø—p---------------------------------------
 	//https://github.com/microsoft/glTF-SDK/blob/master/GLTFSDK.Samples/Deserialize/Source/main.cpp

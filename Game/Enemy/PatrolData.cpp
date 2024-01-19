@@ -34,7 +34,8 @@ void PatrolData::Update()
 std::vector<std::pair<float, float>>
 PatrolData::CheckSound(
 	std::pair<float, float> arg_enemyPos,
-	std::pair<float, float> arg_SoundPos)
+	std::pair<float, float> arg_soundPos
+)
 {
 	std::vector<std::pair<int, int>> l_base_chipRoots;
 	std::vector<std::pair<int, int>> l_checkPoints;

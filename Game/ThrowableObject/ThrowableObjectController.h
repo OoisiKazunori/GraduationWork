@@ -21,6 +21,10 @@ private:
 	int generatePredictedObjectTimer;
 	const int GENERATE_PREDICTED_OBJECT_TIMER = 1;
 
+	//“Š‚°‚éŽ–‚ª‚Å‚«‚é‚Ü‚Å‚Ì’x‰„
+	int m_throwDelay;
+	const int THROW_DELAY = 20;
+
 
 public:
 

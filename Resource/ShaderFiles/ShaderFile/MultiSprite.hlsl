@@ -46,9 +46,9 @@ GBufferOutput PSmain(VSOutput input) : SV_TARGET
 
     GBufferOutput output;
     output.albedo = textureColor * color;
-    output.normal = float4(0,0,0,0);
-    output.metalnessRoughness = float4(0,0,0,0);
-    output.emissive = float4(0,0,0,0);
-    output.world = float4(0,0,0,0);
+    output.normal = float4(-1,-1,-1,1);
+    output.metalnessRoughness = float4(0,0,0,1);
+    output.emissive = float4(0,0,0,1);
+    output.world = float4(0,0,0,1);
     return output;
 }

@@ -1,6 +1,7 @@
 #include "EchoBullet.h"
 #include "../Collision/MeshCollision.h"
 #include "../Echo/EchoArray.h"
+#include "../Effect/StopMgr.h"
 
 EchoBullet::EchoBullet(DrawingByRasterize& arg_rasterize) :
 	m_model(arg_rasterize, "Resource/Weapon/EchoBullet/", "Bullet.gltf") {
@@ -34,8 +35,13 @@ void EchoBullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg
 void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders)
 {
 
+	if (!m_isActive) return;
+
 	//当たり判定がまだ終わってなかったら
 	if (m_isCollision) {
+
+		//弾を動かす。
+		m_transform.pos += m_dir * BULLET_SPEED * StopMgr::Instance()->GetGameSpeed();
 
 		bool isHit = false;
 		for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
@@ -48,7 +54,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				m_transform.pos = rayResult.m_position;
 
 				//まずは最初にエコーを出す。
-				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
 				--m_echoCount;
 
 				SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
@@ -60,29 +66,14 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 
 		}
 
-		if (!isHit) {
-
-			//弾を移動させる。
-			m_transform.pos += m_dir * BULLET_SPEED;
-
-			//一定時間弾がどれにも当たらなかったら処理を飛ばす。
-			++m_disappearTimer;
-			if (DESAPPEAR_TIMER < m_disappearTimer) {
-
-				Init();
-
-			}
-
-		}
-
 	}
 	else {
 
 		//一定間隔でエコーを出す。エコー数が-1になったら初期化する。
-		++m_echoSpan;
+		m_echoSpan += 1.0f * StopMgr::Instance()->GetGameSpeed();
 		if (ECHO_SPAN <= m_echoSpan) {
 
-			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
 			--m_echoCount;
 			m_echoSpan = 0.0f;
 
@@ -105,5 +96,21 @@ void EchoBullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector&
 {
 
 	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+
+}
+
+bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision)
+{
+
+	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_dir);
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED) {
+
+		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
+		Init();
+		return true;
+
+	}
+
+	return false;
 
 }

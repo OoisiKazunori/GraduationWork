@@ -97,7 +97,8 @@ void mainRayGen()
     lensFlareTexture[launchIndex.xy] = emissiveColor / 8.0f;
     
     //アウトラインの色を計算。
-    float4 outlineColor = float4(0, 0, 0, 0);
+    float blueAlpha = 0;
+    float otherAlpha = 0;
     if (0.0f < length(worldColor.xyz))
     {
         for (int index = 0; index < ECHO_ELEMENT_COUNT; ++index)
@@ -118,24 +119,48 @@ void mainRayGen()
                 //レイを撃つ
                 CastRay(payloadData, worldColor.xyz + normalColor.xyz, normalize(echoData.m_echoData[index].m_pos - worldColor.xyz), length(echoData.m_echoData[index].m_pos - worldColor.xyz) - 1.0f, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
                 
-                if (payloadData.m_color.x <= -1.0f)
-                {
+                if (!(payloadData.m_color.x <= -1.0f))
+                    continue;
                     
-                    outlineColor.xyz = echoData.m_echoData[index].m_color * echoData.m_echoData[index].m_alpha;
-                    outlineColor.w = 1.0f;
-                    outlineColor.xyz = echoData.m_echoData[index].m_color * echoData.m_echoData[index].m_alpha;
-                    outlineColor.w = 1.0f;
-                
+                //このエコーが白色か？
+                if (echoData.m_echoData[index].m_colorID == 0)
+                {
+                        
+                    //保存されている値より大きいかをチェック。
+                    if (otherAlpha < echoData.m_echoData[index].m_alpha)
+                    {
+                        otherAlpha = echoData.m_echoData[index].m_alpha;
+
+                    }
+                        
+                        
                 }
-                
-        
+                //このエコーが青色か？
+                else if (echoData.m_echoData[index].m_colorID == 1)
+                {
+                        
+                    //保存されている値より大きいかをチェック。
+                    if (blueAlpha < echoData.m_echoData[index].m_alpha)
+                    {
+                        blueAlpha = echoData.m_echoData[index].m_alpha;
+
+                    }
+                }
             }
-        
         }
     }
+    float4 outlineColor = float4(0, 0, 0, 1);
+    //まずは青色を計算。
+    outlineColor.xyz = float3(0.24f, 0.50f, 0.64f) * blueAlpha;
+    //次は残った色を計算。
+    otherAlpha = clamp(otherAlpha, 0.0f, 1.0f - blueAlpha);
+    outlineColor.xyz += float3(0.7f, 0.7f, 0.7f) * otherAlpha;
     outlineAlbedoTexture[launchIndex.xy] = outlineColor;
     outlineEmissiveTexture[launchIndex.xy] = outlineColor;
     
+    finalColor[launchIndex.xy] = float4(0, 0, 0, 1);
+    emissiveTexture[launchIndex.xy] = float4(0, 0, 0, 1);
+    lensFlareTexture[launchIndex.xy] = float4(0, 0, 0, 1);
   
 }
 

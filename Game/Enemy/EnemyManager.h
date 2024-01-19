@@ -36,5 +36,12 @@ public:
 		int arg_stageNum,
 		std::list<EnemyData> arg_mapDatas,
 		DrawingByRasterize& arg_rasterize);
+
+private:
+	float CircleCol2D(
+		std::pair<float, float> arg_pos1,
+		float arg_rad1,
+		std::pair<float, float> arg_pos2,
+		float arg_rad2);
 };
 

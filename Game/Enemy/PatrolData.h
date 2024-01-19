@@ -39,7 +39,7 @@ public:
 	std::vector<std::pair<float, float>>
 		CheckSound(
 			std::pair<float, float> arg_enemyPos,
-			std::pair<float, float> arg_SoundPos);
+			std::pair<float, float> arg_soundPos);
 
 private:
 	std::vector<std::pair<int, int>>
