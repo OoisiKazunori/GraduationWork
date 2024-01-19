@@ -18,7 +18,6 @@ private:
 
 	std::list<std::unique_ptr<StageModel>> m_block01;
 
-	std::list<std::unique_ptr<StageModel>> m_stone;
 
 
 	std::list<std::unique_ptr<StageModel>> m_plane;
@@ -33,7 +32,7 @@ private:
 	std::list<std::unique_ptr<StageModel>> m_Wall_L_Post;
 	std::list<std::unique_ptr<StageModel>> m_Wall_T;
 
-	 
+
 	std::list<std::shared_ptr<MeshCollision>> m_collisions;
 	//その他木等の外部オブジェクトモデル--------------------------------
 
@@ -44,7 +43,7 @@ public:
 	StageManager();
 
 	void Init(DrawingByRasterize& arg_rasterize, int f_stageNum);
-	void Update(DrawingByRasterize &arg_rasterize);
+	void Update(DrawingByRasterize& arg_rasterize);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	//ステージが切り替わったトリガー
 	bool ChangeSceneTrigger();
@@ -52,9 +51,10 @@ public:
 
 	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision);
 
-	std::list<std::unique_ptr<StageModel>> GetStones(){return m_stone;};
-	
-	std::list<std::shared_ptr<MeshCollision>> GetColliders(){ return m_collisions; };
+	std::list<std::unique_ptr<StageModel>> m_stone;
+	std::list<std::unique_ptr<StageModel>> m_magazin;
+
+	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;
 	KazMath::Transform3D GetGoalTransform() { return m_goal->m_transform; };
 };

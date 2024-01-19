@@ -44,8 +44,11 @@ private:
 
 	//心音のタイマー
 	int m_heatbeatTimer;
-	const int HEATBEAT_TIMER = 45;
-	SoundData m_heatbeatSE;
+	const int HEARTBEAT_TIMER = 45;
+	const int HEARTBEAT_TIMER_FOUND = 32;
+	SoundData m_heartbeatSE;
+
+	bool m_isFoundToEnemy;
 
 	SoundData m_playerShotSE;
 	SoundData m_sonarSE;
@@ -56,6 +59,7 @@ private:
 		STAND,
 		SQUAT,
 	}m_playerAttitude;
+
 
 public:
 

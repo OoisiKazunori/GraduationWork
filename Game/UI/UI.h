@@ -117,7 +117,8 @@ public:
 	void Init();
 	void Update(StageManager& f_stageManager, KazMath::Transform3D& f_playerTrans);
 	void Draw(DrawingByRasterize& arg_rasterize);
-	void GetStone(int f_getStone){ m_haveStone += f_getStone;};
+	void GetStone(int f_getStone) { m_haveStone += f_getStone; };
+	void GetMagazin(int f_getStone) { m_haveBulletNum += f_getStone; };
 	WeponNumber GetNowWepon() { return m_nowWepon; };
 
 	//好きなタイミングで武器追加

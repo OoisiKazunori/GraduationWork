@@ -53,7 +53,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				m_transform.pos = rayResult.m_position;
 
 				//まずは最初にエコーを出す。
-				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
 				--m_echoCount;
 
 				SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
@@ -72,7 +72,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 		++m_echoSpan;
 		if (ECHO_SPAN <= m_echoSpan) {
 
-			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
 			--m_echoCount;
 			m_echoSpan = 0.0f;
 
@@ -104,7 +104,7 @@ bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollisi
 	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_dir);
 	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED) {
 
-		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
 		Init();
 		return true;
 

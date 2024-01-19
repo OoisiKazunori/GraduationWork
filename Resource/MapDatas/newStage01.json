@@ -7,8 +7,8 @@
             "echo": 0.0,
             "transform": {
                 "translation": [
-                    0.0,
-                    0.0,
+                    3.0,
+                    0.2,
                     0.0
                 ],
                 "rotation": [
@@ -17,9 +17,31 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
+                    0.8,
+                    0.8,
+                    0.8
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "magazin.001",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    8.0,
+                    0.2,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    90.00,
+                    0.0
+                ],
+                "scaling": [
+                    0.8,
+                    0.8,
+                    0.8
                 ]
             }
         },

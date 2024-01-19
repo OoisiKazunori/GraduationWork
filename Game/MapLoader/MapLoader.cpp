@@ -28,7 +28,7 @@ void MapManager::Init()
 		ParameterMgr l_mapData;
 		//ファイル名でjsonを取得
 		l_mapData.LoadFile(*l_fileNameItr);
-		
+
 		for (int o_counter = 0; o_counter < static_cast<int>(l_mapData.doc["Objects"].GetArray().Size()); o_counter++)
 		{
 			MapObject l_obj;
@@ -53,7 +53,7 @@ void MapManager::Init()
 			//エコー範囲のあるものはここで登録していく
 			/*if (l_obj.m_objetName.starts_with("echo") == true)
 			{
-				
+
 			}*/
 
 			m_objects.push_back(l_obj);
@@ -94,7 +94,7 @@ void MapManager::Init()
 		{
 			string line;
 			DirectX::XMINT2 pos = { 0, -0 };
-			
+
 			while (getline(file, line))
 			{
 				istringstream line_stream(line);
@@ -116,7 +116,7 @@ void MapManager::Init()
 						for (int i = 0; i < enemy10Number; i++)
 						{
 							enemyNumItr++;
-							
+
 						}
 						auto enemyWalkItr = (*enemyNumItr).m_position.begin();
 						for (int k = 0; k < enemy1WalkPosint; k++)

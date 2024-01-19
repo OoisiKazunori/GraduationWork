@@ -13,6 +13,8 @@ cbuffer OutlineData : register(b0)
     float4 m_outlineColor;
     float3 m_outlineCenterPos;
     float m_outlineLength;
+    float m_isFouund;
+    float m_foundEdge;
 }
 
 cbuffer EchoData : register(b1)
@@ -241,6 +243,17 @@ void main(uint3 DTid : SV_DispatchThreadID)
         }
         
         OutputAlbedo[DTid.xy] += float4(m_color * m_echoAlpha, 1.0f);
+
+    }
+        
+    //“G‚É”­Œ©‚³‚ê‚Ä‚¢‚é ‚©‚Â ‰æ–Ê’[‚¾‚Á‚½‚ç
+    bool isScreenEdge = false;
+    isScreenEdge |= DTid.x < m_foundEdge || (1280 - m_foundEdge * 1.5f) < DTid.x;
+    //isScreenEdge |= DTid.y < EDGE || (720 - EDGE) < DTid.y;
+    if (isScreenEdge)
+    {
+        OutputAlbedo[DTid.xy] = float4(0.67f, 0.20f, 0.20f, 1.0f);
+            
     }
 
 }

@@ -9,6 +9,8 @@
 #include "../ThrowableObject/ThrowableObjectController.h"
 #include "Imgui/MyImgui.h"
 #include "../Game/Menu/Menu.h"
+#include "PlayerStatus.h"
+#include "../Footprint/FootprintMgr.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
@@ -25,8 +27,8 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_adsSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ADS.wav");
 	m_adsSE.volume = 0.05f;
 
-	m_heatbeatSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Heartbeat.wav");
-	m_heatbeatSE.volume = 0.2f;
+	m_heartbeatSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Heartbeat.wav");
+	m_heartbeatSE.volume = 0.2f;
 
 	m_meshCollision = std::make_shared<MeshCollision>();
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
@@ -41,6 +43,7 @@ void Player::Init()
 
 	m_playerAttitude = PlayerAttitude::STAND;
 	m_onGround = false;
+	m_isFoundToEnemy = false;
 	m_isADS = false;
 	m_gravity = 0.0f;
 	m_heatbeatTimer = 0;
@@ -161,10 +164,16 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	//心音のタイマー
 	++m_heatbeatTimer;
-	if (HEATBEAT_TIMER <= m_heatbeatTimer) {
+	int heartBeatTimer = HEARTBEAT_TIMER;
+	float heartBeatRange = 60.0f;
+	if (m_isFoundToEnemy) {
+		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
+		heartBeatRange = 150.0f;
+	}
+	if (heartBeatTimer <= m_heatbeatTimer) {
 
-		SoundManager::Instance()->SoundPlayerWave(m_heatbeatSE, 0);
-		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, KazMath::Vec3<float>(0.7f, 0.7f, 0.7f));
+		SoundManager::Instance()->SoundPlayerWave(m_heartbeatSE, 0);
+		EchoArray::Instance()->Generate(m_transform.pos, heartBeatRange, Echo::COLOR::WHITE);
 		m_heatbeatTimer = 0;
 
 	}
@@ -183,6 +192,16 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		arg_hpUI.HitDamage(10, 10);
 
 	}
+
+
+
+
+
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_I)) {
+		m_isFoundToEnemy = !m_isFoundToEnemy;
+	}
+
+	PlayerStatus::Instance()->m_isFound = m_isFoundToEnemy;
 
 }
 
