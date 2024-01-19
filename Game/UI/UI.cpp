@@ -221,16 +221,20 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 		auto stoneItr = f_stageManager.m_stone.begin();
 		auto eraseItr = f_stageManager.m_stone.begin();
 		bool l_isGet = false;
+		float lengX;
+		float lengY;
+		float lengZ;
+		float leng = 0;
+		float getLeng = 8.0f;
 		for (; stoneItr != f_stageManager.m_stone.end(); ++stoneItr)
 		{
-			float lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
-			float lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
-			float lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
+			lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
+			lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
+			lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
 			lengX = (float)pow(lengX, 2);
 			lengY = (float)pow(lengY, 2);
 			lengZ = (float)pow(lengZ, 2);
-			float leng = sqrtf(lengX + lengY + lengZ);
-			float getLeng = 7.0f;
+			leng = sqrtf(lengX + lengY + lengZ);
 			if (leng < getLeng)
 			{
 				GetStone(5);
@@ -241,6 +245,31 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 		if (l_isGet)
 		{
 			f_stageManager.m_stone.erase(eraseItr);
+			l_isGet = false;
+		}
+		stoneItr = f_stageManager.m_magazin.begin();
+		eraseItr = f_stageManager.m_magazin.begin();
+		for (; stoneItr != f_stageManager.m_magazin.end(); ++stoneItr)
+		{
+			lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
+			lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
+			lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
+			lengX = (float)pow(lengX, 2);
+			lengY = (float)pow(lengY, 2);
+			lengZ = (float)pow(lengZ, 2);
+			leng = sqrtf(lengX + lengY + lengZ);
+			if (leng < getLeng)
+			{
+				//‚±‚±‚¾‚¯“ü‚ê‘Ö‚¦‚é
+				GetMagazin(5);
+				eraseItr = stoneItr;
+				l_isGet = true;
+			}
+		}
+		if (l_isGet)
+		{
+			f_stageManager.m_magazin.erase(eraseItr);
+			l_isGet = false;
 		}
 	}
 	if (KeyBoradInputManager::Instance()->GetMouseVel().z != 0)

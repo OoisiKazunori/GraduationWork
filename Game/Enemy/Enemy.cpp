@@ -2,6 +2,7 @@
 #include "EnemyConfig.h"
 #include "../Game/Bullet/BulletMgr.h"
 #include "../Echo/EchoArray.h"
+#include "../Footprint/FootprintMgr.h"
 
 Enemy::Enemy()
 {
@@ -71,9 +72,9 @@ void Enemy::SetData(
 
 	m_line.Generate(arg_rasterize);
 
-
+	m_reaction.Load(arg_rasterize);
 	m_shotDelay = 0;
-
+	m_appearTimer = 0;
 }
 
 void Enemy::SetCheckPointDelay(
@@ -112,6 +113,8 @@ void Enemy::Init()
 	m_changeCombatDelay = EnemyConfig::changeCombatDelay;
 
 	m_shotDelay = 0;
+
+	m_footprintSpan = 0;
 }
 
 void Enemy::Update(
@@ -121,6 +124,10 @@ void Enemy::Update(
 	KazMath::Vec3<float> arg_playerPos,
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
+
+	//前フレーム座標(移動する前の座標)を保存。
+	m_prevPos = m_trans.pos;
+
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
 		std::make_pair(arg_playerPos.x, arg_playerPos.z);
@@ -201,12 +208,90 @@ void Enemy::Update(
 
 	//一旦Y固定
 	m_trans.pos.y = -43.0f;
+
+
+
+	if (m_state != m_oldState)
+	{
+		switch (m_state)
+		{
+		case Enemy::State::Patrol:
+			break;
+		case Enemy::State::Warning:
+			m_reaction.Init(EnemyReaction::WARING, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
+			break;
+		case Enemy::State::Combat:
+			m_reaction.Init(EnemyReaction::COMBAT, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
+			break;
+		case Enemy::State::Holdup:
+			break;
+		case Enemy::State::Death:
+			break;
+		default:
+			break;
+		}
+	}
+	m_oldState = m_state;
+
+	m_reaction.Update(m_trans.pos + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f));
+
+	if (m_inEcho)
+	{
+		++m_appearTimer;
+	}
+
+	if (APPEAR_TIMER <= m_appearTimer)
+	{
+		m_appearTimer = 0;
+		m_inEcho = false;
+	}
+
+
+	//仮で足跡を描画。
+	float moveLength = KazMath::Vec3<float>(KazMath::Vec3<float>(m_trans.pos.x, 0.0f, m_trans.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).Length();
+	if (m_onGround) {
+		m_footprintSpan += moveLength;
+		if (FOOTPRINT_SPAN <= m_footprintSpan) {
+
+			KazMath::Transform3D footprintTransform = m_trans;
+
+			//地面に移動。
+			footprintTransform.pos.y = -49.0f;
+
+			//移動した方向から回転を計算する。上ベクトルは一旦固定。
+			KazMath::Vec3<float> axisX = KazMath::Vec3<float>(KazMath::Vec3<float>(m_trans.pos.x, 0.0f, m_trans.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).GetNormal();
+			KazMath::Vec3<float> axisY = KazMath::Vec3<float>(0.0f, 1.0f, 0.0f);
+			KazMath::Vec3<float> axisZ = axisX.Cross(axisY);
+			DirectX::XMMATRIX rotationMat = DirectX::XMMatrixIdentity();
+			rotationMat.r[0] = { axisX.x, axisX.y, axisX.z, 0.0f };
+			rotationMat.r[1] = { axisY.x, axisY.y, axisY.z, 0.0f };
+			rotationMat.r[2] = { axisZ.x, axisZ.y, axisZ.z, 0.0f };
+			footprintTransform.quaternion = DirectX::XMQuaternionRotationMatrix(rotationMat);
+
+			//どっちの足の足跡を出すかを決める。
+			KazMath::Vec3<float> footprintSide = {};
+			if (m_footprintSide) {
+				footprintSide = footprintTransform.GetFront() * 1.0f;
+			}
+			else {
+				footprintSide = -footprintTransform.GetFront() * 1.0f;
+			}
+			footprintTransform.pos += footprintSide;
+
+			FootprintMgr::Instance()->Generate(footprintTransform);
+
+			m_footprintSpan = 0;
+			m_footprintSide = !m_footprintSide;
+		}
+	}
+
 }
 
 void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
 	Raytracing::BlasVector& arg_blasVec)
 {
+	m_reaction.Draw(arg_rasterize, arg_blasVec);
 	if (!m_inEcho)
 	{
 		return;
@@ -223,14 +308,6 @@ void Enemy::Draw(
 			m_trans,
 			l_player);
 	}
-
-	//if (m_isCombatTri) {
-	//	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 0, 0, 255));
-	//}
-	//else {
-	//	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 255, 255, 255));
-	//}
-
 }
 
 //巡回

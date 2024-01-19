@@ -27,12 +27,6 @@ void Echo::Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR
 	m_echoData.m_alpha = ALPHA;
 	m_echoData.m_colorID = static_cast<int>(arg_echoColorID);
 
-	//‹L˜^—p‚ÌEcho‚Ìî•ñ‚ğ‹l‚ß‚ñ‚Å‚¨‚­B
-	m_echoMemoryData.m_pos = arg_pos;
-	m_echoMemoryData.m_radius = 0.0f;
-	m_echoMemoryData.m_alpha = ALPHA;
-	m_echoMemoryData.m_isActive = true;
-
 	m_maxEchoRadius = arg_maxEchoRadius;
 	m_isActive = true;
 

@@ -74,6 +74,7 @@ public:
 	/// <param name="arg_echoColor"> エコーの色 </param>
 	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR arg_echoColorID, bool arg_isMemory = false);
 
+
 	/// <summary>
 	/// 更新処理
 	/// </summary>

@@ -118,12 +118,12 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//}
 
 	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
+		//	
+		// ::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+		//	EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
+		//	SoundManager::Instance()->SoundPlayerWave(m_sonarSE, 0);
 
-	//	
-	// ::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
-	//	SoundManager::Instance()->SoundPlayerWave(m_sonarSE, 0);
-
-	//}
+		//}
 
 	m_weaponTransform.pos = m_transform.pos;
 	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f * StopMgr::Instance()->GetGameSpeed());
@@ -167,6 +167,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//心音のタイマー
 	m_heatbeatTimer += 1.0f * StopMgr::Instance()->GetGameSpeed();
 	float heartBeatTimer = HEARTBEAT_TIMER;
+	++m_heatbeatTimer;
 	float heartBeatRange = 60.0f;
 	if (m_isFoundToEnemy) {
 		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
@@ -306,7 +307,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 			m_shotDelay = 0;
 
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R)) 
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R))
 		{
 			WeponUIManager::Reload();
 		}
@@ -361,20 +362,36 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 {
 
 	float GROUND_RAY = 12.0f;
+	<<<<<< < HEAD
 
-	switch (m_playerAttitude)
-	{
-	case Player::PlayerAttitude::STAND:
-		GROUND_RAY = 12.0f;
-		break;
-	case Player::PlayerAttitude::SQUAT:
-		GROUND_RAY = 6.0f;
-		break;
-	default:
-		break;
-	}
+		switch (m_playerAttitude)
+		{
+		case Player::PlayerAttitude::STAND:
+			GROUND_RAY = 12.0f;
+			break;
+		case Player::PlayerAttitude::SQUAT:
+			GROUND_RAY = 6.0f;
+			break;
+		default:
+			break;
+		}
 
-	const float RAY_LENGTH = 1.0f;
+	====== =
+
+		switch (m_playerAttitude)
+		{
+		case Player::PlayerAttitude::STAND:
+			GROUND_RAY = 12.0f;
+			break;
+		case Player::PlayerAttitude::SQUAT:
+			GROUND_RAY = 6.0f;
+			break;
+		default:
+			break;
+		}
+
+	>>>>>> > origin / dev_Menu
+		const float RAY_LENGTH = 1.0f;
 
 	//地面と当たり判定を行う。
 	m_onGround = false;

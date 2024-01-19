@@ -10,6 +10,11 @@ private:
 	int m_exitTimer;
 	const int EXIT_TIMER = 240;
 	bool m_isActive;
+	bool m_inEcho;
+
+	//エコーに映ってから見えなくなるまでのタイマー
+	int m_invisibleTimer;
+	const int INVISIBLE_TIMER = 90;
 
 public:
 

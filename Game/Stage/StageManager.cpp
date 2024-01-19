@@ -204,7 +204,14 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 
 			m_stone.back()->m_echoFlag = true;
 		}
+		else if (l_mapItr->m_objetName.starts_with("magazin"))
+		{
 
+			m_magazin.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Weapon/Rock/", "Rock.gltf",
+				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale, l_mapItr->echoScale));
+
+			m_magazin.back()->m_echoFlag = true;
+		}
 		else if (l_mapItr->m_objetName.starts_with("cylinder") == true)
 		{
 			m_cylinder.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/cylinder/", "cylinder.gltf",

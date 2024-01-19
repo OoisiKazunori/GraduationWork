@@ -46,6 +46,7 @@ private:
 	float m_heatbeatTimer;
 	const float HEARTBEAT_TIMER = 45;
 	const float HEARTBEAT_TIMER_FOUND = 32;
+
 	SoundData m_heartbeatSE;
 
 	bool m_isFoundToEnemy;

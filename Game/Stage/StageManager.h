@@ -52,6 +52,7 @@ public:
 	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision);
 
 	std::list<std::unique_ptr<StageModel>> m_stone;
+	std::list<std::unique_ptr<StageModel>> m_magazin;
 
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;

@@ -3,6 +3,8 @@
 #include "PatrolData.h"
 #include "../Game/Collision/MeshCollision.h"
 #include"../KazLibrary/Sound/SoundManager.h"
+#include"../Game/UI/Reaction.h"
+#include<memory>
 
 class MeshCollision;
 class BulletMgr;
@@ -33,6 +35,8 @@ private:
 	KazMath::Transform3D m_trans;
 	KazMath::Vec3<float> m_oldPos;
 	State m_state;
+	KazMath::Vec3<float> m_prevPos;	//前フレーム座標
+	State m_state,m_oldState;
 	int m_delayNum;
 	int m_count;
 	int m_checkPointDelay;
@@ -55,6 +59,17 @@ private:
 
 	//敵が弾を撃つ遅延 デバッグ用 後で書き換えてください
 	int m_shotDelay;
+
+	bool m_inEcho = false;
+	int m_appearTimer; //敵が表示中の時間
+	static const int APPEAR_TIMER = 180;
+	//UI
+	Reaction m_reaction;
+
+	//仮で足跡を描画する用。
+	float m_footprintSpan;
+	const float FOOTPRINT_SPAN = 5;
+	bool m_footprintSide;
 
 public:
 	Enemy();
