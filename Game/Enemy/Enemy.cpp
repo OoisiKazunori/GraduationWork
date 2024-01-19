@@ -238,7 +238,8 @@ void Enemy::Patrol(std::pair<float, float> arg_pPos)
 {
 	//‰¹‚Ì”ÍˆÍ“à‚Ìê‡
 	if (CheckDistXZ(
-		arg_pPos, EnemyConfig::soundCheckDist))
+		arg_pPos, EnemyConfig::soundCheckDist) &&
+		m_checkSoundPos.size() > 0)
 	{
 		//–¢”­Œ©ó‘Ô‚Ìê‡(‰¹‚ª–Â‚Á‚½ê‡‚ÌğŒ‚ğ’Ç‰Á‚·‚é)
 		if (m_changeCombatDelay ==

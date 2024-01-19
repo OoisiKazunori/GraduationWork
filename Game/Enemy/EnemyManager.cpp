@@ -188,14 +188,6 @@ void EnemyManager::Update(
 			m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
 		}
 
-		//最短距離の音データをセット
-		std::vector<std::pair<float, float>>
-			l_checkSoundPos =
-			m_patrolDatas[i].CheckSound(
-				ePos, active_sPos);
-		//m_enemys[i].SetState(Enemy::State::Warning);
-		m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
-
 		//オフセット
 		m_enemys[i].SetOffset(std::make_pair(
 			l_offset_x,
