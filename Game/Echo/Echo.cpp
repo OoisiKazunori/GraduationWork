@@ -56,6 +56,7 @@ void Echo::Update()
 		float easingAmount = EasingMaker(Out, Cubic, m_easingTimer / APPEAR_EASING_TIMER);
 		m_echoData.m_radius = m_maxEchoRadius * easingAmount;
 		m_echoMemoryData.m_radius = m_echoData.m_radius;
+		m_echoMemoryData.m_alpha = easingAmount;
 
 		if (APPEAR_EASING_TIMER <= m_easingTimer) {
 
@@ -78,7 +79,11 @@ void Echo::Update()
 		m_easingTimer = std::clamp(m_easingTimer + 1.0f * StopMgr::Instance()->GetGameSpeed(), 0.0f, exitEasingTimer);
 
 		float easingAmount = EasingMaker(In, Cubic, m_easingTimer / exitEasingTimer);
+		if (m_isMemory) {
+			easingAmount = EasingMaker(In, Exp, m_easingTimer / exitEasingTimer);
+		}
 		m_echoData.m_alpha = (1.0f - easingAmount) * ALPHA;
+		m_echoMemoryData.m_alpha = (1.0f - easingAmount);
 
 		if (exitEasingTimer <= m_easingTimer) {
 

@@ -144,7 +144,8 @@ GBufferMgr::GBufferMgr()
 		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[NORMAL]),
 		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[SILHOUETE]),
 		m_cameraPosBuffer,
-		m_silhouetteOutputUAVTexture
+		m_silhouetteOutputUAVTexture,
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[OUTLINE])
 	);
 
 	//レンズフレア合成関連。

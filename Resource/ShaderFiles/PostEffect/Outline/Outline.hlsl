@@ -2,6 +2,7 @@
 Texture2D<float4> TargetWorld : register(t0);
 Texture2D<float4> TargetNormal : register(t1);
 Texture2D<float4> SilhouetteWorld : register(t2);
+Texture2D<float4> OutlineColor : register(t3);
 
 //出力先UAV  
 RWTexture2D<float4> OutputAlbedo : register(u0);
@@ -159,7 +160,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
     depth += length(m_outlineCenterPos - SamplingPixel(TargetWorld, DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS)).xyz);
     depth /= 8.0f;
     
-    if (length(normal) >= 0.2f || abs(depth - length(m_outlineCenterPos - SamplingPixel(TargetWorld, DTid.xy).xyz)) > 0.4f)
+    if (0.2f <= length(normal)|| 0.4f < abs(depth - length(m_outlineCenterPos - SamplingPixel(TargetWorld, DTid.xy).xyz)))
     {
         isOutline = true;
     }
@@ -186,8 +187,9 @@ void main(uint3 DTid : SV_DispatchThreadID)
         //サンプリングした位置に応じて色を暗くする。
         float edgeDistance = 1.0f - clamp(length(sampleWorldPos - m_outlineCenterPos) / m_outlineLength, 0.0f, 0.8f);
         
-        OutputAlbedo[DTid.xy] += m_outlineColor * edgeDistance;
-        OutputEmissive[DTid.xy] += m_outlineColor * edgeDistance;
+        float outline = OutlineColor[DTid.xy].x;
+        OutputAlbedo[DTid.xy] += float4(outline, outline, outline, 1.0f);
+        OutputEmissive[DTid.xy] += float4(outline, outline, outline, 1.0f);
     }
     else
     {
@@ -196,7 +198,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
             float4 silhouetteTexture = SilhouetteTex[DTid.xy];
             OutputAlbedo[DTid.xy] = silhouetteTexture;
             OutputEmissive[DTid.xy] = silhouetteTexture;
-        }      
+        }
     }
     
     ////中心地点から一定の距離だったら

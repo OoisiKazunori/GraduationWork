@@ -99,6 +99,7 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
 
     
     BasicDrawGBufferOutput output;
+    bool inEcho = false;
     for(int i = 0;i < 256; ++i)
     {
         if(lightBuffer[i].m_isActive != 1)
@@ -107,17 +108,28 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
         }
         float distanceNum = distance(lightBuffer[i].m_pos,input.worldPos);
         //エコー範囲内なら描画する
-        if(distanceNum <= lightBuffer[i].m_radius)
+        if (!(distanceNum <= lightBuffer[i].m_radius))
         {
-            output.albedo = float4(1,1,1,1) * color;
-            output.normal = float4(normal, 1.0f);
-            output.metalnessRoughness = float4(0, 0, 0, 1);
-            output.world = float4(input.worldPos, 1.0f);
-            output.emissive = EmissiveTex.Sample(smp, input.uv);
-            output.outline = float4(0,0,0,1);
-            output.outlineWorld = float4(0,0,0,1);
-            return output;
+            continue;
         }
+        //すでにエコー内の情報を保存してあったら、アウトラインのアルファだけ書き込んで次の要素を探す。
+        if (inEcho)
+        {
+            output.outline.x += lightBuffer[i].m_alpha;
+            continue;
+        }
+        output.albedo = float4(1,1,1,1) * color;
+        output.normal = float4(normal, 1.0f);
+        output.metalnessRoughness = float4(0, 0, 0, 1);
+        output.world = float4(input.worldPos, 1.0f);
+        output.emissive = EmissiveTex.Sample(smp, input.uv);
+        output.outline = float4(lightBuffer[i].m_alpha,0,0,1);
+        output.outlineWorld = float4(0,0,0,1);
+        inEcho = true;
+    }
+    if (inEcho)
+    {
+        return output;
     }
     discard;
     return output;
