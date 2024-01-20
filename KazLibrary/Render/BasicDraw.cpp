@@ -2,7 +2,7 @@
 
 DrawFuncData::DrawCallData BasicDraw::SetModel(const std::shared_ptr<ModelInfomation>& arg_modelInfomation)
 {
-	return DrawFuncData::SetDefferdRenderingModelAnimation(arg_modelInfomation);
+	return DrawFuncData::SetDefferdRenderingModelAnimationAppearByEcho(arg_modelInfomation);
 }
 
 DrawFuncData::DrawCallData BasicDraw::SetTex()

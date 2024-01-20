@@ -21,11 +21,6 @@ StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg
 	axis = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	m_transform.Rotation({ axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2] }, KazMath::AngleToRadian(rot.z));
 
-
-	m_stageModelRender.m_model.m_drawCommand.extraBufferArray[3] = EchoArray::Instance()->GetEchoMemoryStructuredBuffer();
-	m_stageModelRender.m_model.m_drawCommand.extraBufferArray[3].rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
-	m_stageModelRender.m_model.m_drawCommand.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA;
-
 }
 
 void StageModel::Update()

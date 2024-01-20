@@ -65,13 +65,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	m_sceneNum = SCENE_NONE;
 
-	//マップデータ
-	for (auto& index : m_preEnemy) {
-
-		index = std::make_shared<PreEnemy>(arg_rasterize);
-
-	}
-
 	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
 	m_axixTransform.scale.z += 1.0f;
 
@@ -105,11 +98,6 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//デバックキーのサンプル
-	if (DebugKey::Instance()->DebugKeyTrigger(DIK_0, "GenerateEnemy", "DIK_0"))
-	{
-		m_preEnemy[0]->SetPos({ 0.0f,-45.0f,0.0f });
-	}
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -226,11 +214,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
-	for (auto& index : m_preEnemy)
-	{
-		index->CheckInEcho(m_stageMeshCollision);
-		index->Update();
-	}
 	m_stageManager.CheckInEcho(m_stageMeshCollision);
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
@@ -283,11 +266,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	if (m_resultManager.GetResultShow())
 	{
 		m_resultManager.Draw(arg_rasterize);
-	}
-
-	for (auto& index : m_preEnemy) {
-
-		index->Draw(arg_rasterize, arg_blasVec);
 	}
 
 	DebugKey::Instance()->DrawImGui();
