@@ -1,7 +1,12 @@
 #include"ModelBuffer.hlsli"
 #include"InGame/BasicDraw.hlsli"
 
-RWStructuredBuffer<matrix>matrixBuffer:register(u0);
+struct OutputData
+{
+    matrix mat;
+    float4 color;
+};
+RWStructuredBuffer<OutputData>matrixBuffer:register(u0);
 
 struct PosUvNormalTangentBinormalOutput
 {
@@ -18,7 +23,7 @@ struct PosUvNormalTangentBinormalOutput
 PosUvNormalTangentBinormalOutput VSDefferdMain(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD, float3 tangent : TANGENT, float3 binormal : BINORMAL,uint id : SV_InstanceID)
 {
     PosUvNormalTangentBinormalOutput op;
-    op.svpos = mul(matrixBuffer[id], pos);
+    op.svpos = mul(matrixBuffer[id].mat, pos);
     op.worldPos = float3(0,0,0);
     op.uv = uv;
     op.normal = normal;
@@ -45,7 +50,7 @@ BasicDrawGBufferOutput PSDefferdMain(PosUvNormalTangentBinormalOutput input) : S
     }
 
     BasicDrawGBufferOutput output;
-    output.albedo = texColor;
+    output.albedo = texColor * matrixBuffer[input.id].color;
     output.normal = float4(0,0,0,1);
     output.metalnessRoughness = float4(mrColor.xyz, raytracingId);
     output.world = float4(input.worldPos, 1.0f);

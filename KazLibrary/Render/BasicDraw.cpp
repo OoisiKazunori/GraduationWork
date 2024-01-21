@@ -7,7 +7,7 @@ DrawFuncData::DrawCallData BasicDraw::SetModel(const std::shared_ptr<ModelInfoma
 
 DrawFuncData::DrawCallData BasicDraw::SetInstanceModel(const std::shared_ptr<ModelInfomation>& arg_modelInfomation)
 {
-	return DrawFuncData::SetDefferdRenderingModelAnimationInstance(arg_modelInfomation);
+	return DrawFuncData::SetDefferdRenderingModelAnimationInstance(arg_modelInfomation, false);
 }
 
 DrawFuncData::DrawCallData BasicDraw::SetTex()
@@ -139,12 +139,14 @@ void BasicDraw::SilhouetteModelRender::Draw(DrawingByRasterize& arg_rasterize, R
 BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deletePipelineInScene)
 	:m_model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), BasicDraw::SetInstanceModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
+	m_model.m_drawCommand.drawIndexInstanceCommandData.drawIndexInstancedData.instanceCount = 10000;
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
 }
 
 
 BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize& arg_rasterize, bool arg_deletePipelineInScene)
 {
+	m_model.m_drawCommand.drawIndexInstanceCommandData.drawIndexInstancedData.instanceCount = 10000;
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
 }
 
@@ -156,6 +158,7 @@ void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize& arg_rasterize
 {
 	std::shared_ptr<ModelInfomation>model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName));
 	m_model.Load(model, BasicDraw::SetInstanceModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
+	m_model.m_drawCommand.drawIndexInstanceCommandData.drawIndexInstancedData.instanceCount = 10000;
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
@@ -163,6 +166,7 @@ void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize& arg_rasterize
 {
 	std::shared_ptr<ModelInfomation>model(arg_modelInfomation);
 	m_model.Load(model, arg_drawCall);
+	m_model.m_drawCommand.drawIndexInstanceCommandData.drawIndexInstancedData.instanceCount = 10000;
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
@@ -179,7 +183,7 @@ void BasicDraw::BasicModelInstanceRender::UploadTransformMatrix(std::vector<KazM
 	//バッファのセット
 	m_vramTransformBuffer.rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 	m_vramTransformBuffer.rootParamType = GRAPHICS_PRAMTYPE_DATA;
-	m_model.m_drawCommand.extraBufferArray[m_model.m_drawCommand.extraBufferArray.size() - 2] = m_vramTransformBuffer;
+	m_model.m_drawCommand.extraBufferArray[m_model.m_drawCommand.extraBufferArray.size() - 2] = m_compute.m_extraBufferArray.back();
 }
 
 void BasicDraw::BasicModelInstanceRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)
@@ -192,25 +196,40 @@ void BasicDraw::BasicModelInstanceRender::GenerateTransformBuffer(int arg_elemen
 {
 	m_uploadTransformBuffer = KazBufferHelper::SetUploadBufferData(sizeof(DirectX::XMMATRIX) * arg_elementNum, "ModelInstance-RAM");
 	m_vramTransformBuffer = KazBufferHelper::SetGPUBufferData(sizeof(DirectX::XMMATRIX) * arg_elementNum, "ModelInstance-VRAM");
-	m_uploadTransformBuffer.bufferWrapper->ChangeBarrierUAV();
 	m_vramTransformBuffer.bufferWrapper->ChangeBarrierUAV();
+
+	m_uploadColorformBuffer = KazBufferHelper::SetUploadBufferData(sizeof(DirectX::XMFLOAT4) * arg_elementNum, "ModelInstanceColor-RAM");
+	m_vramColorBuffer = KazBufferHelper::SetGPUBufferData(sizeof(DirectX::XMFLOAT4) * arg_elementNum, "ModelInstanceColor-VRAM");
+	m_vramColorBuffer.bufferWrapper->ChangeBarrierUAV();
+
 
 	RootSignatureDataTest rootsignature;
 	rootsignature.rangeArray.emplace_back(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	rootsignature.rangeArray.emplace_back(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
+	rootsignature.rangeArray.emplace_back(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA3);
 	rootsignature.rangeArray.emplace_back(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	m_compute.Generate(ShaderOptionData("Resource/ShaderFiles/ComputeShader/InstanceModel.hlsl", "CSmain", "cs_6_4"), rootsignature);
 
 	m_compute.m_extraBufferArray.emplace_back(m_vramTransformBuffer);
 	m_compute.m_extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 	m_compute.m_extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
-	
-	m_compute.m_extraBufferArray.emplace_back(KazBufferHelper::SetGPUBufferData(sizeof(DirectX::XMMATRIX) * arg_elementNum));
+
+	m_compute.m_extraBufferArray.emplace_back(m_vramColorBuffer);
 	m_compute.m_extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 	m_compute.m_extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
-	
-	m_compute.m_extraBufferArray.emplace_back(CameraMgr::Instance()->GetCameraBuffer());
+
+	m_compute.m_extraBufferArray.emplace_back(CameraMgr::Instance()->m_cameraBuffer);
 	m_compute.m_extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 	m_compute.m_extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
-	m_dispatchNum = (UINT)arg_elementNum;
+	struct OutputData
+	{
+		DirectX::XMMATRIX m_mat;
+		DirectX::XMFLOAT4 m_color;
+	};
+	m_compute.m_extraBufferArray.emplace_back(KazBufferHelper::SetGPUBufferData(sizeof(OutputData) * arg_elementNum));
+	m_compute.m_extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+	m_compute.m_extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA3;
+
+
+	m_dispatchNum = (UINT)arg_elementNum / 1024;
 }

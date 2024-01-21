@@ -35,6 +35,7 @@ namespace BasicDraw
 		DrawFuncHelper::ModelRender m_model;
 
 		KazBufferHelper::BufferData m_uploadTransformBuffer, m_vramTransformBuffer;
+		KazBufferHelper::BufferData m_uploadColorformBuffer, m_vramColorBuffer;
 		void GenerateTransformBuffer(int arg_elementNum);
 
 		ComputeShader m_compute;

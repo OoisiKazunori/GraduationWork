@@ -21,6 +21,7 @@
 #include"../KazLibrary/Debug/DebugKey.h"
 #include"../Game/AI/Debug/EnemyDebugManager.h"
 #include"../Game/AI/Evaluation/FieldAI.h"
+#include"../Game/AI/Debug/FieldAIDebugManager.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
@@ -78,6 +79,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 
 	EnemyDebugManager::Instance()->Init(arg_rasterize);
+	FieldAIDebugManager::Instance()->Init(arg_rasterize);
 }
 
 GameScene::~GameScene()
@@ -258,6 +260,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	EnemyDebugManager::Instance()->Update();
 	FieldAI::Instance()->DebugUpdate();
+	FieldAIDebugManager::Instance()->Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -277,6 +280,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+
+	FieldAIDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
@@ -312,6 +317,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	DebugKey::Instance()->DrawImGui();
 	EnemyDebugManager::Instance()->DrawImGui();
+	FieldAIDebugManager::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()

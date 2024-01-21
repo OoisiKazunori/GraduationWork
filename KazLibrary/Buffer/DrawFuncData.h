@@ -1518,8 +1518,6 @@ namespace DrawFuncData
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
 
-		drawCall.SetupRaytracing(arg_isOpaque);
-
 		return drawCall;
 	};
 

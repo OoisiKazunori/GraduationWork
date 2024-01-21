@@ -115,6 +115,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\AI\Debug\EnemyDebugManager.cpp" />
+    <ClCompile Include="Game\AI\Debug\FieldAIDebugManager.cpp" />
     <ClCompile Include="Game\AI\Evaluation\FieldAI.cpp" />
     <ClCompile Include="Game\AI\Gauge\FindGauge.cpp" />
     <ClCompile Include="Game\AI\Gauge\Gauge.cpp" />
@@ -246,6 +247,7 @@
   <ItemGroup>
     <ClInclude Include="..\Mineral\Game\Effect\ChromaticAberration.h" />
     <ClInclude Include="Game\AI\Debug\EnemyDebugManager.h" />
+    <ClInclude Include="Game\AI\Debug\FieldAIDebugManager.h" />
     <ClInclude Include="Game\AI\EnemyAIData.h" />
     <ClInclude Include="Game\AI\Evaluation\FieldAI.h" />
     <ClInclude Include="Game\AI\Gauge\FindGauge.h" />

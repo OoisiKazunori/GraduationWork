@@ -294,11 +294,6 @@ DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 	);;
 }
 
-const KazBufferHelper::BufferData& CameraMgr::GetCameraBuffer()
-{
-	return m_cameraBuffer;
-}
-
 bool CameraMgr::ViewAndProjDirty(int CAMERA_INDEX)
 {
 	return viewDirtyFlagArray[CAMERA_INDEX]->Dirty() || perspectiveProjDirtyFlag[CAMERA_INDEX]->Dirty();
