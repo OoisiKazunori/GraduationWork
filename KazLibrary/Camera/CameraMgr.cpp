@@ -30,6 +30,8 @@ CameraMgr::CameraMgr() : orthographicMatProjectionDirtyFlag(orthographicMatProje
 			);
 		perspectiveProjDirtyFlag[i] = std::make_unique<DirtySet>(perspectiveMatArray[i]);
 	}
+
+	m_cameraBuffer = KazBufferHelper::SetConstBufferData(sizeof(CameraBufferData));
 }
 
 void CameraMgr::CameraSetting(float VIEWING_ANGLE, float FAR_SIDE, int CAMERA_INDEX)
@@ -161,6 +163,11 @@ void CameraMgr::Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<
 
 	GBufferMgr::Instance()->SetCameraPos(eye, GetViewMatrix(CAMERA_INDEX), GetPerspectiveMatProjection(CAMERA_INDEX));
 
+	CameraBufferData camera;
+	camera.m_viewMat = GetViewMatrix();
+	camera.m_projectionMat = GetPerspectiveMatProjection();
+	m_cameraBuffer.bufferWrapper->TransData(&camera,sizeof(camera));
+
 }
 
 DirectX::XMMATRIX CameraMgr::CreateCamera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<float> &TARGET_POS, const KazMath::Vec3<float> &UP)
@@ -285,6 +292,11 @@ DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 		0.1f,
 		100000
 	);;
+}
+
+const KazBufferHelper::BufferData& CameraMgr::GetCameraBuffer()
+{
+	return m_cameraBuffer;
 }
 
 bool CameraMgr::ViewAndProjDirty(int CAMERA_INDEX)

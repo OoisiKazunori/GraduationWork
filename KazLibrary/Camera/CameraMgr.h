@@ -88,6 +88,8 @@ public:
 	// 透視投影変換行列を視野角を指定して取得する。
 	DirectX::XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
 
+	const KazBufferHelper::BufferData& GetCameraBuffer();
+
 
 	bool ViewAndProjDirty(int CAMERA_INDEX = 0);
 	bool BillboardDirty(int CAMERA_INDEX = 0);
@@ -118,6 +120,13 @@ private:
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> billBoardDirtyFlagArray;
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> perspectiveProjDirtyFlag;
 	DirtySet orthographicMatProjectionDirtyFlag;
+
+	struct CameraBufferData
+	{
+		DirectX::XMMATRIX m_viewMat;
+		DirectX::XMMATRIX m_projectionMat;
+	};
+	KazBufferHelper::BufferData m_cameraBuffer;
 };
 
 // ライトカメラ定数を送る用の構造体
