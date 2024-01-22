@@ -36,7 +36,7 @@ Enemy::~Enemy()
 }
 
 void Enemy::SetData(
-	DrawingByRasterize& arg_rasterize)
+	DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize)
 {
 	////モデルデータ代入
 	//m_enemyBox =
@@ -172,7 +172,7 @@ void Enemy::Update(
 			m_isInSightFlag = false;
 		}
 
-		m_eeMap.Find(m_boxSight.m_sight);
+		ExistenceEstablishmentMap::Instance()->Find(m_boxSight.m_sight);
 	}
 	//通常状態
 	else
@@ -186,9 +186,8 @@ void Enemy::Update(
 			m_isInSightFlag = false;
 		}
 
-		m_eeMap.Find(m_coneSight.m_sight);
+		ExistenceEstablishmentMap::Instance()->Find(m_coneSight.m_sight);
 	}
-	m_eeMap.Update();
 
 
 	//警戒度

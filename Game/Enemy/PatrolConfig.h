@@ -19,8 +19,8 @@ public:
 		KazMath::Color color;
 	};
 
-private:
 	std::vector<std::vector<AstarData>> m_astarDatas;
+private:
 	size_t m_size_x;	//Chip_X
 	size_t m_size_y;	//Chip_Y
 	float m_offset_x;

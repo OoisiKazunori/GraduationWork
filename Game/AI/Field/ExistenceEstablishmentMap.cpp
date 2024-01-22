@@ -1,9 +1,9 @@
 #include "ExistenceEstablishmentMap.h"
 
-void ExistenceEstablishmentMap::Init(int arg_x, int arg_y)
+void ExistenceEstablishmentMap::Init(const KazMath::Vec2<int>& arg_mapIDMaxSize)
 {
-	m_x = arg_x;
-	m_z = arg_y;
+	m_x = arg_mapIDMaxSize.x;
+	m_z = arg_mapIDMaxSize.y;
 	m_mapDataArray.resize(m_x * m_z);
 }
 

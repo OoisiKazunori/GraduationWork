@@ -78,11 +78,12 @@ void EnemyManager::SetMapData(
 		}
 	}
 
+	const float SPACE = 4.84f;
 	//マップサイズ
 	m_config = std::make_shared<PatrolConfig>(
 		MapManager::GetMapSizeData(arg_stageNum).x,
 		MapManager::GetMapSizeData(arg_stageNum).y,
-		4.84f);
+		SPACE);
 
 	//マップデータ
 	std::list<std::list<int>> l_mapChips =
@@ -116,7 +117,7 @@ void EnemyManager::SetMapData(
 	float l_offset_y = m_config.get()->GetOffsetY();
 	for (int i = 0; i < l_enemyNum; ++i)
 	{
-		m_enemys[i]->SetData(arg_rasterize);
+		m_enemys[i]->SetData(arg_rasterize, { static_cast<int>(m_config->GetSizeX()), static_cast<int>(m_config->GetSizeY()) });
 		m_enemys[i]->SetOffset(std::make_pair(
 			l_offset_x,
 			l_offset_y));
@@ -124,6 +125,16 @@ void EnemyManager::SetMapData(
 		m_patrolDatas[i].Init();
 	}
 	m_patrolDraw.SetData(arg_rasterize, m_config);
+
+
+	FieldAIDebugManager::Instance()->Init(
+		arg_rasterize,
+		{ static_cast<int>(m_config->GetSizeX()),static_cast<int>(m_config->GetSizeY()) },
+		m_config->m_astarDatas
+	);
+	ExistenceEstablishmentMap::Instance()->Init({ static_cast<int>(m_config->GetSizeX()),static_cast<int>(m_config->GetSizeY()) });
+
+
 }
 
 void EnemyManager::Update(
@@ -185,6 +196,7 @@ void EnemyManager::Update(
 	//判定
 	m_config->Update();
 	m_patrolDraw.Update();
+	ExistenceEstablishmentMap::Instance()->Update();
 }
 
 void EnemyManager::Draw(

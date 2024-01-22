@@ -79,8 +79,6 @@ private:
 	ConeTypeViewingAngle m_coneSight;
 	BoxTypeViewingAngle m_boxSight;
 
-	ExistenceEstablishmentMap m_eeMap;
-
 	FindGauge m_findGauge;
 public:
 	Enemy();
@@ -152,7 +150,7 @@ public:
 
 public:
 	void SetData(
-		DrawingByRasterize& arg_rasterize);
+		DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize);
 	void SetCheckPointDelay(
 		std::vector<std::pair<int, int>> arg_checkPointDelay);
 	void SetState(State arg_state) { m_state = arg_state; }

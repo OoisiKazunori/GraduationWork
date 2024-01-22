@@ -9,10 +9,10 @@
 /// <summary>
 /// 存在確立マップ
 /// </summary>
-class ExistenceEstablishmentMap
+class ExistenceEstablishmentMap :public ISingleton<ExistenceEstablishmentMap>
 {
 public:
-	void Init(int arg_x, int arg_y);
+	void Init(const KazMath::Vec2<int>& arg_mapIDMaxSize);
 	void Update();
 	//視界の頂点を元に探索済みかどうかの判定を取ります。
 	void Find(SightCollision& arg_sightPoint);

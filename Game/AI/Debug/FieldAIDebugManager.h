@@ -4,13 +4,14 @@
 #include"../KazLibrary/Helper/ISinglton.h"
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../Game/AI/Evaluation/FieldAI.h"
+#include"../Game/Enemy/PatrolConfig.h"
 
 class FieldAIDebugManager :public ISingleton<FieldAIDebugManager>
 {
 public:
 	FieldAIDebugManager();
 
-	void Init(DrawingByRasterize& arg_rasterize);
+	void Init(DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize, std::vector<std::vector<PatrolConfig::AstarData>>arg_patData);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 	void DrawImGui();
@@ -24,5 +25,7 @@ private:
 	int m_radioType;
 
 	std::vector<KazMath::Color>m_gridColorArray;
+	KazMath::Vec2<int> m_mapChipMaxSize;
+
 };
 

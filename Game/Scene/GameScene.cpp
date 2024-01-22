@@ -79,7 +79,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 
 	EnemyDebugManager::Instance()->Init(arg_rasterize);
-	FieldAIDebugManager::Instance()->Init(arg_rasterize);
 }
 
 GameScene::~GameScene()
