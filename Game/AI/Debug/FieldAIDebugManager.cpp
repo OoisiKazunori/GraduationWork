@@ -1,6 +1,6 @@
 #include "FieldAIDebugManager.h"
 
-FieldAIDebugManager::FieldAIDebugManager() :m_congestedZoneFlag(false), m_existenceEstablishmentMapFlag(false), m_filteringVisualizationFlag(false)
+FieldAIDebugManager::FieldAIDebugManager() :m_radioType(0)
 {
 
 }
@@ -37,12 +37,22 @@ void FieldAIDebugManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::Bl
 void FieldAIDebugManager::DrawImGui()
 {
 	ImGui::Begin("FieldAIDebug");
-	ImGui::Checkbox("existence-establishment map", &m_existenceEstablishmentMapFlag);
-	ImGui::SameLine();
-	ImGui::Checkbox("Filtering Visualization", &m_filteringVisualizationFlag);
-	ImGui::SameLine();
-	ImGui::Checkbox("congested zone", &m_congestedZoneFlag);
-	ImGui::SameLine();
+	ImGui::RadioButton("existence-establishment map", &m_radioType,0);
+	ImGui::RadioButton("Filtering Visualization", &m_radioType,1);
+	ImGui::RadioButton("congested zone", &m_radioType,2);
+
+	//グリッドの座標指定
+
+	switch (m_radioType)
+	{
+	case 0:
+	{
+		ImGui::Text("");
+	}
+		break;
+	default:
+		break;
+	}
 	ImGui::End();
 }
 

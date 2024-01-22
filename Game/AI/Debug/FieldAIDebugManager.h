@@ -20,10 +20,7 @@ public:
 private:
 
 	BasicDraw::BasicModelInstanceRender m_modelInstanceRender;
-
-	bool m_existenceEstablishmentMapFlag;
-	bool m_filteringVisualizationFlag;
-	bool m_congestedZoneFlag;
+	int m_radioType;
 
 	std::vector<KazMath::Color>m_gridColorArray;
 };
