@@ -18,7 +18,7 @@ void FieldAIDebugManager::Init(DrawingByRasterize& arg_rasterize)
 		for (int z = 0; z < 100; ++z)
 		{
 			transformArray.emplace_back(KazMath::Transform3D({ 0.0f,0.0f,static_cast<float>(x * 10 + z * 10) }));
-			m_gridColorArray.emplace_back(KazMath::Color(1, 1, 1, 1));
+			m_gridColorArray.emplace_back(KazMath::Color(255, 0, 0, 255));
 		}
 	}
 	m_modelInstanceRender.UploadTransformMatrix(transformArray);
@@ -56,8 +56,14 @@ void FieldAIDebugManager::DrawImGui()
 	ImGui::End();
 }
 
-void FieldAIDebugManager::SetGridColor(int x, int y, const KazMath::Color& arg_color)
+void FieldAIDebugManager::SetGridColorForSearch(int arg_x, int arg_y, const KazMath::Color& arg_color)
 {
-	m_gridColorArray[x * static_cast<int>(m_gridColorArray.size()) + y] = arg_color;
+	m_gridColorArray[arg_x * static_cast<int>(m_gridColorArray.size()) + arg_y] = arg_color;
+	m_modelInstanceRender.UploadColor(m_gridColorArray);
+}
+
+void FieldAIDebugManager::SetGridColorForExistenceEstablishmentMap(int arg_x, int arg_y, const KazMath::Color& arg_color)
+{
+	m_gridColorArray[arg_x * static_cast<int>(m_gridColorArray.size()) + arg_y] = arg_color;
 	m_modelInstanceRender.UploadColor(m_gridColorArray);
 }

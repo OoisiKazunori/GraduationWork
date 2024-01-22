@@ -12,6 +12,7 @@ public:
 	{
 		return m_getPointPosArray;
 	}
+	SightCollision m_sight;
 private:
 	enum
 	{
@@ -31,6 +32,5 @@ private:
 	const float FAR_LENGTH = 80.0f;		//‹–ì‚ÌÅ‘å‹——£
 	const float MIDDLE_LENGTH = 40.0f;	//‹–ì‚Ì”ÍˆÍ‚ªÅ‘å‚Ü‚ÅL‚­‚È‚é‚Ü‚Å‚Ì‹——£
 
-	SightCollision m_sight;
 };
 

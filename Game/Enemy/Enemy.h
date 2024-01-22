@@ -11,6 +11,7 @@
 #include"../Game/AI/Gauge/FindGauge.h"
 #include"../Game/AI/Sight/ConeTypeViewingAngle.h"
 #include"../Game/AI/Sight/BoxTypeViewingAngle.h"
+#include"../Game/AI/Field/ExistenceEstablishmentMap.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -77,6 +78,8 @@ private:
 	bool m_isInSightFlag;//Ž‹ŠE“à‚É“ü‚Á‚½‚©
 	ConeTypeViewingAngle m_coneSight;
 	BoxTypeViewingAngle m_boxSight;
+
+	ExistenceEstablishmentMap m_eeMap;
 
 	FindGauge m_findGauge;
 public:

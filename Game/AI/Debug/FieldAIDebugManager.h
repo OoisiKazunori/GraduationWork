@@ -15,7 +15,8 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 	void DrawImGui();
 
-	void SetGridColor(int x, int y, const KazMath::Color& arg_color);
+	void SetGridColorForSearch(int arg_x, int arg_y, const KazMath::Color& arg_color);
+	void SetGridColorForExistenceEstablishmentMap(int arg_x, int arg_y, const KazMath::Color& arg_color);
 
 private:
 

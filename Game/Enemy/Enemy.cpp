@@ -171,6 +171,8 @@ void Enemy::Update(
 		{
 			m_isInSightFlag = false;
 		}
+
+		m_eeMap.Find(m_boxSight.m_sight);
 	}
 	//’Êíó‘Ô
 	else
@@ -183,7 +185,11 @@ void Enemy::Update(
 		{
 			m_isInSightFlag = false;
 		}
+
+		m_eeMap.Find(m_coneSight.m_sight);
 	}
+	m_eeMap.Update();
+
 
 	//Œx‰ú“x
 	m_findGauge.Update(arg_playerPos, m_trans.pos, 0.0f, m_isInSightFlag);
