@@ -18,13 +18,12 @@ public:
 
 	void SetGridColorForSearch(int arg_x, int arg_y, const KazMath::Color& arg_color);
 	void SetGridColorForExistenceEstablishmentMap(int arg_x, int arg_y, const KazMath::Color& arg_color);
-
 private:
 
 	BasicDraw::BasicModelInstanceRender m_modelInstanceRender;
 	int m_radioType;
 
-	std::vector<KazMath::Color>m_gridColorArray;
+	std::array<std::vector<KazMath::Color>,4>m_gridColorArray;
 	KazMath::Vec2<int> m_mapChipMaxSize;
 
 };

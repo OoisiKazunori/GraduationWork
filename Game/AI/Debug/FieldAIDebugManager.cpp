@@ -19,11 +19,14 @@ void FieldAIDebugManager::Init(DrawingByRasterize& arg_rasterize, const KazMath:
 		{
 			transformArray.emplace_back(arg_patData[x][z].trans);
 			transformArray.back().pos.y = -45.0f;
-			m_gridColorArray.emplace_back(KazMath::Color(255, 0, 0, 255));
+			m_gridColorArray[0].emplace_back(KazMath::Color(255, 0, 0, 255));
+			m_gridColorArray[1].emplace_back(KazMath::Color(0, 255, 0, 255));
+			m_gridColorArray[2].emplace_back(KazMath::Color(0, 0, 255, 255));
+			m_gridColorArray[3].emplace_back(KazMath::Color(0, 255, 255, 255));
 		}
 	}
 	m_modelInstanceRender.UploadTransformMatrix(transformArray);
-	m_modelInstanceRender.UploadColor(m_gridColorArray);
+	m_modelInstanceRender.UploadColor(m_gridColorArray[0]);
 
 	m_mapChipMaxSize = arg_mapIDMaxSize;
 }
@@ -40,12 +43,13 @@ void FieldAIDebugManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::Bl
 void FieldAIDebugManager::DrawImGui()
 {
 	ImGui::Begin("FieldAIDebug");
-	ImGui::RadioButton("existence-establishment map", &m_radioType, 0);
-	ImGui::RadioButton("Filtering Visualization", &m_radioType, 1);
-	ImGui::RadioButton("congested zone", &m_radioType, 2);
+	ImGui::RadioButton("astar", &m_radioType, 0);
+	ImGui::RadioButton("existence-establishment map", &m_radioType, 1);
+	ImGui::RadioButton("Filtering Visualization", &m_radioType, 2);
+	ImGui::RadioButton("congested zone", &m_radioType, 3);
 
+	m_modelInstanceRender.UploadColor(m_gridColorArray[m_radioType]);
 	//グリッドの座標指定
-
 	switch (m_radioType)
 	{
 	case 0:
@@ -61,12 +65,10 @@ void FieldAIDebugManager::DrawImGui()
 
 void FieldAIDebugManager::SetGridColorForSearch(int arg_x, int arg_y, const KazMath::Color& arg_color)
 {
-	m_gridColorArray[arg_x * static_cast<int>(m_mapChipMaxSize.x) + arg_y] = arg_color;
-	m_modelInstanceRender.UploadColor(m_gridColorArray);
+	m_gridColorArray[0][arg_x * static_cast<int>(m_mapChipMaxSize.x) + arg_y] = arg_color;
 }
 
 void FieldAIDebugManager::SetGridColorForExistenceEstablishmentMap(int arg_x, int arg_y, const KazMath::Color& arg_color)
 {
-	m_gridColorArray[arg_x * static_cast<int>(m_mapChipMaxSize.x) + arg_y] = arg_color;
-	m_modelInstanceRender.UploadColor(m_gridColorArray);
+	m_gridColorArray[1][arg_x * static_cast<int>(m_mapChipMaxSize.x) + arg_y] = arg_color;
 }
