@@ -50,7 +50,7 @@ bool SightCollision::Collision(const KazMath::Vec3<float>& arg_playerPos)
 		hitFlag = true;
 	}
 	//‚‚³‚Ì”ÍˆÍ‚Ì’†‚É‚¢‚é‚Ì‚©
-	if (-10.0f <= arg_playerPos.y && arg_playerPos.y <= 10.0f)
+	if (-10.0f <= arg_playerPos.y && arg_playerPos.y <= 10.0f && hitFlag)
 	{
 		hitFlag = true;
 	}

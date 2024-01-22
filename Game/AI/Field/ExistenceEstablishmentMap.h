@@ -12,7 +12,7 @@
 class ExistenceEstablishmentMap :public ISingleton<ExistenceEstablishmentMap>
 {
 public:
-	void Init(const KazMath::Vec2<int>& arg_mapIDMaxSize);
+	void Init(const KazMath::Vec2<int>& arg_mapIDMaxSize, const KazMath::Vec3<float>& arg_basePos);
 	void Update();
 	//‹ŠE‚Ì’¸“_‚ğŒ³‚É’TõÏ‚İ‚©‚Ç‚¤‚©‚Ì”»’è‚ğæ‚è‚Ü‚·B
 	void Find(SightCollision& arg_sightPoint);
@@ -26,6 +26,7 @@ public:
 	};
 private:
 	int m_x, m_z;
+	KazMath::Vec3<float>m_basePos;
 	std::vector<FieldData>m_mapDataArray;
 	SightCollision m_sightCollision;
 };
