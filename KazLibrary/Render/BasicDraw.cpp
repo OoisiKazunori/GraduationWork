@@ -188,10 +188,10 @@ void BasicDraw::BasicModelInstanceRender::UploadTransformMatrix(std::vector<KazM
 
 void BasicDraw::BasicModelInstanceRender::UploadColor(std::vector<KazMath::Color> arg_color)
 {
-	std::vector<KazMath::Color>colorArray;
+	std::vector<DirectX::XMFLOAT4>colorArray;
 	for (auto& obj : arg_color)
 	{
-		colorArray.emplace_back(obj);
+		colorArray.emplace_back(obj.ConvertColorRateToXMFLOAT4());
 	}
 	m_uploadColorBuffer.bufferWrapper->TransData(colorArray.data(), sizeof(DirectX::XMFLOAT4) * (int)colorArray.size());
 	m_vramColorBuffer.bufferWrapper->CopyBuffer(m_uploadColorBuffer.bufferWrapper->GetBuffer());
