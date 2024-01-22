@@ -155,16 +155,26 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 
 	m_slash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
 	m_stoneSlash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
-	for (int k = 0; k < 5; k++)
-	{
+
 		for (int i = 0; i < 10; i++)
 		{
-			int rigit = 10 * k;
+			int rigit = 10 * 0;
 			std::string hoge = "Resource/Number/Number_" + to_string(i) + ".png";
 			m_bulletNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
 			m_stoneNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			rigit = 10 * 1;
+			m_bulletNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			m_stoneNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			rigit = 10 * 2;
+			m_bulletNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			m_stoneNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			rigit = 10 * 3;
+			m_bulletNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			m_stoneNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			rigit = 10 * 4;
+			m_bulletNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+			m_stoneNum[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
 		}
-	}
 }
 
 void WeponUIManager::Shot()
@@ -925,4 +935,98 @@ void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 		m_missionClearSp.Draw(arg_rasterize);
 	}
 	m_back.Draw(arg_rasterize);
+}
+
+DangerUIManager::DangerUIManager(DrawingByRasterize& arg_rasterize):
+	m_dangerTex(arg_rasterize, "Resource/UITexture/Timer_UI_Text2.png"),
+	m_cautionTex(arg_rasterize, "Resource/UITexture/Timer_UI_Text1.png")
+{
+	for (int i = 0; i < 10; i++)
+	{
+		int rigit = 10 * 0;
+		std::string hoge = "Resource/Number/Number_" + to_string(i) + ".png";
+		m_timerTex[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+		rigit = 10 * 1;
+		m_timerTex[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+		rigit = 10 * 2;
+		m_timerTex[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+		rigit = 10 * 3;
+		m_timerTex[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+		rigit = 10 * 4;
+		m_timerTex[i + rigit].m_tex.Load(arg_rasterize, hoge, true);
+	}
+}
+
+void DangerUIManager::Init()
+{
+}
+
+void DangerUIManager::Update(bool f_isLook)
+{
+	//Œ©‚Â‚©‚Á‚½uŠÔ
+	if (f_isLook && f_isLook != m_isOldLook)
+	{
+		m_isLook = true;
+		m_dangerTimer = 10.0f;
+	}
+	//Œ©‚Â‚©‚Á‚Ä‚¢‚éŠÔ
+	if (m_isLook)
+	{
+		if (m_dangerTimer > 0.0f)
+		{
+			m_dangerTimer -= 0.01f;
+			if (m_dangerTimer <= 0.0f)
+			{
+				m_cautionTimer = 10.0f;
+			}
+		}
+		else
+		{
+			m_cautionTimer -= 0.01f;
+			if (m_cautionTimer <= 0.0f)
+			{
+				m_isLook = false;
+			}
+		}
+	}
+
+	m_isOldLook = f_isLook;
+}
+
+void DangerUIManager::Draw(DrawingByRasterize& arg_rasterize)
+{
+	if (!m_isLook) return;
+
+	if (m_dangerTimer > 0.0f)
+	{
+		int hoge1 = (int)(m_dangerTimer * 100.0f) % 10;
+		int hoge10 = (int)(m_dangerTimer * 10.0f) % 10;
+		int hoge100 = (int)(m_dangerTimer * 1.0f) % 10;
+
+		float y = 150.0f;
+		KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f , y - 20.0f), KazMath::Vec2<float>(0.9f, 0.9f));
+		m_dangerTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+		l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 32.0, y), KazMath::Vec2<float>(1.0f, 1.0f));
+		m_timerTex[hoge1 + 0].m_tex.Draw2D(arg_rasterize, l_trans);
+		l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 16.0, y), KazMath::Vec2<float>(1.0f, 1.0f));
+		m_timerTex[hoge10 + 10].m_tex.Draw2D(arg_rasterize, l_trans);
+		l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f - 0.0, y), KazMath::Vec2<float>(1.0f, 1.0f));
+		m_timerTex[hoge100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+	}
+	else
+	{
+		int hoge1 = (int)(m_cautionTimer * 100.0f) % 10;
+		int hoge10 = (int)(m_cautionTimer * 10.0f) % 10;
+		int hoge100 = (int)(m_cautionTimer * 1.0f) % 10;
+
+		float y = 150.0f;
+		KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f, y - 20.0f), KazMath::Vec2<float>(0.9f, 0.9f));
+		m_cautionTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+		l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 32.0, y), KazMath::Vec2<float>(1.0f, 1.0f));
+		m_timerTex[hoge1 + 0].m_tex.Draw2D(arg_rasterize, l_trans);
+		l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 16.0, y), KazMath::Vec2<float>(1.0f, 1.0f));
+		m_timerTex[hoge10 + 10].m_tex.Draw2D(arg_rasterize, l_trans);
+		l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f - 0.0, y), KazMath::Vec2<float>(1.0f, 1.0f));
+		m_timerTex[hoge100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
+	}
 }

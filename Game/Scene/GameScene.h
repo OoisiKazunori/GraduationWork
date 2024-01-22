@@ -87,6 +87,7 @@ private:
 	GadgetUIManager m_gadgetMaanager;
 	HPUI m_HPBarManager;
 	ResultUI m_resultManager;
+	DangerUIManager m_dangerManager;
 
 
 	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;

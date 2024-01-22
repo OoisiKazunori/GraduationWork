@@ -29,7 +29,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_heartRateManager(arg_rasterize),
 	m_menu(arg_rasterize),
 	m_resultManager(arg_rasterize),
-	m_goalPoint(arg_rasterize)
+	m_goalPoint(arg_rasterize),
+	m_dangerManager(arg_rasterize)
 {
 
 	/*
@@ -205,6 +206,15 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		{
 			m_resultManager.ShowResult();
 		}
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
+		{
+			m_dangerManager.Update(true);
+		}
+		else
+		{
+			m_dangerManager.Update(false);
+		}
+		
 	}
 	//リザルト出す
 	else if (m_resultManager.GetResultShow())
@@ -267,6 +277,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		//m_gadgetMaanager.Draw(arg_rasterize);
 		m_HPBarManager.Draw(arg_rasterize);
 		//m_heartRateManager.Draw(arg_rasterize);
+		m_dangerManager.Draw(arg_rasterize);
 	}
 
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
