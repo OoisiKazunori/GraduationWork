@@ -55,7 +55,7 @@ BasicDrawGBufferOutput PSDefferdMain(PosUvNormalTangentBinormalOutput input) : S
     output.metalnessRoughness = float4(mrColor.xyz, raytracingId);
     output.world = float4(input.worldPos, 1.0f);
     output.emissive = EmissiveTex.Sample(smp, input.uv);
-    output.outline = float4(0,0,0,0);
-    output.outlineWorld = float4(0,0,0,0);
+    output.outline = matrixBuffer[input.id].color;
+    output.outlineWorld = float4(0,0,0,1);
     return output;
 }

@@ -23,6 +23,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     OutputData output;
     output.mat = mul(view,worldMatData[index]);
     output.mat = mul(proj,output.mat);
-    output.color = float4(1,1,1,1);
+    output.color = colorData[index];
     drawData[index] = output;
 }

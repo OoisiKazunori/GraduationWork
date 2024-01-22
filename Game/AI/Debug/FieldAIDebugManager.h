@@ -15,6 +15,8 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 	void DrawImGui();
 
+	void SetGridColor(int x, int y, const KazMath::Color& arg_color);
+
 private:
 
 	BasicDraw::BasicModelInstanceRender m_modelInstanceRender;
@@ -22,5 +24,7 @@ private:
 	bool m_existenceEstablishmentMapFlag;
 	bool m_filteringVisualizationFlag;
 	bool m_congestedZoneFlag;
+
+	std::vector<KazMath::Color>m_gridColorArray;
 };
 

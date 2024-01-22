@@ -31,11 +31,12 @@ namespace BasicDraw
 		void Load(DrawingByRasterize& arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall);
 
 		void UploadTransformMatrix(std::vector<KazMath::Transform3D>arg_transform);
+		void UploadColor(std::vector<KazMath::Color>arg_color);
 		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 		DrawFuncHelper::ModelRender m_model;
 
 		KazBufferHelper::BufferData m_uploadTransformBuffer, m_vramTransformBuffer;
-		KazBufferHelper::BufferData m_uploadColorformBuffer, m_vramColorBuffer;
+		KazBufferHelper::BufferData m_uploadColorBuffer, m_vramColorBuffer;
 		void GenerateTransformBuffer(int arg_elementNum);
 
 		ComputeShader m_compute;

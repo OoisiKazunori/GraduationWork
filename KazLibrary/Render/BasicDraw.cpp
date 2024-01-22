@@ -186,6 +186,17 @@ void BasicDraw::BasicModelInstanceRender::UploadTransformMatrix(std::vector<KazM
 	m_model.m_drawCommand.extraBufferArray[m_model.m_drawCommand.extraBufferArray.size() - 2] = m_compute.m_extraBufferArray.back();
 }
 
+void BasicDraw::BasicModelInstanceRender::UploadColor(std::vector<KazMath::Color> arg_color)
+{
+	std::vector<KazMath::Color>colorArray;
+	for (auto& obj : arg_color)
+	{
+		colorArray.emplace_back(obj);
+	}
+	m_uploadColorBuffer.bufferWrapper->TransData(colorArray.data(), sizeof(DirectX::XMFLOAT4) * (int)colorArray.size());
+	m_vramColorBuffer.bufferWrapper->CopyBuffer(m_uploadColorBuffer.bufferWrapper->GetBuffer());
+}
+
 void BasicDraw::BasicModelInstanceRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)
 {
 	m_compute.Compute({ m_dispatchNum,1,1 });
@@ -198,7 +209,7 @@ void BasicDraw::BasicModelInstanceRender::GenerateTransformBuffer(int arg_elemen
 	m_vramTransformBuffer = KazBufferHelper::SetGPUBufferData(sizeof(DirectX::XMMATRIX) * arg_elementNum, "ModelInstance-VRAM");
 	m_vramTransformBuffer.bufferWrapper->ChangeBarrierUAV();
 
-	m_uploadColorformBuffer = KazBufferHelper::SetUploadBufferData(sizeof(DirectX::XMFLOAT4) * arg_elementNum, "ModelInstanceColor-RAM");
+	m_uploadColorBuffer = KazBufferHelper::SetUploadBufferData(sizeof(DirectX::XMFLOAT4) * arg_elementNum, "ModelInstanceColor-RAM");
 	m_vramColorBuffer = KazBufferHelper::SetGPUBufferData(sizeof(DirectX::XMFLOAT4) * arg_elementNum, "ModelInstanceColor-VRAM");
 	m_vramColorBuffer.bufferWrapper->ChangeBarrierUAV();
 

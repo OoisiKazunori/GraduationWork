@@ -18,9 +18,11 @@ void FieldAIDebugManager::Init(DrawingByRasterize& arg_rasterize)
 		for (int z = 0; z < 100; ++z)
 		{
 			transformArray.emplace_back(KazMath::Transform3D({ 0.0f,0.0f,static_cast<float>(x * 10 + z * 10) }));
+			m_gridColorArray.emplace_back(KazMath::Color(1, 1, 1, 1));
 		}
 	}
 	m_modelInstanceRender.UploadTransformMatrix(transformArray);
+	m_modelInstanceRender.UploadColor(m_gridColorArray);
 }
 
 void FieldAIDebugManager::Update()
@@ -42,4 +44,10 @@ void FieldAIDebugManager::DrawImGui()
 	ImGui::Checkbox("congested zone", &m_congestedZoneFlag);
 	ImGui::SameLine();
 	ImGui::End();
+}
+
+void FieldAIDebugManager::SetGridColor(int x, int y, const KazMath::Color& arg_color)
+{
+	m_gridColorArray[x * static_cast<int>(m_gridColorArray.size()) + y] = arg_color;
+	m_modelInstanceRender.UploadColor(m_gridColorArray);
 }
