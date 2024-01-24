@@ -130,6 +130,10 @@
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\AI\Sight\ISight.cpp" />
     <ClCompile Include="Game\AI\Sight\BoxTypeViewingAngle.cpp" />
+    <ClCompile Include="Game\AI\Debug\FieldAIDebugManager.cpp" />
+    <ClCompile Include="Game\AI\Field\ExistenceEstablishmentMap.cpp" />
+    <ClCompile Include="Game\AI\TacticsLocationSearchSystem\IFilter.cpp" />
+    <ClCompile Include="Game\AI\TacticsLocationSearchSystem\StrategicLayer\SearchHidePlace.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -281,6 +285,10 @@
     <ClInclude Include="KazLibrary\Helper\ConvertEnumToString.h" />
     <ClInclude Include="Game\AI\Sight\ISight.h" />
     <ClInclude Include="Game\AI\Sight\BoxTypeViewingAngle.h" />
+    <ClInclude Include="Game\AI\Debug\FieldAIDebugManager.h" />
+    <ClInclude Include="Game\AI\Field\ExistenceEstablishmentMap.h" />
+    <ClInclude Include="Game\AI\TacticsLocationSearchSystem\IFilter.h" />
+    <ClInclude Include="Game\AI\TacticsLocationSearchSystem\StrategicLayer\SearchHidePlace.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

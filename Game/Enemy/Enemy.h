@@ -12,6 +12,7 @@
 #include"../Game/AI/Sight/ConeTypeViewingAngle.h"
 #include"../Game/AI/Sight/BoxTypeViewingAngle.h"
 #include"../Game/AI/Field/ExistenceEstablishmentMap.h"
+#include"../Game/AI/TacticsLocationSearchSystem/StrategicLayer/SearchHidePlace.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -80,6 +81,10 @@ private:
 	BoxTypeViewingAngle m_boxSight;
 
 	FindGauge m_findGauge;
+
+	//êÌèpà íuîcà¨
+	SearchHidePlace m_hidAndShoot;
+
 public:
 	Enemy();
 	~Enemy();
