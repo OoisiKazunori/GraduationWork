@@ -39,7 +39,6 @@ void FieldAIDebugManager::Update()
 void FieldAIDebugManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)
 {
 	m_modelInstanceRender.Draw(arg_rasterize, arg_blas);
-
 	m_pointRender.m_model.Draw(arg_rasterize, arg_blas, m_transform);
 }
 

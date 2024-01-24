@@ -264,19 +264,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	//描画命令発行
-		//m_2DSprite.m_tex.Draw2D(arg_rasterize, m_2DSpriteTransform);
-		//m_3DSprite.m_tex.Draw3D(arg_rasterize, arg_blasVec, m_3DSpriteTransform);
-		//m_modelAnimationRender.m_model.Draw(arg_rasterize, arg_blasVec, m_modelAnimationTransform);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
-	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
-
-	//m_player->Draw(arg_rasterize, arg_blasVec);
-	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
@@ -297,7 +288,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_goalPoint.Draw(arg_rasterize);
 
-	//m_menu.Draw(arg_rasterize);
+	m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);

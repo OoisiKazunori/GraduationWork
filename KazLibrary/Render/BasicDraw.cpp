@@ -178,7 +178,7 @@ void BasicDraw::BasicModelInstanceRender::UploadTransformMatrix(std::vector<KazM
 		matrixArray.emplace_back(obj.GetMat());
 	}
 	m_uploadTransformBuffer.bufferWrapper->TransData(matrixArray.data(), sizeof(DirectX::XMMATRIX) * (int)arg_transform.size());
-	m_vramTransformBuffer.bufferWrapper->CopyBuffer(m_uploadTransformBuffer.bufferWrapper->GetBuffer());
+	m_vramTransformBuffer.bufferWrapper->CopyBuffer(m_uploadTransformBuffer.bufferWrapper);
 
 	//バッファのセット
 	m_vramTransformBuffer.rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
@@ -194,7 +194,7 @@ void BasicDraw::BasicModelInstanceRender::UploadColor(std::vector<KazMath::Color
 		colorArray.emplace_back(obj.ConvertColorRateToXMFLOAT4());
 	}
 	m_uploadColorBuffer.bufferWrapper->TransData(colorArray.data(), sizeof(DirectX::XMFLOAT4) * (int)colorArray.size());
-	m_vramColorBuffer.bufferWrapper->CopyBuffer(m_uploadColorBuffer.bufferWrapper->GetBuffer());
+	m_vramColorBuffer.bufferWrapper->CopyBuffer(m_uploadColorBuffer.bufferWrapper);
 }
 
 void BasicDraw::BasicModelInstanceRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)
