@@ -8,6 +8,7 @@ FieldAIDebugManager::FieldAIDebugManager() :m_radioType(0)
 void FieldAIDebugManager::Init(DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize, std::vector<std::vector<PatrolConfig::AstarData>>arg_patData)
 {
 	m_modelInstanceRender.Load(arg_rasterize, "Resource/Test/Sphere/", "Sphere.gltf");
+	m_pointRender.Load(arg_rasterize, "Resource/Test/Sphere/", "Sphere.gltf");
 
 
 	m_modelInstanceRender.GenerateTransformBuffer(arg_mapIDMaxSize.x * arg_mapIDMaxSize.y);
@@ -38,6 +39,8 @@ void FieldAIDebugManager::Update()
 void FieldAIDebugManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)
 {
 	m_modelInstanceRender.Draw(arg_rasterize, arg_blas);
+
+	m_pointRender.m_model.Draw(arg_rasterize, arg_blas, m_transform);
 }
 
 void FieldAIDebugManager::DrawImGui()
@@ -61,6 +64,8 @@ void FieldAIDebugManager::DrawImGui()
 		break;
 	}
 	ImGui::End();
+
+	KazImGuiHelper::InputTransform3D("Point", &m_transform);
 }
 
 void FieldAIDebugManager::SetGridColorForSearch(int arg_x, int arg_y, const KazMath::Color& arg_color)

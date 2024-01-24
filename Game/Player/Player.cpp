@@ -32,7 +32,7 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 
 	m_transform = f_startPos;
-	m_transform.pos.y = 20.0f;
+	m_transform.pos.y = -10.0f;
 	Init();
 }
 

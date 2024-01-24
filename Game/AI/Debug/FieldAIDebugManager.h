@@ -26,5 +26,8 @@ private:
 	std::array<std::vector<KazMath::Color>,4>m_gridColorArray;
 	KazMath::Vec2<int> m_mapChipMaxSize;
 
+	KazMath::Transform3D m_transform;
+	BasicDraw::BasicModelRender m_pointRender;
+
 };
 
