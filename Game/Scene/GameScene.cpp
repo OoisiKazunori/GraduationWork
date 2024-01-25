@@ -279,9 +279,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
-
-	FieldAIDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
-
+	if (EnemyDebugManager::Instance()->m_debugAIFlag)
+	{
+		FieldAIDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
+	}
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 	m_menu.Draw(arg_rasterize);
@@ -307,8 +308,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_resultManager.Draw(arg_rasterize);
 	}
 
-	for (auto& index : m_preEnemy) {
-
+	for (auto& index : m_preEnemy)
+	{
 		index->Draw(arg_rasterize, arg_blasVec);
 	}
 
@@ -316,7 +317,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	DebugKey::Instance()->DrawImGui();
 	EnemyDebugManager::Instance()->DrawImGui();
-	FieldAIDebugManager::Instance()->DrawImGui();
+	if (EnemyDebugManager::Instance()->m_debugAIFlag)
+	{
+		FieldAIDebugManager::Instance()->DrawImGui();
+	}
 }
 
 int GameScene::SceneChange()

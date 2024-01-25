@@ -160,6 +160,7 @@ void Enemy::Update(
 	//	m_checkEyeDelay = MAX_EYE_DELAY;
 	//}
 
+
 	//Œx‰úó‘Ô
 	if (FieldAI::Instance()->WARING_LEVEL <= FieldAI::Instance()->GetWaringRate())
 	{

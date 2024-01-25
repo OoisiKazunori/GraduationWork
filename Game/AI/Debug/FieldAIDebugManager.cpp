@@ -1,4 +1,8 @@
 #include "FieldAIDebugManager.h"
+#include"../KazLibrary/Helper/ConvertEnumToString.h"
+#include"../KazLibrary/Camera/CameraMgr.h"
+#include"Input/KeyBoradInputManager.h"
+#include"../Game/MapLoader/MapLoader.h"
 
 FieldAIDebugManager::FieldAIDebugManager() :m_radioType(0)
 {
@@ -29,10 +33,74 @@ void FieldAIDebugManager::Init(DrawingByRasterize& arg_rasterize, const KazMath:
 	m_modelInstanceRender.UploadColor(m_gridColorArray[0]);
 
 	m_mapChipMaxSize = arg_mapIDMaxSize;
+	m_astarData = arg_patData;
 }
 
 void FieldAIDebugManager::Update()
 {
+	//スクリーン座標をワールド座標に変換--------------------------------
+
+	Ray mousePoint;
+	KazMath::Vec3<float>mousePointNearPos(
+		KeyBoradInputManager::Instance()->GetMousePoint().x,
+		KeyBoradInputManager::Instance()->GetMousePoint().y,
+		0.0f);
+	KazMath::Vec3<float>mousePointFarPos(
+		KeyBoradInputManager::Instance()->GetMousePoint().x,
+		KeyBoradInputManager::Instance()->GetMousePoint().y,
+		1.0f);
+	mousePoint.start = KazMath::ConvertScreenPosToWorldPos(
+		mousePointNearPos,
+		CameraMgr::Instance()->GetViewMatrix(),
+		CameraMgr::Instance()->GetPerspectiveMatProjection()
+	);
+	KazMath::Vec3<float>mousePointWorldFarPos(
+		KazMath::ConvertScreenPosToWorldPos(
+			mousePointFarPos,
+			CameraMgr::Instance()->GetViewMatrix(),
+			CameraMgr::Instance()->GetPerspectiveMatProjection()
+		));
+	mousePoint.dir = mousePointWorldFarPos - mousePoint.start;
+	mousePoint.dir.Normalize();
+	//スクリーン座標をワールド座標に変換--------------------------------
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_J))
+	{
+		m_keepRay = mousePoint;
+	}
+	//aスターの指定
+	for (int x = 0; x < m_astarData.size(); ++x)
+	{
+		for (int y = 0; y < m_astarData[x].size(); ++y)
+		{
+			KazMath::Vec3<float>pos = m_astarData[3][12].trans.pos;
+			Sphere enemyHitBox(&pos, 10.0f);
+
+			//カーソルに合わせたかどうか
+			if (CollisionManager::Instance()->CheckRayAndSphere(m_keepRay, enemyHitBox))
+			{
+				m_selectPos = pos;
+
+				break;
+			}
+		}
+	}
+
+	KazMath::Vec2<int>selectIndex(std::clamp(m_selectPos.ConvertVec2XZ().Int().x / MapManager::GetMapSizeData(0).x, 0, MapManager::GetMapSizeData(0).x),
+		std::clamp(m_selectPos.ConvertVec2XZ().Int().y / MapManager::GetMapSizeData(0).y, 0, MapManager::GetMapSizeData(0).y));
+
+	m_index.x =
+		std::clamp(m_index.x, 0, 38);
+	m_index.y =
+		std::clamp(m_index.y, 0, 38);
+	SetGridColorForSearch(
+		m_index.x,
+		m_index.y,
+		KazMath::Color(0, 0, 255, 255));
+
+	if (m_radioType == 2)
+	{
+		//m_hidePlace.GetPointIndex();
+	}
 }
 
 void FieldAIDebugManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)
@@ -54,7 +122,13 @@ void FieldAIDebugManager::DrawImGui()
 	{
 	case 0:
 	{
-		ImGui::Text("");
+		KazImGuiHelper::InputVec2("SelectPos", &m_index);
+		//KazImGuiHelper::DrawVec3("SelectPos", m_selectPos);
+	}
+	break;
+	case 1:
+	{
+
 	}
 	break;
 	default:
