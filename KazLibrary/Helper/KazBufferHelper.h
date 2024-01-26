@@ -167,13 +167,15 @@ namespace KazBufferHelper
 		void CopyBuffer(
 			const Microsoft::WRL::ComPtr<ID3D12Resource>& SRC_BUFFER
 		)const;
-
+		void CopyBuffer(
+			const std::shared_ptr<ID3D12ResourceWrapper>& SRC_BUFFER
+		)const;
 		void CopyBufferRegion(
 			const Microsoft::WRL::ComPtr<ID3D12Resource>& SRC_BUFFER
 		)const;
 
 		void ChangeBarrier(
-			D3D12_RESOURCE_STATES BEFORE_STATE,D3D12_RESOURCE_STATES AFTER_STATE
+			D3D12_RESOURCE_STATES BEFORE_STATE, D3D12_RESOURCE_STATES AFTER_STATE
 		);
 		void ChangeBarrier(
 			D3D12_RESOURCE_STATES AFTER_STATE
@@ -187,6 +189,7 @@ namespace KazBufferHelper
 					1,
 					&CD3DX12_RESOURCE_BARRIER::UAV(buffer[i].Get())
 				);
+				resourceState = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 			}
 		}
 

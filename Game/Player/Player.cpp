@@ -35,7 +35,7 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 
 	m_transform = f_startPos;
-	m_transform.pos.y = 20.0f;
+	m_transform.pos.y = -10.0f;
 	Init();
 }
 
@@ -74,6 +74,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		m_gravity -= GRAVITY;
 	}
 	m_transform.pos.y += m_gravity;
+
 
 	//動いた方向に回転させる。
 	//Rotate(arg_camera);
@@ -378,45 +379,12 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 	//地面と当たり判定を行う。
 	m_onGround = false;
 
-
+	int counter = 0;
 	const float GROUND_RAY_OFFSET = -5.0f;
 	for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr) {
 
-		//当たり判定を計算。
-		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, 1.0f));
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
-
-			//押し戻し。
-			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
-
-		}
-		//後ろ方向
-		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, -1.0f));
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
-
-			//押し戻し。
-			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
-
-		}
-		//右方向
-		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(1.0f, 0.0f, 0.0f));
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
-
-			//押し戻し。
-			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
-
-		}
-		//左方向
-		rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(-1.0f, 0.0f, 0.0f));
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
-
-			//押し戻し。
-			m_transform.pos = rayResult.m_position + rayResult.m_normal * RAY_LENGTH;
-
-		}
-
 		//下方向の当たり判定
-		rayResult = (*itr)->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY + GROUND_RAY_OFFSET) {
 
 			//押し戻し。
@@ -425,7 +393,42 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 
 		}
 
+		////当たり判定を計算。
+		//rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetFront());
+		//if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		//	//押し戻し。
+		//	m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+
+		//}
+		////後ろ方向
+		//rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetFront());
+		//if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		//	//押し戻し。
+		//	m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+
+		//}
+		////右方向
+		//rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetRight());
+		//if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		//	//押し戻し。
+		//	m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+
+		//}
+		////左方向
+		//rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetRight());
+		//if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+
+		//	//押し戻し。
+		//	m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+
+		//}
+
+		++counter;
 	}
+	int a = 0;
 
 }
 

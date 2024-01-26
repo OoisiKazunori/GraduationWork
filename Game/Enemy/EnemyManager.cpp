@@ -18,7 +18,7 @@ void EnemyManager::Init()
 	//敵初期化
 	for (int i = 0; i < m_enemys.size(); ++i)
 	{
-		m_enemys[i].Init();
+		m_enemys[i]->Init();
 		//m_patrolDatas[i].Init();
 	}
 
@@ -69,8 +69,8 @@ void EnemyManager::SetMapData(
 			if (!l_isAdd) {
 				l_isAdd = true;
 				l_enemyNum++;
-				m_patrolDatas.push_back(PatrolData());
-				m_enemys.push_back(Enemy());
+				m_patrolDatas.emplace_back(PatrolData());
+				m_enemys.emplace_back(std::make_unique<Enemy>());
 			}
 
 			m_patrolDatas[l_enemyNum - 1].
@@ -78,11 +78,12 @@ void EnemyManager::SetMapData(
 		}
 	}
 
+	const float SPACE = 4.84f;
 	//マップサイズ
 	m_config = std::make_shared<PatrolConfig>(
 		MapManager::GetMapSizeData(arg_stageNum).x,
 		MapManager::GetMapSizeData(arg_stageNum).y,
-		4.84f);
+		SPACE);
 
 	//マップデータ
 	std::list<std::list<int>> l_mapChips =
@@ -116,14 +117,26 @@ void EnemyManager::SetMapData(
 	float l_offset_y = m_config.get()->GetOffsetY();
 	for (int i = 0; i < l_enemyNum; ++i)
 	{
-		m_enemys[i].SetData(arg_rasterize);
-		m_enemys[i].SetOffset(std::make_pair(
+		m_enemys[i]->SetData(arg_rasterize, { static_cast<int>(m_config->GetSizeX()), static_cast<int>(m_config->GetSizeY()) });
+		m_enemys[i]->SetOffset(std::make_pair(
 			l_offset_x,
 			l_offset_y));
 		m_patrolDatas[i].SetData(m_config);
 		m_patrolDatas[i].Init();
 	}
 	m_patrolDraw.SetData(arg_rasterize, m_config);
+
+	FieldAIDebugManager::Instance()->Init(
+		arg_rasterize,
+		{ static_cast<int>(m_config->GetSizeX()),static_cast<int>(m_config->GetSizeY()) },
+		m_config->m_astarDatas
+	);
+	ExistenceEstablishmentMap::Instance()->Init(
+		{ static_cast<int>(m_config->GetSizeX()),static_cast<int>(m_config->GetSizeY()) },
+		m_config->m_astarDatas[0][0].trans.pos
+	);
+
+
 }
 
 void EnemyManager::Update(
@@ -147,36 +160,36 @@ void EnemyManager::Update(
 	{
 		if (isInput) {
 			std::pair<float, float> ePos = {
-				m_enemys[i].GetPos().x,
-				m_enemys[i].GetPos().z };
+				m_enemys[i]->GetPos().x,
+				m_enemys[i]->GetPos().z };
 			std::pair<float, float> sPos = { 0.0f,0.0f };
 			std::vector<std::pair<float, float>>
 				l_checkSoundPos =
 				m_patrolDatas[i].CheckSound(ePos, sPos);
-			m_enemys[i].SetState(Enemy::State::Warning);
-			m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
+			m_enemys[i]->SetState(State::Warning);
+			m_enemys[i]->SetCheckSoundPos(l_checkSoundPos);
 		}
 
 		//オフセット
-		m_enemys[i].SetOffset(std::make_pair(
+		m_enemys[i]->SetOffset(std::make_pair(
 			l_offset_x,
 			l_offset_y));
 
 		m_patrolDatas[i].Update();
-		m_enemys[i].SetRootPos(m_patrolDatas[i].GetRootPos());
-		m_enemys[i].SetCheckPointDelay(
+		m_enemys[i]->SetRootPos(m_patrolDatas[i].GetRootPos());
+		m_enemys[i]->SetCheckPointDelay(
 			m_patrolDatas[i].GetCheckPointDelay());
 
-		m_enemys[i].CheckInEcho(arg_stageMeshCollision);
+		m_enemys[i]->CheckInEcho(arg_stageMeshCollision);
 
-		m_enemys[i].Update(
+		m_enemys[i]->Update(
 			arg_stageColliders,
 			arg_bulletMgr,
 			arg_playerPos,
 			arg_stageMeshCollision);
 
 		//発見時
-		if (m_enemys[i].IsDiscovery()) {
+		if (m_enemys[i]->IsDiscovery()) {
 			SoundManager::Instance()->
 				SoundPlayerWave(m_checkSound, 0);
 		}
@@ -185,6 +198,7 @@ void EnemyManager::Update(
 	//判定
 	m_config->Update();
 	m_patrolDraw.Update();
+	ExistenceEstablishmentMap::Instance()->Update();
 }
 
 void EnemyManager::Draw(
@@ -194,7 +208,7 @@ void EnemyManager::Draw(
 	//敵描画
 	for (int i = 0; i < m_enemys.size(); ++i)
 	{
-		m_enemys[i].Draw(
+		m_enemys[i]->Draw(
 			arg_rasterize,
 			arg_blasVec);
 	}
