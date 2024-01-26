@@ -242,6 +242,11 @@ namespace KazMath
 			Vec2<T> result = { x,y };
 			return result;
 		};
+		Vec2<T> ConvertVec2XZ()const
+		{
+			Vec2<T> result = { x,z };
+			return result;
+		};
 
 		Vec3<int>Int()const
 		{

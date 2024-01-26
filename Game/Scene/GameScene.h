@@ -46,6 +46,7 @@ public:
 private:
 
 	//ƒJƒƒ‰--------------------------
+	bool m_debugCameraFlag;
 	DebugCamera m_debuCamera;
 	std::shared_ptr<Camera> m_camera;
 

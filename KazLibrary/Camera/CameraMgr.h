@@ -3,6 +3,7 @@
 #include"../Helper/ISinglton.h"
 #include"../KazLibrary/Math/KazMath.h"
 #include"../KazLibrary/Helper/DirtyFlag.h"
+#include"../KazLibrary/Helper/KazBufferHelper.h"
 
 enum CameraType
 {
@@ -89,6 +90,13 @@ public:
 	DirectX::XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
 
 
+	struct CameraBufferData
+	{
+		DirectX::XMMATRIX m_viewMat;
+		DirectX::XMMATRIX m_projectionMat;
+	};
+	KazBufferHelper::BufferData m_cameraBuffer;
+
 	bool ViewAndProjDirty(int CAMERA_INDEX = 0);
 	bool BillboardDirty(int CAMERA_INDEX = 0);
 	void Record();
@@ -118,6 +126,7 @@ private:
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> billBoardDirtyFlagArray;
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> perspectiveProjDirtyFlag;
 	DirtySet orthographicMatProjectionDirtyFlag;
+
 };
 
 // ライトカメラ定数を送る用の構造体

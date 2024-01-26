@@ -19,7 +19,9 @@
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
 #include"../KazLibrary/Debug/DebugKey.h"
-#include"../Footprint/FootprintMgr.h"
+#include"../Game/AI/Debug/EnemyDebugManager.h"
+#include"../Game/AI/Evaluation/FieldAI.h"
+#include"../Game/AI/Debug/FieldAIDebugManager.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
@@ -65,11 +67,18 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	m_sceneNum = SCENE_NONE;
 
+	//マップデータ
+	for (auto& index : m_preEnemy) {
+
+		index = std::make_shared<PreEnemy>(arg_rasterize);
+
+	}
+
 	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
 	m_axixTransform.scale.z += 1.0f;
 
-	FootprintMgr::Instance()->Setting(arg_rasterize);
 
+	EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
 
 GameScene::~GameScene()
@@ -85,7 +94,7 @@ void GameScene::Init()
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
 	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
-	FootprintMgr::Instance()->Init();
+	m_debugCameraFlag = false;
 }
 
 void GameScene::PreInit()
@@ -98,6 +107,20 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
+	//デバックキーのサンプル
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_0, "GenerateEnemy", "DIK_0"))
+	{
+		m_preEnemy[0]->SetPos({ 0.0f,-45.0f,0.0f });
+	}
+
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_1, "DebugCamera", "DIK_1"))
+	{
+		m_debugCameraFlag = !m_debugCameraFlag;
+	}
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
+	{
+		EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
+	}
 }
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
@@ -108,12 +131,13 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	CameraMgr::Instance()->Camera({}, {}, {});
 	*/
 	//デバック用のカメラワーク(操作はBlenderと同じ)
-	//m_debuCamera.Update();
+	//
 
 	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		m_HPBarManager.HitDamage(10, 10);
 	}*/
+
 
 	//メニューが開かれていない時に更新を通す
 	if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
@@ -130,7 +154,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		if (m_HPBarManager.GetHP() > 0)
 		{
-			m_uiManager.Update(m_stageManager, m_player->GetTransform());
+			m_uiManager.Update();
 			m_gadgetMaanager.Update();
 
 			m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
@@ -139,7 +163,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				m_bulletMgr,
 				m_player->GetTransform().pos,
 				m_stageMeshCollision);
-			m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+
+			if (m_debugCameraFlag)
+			{
+				m_debuCamera.Update();
+			}
+			else
+			{
+				m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+			}
+
 			m_stageManager.Update(arg_rasterize);
 			m_bulletMgr->Update(m_stageManager.GetColliders());
 
@@ -214,13 +247,19 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
+	for (auto& index : m_preEnemy)
+	{
+		index->CheckInEcho(m_stageMeshCollision);
+		index->Update();
+	}
 	m_stageManager.CheckInEcho(m_stageMeshCollision);
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
 
-
-	FootprintMgr::Instance()->Update();
+	EnemyDebugManager::Instance()->Update();
+	FieldAI::Instance()->DebugUpdate();
+	FieldAIDebugManager::Instance()->Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -240,7 +279,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_stage.m_model.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
-
+	if (EnemyDebugManager::Instance()->m_debugAIFlag)
+	{
+		FieldAIDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
+	}
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 	m_menu.Draw(arg_rasterize);
@@ -256,8 +298,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_goalPoint.Draw(arg_rasterize);
 
-	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
-
 	//m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
@@ -268,7 +308,19 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_resultManager.Draw(arg_rasterize);
 	}
 
+	for (auto& index : m_preEnemy)
+	{
+		index->Draw(arg_rasterize, arg_blasVec);
+	}
+
+	EnemyDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
+
 	DebugKey::Instance()->DrawImGui();
+	EnemyDebugManager::Instance()->DrawImGui();
+	if (EnemyDebugManager::Instance()->m_debugAIFlag)
+	{
+		FieldAIDebugManager::Instance()->DrawImGui();
+	}
 }
 
 int GameScene::SceneChange()

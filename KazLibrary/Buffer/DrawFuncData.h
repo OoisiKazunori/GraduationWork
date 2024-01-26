@@ -28,9 +28,9 @@ namespace ExecuteIndirectData
 	};
 
 	static void GenerateCommandSignature(
-		Microsoft::WRL::ComPtr<ID3D12CommandSignature> &arg_commandSignature,
-		const Microsoft::WRL::ComPtr<ID3D12RootSignature> &arg_rootSignature,
-		const std::vector<D3D12_INDIRECT_ARGUMENT_DESC> &arg_indirectDescArray)
+		Microsoft::WRL::ComPtr<ID3D12CommandSignature>& arg_commandSignature,
+		const Microsoft::WRL::ComPtr<ID3D12RootSignature>& arg_rootSignature,
+		const std::vector<D3D12_INDIRECT_ARGUMENT_DESC>& arg_indirectDescArray)
 	{
 		//コマンドシグネチャ---------------------------
 		D3D12_COMMAND_SIGNATURE_DESC desc{};
@@ -706,7 +706,7 @@ namespace DrawFuncData
 
 
 		//その他描画に必要なバッファ情報
-		std::vector<KazBufferHelper::BufferData> *buffer;
+		std::vector<KazBufferHelper::BufferData>* buffer;
 
 		//デバック情報
 		std::source_location drawCallData;
@@ -724,7 +724,7 @@ namespace DrawFuncData
 	};
 	struct DrawFuncBufferData
 	{
-		DrawFuncBufferData(const KazBufferHelper::BufferResourceData &DATA, GraphicsRootParamType ROOT_PARAM, GraphicsRangeType RANGE_TYPE) :
+		DrawFuncBufferData(const KazBufferHelper::BufferResourceData& DATA, GraphicsRootParamType ROOT_PARAM, GraphicsRangeType RANGE_TYPE) :
 			resourceData(DATA), rootParam(ROOT_PARAM), rangeType(RANGE_TYPE)
 		{};
 
@@ -781,7 +781,7 @@ namespace DrawFuncData
 	};
 
 	//単色のポリゴン表示(インデックスなし)
-	static DrawCallData SetDrawPolygonData(const KazRenderHelper::DrawInstanceCommandData &VERTEX_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawPolygonData(const KazRenderHelper::DrawInstanceCommandData& VERTEX_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 		//頂点情報
@@ -809,7 +809,7 @@ namespace DrawFuncData
 	};
 
 	//単色のポリゴン表示(インデックスあり)
-	static DrawCallData SetDrawPolygonIndexData(const KazRenderHelper::DrawIndexInstanceCommandData &VERTEX_DATA, const PipelineGenerateData &PIPELINE_DATA, std::source_location location = std::source_location::current())
+	static DrawCallData SetDrawPolygonIndexData(const KazRenderHelper::DrawIndexInstanceCommandData& VERTEX_DATA, const PipelineGenerateData& PIPELINE_DATA, std::source_location location = std::source_location::current())
 	{
 		DrawCallData drawCallData;
 		//頂点情報
@@ -838,7 +838,7 @@ namespace DrawFuncData
 		return drawCallData;
 	};
 
-	static DrawCallData SetDrawGLTFAnimationIndexMaterialData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawGLTFAnimationIndexMaterialData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -846,7 +846,7 @@ namespace DrawFuncData
 		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
-		for (auto &obj : MODEL_DATA.modelData)
+		for (auto& obj : MODEL_DATA.modelData)
 		{
 			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
 		}
@@ -883,7 +883,7 @@ namespace DrawFuncData
 	};
 
 	//OBJモデルのポリゴン表示(インデックスあり)
-	static DrawCallData SetDrawOBJIndexData(const KazRenderHelper::MultipleMeshesDrawIndexInstanceCommandData &VERTEX_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawOBJIndexData(const KazRenderHelper::MultipleMeshesDrawIndexInstanceCommandData& VERTEX_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 		//頂点情報
@@ -911,7 +911,7 @@ namespace DrawFuncData
 	};
 
 	//モデルのポリゴン表示(インデックスあり、マテリアルあり)
-	static DrawCallData SetDrawGLTFIndexMaterialData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawGLTFIndexMaterialData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -921,7 +921,7 @@ namespace DrawFuncData
 		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
-		for (auto &obj : MODEL_DATA.modelData)
+		for (auto& obj : MODEL_DATA.modelData)
 		{
 			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
 		}
@@ -953,7 +953,7 @@ namespace DrawFuncData
 	};
 
 	//モデルのポリゴン表示(インデックスあり、マテリアルあり)
-	static DrawCallData SetDrawGLTFIndexMaterialLightData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawGLTFIndexMaterialLightData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -963,7 +963,7 @@ namespace DrawFuncData
 		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
-		for (auto &obj : MODEL_DATA.modelData)
+		for (auto& obj : MODEL_DATA.modelData)
 		{
 			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
 		}
@@ -1003,7 +1003,7 @@ namespace DrawFuncData
 	};
 
 	//レイトレでのモデルのポリゴン表示(インデックスあり、マテリアルあり)
-	static DrawCallData SetDrawGLTFIndexMaterialInRayTracingData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawGLTFIndexMaterialInRayTracingData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -1013,7 +1013,7 @@ namespace DrawFuncData
 		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
-		for (auto &obj : MODEL_DATA.modelData)
+		for (auto& obj : MODEL_DATA.modelData)
 		{
 			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
 		}
@@ -1053,7 +1053,7 @@ namespace DrawFuncData
 	};
 
 	//レイトレでのモデルのポリゴン表示(インデックスあり、マテリアルあり)
-	static DrawCallData SetDrawInstanceGLTFIndexMaterialInRayTracingData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawInstanceGLTFIndexMaterialInRayTracingData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -1063,7 +1063,7 @@ namespace DrawFuncData
 		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
-		for (auto &obj : MODEL_DATA.modelData)
+		for (auto& obj : MODEL_DATA.modelData)
 		{
 			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
 		}
@@ -1101,7 +1101,7 @@ namespace DrawFuncData
 	};
 
 	//レイトレでのモデルのポリゴン表示(インデックスあり、マテリアルあり、ブルームの加減設定あり)
-	static DrawCallData SetDrawGLTFIndexMaterialInRayTracingBloomData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawGLTFIndexMaterialInRayTracingBloomData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -1111,7 +1111,7 @@ namespace DrawFuncData
 		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
-		for (auto &obj : MODEL_DATA.modelData)
+		for (auto& obj : MODEL_DATA.modelData)
 		{
 			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
 		}
@@ -1162,7 +1162,7 @@ namespace DrawFuncData
 
 
 	//モデルのポリゴン表示(インデックスあり、マテリアルあり、ブルームの加減設定あり、アニメーション対応)
-	static DrawCallData SetDrawGLTFAnimationIndexMaterialBloomData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawGLTFAnimationIndexMaterialBloomData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -1170,7 +1170,7 @@ namespace DrawFuncData
 		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
-		for (auto &obj : MODEL_DATA.modelData)
+		for (auto& obj : MODEL_DATA.modelData)
 		{
 			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
 		}
@@ -1218,7 +1218,7 @@ namespace DrawFuncData
 	};
 
 	//レイトレでのモデルのポリゴン表示(インデックスあり、マテリアルあり、ブルームの加減設定あり、アニメーション対応)
-	static DrawCallData SetDrawGLTFAnimationIndexMaterialInRayTracingBloomData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetDrawGLTFAnimationIndexMaterialInRayTracingBloomData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -1226,7 +1226,7 @@ namespace DrawFuncData
 		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
 		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
 		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
-		for (auto &obj : MODEL_DATA.modelData)
+		for (auto& obj : MODEL_DATA.modelData)
 		{
 			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
 		}
@@ -1276,11 +1276,11 @@ namespace DrawFuncData
 	};
 
 	//レイトレのみセットアップ
-	DrawCallData SetRaytracingData(const ModelInfomation &MODEL_DATA, const PipelineGenerateData &PIPELINE_DATA);
+	DrawCallData SetRaytracingData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA);
 
 
 	//行列情報のみ
-	static DrawCallData SetTransformData(const KazRenderHelper::DrawIndexInstanceCommandData &VERTEX_DATA, const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetTransformData(const KazRenderHelper::DrawIndexInstanceCommandData& VERTEX_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 		//頂点情報
@@ -1300,7 +1300,7 @@ namespace DrawFuncData
 	};
 
 	//行列情報とテクスチャ
-	static DrawCallData SetTexPlaneData(const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetTexPlaneData(const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -1326,7 +1326,7 @@ namespace DrawFuncData
 		return drawCallData;
 	};
 
-	static DrawCallData SetSpriteAlphaData(const PipelineGenerateData &PIPELINE_DATA)
+	static DrawCallData SetSpriteAlphaData(const PipelineGenerateData& PIPELINE_DATA)
 	{
 		DrawCallData drawCallData;
 
@@ -1518,6 +1518,65 @@ namespace DrawFuncData
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
 
+
+		drawCall.SetupRaytracing(arg_isOpaque);
+
+		return drawCall;
+	};
+
+	static DrawCallData SetDefferdRenderingModelAnimationInstance(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
+	{
+		DrawCallData drawCall;
+
+		DrawFuncData::PipelineGenerateData lData;
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "InstanceModel.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "InstanceModel.hlsl", "PSDefferdMain", "ps_6_4", SHADER_TYPE_PIXEL);
+
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+
+		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+
+		//ワールド行列格納
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
+		//アニメーション
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+
+		return drawCall;
+	};
+
+	static DrawCallData SetDefferdRenderingModelAnimationWireFrame(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
+	{
+		DrawCallData drawCall;
+
+		DrawFuncData::PipelineGenerateData lData;
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		lData.desc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+
+		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		//アニメーション
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
 
 		drawCall.SetupRaytracing(arg_isOpaque);
 
@@ -1732,7 +1791,7 @@ namespace DrawFuncData
 		return drawCallData;
 	}
 
-	static DrawCallData SetLine(const DrawFuncData::PipelineGenerateData &arg_pipeline)
+	static DrawCallData SetLine(const DrawFuncData::PipelineGenerateData& arg_pipeline)
 	{
 		DrawFuncData::PipelineGenerateData lData(arg_pipeline);
 
@@ -1760,7 +1819,7 @@ namespace DrawFuncData
 		return drawCallData;
 	}
 
-	static DrawCallData SetExecuteIndirect(const PipelineGenerateData &PIPELINE_DATA, const D3D12_GPU_VIRTUAL_ADDRESS &arg_address, UINT arg_maxCountNum, UINT arg_indexNum = -1)
+	static DrawCallData SetExecuteIndirect(const PipelineGenerateData& PIPELINE_DATA, const D3D12_GPU_VIRTUAL_ADDRESS& arg_address, UINT arg_maxCountNum, UINT arg_indexNum = -1)
 	{
 		DrawCallData drawCallData;
 
@@ -1814,7 +1873,7 @@ namespace DrawFuncData
 		return drawCallData;
 	};
 
-	static DrawCallData SetParticleInRaytracing(const std::shared_ptr<KazBufferHelper::BufferData> &arg_buffer, const std::shared_ptr<KazBufferHelper::BufferData> &arg_indexBuffer)
+	static DrawCallData SetParticleInRaytracing(const std::shared_ptr<KazBufferHelper::BufferData>& arg_buffer, const std::shared_ptr<KazBufferHelper::BufferData>& arg_indexBuffer)
 	{
 		DrawCallData drawCallData;
 		RESOURCE_HANDLE handle = VertexBufferMgr::Instance()->GetPlaneHandle();
