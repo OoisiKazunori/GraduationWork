@@ -229,7 +229,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		else if (l_mapItr->m_objetName.starts_with("Goal") == true)
+		else if (l_mapItr->m_objetName.starts_with("goal") == true)
 		{
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
