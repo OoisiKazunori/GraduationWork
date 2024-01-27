@@ -576,11 +576,6 @@ void DrawingByRasterize::SetBufferOnCmdList(const std::vector<KazBufferHelper::B
 			continue;
 		}
 
-		/*if (BUFFER_ARRAY[i].m_changeBarrierFlag)
-		{
-			BUFFER_ARRAY[i].bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-		}*/
-
 		//デスクリプタヒープにコマンドリストに積む。余りが偶数ならデスクリプタヒープだと判断する
 		if (BUFFER_ARRAY[i].rangeType % 2 == 0)
 		{
