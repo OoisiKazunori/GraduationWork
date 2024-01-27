@@ -204,7 +204,10 @@ void SceneManager::Update()
 		m_rasterize.GeneratePipeline();
 	}
 
-	m_blasVector.Update();
+	//シーンが切り替わった最初のフレームのみ更新する。
+	if (!m_firstFlameFlag){
+		m_blasVector.Update();
+	}
 
 	//fpsを制限(今回は60fps)
 	FpsManager::RegulateFps(60);
@@ -240,14 +243,29 @@ void SceneManager::Draw()
 	//ラスタライザ描画
 	m_rasterize.SortAndRender();
 
-	//Tlasを構築 or 再構築する。
-	m_tlas.Build(m_blasVector);
-	//レイトレ用のデータを構築。
-	m_rayPipeline->BuildShaderTable(m_blasVector);
-	if (m_blasVector.GetBlasRefCount() != 0)
-	{
-		m_rayPipeline->TraceRay(m_tlas);
+	//最初の1Fのみビルドする。
+	if (!m_firstFlameFlag) {
+
+		//Tlasを構築 or 再構築する。
+		m_tlas.Build(m_blasVector);
+		//レイトレ用のデータを構築。
+		m_rayPipeline->BuildShaderTable(m_blasVector);
+		if (m_blasVector.GetBlasRefCount() != 0)
+		{
+			m_rayPipeline->TraceRay(m_tlas);
+		}
+
 	}
+	//2F以降はレイトレのみを実行する。
+	else {
+
+		if (m_blasVector.GetBlasRefCount() != 0)
+		{
+			m_rayPipeline->TraceRay(m_tlas);
+		}
+
+	}
+
 	//UI用の描画
 	m_rasterize.UISortAndRender();
 	m_rasterize.StaticSortAndRender();
