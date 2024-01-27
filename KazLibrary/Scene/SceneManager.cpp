@@ -157,7 +157,6 @@ void SceneManager::Update()
 	}
 	const int RESTART_NUM = -2;
 
-	m_firstFlameFlag = true;
 	//ゲーム画面が隠された判定
 	if (m_sceneChange->AllHiden())
 	{
@@ -252,4 +251,6 @@ void SceneManager::Draw()
 	//UI用の描画
 	m_rasterize.UISortAndRender();
 	m_rasterize.StaticSortAndRender();
+
+	m_firstFlameFlag = true;
 }
