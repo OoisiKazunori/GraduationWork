@@ -15,7 +15,7 @@
 #include"../Game/Echo/EchoArray.h"
 #include"../KazLibrary/Debug/DebugKey.h"
 
-SceneManager::SceneManager() :gameFirstInitFlag(false)
+SceneManager::SceneManager() :gameFirstInitFlag(false), m_firstFlameFlag(false)
 {
 	SoundManager::Instance()->SettingSoundManager();
 
@@ -181,6 +181,7 @@ void SceneManager::Update()
 			m_rasterize.GeneratePipeline();
 			m_nowScene->Init();
 		}
+		m_firstFlameFlag = false;
 	}
 
 	//更新処理
@@ -250,4 +251,6 @@ void SceneManager::Draw()
 	//UI用の描画
 	m_rasterize.UISortAndRender();
 	m_rasterize.StaticSortAndRender();
+
+	m_firstFlameFlag = true;
 }
