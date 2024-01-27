@@ -393,38 +393,38 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 
 		}
 
-		////当たり判定を計算。
-		//rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetFront());
-		//if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+		//当たり判定を計算。
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetFront());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
-		//	//押し戻し。
-		//	m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
 
-		//}
-		////後ろ方向
-		//rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetFront());
-		//if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+		}
+		//後ろ方向
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetFront());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
-		//	//押し戻し。
-		//	m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
 
-		//}
-		////右方向
-		//rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetRight());
-		//if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+		}
+		//右方向
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, m_transform.GetRight());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
-		//	//押し戻し。
-		//	m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
 
-		//}
-		////左方向
-		//rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetRight());
-		//if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
+		}
+		//左方向
+		rayResult = (*itr)->CheckHitRay(m_transform.pos, -m_transform.GetRight());
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
-		//	//押し戻し。
-		//	m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
+			//押し戻し。
+			m_transform.pos += rayResult.m_normal * (RAY_LENGTH - rayResult.m_distance);
 
-		//}
+		}
 
 		++counter;
 	}
