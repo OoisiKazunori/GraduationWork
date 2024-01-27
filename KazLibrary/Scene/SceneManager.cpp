@@ -15,7 +15,7 @@
 #include"../Game/Echo/EchoArray.h"
 #include"../KazLibrary/Debug/DebugKey.h"
 
-SceneManager::SceneManager() :gameFirstInitFlag(false)
+SceneManager::SceneManager() :gameFirstInitFlag(false), m_firstFlameFlag(false)
 {
 	SoundManager::Instance()->SettingSoundManager();
 
@@ -157,6 +157,7 @@ void SceneManager::Update()
 	}
 	const int RESTART_NUM = -2;
 
+	m_firstFlameFlag = true;
 	//ゲーム画面が隠された判定
 	if (m_sceneChange->AllHiden())
 	{
@@ -181,6 +182,7 @@ void SceneManager::Update()
 			m_rasterize.GeneratePipeline();
 			m_nowScene->Init();
 		}
+		m_firstFlameFlag = false;
 	}
 
 	//更新処理

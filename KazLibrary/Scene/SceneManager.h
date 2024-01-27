@@ -126,4 +126,5 @@ private:
 		}
 		return std::make_shared<DemoScene>(m_rasterize);
 	}
+	bool m_firstFlameFlag;
 };
