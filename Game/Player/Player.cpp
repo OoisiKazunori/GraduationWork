@@ -430,6 +430,8 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 	}
 	int a = 0;
 
+	m_transform.pos.y = -40.0f;
+
 }
 
 float Player::GetMoveSpeed()
