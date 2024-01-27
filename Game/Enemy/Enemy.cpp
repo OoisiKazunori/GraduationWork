@@ -356,7 +356,7 @@ void Enemy::Update(
 	}
 
 	//”»’è(ƒƒbƒVƒ…)
-	Collision(arg_stageColliders, arg_bulletMgr);
+	//Collision(arg_stageColliders, arg_bulletMgr);
 
 	//ˆê’UYŒÅ’è
 	m_trans.pos.y = -43.0f;
