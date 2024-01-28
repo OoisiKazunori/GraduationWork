@@ -62,7 +62,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	auto l_enemyData = MapManager::GetEnemyData(m_stageNum);
 	m_enemyManager->SetMapData(m_stageNum, l_enemyData, arg_rasterize);
 	//MapManager::GetPlayerStartPosition(0)
-	m_player = std::make_shared<Player>(arg_rasterize, KazMath::Transform3D({ -202.0f,0.0f,291.0f }));
+	m_player = std::make_shared<Player>(arg_rasterize, KazMath::Transform3D({ -202.0f,-38.0f,291.0f }));
 	m_camera = std::make_shared<Camera>();
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 	m_throwableObjectController = std::make_shared<ThrowableObjectController>(arg_rasterize);

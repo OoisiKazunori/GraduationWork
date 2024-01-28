@@ -35,7 +35,6 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 
 	m_transform = f_startPos;
-	m_transform.pos.y = -10.0f;
 	Init();
 }
 
@@ -72,6 +71,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//èdóÕÇÇ©ÇØÇÈÅB
 	if (!m_onGround) {
 		m_gravity -= GRAVITY;
+	}
+	else {
+		m_gravity = 0.0f;
 	}
 	m_transform.pos.y += m_gravity;
 
@@ -365,10 +367,10 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 	switch (m_playerAttitude)
 	{
 	case Player::PlayerAttitude::STAND:
-		GROUND_RAY = 12.0f;
+		GROUND_RAY = 7.0f;
 		break;
 	case Player::PlayerAttitude::SQUAT:
-		GROUND_RAY = 6.0f;
+		GROUND_RAY = 3.0f;
 		break;
 	default:
 		break;
@@ -384,7 +386,7 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 	for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr) {
 
 		//â∫ï˚å¸ÇÃìñÇΩÇËîªíË
-		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + m_transform.GetUp() * GROUND_RAY_OFFSET, -m_transform.GetUp());
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + KazMath::Vec3<float>(0, 1, 0) * GROUND_RAY_OFFSET, -KazMath::Vec3<float>(0,1,0));
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY + GROUND_RAY_OFFSET) {
 
 			//âüÇµñﬂÇµÅB
