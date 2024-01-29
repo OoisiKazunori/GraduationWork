@@ -9,7 +9,7 @@ class EnemyData;
 class EnemyManager
 {
 private:
-	std::vector<Enemy> m_enemys;
+	std::vector<std::unique_ptr<Enemy>> m_enemys;
 	std::vector<PatrolData> m_patrolDatas;
 	std::shared_ptr<PatrolConfig> m_config;
 

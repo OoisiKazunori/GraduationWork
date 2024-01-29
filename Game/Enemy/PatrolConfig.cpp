@@ -25,6 +25,34 @@ PatrolConfig::PatrolConfig(
 			m_astarDatas[i][j].type = AstarType::Move;
 		}
 	}
+
+	float l_chipSize = m_chipSize * 0.3f;
+
+	float l_offset_x = m_offset_x;
+	float l_offset_y = m_offset_y;
+	for (int i = 0; i < m_size_x; ++i)
+	{
+		for (int j = 0; j < m_size_y; ++j)
+		{
+			//箱トランスフォーム
+			KazMath::Transform3D l_trans;
+
+			//仮
+			l_trans.pos = {
+				i * m_chipSize + l_offset_x,
+				-20.0f,
+				j * m_chipSize + l_offset_y
+			};
+
+			l_trans.scale = {
+				l_chipSize,
+				l_chipSize,
+				l_chipSize
+			};
+
+			m_astarDatas[i][j].trans = l_trans;
+		}
+	}
 }
 
 void PatrolConfig::Init()
@@ -34,36 +62,36 @@ void PatrolConfig::Init()
 
 void PatrolConfig::Update()
 {
-	if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_LEFT))
-	{
-		m_offset_x -= m_chipSize;
-	}
-	else if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_RIGHT))
-	{
-		m_offset_x += m_chipSize;
-	}
-	else if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_UP))
-	{
-		m_offset_y -= m_chipSize;
-	}
-	else if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_DOWN))
-	{
-		m_offset_y += m_chipSize;
-	}
-	else if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_1))
-	{
-		m_chipSize += 0.01f;
-	}
-	else if (KeyBoradInputManager::
-		Instance()->InputTrigger(DIK_2))
-	{
-		m_chipSize -= 0.01f;
-	}
+	//if (KeyBoradInputManager::
+	//	Instance()->InputTrigger(DIK_LEFT))
+	//{
+	//	m_offset_x -= m_chipSize;
+	//}
+	//else if (KeyBoradInputManager::
+	//	Instance()->InputTrigger(DIK_RIGHT))
+	//{
+	//	m_offset_x += m_chipSize;
+	//}
+	//else if (KeyBoradInputManager::
+	//	Instance()->InputTrigger(DIK_UP))
+	//{
+	//	m_offset_y -= m_chipSize;
+	//}
+	//else if (KeyBoradInputManager::
+	//	Instance()->InputTrigger(DIK_DOWN))
+	//{
+	//	m_offset_y += m_chipSize;
+	//}
+	//else if (KeyBoradInputManager::
+	//	Instance()->InputTrigger(DIK_1))
+	//{
+	//	m_chipSize += 0.01f;
+	//}
+	//else if (KeyBoradInputManager::
+	//	Instance()->InputTrigger(DIK_2))
+	//{
+	//	m_chipSize -= 0.01f;
+	//}
 
 	float l_chipSize = m_chipSize;
 

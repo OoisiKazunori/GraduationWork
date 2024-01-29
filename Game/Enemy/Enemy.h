@@ -4,23 +4,19 @@
 #include "../Game/Collision/MeshCollision.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/Reaction.h"
+#include"../Game/AI/EnemyAIData.h"
 #include<memory>
+#include"../Game/AI/Debug/EnemyDebugManager.h"
+#include"../Game/AI/Gauge/FindGauge.h"
+#include"../Game/AI/Sight/ConeTypeViewingAngle.h"
+#include"../Game/AI/Sight/BoxTypeViewingAngle.h"
+#include"../Game/AI/Field/ExistenceEstablishmentMap.h"
 
 class MeshCollision;
 class BulletMgr;
 
 class Enemy
 {
-public:
-	enum struct State
-	{
-		Patrol,		//巡回
-		Warning,	//警戒
-		Combat,		//戦闘
-		Holdup,		//ホールドアップ(消えそう)
-		Death		//死亡
-	};
-
 private:
 	std::shared_ptr<
 		BasicDraw::BasicModelRender> m_enemyBox;
@@ -64,11 +60,20 @@ private:
 	//UI
 	Reaction m_reaction;
 
+<<<<<<< HEAD
 	//仮で足跡を描画する用。
 	float m_footprintSpan;
 	const float FOOTPRINT_SPAN = 5;
 	bool m_footprintSide;
 
+
+=======
+>>>>>>> f0b3d7a285d53d36e82bd80fb5a13da810360779
+	bool m_isInSightFlag;//視界内に入ったか
+	ConeTypeViewingAngle m_coneSight;
+	BoxTypeViewingAngle m_boxSight;
+
+	FindGauge m_findGauge;
 public:
 	Enemy();
 	~Enemy();
@@ -121,7 +126,7 @@ public:
 
 public:
 	void SetData(
-		DrawingByRasterize& arg_rasterize);
+		DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize);
 	void SetCheckPointDelay(
 		std::vector<std::pair<int, int>> arg_checkPointDelay);
 	void SetState(State arg_state) { m_state = arg_state; }
@@ -143,4 +148,11 @@ public:
 		m_offset_x = arg_offsets.first;
 		m_offset_y = arg_offsets.second;
 	}
+
+
+private:
+	//敵のデバック用
+	EnemyDebugManager::EnemyDebugData m_debugData;
+
+
 };

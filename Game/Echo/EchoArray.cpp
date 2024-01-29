@@ -7,11 +7,11 @@ EchoArray::EchoArray()
 
 void EchoArray::Setting()
 {
-
 	//構造化バッファを生成。
 	m_echoStructuredBuffer = KazBufferHelper::SetConstBufferData(sizeof(Echo::EchoData) * MAX_ELEMENT_COUNT, "EchoData");
-	m_echoMemoryStructuredBuffer = KazBufferHelper::SetConstBufferData(sizeof(Echo::EchoMemoryData) * MAX_MEMORY_ELEMENT_COUNT, "EchoMemoryData");
-
+	m_echoMemoryStructuredBuffer = KazBufferHelper::SetUploadBufferData(sizeof(Echo::EchoMemoryData) * MAX_MEMORY_ELEMENT_COUNT, "EchoMemoryData");
+	m_echoMemoryStructuredVRAMBuffer = KazBufferHelper::SetGPUBufferData(sizeof(Echo::EchoMemoryData) * MAX_MEMORY_ELEMENT_COUNT, "EchoMemoryData");
+	m_echoMemoryStructuredVRAMBuffer.bufferWrapper->ChangeBarrierUAV();
 }
 
 void EchoArray::Init()
@@ -65,6 +65,8 @@ void EchoArray::Update()
 	//GPUにデータを転送する。
 	m_echoStructuredBuffer.bufferWrapper->TransData(m_echoArray.data(), sizeof(Echo::EchoData) * MAX_ELEMENT_COUNT);
 	m_echoMemoryStructuredBuffer.bufferWrapper->TransData(m_echoMemoryArray.data(), sizeof(Echo::EchoMemoryData) * MAX_MEMORY_ELEMENT_COUNT);
+
+	m_echoMemoryStructuredVRAMBuffer.bufferWrapper->CopyBuffer(m_echoMemoryStructuredBuffer.bufferWrapper->GetBuffer());
 
 }
 

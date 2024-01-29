@@ -22,7 +22,10 @@
 #include"../Game/AI/Debug/EnemyDebugManager.h"
 #include"../Game/AI/Evaluation/FieldAI.h"
 #include"../Game/AI/Debug/FieldAIDebugManager.h"
+<<<<<<< HEAD
 #include"../Footprint/FootprintMgr.h"
+=======
+>>>>>>> f0b3d7a285d53d36e82bd80fb5a13da810360779
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	//DrawFuncHelperでのモデル読み込み
@@ -62,7 +65,11 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	auto l_enemyData = MapManager::GetEnemyData(m_stageNum);
 	m_enemyManager->SetMapData(m_stageNum, l_enemyData, arg_rasterize);
 	//MapManager::GetPlayerStartPosition(0)
+<<<<<<< HEAD
 	m_player = std::make_shared<Player>(arg_rasterize, KazMath::Transform3D({ -202.0f,-38.0f,291.0f }));
+=======
+	m_player = std::make_shared<Player>(arg_rasterize, KazMath::Transform3D({ -202.0f,0.0f,291.0f }));
+>>>>>>> f0b3d7a285d53d36e82bd80fb5a13da810360779
 	m_camera = std::make_shared<Camera>();
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 	m_throwableObjectController = std::make_shared<ThrowableObjectController>(arg_rasterize);
@@ -79,9 +86,12 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
 	m_axixTransform.scale.z += 1.0f;
 
+<<<<<<< HEAD
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
 
+=======
+>>>>>>> f0b3d7a285d53d36e82bd80fb5a13da810360779
 
 	EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
@@ -99,7 +109,10 @@ void GameScene::Init()
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
 	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+<<<<<<< HEAD
 	FootprintMgr::Instance()->Init();
+=======
+>>>>>>> f0b3d7a285d53d36e82bd80fb5a13da810360779
 	m_debugCameraFlag = false;
 }
 
@@ -272,9 +285,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
 
+<<<<<<< HEAD
 
 	FootprintMgr::Instance()->Update();
 
+=======
+>>>>>>> f0b3d7a285d53d36e82bd80fb5a13da810360779
 	EnemyDebugManager::Instance()->Update();
 	FieldAI::Instance()->DebugUpdate();
 	FieldAIDebugManager::Instance()->Update();
@@ -289,7 +305,11 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
+<<<<<<< HEAD
 	//FieldAIDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
+=======
+	FieldAIDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
+>>>>>>> f0b3d7a285d53d36e82bd80fb5a13da810360779
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
@@ -307,10 +327,14 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_goalPoint.Draw(arg_rasterize);
 
+<<<<<<< HEAD
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 	//m_menu.Draw(arg_rasterize);
 	//m_menu.Draw(arg_rasterize);
+=======
+	m_menu.Draw(arg_rasterize);
+>>>>>>> f0b3d7a285d53d36e82bd80fb5a13da810360779
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);

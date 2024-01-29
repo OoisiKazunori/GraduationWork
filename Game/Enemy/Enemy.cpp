@@ -1,7 +1,6 @@
 #include "Enemy.h"
 #include "EnemyConfig.h"
 #include "../Game/Bullet/BulletMgr.h"
-#include "../Echo/EchoArray.h"
 #include "../Footprint/FootprintMgr.h"
 
 Enemy::Enemy()
@@ -10,8 +9,7 @@ Enemy::Enemy()
 	m_state = State::Patrol;
 	m_delayNum = 0;
 	m_count = 0;
-	m_changeCombatDelay = 0;
-	m_checkPointDelay = 0;
+	m_delay = 0;
 	m_isCheckPoint = false;
 	m_onGround = false;
 
@@ -24,28 +22,22 @@ Enemy::Enemy()
 
 	m_gravity = 0.0f;
 
-	m_isCombatTri = false;
-
-	m_hp = EnemyConfig::maxHP;
-	m_changePatrolDelay = EnemyConfig::changePatrolDelay;
+	m_hp = MAX_HP;
+	m_rate = MAX_RATE;
 	m_angle = 0.0f;
 
-	m_enemyShotSE =
-		SoundManager::Instance()->SoundLoadWave(
-			"Resource/Sound/Shot_Player.wav");
+	m_enemyShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
 	m_enemyShotSE.volume = 0.05f;
 
-	m_oldQuaternion = { -1.0f,-1.0f,-1.0f };
-
-	m_shotDelay = 0;
 }
 
 Enemy::~Enemy()
 {
+	bool debug = false;
 }
 
 void Enemy::SetData(
-	DrawingByRasterize& arg_rasterize)
+	DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize)
 {
 	////モデルデータ代入
 	//m_enemyBox =
@@ -75,6 +67,19 @@ void Enemy::SetData(
 	m_reaction.Load(arg_rasterize);
 	m_shotDelay = 0;
 	m_appearTimer = 0;
+
+	static int enemyID = 0;
+	m_debugData.m_enemyName = "Enemy:" + std::to_string(enemyID);
+	++enemyID;
+	m_debugData.m_transform = &m_trans;
+	m_debugData.m_status = &m_state;
+	m_debugData.m_gaugeData = m_findGauge.GetDebugData();
+	m_debugData.m_coneSightPointArray = m_coneSight.GetPointPosArray();
+	m_debugData.m_boxSightPointArray = m_boxSight.GetPointPosArray();
+	m_debugData.m_isFindFlag = &m_isInSightFlag;
+	EnemyDebugManager::Instance()->Generate(
+		&m_debugData
+	);
 }
 
 void Enemy::SetCheckPointDelay(
@@ -83,8 +88,7 @@ void Enemy::SetCheckPointDelay(
 	m_checkPointDelays = arg_checkPointDelay;
 	for (int i = 0; i < m_checkPointDelays.size(); ++i)
 	{
-		m_checkPointDelays[i].second =
-			EnemyConfig::checkPointDelay;
+		m_checkPointDelays[i].second = EnemyConfig::delay;
 	}
 }
 
@@ -93,7 +97,7 @@ void Enemy::Init()
 	m_state = State::Patrol;
 	m_delayNum = 0;
 	m_count = 0;
-	m_checkPointDelay = 0;
+	m_delay = 0;
 	m_isCheckPoint = false;
 	m_onGround = false;
 
@@ -106,13 +110,14 @@ void Enemy::Init()
 
 	m_gravity = 0.0f;
 
-	m_hp = EnemyConfig::maxHP;
-	m_changePatrolDelay = EnemyConfig::changePatrolDelay;
+	m_hp = MAX_HP;
+	m_rate = MAX_RATE;
 	m_angle = 0.0f;
 
-	m_changeCombatDelay = EnemyConfig::changeCombatDelay;
+	m_checkEyeDelay = MAX_EYE_DELAY;
 
 	m_shotDelay = 0;
+	m_isInSightFlag = false;
 
 	m_footprintSpan = 0;
 }
@@ -124,53 +129,198 @@ void Enemy::Update(
 	KazMath::Vec3<float> arg_playerPos,
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
-
 	//前フレーム座標(移動する前の座標)を保存。
 	m_prevPos = m_trans.pos;
+
+	if (m_state == State::Death)
+	{
+		return;
+	}
 
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
 		std::make_pair(arg_playerPos.x, arg_playerPos.z);
 
+	//プレイヤーの思考------------------------------------------------------------
+	//視野角
+	//視線範囲内か
+	//if (CheckDistXZ(
+	//	l_pPos, EnemyConfig::eyeCheckDist) &&
+	//	CheckEye(arg_playerPos, arg_stageColliders))
+	//{
+	//	m_checkEyeDelay--;
+	//	
+	//	//一定時間範囲内だったら
+	//	if (m_checkEyeDelay <= 0)
+	//	{
+	//		//m_isCombat = true;
+	//		//m_state = State::Combat;
+	//		m_rate = MAX_RATE;
+	//		m_checkEyeDelay = MAX_EYE_DELAY;
+	//	}
+	//	m_isInSightFlag = true;
+	//}
+	//else
+	//{
+	//	m_isInSightFlag = false;
+	//	m_checkEyeDelay = MAX_EYE_DELAY;
+	//}
+
+	//警戒状態
+	if (FieldAI::Instance()->WARING_LEVEL <= FieldAI::Instance()->GetWaringRate())
+	{
+		if (m_boxSight.Collision(arg_playerPos, m_trans.pos, m_trans.quaternion))
+		{
+			m_isInSightFlag = true;
+		}
+		else
+		{
+			m_isInSightFlag = false;
+		}
+
+		ExistenceEstablishmentMap::Instance()->Find(m_boxSight.m_sight);
+	}
+	//通常状態
+	else
+	{
+		if (m_coneSight.Collision(arg_playerPos, m_trans.pos, m_trans.quaternion))
+		{
+			m_isInSightFlag = true;
+		}
+		else
+		{
+			m_isInSightFlag = false;
+		}
+
+		ExistenceEstablishmentMap::Instance()->Find(m_coneSight.m_sight);
+	}
+
+
+	//警戒度
+	m_findGauge.Update(arg_playerPos, m_trans.pos, 0.0f, m_isInSightFlag);
+	//発見
+	m_isCombat = false;
+	if (m_findGauge.IsFind() && m_state != State::Combat)
+	{
+		m_isCombat = true;
+		m_state = State::Combat;
+	}
+	//未発見から時間がたった
+	if (m_findGauge.GetRate() <= 0.0f)
+	{
+		m_state = State::Patrol;
+	}
+	//プレイヤーの思考------------------------------------------------------------
+
 	//巡回(通常or警戒)
 	if (m_state == State::Patrol ||
 		m_state == State::Warning)
 	{
-		Patrol(l_pPos);
+		//音が鳴った場合
+		if (CheckDistXZ(
+			l_pPos, EnemyConfig::soundCheckDist) && false)
+		{
+			if (!m_isReturn) {
+				m_checkSoundCount++;
+
+				if (m_checkSoundCount ==
+					m_checkSoundPos.size() - 1) {
+					m_isReturn = true;
+				}
+			}
+			else {
+				m_checkSoundCount--;
+
+				if (m_checkSoundCount == 0) {
+					m_state = State::Patrol;
+					m_isReturn = false;
+				}
+			}
+
+			m_trans.pos = {
+					m_checkSoundPos[m_checkSoundCount].first,
+					0.0f,
+					m_checkSoundPos[m_checkSoundCount].second
+			};
+		}
+
+		//チェックポイント
+		if (m_isCheckPoint)
+		{
+			m_delay++;
+			if (m_delay ==
+				m_checkPointDelay[m_delayNum].second)
+			{
+				m_delay = 0;
+				m_isCheckPoint = false;
+			}
+		}
+
+		//通常
+		else if (
+			m_rootPos.size() > 0 &&
+			m_checkEyeDelay == MAX_EYE_DELAY)
+		{
+			m_trans.pos = {
+				m_rootPos[m_count].first,
+				m_trans.pos.y,
+				m_rootPos[m_count].second
+			};
+
+			if (m_count < m_rootPos.size() - 1) {
+				m_count++;
+			}
+			else {
+				m_count = 0;
+			}
+
+			for (int i = 0; i < m_checkPointDelay.size(); ++i)
+			{
+				if (m_count != m_checkPointDelay[i].first) {
+					continue;
+				}
+				m_delayNum = i;
+				m_isCheckPoint = true;
+				break;
+			}
+
+			//仮
+			m_trans.pos.x = m_trans.pos.x + m_offset_x;
+			m_trans.pos.z = m_trans.pos.z + m_offset_y;
+		}
 	}
 
 	//戦闘中
 	else if (m_state == State::Combat)
 	{
-		Combat(
-			arg_playerPos,
-			arg_bulletMgr,
-			arg_stageColliders);
-	}
-
-	//死亡
-	else { return; }
-
-	//視線範囲内か
-	m_isCombatTri = false;
-	if (CheckDistXZ(
-		l_pPos, EnemyConfig::eyeCheckDist) &&
-		CheckEye(arg_playerPos, arg_stageColliders))
-	{
-		m_changeCombatDelay--;
-
-		//一定時間範囲内だったら
-		if (m_changeCombatDelay <= 0)
+		//視線範囲内なら向きながら射撃
+		if (CheckEye(arg_playerPos, arg_stageColliders))
 		{
-			m_isCombatTri = true;
-			m_state = State::Combat;
-			m_changePatrolDelay = EnemyConfig::changePatrolDelay;
+			//プレイヤー方向
+			m_trans.quaternion = CalMoveQuaternion(arg_playerPos, m_trans.pos);
+
+			//射撃
+			++m_shotDelay;
+			if (SHOT_DELAY < m_shotDelay) {
+
+				arg_bulletMgr.lock()->GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
+
+				m_shotDelay = 0;
+
+				SoundManager::Instance()->SoundPlayerWave(m_enemyShotSE, 0);
+
+			}
 		}
-	}
-	else
-	{
-		m_changeCombatDelay =
-			EnemyConfig::changeCombatDelay;
+
+		else
+		{
+			m_rate--;
+			if (m_rate < 0)
+			{
+				m_state = State::Patrol;
+				m_rate = MAX_RATE;
+			}
+		}
 	}
 
 	//回転
@@ -193,7 +343,7 @@ void Enemy::Update(
 	{
 		//重力をかける。
 		if (!m_onGround) {
-			m_gravity -= EnemyConfig::gravity;
+			m_gravity -= GRAVITY;
 		}
 		else {
 			m_gravity = 0;
@@ -204,7 +354,7 @@ void Enemy::Update(
 	}
 
 	//判定(メッシュ)
-	Collision(arg_stageColliders, arg_bulletMgr);
+	//Collision(arg_stageColliders, arg_bulletMgr);
 
 	//一旦Y固定
 	m_trans.pos.y = -43.0f;
@@ -215,17 +365,17 @@ void Enemy::Update(
 	{
 		switch (m_state)
 		{
-		case Enemy::State::Patrol:
+		case State::Patrol:
 			break;
-		case Enemy::State::Warning:
+		case State::Warning:
 			m_reaction.Init(EnemyReaction::WARING, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
 			break;
-		case Enemy::State::Combat:
+		case State::Combat:
 			m_reaction.Init(EnemyReaction::COMBAT, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
 			break;
-		case Enemy::State::Holdup:
+		case State::Holdup:
 			break;
-		case Enemy::State::Death:
+		case State::Death:
 			break;
 		default:
 			break;
@@ -245,7 +395,6 @@ void Enemy::Update(
 		m_appearTimer = 0;
 		m_inEcho = false;
 	}
-
 
 	//仮で足跡を描画。
 	float moveLength = KazMath::Vec3<float>(KazMath::Vec3<float>(m_trans.pos.x, 0.0f, m_trans.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).Length();
@@ -284,7 +433,6 @@ void Enemy::Update(
 			m_footprintSide = !m_footprintSide;
 		}
 	}
-
 }
 
 void Enemy::Draw(
@@ -292,10 +440,19 @@ void Enemy::Draw(
 	Raytracing::BlasVector& arg_blasVec)
 {
 	m_reaction.Draw(arg_rasterize, arg_blasVec);
+#ifdef DEBUG
 	if (!m_inEcho)
 	{
-		//return;
+		return;
 	}
+#else
+	m_debugData.m_transform = &m_trans;
+	m_debugData.m_status = &m_state;
+	if (!m_inEcho && !EnemyDebugManager::Instance()->m_debugAIFlag)
+	{
+		return;
+	}
+#endif // DEBUG
 
 	if (m_rootPos.size() > 0 &&
 		m_state != State::Death)
@@ -308,131 +465,15 @@ void Enemy::Draw(
 			m_trans,
 			l_player);
 	}
-}
 
-//巡回
-void Enemy::Patrol(std::pair<float, float> arg_pPos)
-{
-	//音の範囲内の場合
-	//if (CheckDistXZ(
-	//	arg_pPos, EnemyConfig::soundCheckDist) &&
-	//	m_checkSoundPos.size() > 0)
-	//{
-	//	//未発見状態の場合(音が鳴った場合の条件を追加する)
-	//	if (m_changeCombatDelay ==
-	//		EnemyConfig::changeCombatDelay)
-	//	{
-	//		if (!m_isReturn) {
-	//			m_checkSoundCount++;
 
-	//			if (m_checkSoundCount ==
-	//				m_checkSoundPos.size() - 1) {
-	//				m_isReturn = true;
-	//			}
-	//		}
-	//		else {
-	//			m_checkSoundCount--;
-
-	//			if (m_checkSoundCount == 0) {
-	//				m_state = State::Patrol;
-	//				m_isReturn = false;
-	//			}
-	//		}
-
-	//		m_trans.pos = {
-	//				m_checkSoundPos[m_checkSoundCount].first,
-	//				0.0f,
-	//				m_checkSoundPos[m_checkSoundCount].second
-	//		};
-	//	}
+	//if (m_isCombat) {
+	//	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 0, 0, 255));
+	//}
+	//else {
+	//	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_trans.pos, m_trans.pos + m_trans.GetFront() * 20.0f, KazMath::Color(255, 255, 255, 255));
 	//}
 
-	//チェックポイント
-	if (m_isCheckPoint)
-	{
-		m_checkPointDelay++;
-		if (m_checkPointDelay ==
-			m_checkPointDelays[m_delayNum].second)
-		{
-			m_checkPointDelay = 0;
-			m_isCheckPoint = false;
-		}
-	}
-
-	//通常
-	else if (
-		m_rootPos.size() > 0 &&
-		m_changeCombatDelay ==
-		EnemyConfig::changeCombatDelay)
-	{
-		m_trans.pos = {
-			m_rootPos[m_count].first,
-			m_trans.pos.y,
-			m_rootPos[m_count].second
-		};
-
-		if (m_count < m_rootPos.size() - 1) {
-			m_count++;
-		}
-		else {
-			m_count = 0;
-		}
-
-		for (int i = 0; i < m_checkPointDelays.size(); ++i)
-		{
-			if (m_count != m_checkPointDelays[i].first) {
-				continue;
-			}
-			m_delayNum = i;
-			m_isCheckPoint = true;
-			break;
-		}
-
-		//仮
-		m_trans.pos.x = m_trans.pos.x + m_offset_x;
-		m_trans.pos.z = m_trans.pos.z + m_offset_y;
-	}
-}
-
-//戦闘
-void Enemy::Combat(
-	KazMath::Vec3<float>& arg_pPos,
-	std::weak_ptr<BulletMgr>& arg_bulletMgr,
-	std::list<std::shared_ptr<MeshCollision>>
-	& arg_stageColliders)
-{
-	//視線範囲内なら向きながら射撃
-	if (CheckEye(arg_pPos, arg_stageColliders))
-	{
-		//プレイヤー方向
-		m_trans.quaternion =
-			CalMoveQuaternion(arg_pPos, m_trans.pos);
-
-		//射撃
-		++m_shotDelay;
-		if (EnemyConfig::shotDelay < m_shotDelay) {
-
-			arg_bulletMgr.lock()->
-				GenerateEnemyBullet(
-					m_trans.pos,
-					m_trans.GetFront());
-
-			m_shotDelay = 0;
-
-			SoundManager::Instance()->
-				SoundPlayerWave(m_enemyShotSE, 0);
-		}
-	}
-
-	else
-	{
-		m_changePatrolDelay--;
-		if (m_changePatrolDelay < 0)
-		{
-			m_state = State::Patrol;
-			m_changePatrolDelay = EnemyConfig::changePatrolDelay;
-		}
-	}
 }
 
 DirectX::XMVECTOR Enemy::CalMoveQuaternion(
@@ -620,6 +661,7 @@ bool Enemy::CheckEye(
 	if (l_angleOfView < 0.5f) {
 
 		return false;
+
 	}
 
 	//メッシュ判定
@@ -652,34 +694,4 @@ bool Enemy::CheckEye(
 
 	return !isHit;
 
-}
-
-//大石
-void Enemy::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision)
-{
-	//全てのEchoとチェック
-	m_inEcho = false;
-	for (auto& index : EchoArray::Instance()->GetEcho()) {
-
-		//エコーが生成されていなかったら。
-		if (!index.GetIsActive()) continue;
-		if (index.GetNowRadius() <= 0.1f) continue;
-
-		//まずは球で当たり判定を行う。
-		KazMath::Vec3<float> echoVec = m_trans.pos - index.GetPos();
-		float distance = echoVec.Length();
-		if (index.GetNowRadius() <= distance) continue;
-
-		//次にレイを飛ばして当たり判定を行う。
-		MeshCollision::CheckHitResult result = arg_stageMeshCollision.lock()->CheckHitRay(index.GetPos(), echoVec.GetNormal());
-
-		//当たっていたら
-		if (!result.m_isHit || (result.m_isHit && distance <= fabs(result.m_distance))) {
-
-			m_inEcho = true;
-			break;
-
-		}
-
-	}
 }
