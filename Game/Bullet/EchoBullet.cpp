@@ -54,13 +54,17 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				m_transform.pos = rayResult.m_position;
 
 				//まずは最初にエコーを出す。
-				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
+				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::WHITE);
 				--m_echoCount;
 
 				SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
 
 				m_isCollision = false;
 				isHit = true;
+
+
+
+				Init();
 
 			}
 
@@ -73,7 +77,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 		m_echoSpan += 1.0f * StopMgr::Instance()->GetGameSpeed();
 		if (ECHO_SPAN <= m_echoSpan) {
 
-			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
+			EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::WHITE);
 			--m_echoCount;
 			m_echoSpan = 0.0f;
 
