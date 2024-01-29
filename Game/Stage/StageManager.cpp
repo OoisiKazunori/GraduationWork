@@ -54,45 +54,35 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 		(*l_block01Itr)->Update();
 	}
 
-	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_River.begin(); itr != m_Wall_River.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_H.begin(); itr != m_Wall_H.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_I.begin(); itr != m_Wall_I.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_L_LPost.begin(); itr != m_Wall_L_LPost.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_NonPost.begin(); itr != m_Wall_NonPost.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_L_Post.begin(); itr != m_Wall_L_Post.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_T.begin(); itr != m_Wall_T.end(); itr++)
-	{
-		(*itr)->Update();
-	}
 	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
 	{
 		(*itr)->Update();
+	}
+
+	static int bird1Ti = 400;
+	static int bird2Ti = 700;
+	static int bird3Ti = 900;
+	//一ステージめだったら
+	if (m_nowStageNumber == 0)
+	{
+		bird1Ti--;
+		bird2Ti--;
+		bird3Ti--;
+		if (bird1Ti <= 0)
+		{
+			bird1Ti = 400;
+			EchoArray::Instance()->Generate(m_Bird1->m_transform.pos, 30.0f, Echo::COLOR::WHITE);
+		}
+		if (bird2Ti <= 0)
+		{
+			bird2Ti = 700;
+			EchoArray::Instance()->Generate(m_Bird2->m_transform.pos, 30.0f, Echo::COLOR::WHITE);
+		}
+		if (bird3Ti <= 0)
+		{
+			bird3Ti = 900;
+			EchoArray::Instance()->Generate(m_Bird3->m_transform.pos, 30.0f, Echo::COLOR::WHITE);
+		}
 	}
 }
 
@@ -117,42 +107,6 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
 	}
 
-	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_River.begin(); itr != m_Wall_River.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_H.begin(); itr != m_Wall_H.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_I.begin(); itr != m_Wall_I.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_L_LPost.begin(); itr != m_Wall_L_LPost.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_NonPost.begin(); itr != m_Wall_NonPost.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_L_Post.begin(); itr != m_Wall_L_Post.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_T.begin(); itr != m_Wall_T.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
 	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
 	{
 		(*itr)->Draw(arg_rasterize, arg_blasVec);
@@ -179,152 +133,37 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	m_block01.clear();
 
 	m_plane.clear();
-	m_Wall_C.clear();
-	m_Wall_Four_Forked_Road.clear();
-	m_Wall_River.clear();
-	m_Wall_H.clear();
 
-	m_Wall_I.clear();
-	m_Wall_L_LPost.clear();
-	m_Wall_NonPost.clear();
-	m_Wall_L_Post.clear();
-	m_Wall_T.clear();
 
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
-		//if (l_mapItr->m_objetName.starts_with("phone") == true)
-		//{
-		//	m_phone.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/tree/", "tree2.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale, l_mapItr->echoScale));
-		//	
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_phone.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_phone.begin())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("cylinder") == true)
-		//{
-		//	m_cylinder.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/cylinder/", "cylinder.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	m_cylinder.back()->m_echoFlag = true;
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_cylinder.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_cylinder.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("stage") == true)
-		//{
-		//	m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
-		//}
-		if (l_mapItr->m_objetName.starts_with("goal") == true)
+		if (l_mapItr->m_objetName.starts_with("Bird1") == true)
+		{
+			m_Bird1 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("Bird2") == true)
+		{
+			m_Bird2 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("Bird3") == true)
+		{
+			m_Bird3 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+
+		else if (l_mapItr->m_objetName.starts_with("goal") == true)
 		{
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		//else if (l_mapItr->m_objetName.starts_with("Block") == true)
-		//{
-		//	m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	m_block01.back()->m_echoFlag = true;
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_block01.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_block01.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//
-		//else if (l_mapItr->m_objetName.starts_with("plane") == true)
-		//{
-		//	m_plane.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Plane/", "Plane.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("wallC") == true)
-		//{
-		//	m_Wall_C.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_C/", "Wall_C.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//	
-		//
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_C.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_C.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("wall_four-forked_road") == true)
-		//{
-		//	m_Wall_Four_Forked_Road.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_Four_Forked_Road/", "Wall_Four_Forked_Road.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_Four_Forked_Road.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_Four_Forked_Road.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("wall_River") == true)
-		//{
-		//	m_Wall_River.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_River/", "Wall_River.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_River.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_River.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("wallH") == true)
-		//{
-		//	m_Wall_H.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_H/", "Wall_H.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_H.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_H.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//
-		//else if (l_mapItr->m_objetName.starts_with("wallI") == true)
-		//{
-		//	m_Wall_I.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_I/", "Wall_I.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_I.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_I.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("wallL_LPost") == true)
-		//{
-		//	m_Wall_L_LPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_LPost/", "Wall_L_LPost.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_L_LPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_L_LPost.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("wallL_NonPost") == true)
-		//{
-		//	m_Wall_NonPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_NonPost/", "Wall_L_NonPost.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_NonPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_NonPost.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("Wall_L_Post") == true)
-		//{
-		//	m_Wall_L_Post.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_Post/", "Wall_L_Post.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_L_Post.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_L_Post.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
-		//else if (l_mapItr->m_objetName.starts_with("wallT") == true)
-		//{
-		//	m_Wall_T.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_T/", "Wall_T.gltf",
-		//		l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		//
-		//	auto collision = std::make_shared<MeshCollision>();
-		//	collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_T.end())->m_transform);
-		//	m_collisions.push_back(collision);
-		//}
+
 	}
 	//emptyなら入れる
 	if (!m_stage)

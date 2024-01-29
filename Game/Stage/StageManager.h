@@ -24,19 +24,12 @@ private:
 
 	std::list<std::unique_ptr<StageModel>> m_block01;
 
-
+	std::unique_ptr<StageModel> m_Bird1;
+	std::unique_ptr<StageModel> m_Bird2;
+	std::unique_ptr<StageModel> m_Bird3;
 
 	std::list<std::unique_ptr<StageModel>> m_plane;
-	std::list<std::unique_ptr<StageModel>> m_Wall_C;
-	std::list<std::unique_ptr<StageModel>> m_Wall_Four_Forked_Road;
-	std::list<std::unique_ptr<StageModel>> m_Wall_River;
-	std::list<std::unique_ptr<StageModel>> m_Wall_H;
 
-	std::list<std::unique_ptr<StageModel>> m_Wall_I;
-	std::list<std::unique_ptr<StageModel>> m_Wall_L_LPost;
-	std::list<std::unique_ptr<StageModel>> m_Wall_NonPost;
-	std::list<std::unique_ptr<StageModel>> m_Wall_L_Post;
-	std::list<std::unique_ptr<StageModel>> m_Wall_T;
 
 
 	std::list<std::shared_ptr<MeshCollision>> m_collisions;

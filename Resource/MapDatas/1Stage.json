@@ -47,13 +47,13 @@
         },
         {
             "type": "MESH",
-            "name": "Bird",
+            "name": "Bird1",
             "echo": 0.0,
             "transform": {
                 "translation": [
-                    38.0,
+                    -38.0,
                     1.0,
-                    -36.5
+                    36.5
                 ],
                 "rotation": [
                     0.0,
@@ -69,13 +69,13 @@
         },
         {
             "type": "MESH",
-            "name": "Bird.001",
+            "name": "Bird2.001",
             "echo": 0.0,
             "transform": {
                 "translation": [
-                    6.5,
+                    -6.5,
                     1.0,
-                    -42.0
+                    42.0
                 ],
                 "rotation": [
                     0.0,
@@ -91,13 +91,13 @@
         },
         {
             "type": "MESH",
-            "name": "Bird.002",
+            "name": "Bird3.002",
             "echo": 0.0,
             "transform": {
                 "translation": [
-                    -30.0,
+                    30.0,
                     1.0,
-                    -34.5
+                    34.5
                 ],
                 "rotation": [
                     0.0,
