@@ -59,7 +59,7 @@ public:
 private:
 	UI2DElement m_nonWepon;
 	UI2DElement m_StoneInf;
-	UI2DElement m_echo;
+	//UI2DElement m_echo;
 	UI2DElement m_echoBulletInf;
 	UI2DElement m_hundgun;
 	UI2DElement m_hundgunBulletInf;
@@ -153,7 +153,7 @@ public:
 private:
 	std::list<UI2DElement> m_UIs;
 	UI2DElement m_nonGadget;
-	UI2DElement m_sonar;
+	//UI2DElement m_sonar;
 	static const int c_UITexX = 272;
 	static const int c_UITexY = 105;
 	static const int c_BaseUIX = 205;

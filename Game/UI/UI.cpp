@@ -108,7 +108,7 @@ void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
 
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
-	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
+	//m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
 	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_Stone.png"),
 	m_TabSp(arg_rasterize, "Resource/UITexture/Tab.png"),
 	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),
@@ -549,8 +549,8 @@ UI2DElement& WeponUIManager::GetUI(WeponNumber f_wepon)
 }
 
 GadgetUIManager::GadgetUIManager(DrawingByRasterize& arg_rasterize) :
-	m_nonGadget(arg_rasterize, "Resource/UITexture/UI_hand.png"),
-	m_sonar(arg_rasterize, "Resource/UITexture/UI_sonar.png")
+	m_nonGadget(arg_rasterize, "Resource/UITexture/UI_hand.png")
+	//m_sonar(arg_rasterize, "Resource/UITexture/UI_sonar.png")
 {
 	m_nowGadget = e_NonGadget;
 	m_haveGadgets.push_back({ GadgetNumber::e_NonGadget, 0 });
@@ -677,7 +677,7 @@ UI2DElement& GadgetUIManager::GetUI(GadgetNumber f_gadget)
 	}
 	else if (f_gadget == GadgetNumber::e_Sonar)
 	{
-		return m_sonar;
+		//return m_sonar;
 	}
 
 	return m_nonGadget;
