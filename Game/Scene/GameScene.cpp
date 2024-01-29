@@ -59,25 +59,19 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	auto l_enemyData = MapManager::GetEnemyData(m_stageNum);
 	m_enemyManager->SetMapData(m_stageNum, l_enemyData, arg_rasterize);
 	//MapManager::GetPlayerStartPosition(0)
-	m_player = std::make_shared<Player>(arg_rasterize, KazMath::Transform3D({ -202.0f,-38.0f,291.0f }));
 	m_camera = std::make_shared<Camera>();
 	m_bulletMgr = std::make_shared<BulletMgr>(arg_rasterize);
 	m_throwableObjectController = std::make_shared<ThrowableObjectController>(arg_rasterize);
 
 	m_sceneNum = SCENE_NONE;
 
-	//マップデータ
-	for (auto& index : m_preEnemy) {
-
-		index = std::make_shared<PreEnemy>(arg_rasterize);
-
-	}
 
 	m_axis.Load(arg_rasterize, "Resource/Test/", "Axis.glb");
 	m_axixTransform.scale.z += 1.0f;
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
+	m_player = std::make_shared<Player>(arg_rasterize, KazMath::Transform3D({ -202.0f,-38.0f,291.0f }));
 }
 
 GameScene::~GameScene()
@@ -107,11 +101,6 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//デバックキーのサンプル
-	if (DebugKey::Instance()->DebugKeyTrigger(DIK_0, "GenerateEnemy", "DIK_0"))
-	{
-		m_preEnemy[0]->SetPos({ 0.0f,-45.0f,0.0f });
-	}
 
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_1, "DebugCamera", "DIK_1"))
 	{
@@ -252,11 +241,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
-	for (auto& index : m_preEnemy)
-	{
-		index->CheckInEcho(m_stageMeshCollision);
-		index->Update();
-	}
 	m_stageManager.CheckInEcho(m_stageMeshCollision);
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
@@ -275,8 +259,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
-
-	//FieldAIDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
@@ -305,11 +287,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	if (m_resultManager.GetResultShow())
 	{
 		m_resultManager.Draw(arg_rasterize);
-	}
-
-	for (auto& index : m_preEnemy) {
-
-		index->Draw(arg_rasterize, arg_blasVec);
 	}
 
 	DebugKey::Instance()->DrawImGui();

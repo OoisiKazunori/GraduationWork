@@ -5,6 +5,7 @@
 #include "../Game/Collision/MeshCollision.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/Reaction.h"
+#include"../Game/AI/EnemyAIData.h"
 #include<memory>
 
 class MeshCollision;

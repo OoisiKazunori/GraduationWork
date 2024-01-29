@@ -1509,7 +1509,8 @@ namespace DrawFuncData
 		}
 		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
 
-		drawCall.extraBufferArray.emplace_back(EchoArray::Instance()->GetEchoMemoryStructuredBuffer());
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back() = EchoArray::Instance()->GetEchoMemoryStructuredBuffer();
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
 
