@@ -56,6 +56,7 @@ public:
 	/// <param name="arg_pos"></param>
 	/// <param name="arg_maxRadius"></param>
 	/// <param name="arg_color"></param>
+	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo::COLOR arg_colorID, float arg_memoryTimer);
 	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo::COLOR arg_colorID);
 
 	KazBufferHelper::BufferData* GetEchoStructuredBuffer() { return &m_echoStructuredBuffer; }

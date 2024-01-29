@@ -7,6 +7,7 @@ Echo::Echo()
 {
 
 	m_isActive = false;
+	m_exitEasingTimer = 0.0f;
 
 }
 
@@ -15,10 +16,11 @@ void Echo::Init()
 
 	m_isActive = false;
 	m_echoMemoryData.m_isActive = false;
+	m_exitEasingTimer = 0.0f;
 
 }
 
-void Echo::Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR arg_echoColorID, bool arg_isMemory)
+void Echo::Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR arg_echoColorID, float arg_memoryTimer, bool arg_isMemory)
 {
 
 	//通常のEchoの情報を詰め込んでおく。
@@ -40,6 +42,7 @@ void Echo::Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR
 	m_easingTimer = 0.0f;
 
 	m_isMemory = arg_isMemory;
+	m_exitEasingTimer = arg_memoryTimer;
 
 }
 
@@ -72,7 +75,7 @@ void Echo::Update()
 		//記録用かそうじゃないかで消えるまでのタイマーを変える。
 		float exitEasingTimer = EXIT_EASING_TIMER;
 		if (m_isMemory) {
-			exitEasingTimer = EXIT_EASING_TIMER_MEMORY;
+			exitEasingTimer = m_exitEasingTimer;
 		}
 
 		m_easingTimer = std::clamp(m_easingTimer + 1.0f * StopMgr::Instance()->GetGameSpeed(), 0.0f, exitEasingTimer);
