@@ -36,6 +36,8 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 
 	m_transform = f_startPos;
 	Init();
+
+	m_transform.pos.y += 10.0f;
 }
 
 void Player::Init()
