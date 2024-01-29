@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		D3D12GetDebugInterface(IID_PPV_ARGS(&spDebugController0));
 		spDebugController0->QueryInterface(IID_PPV_ARGS(&spDebugController1));
 		spDebugController1->EnableDebugLayer();
-		spDebugController1->SetEnableGPUBasedValidation(false);
+		spDebugController1->SetEnableGPUBasedValidation(true);
 	}
 #endif
 
@@ -139,25 +139,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 #endif // _DEBUG
 //
-////#ifdef DEBUG
-//		GetWindowRect(winApi.hwnd, &wrc);
-//
-//		//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
-//		const LONG OFFSET = 300;
-//		wrc.left += OFFSET;
-//		wrc.right -= OFFSET;
-//		wrc.bottom -= OFFSET;
-//		wrc.top += OFFSET;
-//
-//		ClipCursor(&wrc);
-//		//マウス非表示
-//		ShowCursor(false);
-////#endif // _DEBUG
+#ifdef DEBUG
+		GetWindowRect(winApi.hwnd, &wrc);
+
+		//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
+		const LONG OFFSET = 300;
+		wrc.left += OFFSET;
+		wrc.right -= OFFSET;
+		wrc.bottom -= OFFSET;
+		wrc.top += OFFSET;
+
+		ClipCursor(&wrc);
+		//マウス非表示
+		ShowCursor(false);
+#endif // _DEBUG
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
-#ifdef DEBUG
+#ifdef _DEBUG
 		winApi.FPS();
 #endif
 

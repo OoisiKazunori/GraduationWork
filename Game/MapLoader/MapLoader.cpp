@@ -177,6 +177,7 @@ KazMath::Transform3D MapManager::GetPlayerStartPosition(int f_stageNum)
 				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
 			//ローテーションも後で適応する
 			l_mapItr->m_rotition;
+			break;
 		}
 	}
 

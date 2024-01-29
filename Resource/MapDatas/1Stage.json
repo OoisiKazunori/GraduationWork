@@ -1,0 +1,137 @@
+{
+    "name": "scene",
+    "Objects": [
+        {
+            "type": "MESH",
+            "name": "1F_Stage",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "player",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    40.0,
+                    1.0,
+                    -68.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Bird",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    38.0,
+                    1.0,
+                    -36.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Bird.001",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    6.5,
+                    1.0,
+                    -42.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Bird.002",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    -30.0,
+                    1.0,
+                    -34.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "goal",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    -39.0,
+                    4.0,
+                    -24.7
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        }
+    ]
+}

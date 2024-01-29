@@ -120,8 +120,13 @@
     <ClCompile Include="Game\ThrowableObject\ThrowableObject.cpp" />
     <ClCompile Include="Game\UI\CheckPoint.cpp" />
     <ClCompile Include="KazLibrary\Debug\DebugKey.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="Game\Echo\Echo.cpp" />
+    <ClCompile Include="Game\Echo\EchoArray.cpp" />
+    <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\Footprint\Footprint.cpp" />
     <ClCompile Include="Game\Footprint\FootprintMgr.cpp" />
+=======
     <ClCompile Include="Game\AI\Debug\EnemyDebugManager.cpp" />
     <ClCompile Include="Game\AI\Evaluation\FieldAI.cpp" />
     <ClCompile Include="Game\AI\Gauge\FindGauge.cpp" />
@@ -132,6 +137,7 @@
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\AI\Sight\ISight.cpp" />
     <ClCompile Include="Game\AI\Sight\BoxTypeViewingAngle.cpp" />
+>>>>>>> dev_EnemyAI_FieldAI
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -271,9 +277,14 @@
     <ClInclude Include="Game\ThrowableObject\ThrowableObject.h" />
     <ClInclude Include="Game\UI\CheckPoint.h" />
     <ClInclude Include="KazLibrary\Debug\DebugKey.h" />
+<<<<<<< HEAD
+    <ClInclude Include="Game\Echo\Echo.h" />
+    <ClInclude Include="Game\Echo\EchoArray.h" />
+    <ClInclude Include="Game\Enemy\PreEnemy.h" />
     <ClInclude Include="Game\Player\PlayerStatus.h" />
     <ClInclude Include="Game\Footprint\Footprint.h" />
     <ClInclude Include="Game\Footprint\FootprintMgr.h" />
+=======
     <ClInclude Include="Game\AI\Debug\EnemyDebugManager.h" />
     <ClInclude Include="Game\AI\EnemyAIData.h" />
     <ClInclude Include="Game\AI\Evaluation\FieldAI.h" />
@@ -286,6 +297,7 @@
     <ClInclude Include="KazLibrary\Helper\ConvertEnumToString.h" />
     <ClInclude Include="Game\AI\Sight\ISight.h" />
     <ClInclude Include="Game\AI\Sight\BoxTypeViewingAngle.h" />
+>>>>>>> dev_EnemyAI_FieldAI
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

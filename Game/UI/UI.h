@@ -139,6 +139,7 @@ public:
 	static KazMath::Vec2<float> GetUITextureSize() { return { c_UITexX , c_UITexY }; }
 	//
 	static KazMath::Vec2<float> GetUIBasePos() { return { c_BaseUIX , c_BaseUIY }; }
+	static bool isStoneInf;
 };
 
 class GadgetUIManager
@@ -187,6 +188,26 @@ public:
 	static KazMath::Vec2<float> GetUITextureSize() { return { c_UITexX , c_UITexY }; }
 	//
 	static KazMath::Vec2<float> GetUIBasePos() { return { c_BaseUIX , c_BaseUIY }; }
+};
+
+class DangerUIManager
+{
+	UI2DElement m_dangerTex;
+	UI2DElement m_cautionTex;
+	std::array<BasicDraw::BasicTextureRender, 50> m_timerTex;
+
+	float m_dangerTimer;
+	float m_cautionTimer;
+
+	bool m_isLook;
+	bool m_isOldLook;
+
+public:
+	DangerUIManager(DrawingByRasterize& arg_rasterize);
+
+	void Init();
+	void Update(bool f_isLook);
+	void Draw(DrawingByRasterize& arg_rasterize);
 };
 
 class HPUI

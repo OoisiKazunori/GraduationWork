@@ -164,9 +164,9 @@ namespace DrawFunc
 
 		arg_callData.extraBufferArray[2].bufferWrapper->TransData(&arg_color.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
 
-		arg_callData.extraBufferArray[3] = arg_boneBuffer;
-		arg_callData.extraBufferArray[3].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
-		arg_callData.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+		arg_callData.extraBufferArray[4] = arg_boneBuffer;
+		arg_callData.extraBufferArray[4].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		arg_callData.extraBufferArray[4].rootParamType = GRAPHICS_PRAMTYPE_DATA4;
 	}
 
 	static void DrawModelEcho(DrawFuncData::DrawCallData &arg_callData, KazMath::Transform3D &arg_transform, const KazMath::Vec3<float> &arg_echoPos, float arg_echoRange, const KazMath::Color &arg_outlineColor, const KazMath::Color &arg_color = KazMath::Color(255, 255, 255, 255))

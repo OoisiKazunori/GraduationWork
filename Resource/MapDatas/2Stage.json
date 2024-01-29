@@ -1,0 +1,71 @@
+{
+    "name": "scene",
+    "Objects": [
+        {
+            "type": "MESH",
+            "name": "2F_Stage",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "player.001",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    -36.0,
+                    15.0,
+                    26.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "goal.001",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    25.0,
+                    15.0,
+                    -5.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        }
+    ]
+}
