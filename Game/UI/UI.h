@@ -139,6 +139,7 @@ public:
 	static KazMath::Vec2<float> GetUITextureSize() { return { c_UITexX , c_UITexY }; }
 	//
 	static KazMath::Vec2<float> GetUIBasePos() { return { c_BaseUIX , c_BaseUIY }; }
+	static bool isStoneInf;
 };
 
 class GadgetUIManager

@@ -1,6 +1,12 @@
 #pragma once
 #include"StageModel.h"
 #include "../Game/Collision/MeshCollision.h"
+
+class StageNumCounter
+{
+public:
+	static int stageNumCount;
+};
 /// <summary>
 /// ステージ全体の管理処理
 /// MapLoaderのデータなどをここで描画している
@@ -57,6 +63,6 @@ public:
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;
 	std::unique_ptr<StageModel> m_colStage;
-	KazMath::Transform3D GetGoalTransform() { return m_goal->m_transform; };
+	KazMath::Transform3D GetGoalTransform();
 };
 
