@@ -47,21 +47,25 @@ VSOutputWorld GBufferVSmain(float4 pos : POSITION)
 	return op;
 }
 
-struct GBufferOutput
+struct BasicDrawGBufferOutput
 {
     float4 albedo : SV_TARGET0;
     float4 normal : SV_TARGET1;
     float4 metalnessRoughness : SV_TARGET2;
     float4 world : SV_TARGET3;
     float4 emissive : SV_TARGET4;
+    float4 outline : SV_TARGET5;
+    float4 outlineWorld : SV_TARGET6;
 };
-GBufferOutput GBufferPSmain(VSOutputWorld input) : SV_TARGET
+BasicDrawGBufferOutput GBufferPSmain(VSOutputWorld input) : SV_TARGET
 {
-    GBufferOutput output;
+    BasicDrawGBufferOutput output;
     output.albedo = color;
     output.normal = float4(-1,-1,-1,1);
-    output.metalnessRoughness = float4(0,0,0,0);
+    output.metalnessRoughness = float4(0,0,0,1);
     output.world = float4(-1,-1,-1,1);
     output.emissive = float4(0,0,0,1);
+    output.outline = float4(0,0,0,1);
+    output.outlineWorld = float4(0,0,0,1);
     return output;
 }

@@ -42,13 +42,13 @@ MeshCollision::CheckHitResult MeshCollision::CheckHitRay(KazMath::Vec3<float> ar
 		//このデータは次の当たり判定のときも引き継ぎされるので、一旦ここで初期化しておく。
 		index.m_isActive = true;
 
-		//反対側を向いていたら無効化。
-		if (-0.0001f < index.m_vertexA.m_normal.Dot(arg_direction)) {
+		////反対側を向いていたら無効化。
+		//if (-0.0001f < index.m_vertexA.m_normal.Dot(arg_direction)) {
 
-			index.m_isActive = false;
-			continue;
+		//	index.m_isActive = false;
+		//	continue;
 
-		}
+		//}
 
 	}
 
