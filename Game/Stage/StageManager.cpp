@@ -31,6 +31,10 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	//ステージの切り替え処理
 	m_stage->Update();
 	m_goal->Update();
+
+	//エコーの出し方
+	//EchoArray::Instance()->Generate(m_transform.pos, 50.0f, Echo::COLOR::WHITE);
+
 	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Update();

@@ -294,7 +294,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 	m_menu.Draw(arg_rasterize);
-	if (!m_resultManager.GetResultShow())
+	if (!m_resultManager.GetResultShow() && !m_menu.GetIsMenuOpen())
 	{
 		m_uiManager.Draw(arg_rasterize);
 		//m_gadgetMaanager.Draw(arg_rasterize);
@@ -310,7 +310,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 	//m_menu.Draw(arg_rasterize);
-	m_menu.Draw(arg_rasterize);
+	//m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);
