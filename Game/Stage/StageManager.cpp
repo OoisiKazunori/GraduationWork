@@ -3,6 +3,8 @@
 #include "../MapLoader/MapLoader.h"
 #include "../Echo/EchoArray.h"
 
+int StageNumCounter::stageNumCount = 0;
+
 StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
 
@@ -219,7 +221,8 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		if (l_mapItr->m_objetName.starts_with("goal") == true)
 		{
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
+				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		//else if (l_mapItr->m_objetName.starts_with("Block") == true)
 		//{
@@ -421,6 +424,11 @@ void StageManager::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollisi
 
 		}
 	}
+}
+
+KazMath::Transform3D StageManager::GetGoalTransform()
+{
+	return m_goal->m_transform;
 }
 
 void StageManager::ChangeScene(DrawingByRasterize& arg_rasterize)

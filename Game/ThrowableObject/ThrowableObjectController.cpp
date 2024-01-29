@@ -43,7 +43,7 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 	}
 
 	//“ü—Í‚³‚ê‚Ä‚¢‚½‚ç
-	if (!m_isHold && m_isHoldOld && WeponUIManager::UseStone()) {
+	if (!m_isHold && m_isHoldOld && (WeponUIManager::UseStone() || WeponUIManager::isStoneInf)) {
 
 		for (auto& index : m_throwableObject) {
 
@@ -57,7 +57,7 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 		}
 
 	}
-	else if (m_isHold && WeponUIManager::HaveStone()) {
+	else if (m_isHold && (WeponUIManager::HaveStone() || WeponUIManager::isStoneInf)) {
 
 		//“ü—Í‚³‚ê‘±‚Ä‚¢‚éó‘Ô‚¾‚Á‚½‚çB
 		++generatePredictedObjectTimer;
