@@ -156,37 +156,37 @@ void EnemyManager::Update(
 		};
 
 		//Echo判定
-		bool l_isSound = false;
-		for (auto& echo : EchoArray::Instance()->GetEcho())
-		{
-			//アクティブなら判定
-			if (echo.GetIsActive())
-			{
-				//判定(xとzでしか判定取ってない)
-				std::pair<float, float> sPos = {
-					echo.GetPos().x,
-					echo.GetPos().z
-				};
+		//bool l_isSound = false;
+		//for (auto& echo : EchoArray::Instance()->GetEcho())
+		//{
+		//	//アクティブなら判定
+		//	if (echo.GetIsActive())
+		//	{
+		//		//判定(xとzでしか判定取ってない)
+		//		std::pair<float, float> sPos = {
+		//			echo.GetPos().x,
+		//			echo.GetPos().z
+		//		};
 
-				float l_dist = CircleCol2D(
-					ePos, EnemyConfig::soundCheckDist,
-					sPos, echo.GetNowRadius());
-				if (active_sDist < l_dist)
-				{
-					l_isSound = true;
-					active_sPos = sPos;
-				}
-			}
-		}
+		//		float l_dist = CircleCol2D(
+		//			ePos, EnemyConfig::soundCheckDist,
+		//			sPos, echo.GetNowRadius());
+		//		if (active_sDist < l_dist)
+		//		{
+		//			l_isSound = true;
+		//			active_sPos = sPos;
+		//		}
+		//	}
+		//}
 
 		//仮
-		if (l_isSound || isInput) {
-			std::vector<std::pair<float, float>>
-				l_checkSoundPos =
-				m_patrolDatas[i].CheckSound(ePos, active_sPos);
-			//m_enemys[i].SetState(Enemy::State::Warning);
-			m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
-		}
+		//if (l_isSound || isInput) {
+		//	std::vector<std::pair<float, float>>
+		//		l_checkSoundPos =
+		//		m_patrolDatas[i].CheckSound(ePos, active_sPos);
+		//	//m_enemys[i].SetState(Enemy::State::Warning);
+		//	m_enemys[i].SetCheckSoundPos(l_checkSoundPos);
+		//}
 
 		//オフセット
 		m_enemys[i].SetOffset(std::make_pair(
@@ -231,9 +231,9 @@ void EnemyManager::Draw(
 	}
 
 	//判定描画
-	m_patrolDraw.Draw(
+	/*m_patrolDraw.Draw(
 		arg_rasterize,
-		arg_blasVec);
+		arg_blasVec);*/
 }
 
 float EnemyManager::CircleCol2D(

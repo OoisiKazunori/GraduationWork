@@ -314,38 +314,38 @@ void Enemy::Draw(
 void Enemy::Patrol(std::pair<float, float> arg_pPos)
 {
 	//音の範囲内の場合
-	if (CheckDistXZ(
-		arg_pPos, EnemyConfig::soundCheckDist) &&
-		m_checkSoundPos.size() > 0)
-	{
-		//未発見状態の場合(音が鳴った場合の条件を追加する)
-		if (m_changeCombatDelay ==
-			EnemyConfig::changeCombatDelay)
-		{
-			if (!m_isReturn) {
-				m_checkSoundCount++;
+	//if (CheckDistXZ(
+	//	arg_pPos, EnemyConfig::soundCheckDist) &&
+	//	m_checkSoundPos.size() > 0)
+	//{
+	//	//未発見状態の場合(音が鳴った場合の条件を追加する)
+	//	if (m_changeCombatDelay ==
+	//		EnemyConfig::changeCombatDelay)
+	//	{
+	//		if (!m_isReturn) {
+	//			m_checkSoundCount++;
 
-				if (m_checkSoundCount ==
-					m_checkSoundPos.size() - 1) {
-					m_isReturn = true;
-				}
-			}
-			else {
-				m_checkSoundCount--;
+	//			if (m_checkSoundCount ==
+	//				m_checkSoundPos.size() - 1) {
+	//				m_isReturn = true;
+	//			}
+	//		}
+	//		else {
+	//			m_checkSoundCount--;
 
-				if (m_checkSoundCount == 0) {
-					m_state = State::Patrol;
-					m_isReturn = false;
-				}
-			}
+	//			if (m_checkSoundCount == 0) {
+	//				m_state = State::Patrol;
+	//				m_isReturn = false;
+	//			}
+	//		}
 
-			m_trans.pos = {
-					m_checkSoundPos[m_checkSoundCount].first,
-					0.0f,
-					m_checkSoundPos[m_checkSoundCount].second
-			};
-		}
-	}
+	//		m_trans.pos = {
+	//				m_checkSoundPos[m_checkSoundCount].first,
+	//				0.0f,
+	//				m_checkSoundPos[m_checkSoundCount].second
+	//		};
+	//	}
+	//}
 
 	//チェックポイント
 	if (m_isCheckPoint)
