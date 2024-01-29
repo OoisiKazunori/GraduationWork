@@ -56,6 +56,7 @@ public:
 
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions; };
 	std::unique_ptr<StageModel> m_stage;
+	std::unique_ptr<StageModel> m_colStage;
 	KazMath::Transform3D GetGoalTransform() { return m_goal->m_transform; };
 };
 
