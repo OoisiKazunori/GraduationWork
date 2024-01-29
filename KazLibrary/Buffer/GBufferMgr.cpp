@@ -143,6 +143,7 @@ GBufferMgr::GBufferMgr()
 		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[WORLD]),
 		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[NORMAL]),
 		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[SILHOUETE]),
+		RenderTargetStatus::Instance()->GetBuffer(m_gBufferRenderTargetHandleArray[OUTLINE]),
 		m_cameraPosBuffer,
 		m_silhouetteOutputUAVTexture
 	);

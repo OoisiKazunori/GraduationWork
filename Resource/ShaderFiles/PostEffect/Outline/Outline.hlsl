@@ -2,6 +2,7 @@
 Texture2D<float4> TargetWorld : register(t0);
 Texture2D<float4> TargetNormal : register(t1);
 Texture2D<float4> SilhouetteWorld : register(t2);
+Texture2D<float4> OutlineColor : register(t3);
 
 //出力先UAV  
 RWTexture2D<float4> OutputAlbedo : register(u0);
@@ -186,8 +187,9 @@ void main(uint3 DTid : SV_DispatchThreadID)
         //サンプリングした位置に応じて色を暗くする。
         float edgeDistance = 1.0f - clamp(length(sampleWorldPos - m_outlineCenterPos) / m_outlineLength, 0.0f, 0.8f);
         
-        OutputAlbedo[DTid.xy] += m_outlineColor * edgeDistance;
-        OutputEmissive[DTid.xy] += m_outlineColor * edgeDistance;
+        float4 outlineColor = SamplingPixel(OutlineColor, DTid.xy);
+        OutputAlbedo[DTid.xy] += outlineColor * edgeDistance;
+        OutputEmissive[DTid.xy] += outlineColor * edgeDistance;
     }
     else
     {

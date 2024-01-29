@@ -60,6 +60,11 @@ private:
 		SQUAT,
 	}m_playerAttitude;
 
+	//‰¼‚Å‘«Õ‚ğ•`‰æ‚·‚é—pB
+	float m_footprintSpan;
+	const float FOOTPRINT_SPAN = 5;
+	bool m_footprintSide;
+
 
 public:
 
