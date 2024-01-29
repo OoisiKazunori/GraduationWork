@@ -231,9 +231,9 @@ void EnemyManager::Draw(
 	}
 
 	//”»’è•`‰æ
-	/*m_patrolDraw.Draw(
+	m_patrolDraw.Draw(
 		arg_rasterize,
-		arg_blasVec);*/
+		arg_blasVec);
 }
 
 float EnemyManager::CircleCol2D(

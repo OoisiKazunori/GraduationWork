@@ -56,7 +56,8 @@ private:
 		CalcRootPos(
 			std::vector<std::pair<int, int>> arg_roots,
 			std::pair<float, float> arg_startPos =
-			std::make_pair(-1.0f, -1.0f));
+			std::make_pair(-1.0f, -1.0f),
+			bool arg_isSound = false);
 
 private:
 	int CalcHeuristic(

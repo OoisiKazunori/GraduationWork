@@ -26,7 +26,7 @@ namespace EnemyConfig
 	//ˆÚ“®‘¬“x
 	static const float speed = 0.5f;
 	//‹ŠE‹——£
-	static const float eyeCheckDist = 50.0f;
+	static const float eyeCheckDist = 5.0f;
 	//‰¹‚ğE‚¤‹——£
 	static const float soundCheckDist = 50.0f;
 	//d—Í

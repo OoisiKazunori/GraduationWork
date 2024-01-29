@@ -53,13 +53,18 @@ PatrolData::CheckSound(
 				m_patrolConfig.lock()->GetOffsetY()) / l_chipSize)));
 	//音発生位置(仮)
 	l_checkPoints.push_back(
-		std::make_pair(5, 5));
+		std::make_pair(
+			static_cast<int>((arg_soundPos.first -
+				m_patrolConfig.lock()->GetOffsetX()) / l_chipSize),
+			static_cast<int>((arg_soundPos.second -
+				m_patrolConfig.lock()->GetOffsetY()) / l_chipSize)));
 
 	l_base_chipRoots = CalcChipRoots(l_checkPoints, true);
 
 	//角をケアしながら通過座標の算出
 	std::vector<std::pair<float, float>> l_soundCheckPos;
-	l_soundCheckPos = CalcRootPos(l_base_chipRoots, arg_enemyPos);
+	l_soundCheckPos = CalcRootPos(
+		l_base_chipRoots, arg_enemyPos, true);
 
 	return l_soundCheckPos;
 }
@@ -318,7 +323,8 @@ void PatrolData::SortRoots(
 std::vector<std::pair<float, float>>
 PatrolData::CalcRootPos(
 	std::vector<std::pair<int, int>> arg_roots,
-	std::pair<float, float> arg_startPos)
+	std::pair<float, float> arg_startPos,
+	bool arg_isSound)
 {
 	int l_next = -1;
 	int l_start_x = -1;
@@ -358,9 +364,11 @@ PatrolData::CalcRootPos(
 		(l_chipSize / EnemyConfig::speed);
 
 	//スタート地点
-	m_checkPointDelays.push_back(
-		std::make_pair(
-			0, 0));
+	if (!arg_isSound) {
+		m_checkPointDelays.push_back(
+			std::make_pair(
+				0, 0));
+	}
 
 	for (int i = 0; i < arg_roots.size(); ++i)
 	{

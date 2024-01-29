@@ -35,7 +35,7 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 
 	m_transform = f_startPos;
-	m_transform.pos.y = 20.0f;
+	m_transform.pos.y = 50.0f;
 	Init();
 }
 
@@ -73,7 +73,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	if (!m_onGround) {
 		m_gravity -= GRAVITY;
 	}
-	m_transform.pos.y += m_gravity;
+	//m_transform.pos.y += m_gravity;
 
 	//動いた方向に回転させる。
 	//Rotate(arg_camera);
@@ -362,36 +362,20 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 {
 
 	float GROUND_RAY = 12.0f;
-	<<<<<< < HEAD
 
-		switch (m_playerAttitude)
-		{
-		case Player::PlayerAttitude::STAND:
-			GROUND_RAY = 12.0f;
-			break;
-		case Player::PlayerAttitude::SQUAT:
-			GROUND_RAY = 6.0f;
-			break;
-		default:
-			break;
-		}
+	switch (m_playerAttitude)
+	{
+	case Player::PlayerAttitude::STAND:
+		GROUND_RAY = 12.0f;
+		break;
+	case Player::PlayerAttitude::SQUAT:
+		GROUND_RAY = 6.0f;
+		break;
+	default:
+		break;
+	}
 
-	====== =
-
-		switch (m_playerAttitude)
-		{
-		case Player::PlayerAttitude::STAND:
-			GROUND_RAY = 12.0f;
-			break;
-		case Player::PlayerAttitude::SQUAT:
-			GROUND_RAY = 6.0f;
-			break;
-		default:
-			break;
-		}
-
-	>>>>>> > origin / dev_Menu
-		const float RAY_LENGTH = 1.0f;
+	const float RAY_LENGTH = 1.0f;
 
 	//地面と当たり判定を行う。
 	m_onGround = false;

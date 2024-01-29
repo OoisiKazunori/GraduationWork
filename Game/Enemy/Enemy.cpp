@@ -294,7 +294,7 @@ void Enemy::Draw(
 	m_reaction.Draw(arg_rasterize, arg_blasVec);
 	if (!m_inEcho)
 	{
-		return;
+		//return;
 	}
 
 	if (m_rootPos.size() > 0 &&

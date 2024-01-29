@@ -34,7 +34,6 @@ private:
 	std::vector<std::pair<float, float>> m_checkSoundPos;
 	KazMath::Transform3D m_trans;
 	KazMath::Vec3<float> m_oldPos;
-	State m_state;
 	KazMath::Vec3<float> m_prevPos;	//前フレーム座標
 	State m_state,m_oldState;
 	int m_delayNum;
@@ -51,7 +50,6 @@ private:
 	bool m_isCheckPoint;
 	bool m_onGround;
 	bool m_isReturn;
-	bool m_inEcho = false;
 
 	//どうしよう
 	float m_angle = 0.0f;

@@ -65,7 +65,7 @@ void PatrolConfig::Update()
 		m_chipSize -= 0.01f;
 	}
 
-	float l_chipSize = m_chipSize * 0.3f;
+	float l_chipSize = m_chipSize;
 
 	float l_offset_x = m_offset_x;
 	float l_offset_y = m_offset_y;
