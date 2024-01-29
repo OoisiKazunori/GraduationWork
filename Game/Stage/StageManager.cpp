@@ -71,17 +71,17 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 		if (bird1Ti <= 0)
 		{
 			bird1Ti = 400;
-			EchoArray::Instance()->Generate(m_Bird1->m_transform.pos, 30.0f, Echo::COLOR::WHITE);
+			EchoArray::Instance()->Generate(m_Bird1->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
 		}
 		if (bird2Ti <= 0)
 		{
-			bird2Ti = 700;
-			EchoArray::Instance()->Generate(m_Bird2->m_transform.pos, 30.0f, Echo::COLOR::WHITE);
+			bird2Ti = 600;
+			EchoArray::Instance()->Generate(m_Bird2->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
 		}
 		if (bird3Ti <= 0)
 		{
-			bird3Ti = 900;
-			EchoArray::Instance()->Generate(m_Bird3->m_transform.pos, 30.0f, Echo::COLOR::WHITE);
+			bird3Ti = 800;
+			EchoArray::Instance()->Generate(m_Bird3->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
 		}
 	}
 }
