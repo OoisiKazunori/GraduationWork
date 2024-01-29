@@ -20,7 +20,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false), m_firstFlameFlag(false)
 	SoundManager::Instance()->SettingSoundManager();
 
 	//デモ用のゲームシーンを設定。
-	m_nowScene = GetScene(0);
+	m_nowScene = GetScene(1);
 	m_nowScene->Init();
 	//シーン遷移を設定
 	m_sceneChange = std::make_unique<ChangeScene::SceneChange>(m_rasterize);

@@ -19,9 +19,6 @@
 #include"../MapLoader/MapLoader.h"
 #include "../UI/UI.h"
 #include"../KazLibrary/Debug/DebugKey.h"
-#include"../Game/AI/Debug/EnemyDebugManager.h"
-#include"../Game/AI/Evaluation/FieldAI.h"
-#include"../Game/AI/Debug/FieldAIDebugManager.h"
 #include"../Footprint/FootprintMgr.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
@@ -81,9 +78,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
-
-
-	EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
 
 GameScene::~GameScene()
@@ -122,10 +116,6 @@ void GameScene::Input()
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_1, "DebugCamera", "DIK_1"))
 	{
 		m_debugCameraFlag = !m_debugCameraFlag;
-	}
-	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
-	{
-		EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
 	}
 }
 
@@ -275,9 +265,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	FootprintMgr::Instance()->Update();
 
-	EnemyDebugManager::Instance()->Update();
-	FieldAI::Instance()->DebugUpdate();
-	FieldAIDebugManager::Instance()->Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -325,11 +312,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		index->Draw(arg_rasterize, arg_blasVec);
 	}
 
-	EnemyDebugManager::Instance()->Draw(arg_rasterize, arg_blasVec);
-
 	DebugKey::Instance()->DrawImGui();
-	EnemyDebugManager::Instance()->DrawImGui();
-	FieldAIDebugManager::Instance()->DrawImGui();
 }
 
 int GameScene::SceneChange()
