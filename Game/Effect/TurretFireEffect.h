@@ -8,7 +8,7 @@ class TurretFireEffect
 public:
 	TurretFireEffect(DrawingByRasterize& arg_rasterize);
 
-	void Init(const KazMath::Vec3<float>& arg_pos,float arg_radian,float arg_shotTimer);
+	void Init(const KazMath::Vec3<float>* arg_pos,float arg_radian,float arg_shotTimer);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 
@@ -18,10 +18,11 @@ private:
 	//マズルフラッシュ
 	std::array<MuzzleFlash, 10>m_muzzleFlashArray;
 
-	KazMath::Vec3<float>m_emittPos;
+	const KazMath::Vec3<float>*m_emittPos;
 	int m_emittTimer;
 	float m_radian;
 
 	KazMath::Timer m_shotTimer;
+	bool m_isActiveFlag;
 };
 

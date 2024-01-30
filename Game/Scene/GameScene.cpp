@@ -109,7 +109,7 @@ void GameScene::Input()
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
 		p = m_player->GetTransform().pos;
-		m_turret.Init(p, KazMath::AngleToRadian(40.0f), 120.0f);
+		m_turret.Init(&p, KazMath::AngleToRadian(40.0f), 120.0f);
 	}
 }
 
