@@ -33,6 +33,9 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_heartbeatSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Heartbeat.wav");
 	m_heartbeatSE.volume = 0.2f;
 
+	m_changeWeaponSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ChangeWeapon.wav");
+	m_changeWeaponSE.volume = 0.05f;
+
 	m_meshCollision = std::make_shared<MeshCollision>();
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 
@@ -411,6 +414,13 @@ void Player::UpdateReload()
 			m_isPhase3ShowMag = true;
 		}
 
+		//全体の時間のちょうど半分の時に音を鳴らす。
+		if (static_cast<int>(RELOAD_MOTION_PHASE2_TIMER / 4.0f) == m_reloadMotionTimer) {
+
+			SoundManager::Instance()->SoundPlayerWave(m_changeWeaponSE, 0);
+
+		}
+
 	}
 	break;
 	case Player::RELOAD_MOTION::PHASE_3:
@@ -449,6 +459,13 @@ void Player::UpdateReload()
 
 			}
 
+			//全体の時間のちょうど半分の時に音を鳴らす。
+			if (static_cast<int>(RELOAD_MOTION_PHASE3_INSERT_TIMER / 4.0f) == m_reloadMotionTimer) {
+
+				SoundManager::Instance()->SoundPlayerWave(m_changeWeaponSE, 0);
+
+			}
+
 		}
 	}
 
@@ -456,12 +473,12 @@ void Player::UpdateReload()
 	case Player::RELOAD_MOTION::PHASE_4:
 
 
-		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, DirectX::XMQuaternionIdentity(), 0.5f);
+		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, DirectX::XMQuaternionIdentity(), 0.3f);
 
 
-		m_reloadMotionTransform.pos.x += (0.0f - m_reloadMotionTransform.pos.x) * 0.1f;
-		m_reloadMotionTransform.pos.y += (0.0f - m_reloadMotionTransform.pos.y) * 0.1f;
-		m_reloadMotionTransform.pos.z += (0.0f - m_reloadMotionTransform.pos.z) * 0.1f;
+		m_reloadMotionTransform.pos.x += (0.0f - m_reloadMotionTransform.pos.x) * 0.05f;
+		m_reloadMotionTransform.pos.y += (0.0f - m_reloadMotionTransform.pos.y) * 0.05f;
+		m_reloadMotionTransform.pos.z += (0.0f - m_reloadMotionTransform.pos.z) * 0.05f;
 
 		++m_reloadMotionTimer;
 		if (RELOAD_MOTION_PHASE4_TIMER < m_reloadMotionTimer) {
@@ -473,17 +490,6 @@ void Player::UpdateReload()
 	default:
 		break;
 	}
-
-	////フェーズ2,3の時はリロードモーションが常に正しい位置になるように補完する。
-	//if ((m_reloadMotionPhase == RELOAD_MOTION::PHASE_2) || (m_reloadMotionPhase == RELOAD_MOTION::PHASE_3)) {
-
-
-	//	m_reloadMotionTransform.pos.x += (0.0f - m_reloadMotionTransform.pos.x) * 0.1f;
-	//	m_reloadMotionTransform.pos.y += (RELOAD_MOTION_POSITION_Y - m_reloadMotionTransform.pos.y) * 0.1f;
-	//	m_reloadMotionTransform.pos.z += (0.0f - m_reloadMotionTransform.pos.z) * 0.1f;
-
-
-	//}
 
 }
 

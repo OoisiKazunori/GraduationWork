@@ -55,6 +55,7 @@ private:
 	SoundData m_playerShotSE;
 	SoundData m_sonarSE;
 	SoundData m_adsSE;
+	SoundData m_changeWeaponSE;
 
 	//姿勢のステータス
 	enum class PlayerAttitude {
@@ -78,7 +79,7 @@ private:
 	const float RELOAD_MOTION_PHASE1_TIMER = 20;
 	const float PHASE2_DOWN_TIMER = 10;
 	const float RELOAD_MOTION_PHASE2_TIMER = 15;
-	const float RELOAD_MOTION_PHASE3_SHOWMAG_TIMER = 10;
+	const float RELOAD_MOTION_PHASE3_SHOWMAG_TIMER = 5;
 	const float RELOAD_MOTION_PHASE3_INSERT_TIMER = 15;
 	const float RELOAD_MOTION_PHASE4_TIMER = 20;
 
