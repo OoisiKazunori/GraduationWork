@@ -12,6 +12,8 @@ void EchoArray::Setting()
 	m_echoMemoryStructuredBuffer = KazBufferHelper::SetUploadBufferData(sizeof(Echo::EchoMemoryData) * MAX_MEMORY_ELEMENT_COUNT, "EchoMemoryData");
 	m_echoMemoryStructuredVRAMBuffer = KazBufferHelper::SetGPUBufferData(sizeof(Echo::EchoMemoryData) * MAX_MEMORY_ELEMENT_COUNT, "EchoMemoryData");
 	m_echoMemoryStructuredVRAMBuffer.bufferWrapper->ChangeBarrierUAV();
+
+	m_echoMemoryStructuredVRAMBuffer.rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 }
 
 void EchoArray::Init()

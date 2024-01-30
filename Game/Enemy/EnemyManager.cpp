@@ -131,10 +131,10 @@ void EnemyManager::SetMapData(
 		{ static_cast<int>(m_config->GetSizeX()),static_cast<int>(m_config->GetSizeY()) },
 		m_config->m_astarDatas
 	);*/
-	ExistenceEstablishmentMap::Instance()->Init(
+	/*ExistenceEstablishmentMap::Instance()->Init(
 		{ static_cast<int>(m_config->GetSizeX()),static_cast<int>(m_config->GetSizeY()) },
 		m_config->m_astarDatas[0][0].trans.pos
-	);
+	);*/
 
 
 }
@@ -198,7 +198,6 @@ void EnemyManager::Update(
 	//”»’è
 	m_config->Update();
 	m_patrolDraw.Update();
-	ExistenceEstablishmentMap::Instance()->Update();
 }
 
 void EnemyManager::Draw(

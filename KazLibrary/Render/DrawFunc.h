@@ -126,8 +126,11 @@ namespace DrawFunc
 		transData.m_rotaion = DirectX::XMMatrixRotationQuaternion(arg_transform.quaternion);
 
 		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
-
+	
 		arg_callData.extraBufferArray[2].bufferWrapper->TransData(&arg_color.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
+
+		arg_callData.extraBufferArray[3] = EchoArray::Instance()->GetEchoMemoryStructuredBuffer();
+		arg_callData.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 	}
 
 	static void DrawModelDisolve(DrawFuncData::DrawCallData &arg_callData, KazMath::Transform3D &arg_transform, const KazMath::Color &arg_color = KazMath::Color(255, 255, 255, 255))
@@ -163,6 +166,9 @@ namespace DrawFunc
 		arg_callData.extraBufferArray[1].bufferWrapper->TransData(&arg_raytracingNum, sizeof(UINT));
 
 		arg_callData.extraBufferArray[2].bufferWrapper->TransData(&arg_color.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
+
+		arg_callData.extraBufferArray[3] = EchoArray::Instance()->GetEchoMemoryStructuredBuffer();
+		arg_callData.extraBufferArray[3].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 
 		arg_callData.extraBufferArray[4] = arg_boneBuffer;
 		arg_callData.extraBufferArray[4].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;

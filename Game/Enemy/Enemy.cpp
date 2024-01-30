@@ -67,19 +67,6 @@ void Enemy::SetData(
 	m_reaction.Load(arg_rasterize);
 	m_shotDelay = 0;
 	m_appearTimer = 0;
-
-	static int enemyID = 0;
-	m_debugData.m_enemyName = "Enemy:" + std::to_string(enemyID);
-	++enemyID;
-	m_debugData.m_transform = &m_trans;
-	m_debugData.m_status = &m_state;
-	m_debugData.m_gaugeData = m_findGauge.GetDebugData();
-	m_debugData.m_coneSightPointArray = m_coneSight.GetPointPosArray();
-	m_debugData.m_boxSightPointArray = m_boxSight.GetPointPosArray();
-	m_debugData.m_isFindFlag = &m_isInSightFlag;
-	EnemyDebugManager::Instance()->Generate(
-		&m_debugData
-	);
 }
 
 void Enemy::SetCheckPointDelay(
@@ -168,49 +155,13 @@ void Enemy::Update(
 	//	m_checkEyeDelay = MAX_EYE_DELAY;
 	//}
 
-	//警戒状態
-	if (FieldAI::Instance()->WARING_LEVEL <= FieldAI::Instance()->GetWaringRate())
-	{
-		if (m_boxSight.Collision(arg_playerPos, m_trans.pos, m_trans.quaternion))
-		{
-			m_isInSightFlag = true;
-		}
-		else
-		{
-			m_isInSightFlag = false;
-		}
-
-		ExistenceEstablishmentMap::Instance()->Find(m_boxSight.m_sight);
-	}
-	//通常状態
-	else
-	{
-		if (m_coneSight.Collision(arg_playerPos, m_trans.pos, m_trans.quaternion))
-		{
-			m_isInSightFlag = true;
-		}
-		else
-		{
-			m_isInSightFlag = false;
-		}
-
-		ExistenceEstablishmentMap::Instance()->Find(m_coneSight.m_sight);
-	}
-
-
-	//警戒度
-	m_findGauge.Update(arg_playerPos, m_trans.pos, 0.0f, m_isInSightFlag);
+	
 	//発見
 	m_isCombat = false;
-	if (m_findGauge.IsFind() && m_state != State::Combat)
+	if (m_state != State::Combat)
 	{
 		m_isCombat = true;
 		m_state = State::Combat;
-	}
-	//未発見から時間がたった
-	if (m_findGauge.GetRate() <= 0.0f)
-	{
-		m_state = State::Patrol;
 	}
 	//プレイヤーの思考------------------------------------------------------------
 
@@ -450,12 +401,6 @@ void Enemy::Draw(
 		return;
 	}
 #else
-	m_debugData.m_transform = &m_trans;
-	m_debugData.m_status = &m_state;
-	if (!m_inEcho && !EnemyDebugManager::Instance()->m_debugAIFlag)
-	{
-		return;
-	}
 #endif // DEBUG
 
 	if (m_rootPos.size() > 0 &&

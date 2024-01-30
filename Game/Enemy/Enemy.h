@@ -7,11 +7,6 @@
 #include"../Game/UI/Reaction.h"
 #include"../Game/AI/EnemyAIData.h"
 #include<memory>
-#include"../Game/AI/Debug/EnemyDebugManager.h"
-#include"../Game/AI/Gauge/FindGauge.h"
-#include"../Game/AI/Sight/ConeTypeViewingAngle.h"
-#include"../Game/AI/Sight/BoxTypeViewingAngle.h"
-#include"../Game/AI/Field/ExistenceEstablishmentMap.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -83,10 +78,6 @@ private:
 
 
 	bool m_isInSightFlag;//視界内に入ったか
-	ConeTypeViewingAngle m_coneSight;
-	BoxTypeViewingAngle m_boxSight;
-
-	FindGauge m_findGauge;
 public:
 	Enemy();
 	~Enemy();
@@ -182,8 +173,6 @@ public:
 
 
 private:
-	//敵のデバック用
-	EnemyDebugManager::EnemyDebugData m_debugData;
 
 
 };
