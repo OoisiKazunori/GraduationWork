@@ -12,6 +12,7 @@
 #include "PlayerStatus.h"
 #include "../Footprint/FootprintMgr.h"
 #include "../Effect/StopMgr.h"
+#include "../KazLibrary/Easing/easing.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
@@ -375,15 +376,19 @@ void Player::UpdateReload()
 		quatenion = DirectX::XMQuaternionMultiply(quatenion, DirectX::XMQuaternionRotationAxis(m_weaponTransform.GetFront().ConvertXMVECTOR(), -DirectX::XMConvertToRadians(10.0f)));
 
 		//補完する。
-		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, quatenion, 0.5f);
+		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, quatenion, 0.3f);
 
+		//タイマーの値に応じてY軸を移動させる。
 		++m_reloadMotionTimer;
+		float easingAmount = EasingMaker(Out, Quad, m_reloadMotionTimer / RELOAD_MOTION_PHASE1_TIMER);
+		m_reloadMotionTransform.pos.y = easingAmount * RELOAD_MOTION_POSITION_Y;
+
 		if (RELOAD_MOTION_PHASE1_TIMER < m_reloadMotionTimer) {
 			m_reloadMotionTimer = 0;
 			m_reloadMotionPhase = RELOAD_MOTION::PHASE_2;
 
 			//マガジンを引っこ抜く瞬間に銃本体を移動させる。
-			m_reloadMotionTransform.pos += m_weaponTransform.GetUp() * 0.5f;
+			//m_reloadMotionTransform.pos += m_weaponTransform.GetUp() * 0.5f;
 
 		}
 
@@ -439,8 +444,8 @@ void Player::UpdateReload()
 		break;
 	}
 
-	//フェーズ1,2,3の時はリロードモーションが常に正しい位置になるように補完する。
-	if ((m_reloadMotionPhase == RELOAD_MOTION::PHASE_1) || (m_reloadMotionPhase == RELOAD_MOTION::PHASE_2) || (m_reloadMotionPhase == RELOAD_MOTION::PHASE_3)) {
+	//フェーズ2,3の時はリロードモーションが常に正しい位置になるように補完する。
+	if ((m_reloadMotionPhase == RELOAD_MOTION::PHASE_2) || (m_reloadMotionPhase == RELOAD_MOTION::PHASE_3)) {
 
 
 		m_reloadMotionTransform.pos.x += (0.0f - m_reloadMotionTransform.pos.x) * 0.1f;
