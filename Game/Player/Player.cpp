@@ -370,9 +370,9 @@ void Player::UpdateReload()
 
 		//èeÇâÒì]Ç≥ÇπÇÈÅB
 		DirectX::XMVECTOR quatenion = DirectX::XMQuaternionIdentity();
-		quatenion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), -DirectX::XMConvertToRadians(30.0f));
-		quatenion = DirectX::XMQuaternionMultiply(quatenion, DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(1, 0, 0, 1), DirectX::XMConvertToRadians(30.0f)));
-		quatenion = DirectX::XMQuaternionMultiply(quatenion, DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 0, 1, 1), DirectX::XMConvertToRadians(10.0f)));
+		quatenion = DirectX::XMQuaternionRotationAxis(m_weaponTransform.GetUp().ConvertXMVECTOR(), -DirectX::XMConvertToRadians(30.0f));
+		quatenion = DirectX::XMQuaternionMultiply(quatenion, DirectX::XMQuaternionRotationAxis(m_weaponTransform.GetRight().ConvertXMVECTOR(), -DirectX::XMConvertToRadians(20.0f)));
+		quatenion = DirectX::XMQuaternionMultiply(quatenion, DirectX::XMQuaternionRotationAxis(m_weaponTransform.GetFront().ConvertXMVECTOR(), -DirectX::XMConvertToRadians(10.0f)));
 
 		//ï‚äÆÇ∑ÇÈÅB
 		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, quatenion, 0.5f);
