@@ -376,44 +376,48 @@ void Player::UpdateReload()
 		quatenion = DirectX::XMQuaternionMultiply(quatenion, DirectX::XMQuaternionRotationAxis(m_weaponTransform.GetFront().ConvertXMVECTOR(), -DirectX::XMConvertToRadians(10.0f)));
 
 		//補完する。
-		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, quatenion, 0.3f);
+		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, quatenion, 0.09f);
 
 		//タイマーの値に応じてY軸を移動させる。
 		++m_reloadMotionTimer;
-		float easingAmount = EasingMaker(Out, Quad, m_reloadMotionTimer / RELOAD_MOTION_PHASE1_TIMER);
-		m_reloadMotionTransform.pos.y = easingAmount * RELOAD_MOTION_POSITION_Y;
+		float easingAmount = EasingMaker(Out, Quint, m_reloadMotionTimer / RELOAD_MOTION_PHASE1_TIMER);
+		m_reloadMotionTransform.pos = m_weaponTransform.GetUp() * (easingAmount * RELOAD_MOTION_POSITION_Y_IN_MAG);
 
 		if (RELOAD_MOTION_PHASE1_TIMER < m_reloadMotionTimer) {
 			m_reloadMotionTimer = 0;
 			m_reloadMotionPhase = RELOAD_MOTION::PHASE_2;
 
-			//マガジンを引っこ抜く瞬間に銃本体を移動させる。
-			//m_reloadMotionTransform.pos += m_weaponTransform.GetUp() * 0.5f;
-
 		}
 
 	}
-		break;
+	break;
 	case Player::RELOAD_MOTION::PHASE_2:
 	{
 
 		//マガジンを引っこ抜く。
-		m_reloadMotionMagTransform.pos -= m_reloadMotionMagTransform.GetUp() * 0.03f;
+		m_reloadMotionMagTransform.pos -= m_weaponTransform.GetUp() * 0.1f;
 
 		++m_reloadMotionTimer;
+		//タイマーの値に応じて一気に下に落とす。
+		float easingAmount = EasingMaker(Out, Exp, m_reloadMotionTimer / RELOAD_MOTION_PHASE2_TIMER);
+		m_reloadMotionTransform.pos = m_weaponTransform.GetUp() * (RELOAD_MOTION_POSITION_Y_IN_MAG - (easingAmount * RELOAD_MOTION_POSITION_Y_OUT_MAG));
 		if (RELOAD_MOTION_PHASE2_TIMER < m_reloadMotionTimer) {
 			m_reloadMotionTimer = 0;
 			m_reloadMotionPhase = RELOAD_MOTION::PHASE_3;
 		}
 
 	}
-		break;
+	break;
 	case Player::RELOAD_MOTION::PHASE_3:
+	{
 
 		//マガジンの位置を元に戻す。
 		m_reloadMotionMagTransform.pos -= m_reloadMotionMagTransform.pos * 0.3f;
 
 		++m_reloadMotionTimer;
+		//タイマーの値に応じて一気に下に落とす。
+		float easingAmount = EasingMaker(Out, Exp, m_reloadMotionTimer / RELOAD_MOTION_PHASE3_TIMER);
+		m_reloadMotionTransform.pos = m_weaponTransform.GetUp() * (RELOAD_MOTION_POSITION_Y_OUT_MAG + (easingAmount * (RELOAD_MOTION_POSITION_Y_IN_MAG - RELOAD_MOTION_POSITION_Y_OUT_MAG)));
 		if (RELOAD_MOTION_PHASE3_TIMER < m_reloadMotionTimer) {
 			m_reloadMotionTimer = 0;
 			m_reloadMotionPhase = RELOAD_MOTION::PHASE_4;
@@ -422,7 +426,9 @@ void Player::UpdateReload()
 
 		}
 
-		break;
+	}
+
+	break;
 	case Player::RELOAD_MOTION::PHASE_4:
 
 
@@ -435,7 +441,7 @@ void Player::UpdateReload()
 
 		++m_reloadMotionTimer;
 		if (RELOAD_MOTION_PHASE4_TIMER < m_reloadMotionTimer) {
-			
+
 			m_isReloadMotionNow = false;
 
 		}
@@ -444,16 +450,16 @@ void Player::UpdateReload()
 		break;
 	}
 
-	//フェーズ2,3の時はリロードモーションが常に正しい位置になるように補完する。
-	if ((m_reloadMotionPhase == RELOAD_MOTION::PHASE_2) || (m_reloadMotionPhase == RELOAD_MOTION::PHASE_3)) {
+	////フェーズ2,3の時はリロードモーションが常に正しい位置になるように補完する。
+	//if ((m_reloadMotionPhase == RELOAD_MOTION::PHASE_2) || (m_reloadMotionPhase == RELOAD_MOTION::PHASE_3)) {
 
 
-		m_reloadMotionTransform.pos.x += (0.0f - m_reloadMotionTransform.pos.x) * 0.1f;
-		m_reloadMotionTransform.pos.y += (RELOAD_MOTION_POSITION_Y - m_reloadMotionTransform.pos.y) * 0.1f;
-		m_reloadMotionTransform.pos.z += (0.0f - m_reloadMotionTransform.pos.z) * 0.1f;
+	//	m_reloadMotionTransform.pos.x += (0.0f - m_reloadMotionTransform.pos.x) * 0.1f;
+	//	m_reloadMotionTransform.pos.y += (RELOAD_MOTION_POSITION_Y - m_reloadMotionTransform.pos.y) * 0.1f;
+	//	m_reloadMotionTransform.pos.z += (0.0f - m_reloadMotionTransform.pos.z) * 0.1f;
 
 
-	}
+	//}
 
 }
 
@@ -518,7 +524,7 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 	for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr) {
 
 		//下方向の当たり判定
-		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + KazMath::Vec3<float>(0, 1, 0) * GROUND_RAY_OFFSET, -KazMath::Vec3<float>(0,1,0));
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + KazMath::Vec3<float>(0, 1, 0) * GROUND_RAY_OFFSET, -KazMath::Vec3<float>(0, 1, 0));
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY + GROUND_RAY_OFFSET) {
 
 			//押し戻し。
