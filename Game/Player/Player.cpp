@@ -359,6 +359,24 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	}
 
 
+	//リロード中なのに違う武器に変わっていたら。
+	if (m_isReloadMotionNow && arg_weaponNumber != WeponUIManager::e_Hundgun) {
+
+		//リロードモーションがフェーズ4以外だったら(まだ弾込めが終了していなかったら)
+		if (m_reloadMotionPhase != RELOAD_MOTION::PHASE_4) {
+
+			//リロードをキャンセルする。
+			m_reloadMotionPhase = RELOAD_MOTION::PHASE_1;
+			m_reloadMotionTransform = KazMath::Transform3D();
+			m_reloadMotionMagTransform = KazMath::Transform3D();
+			m_reloadMotionTimer = 0;
+			m_isReloadMotionNow = false;
+
+		}
+
+	}
+
+
 
 }
 
