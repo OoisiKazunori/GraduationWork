@@ -8,13 +8,16 @@ class MuzzleFlash
 public:
 	MuzzleFlash();
 
+	void Load(DrawingByRasterize& arg_rasterize);
 	void Init(const KazMath::Vec3<float>& arg_emittPos);
+	void Finalize();
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& blas);
 
 	bool IsActive();
 private:
 	KazMath::Transform3D m_transform;
-	BasicDraw::BasicTextureRender m_model;
+	BasicDraw::BasicTextureRender m_muzzleTex;
+	bool m_activeFlag;
 };
 

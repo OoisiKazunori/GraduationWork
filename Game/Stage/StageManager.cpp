@@ -22,13 +22,13 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize, int f_stageNum)
 void StageManager::Update(DrawingByRasterize& arg_rasterize)
 {
 	//if (m_nowStageNumber != m_nextStageNumber)
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_4))
-	{
-		ChangeScene(arg_rasterize);
-		//ステージの切り替え処理
-		int changeSceneNum = 0;
-		AddMapDatas(arg_rasterize, changeSceneNum);
-	}
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_4))
+	//{
+	//	ChangeScene(arg_rasterize);
+	//	//ステージの切り替え処理
+	//	int changeSceneNum = 0;
+	//	AddMapDatas(arg_rasterize, changeSceneNum);
+	//}
 
 	//ステージの切り替え処理
 	m_stage->Update();
