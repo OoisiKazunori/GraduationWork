@@ -380,7 +380,7 @@ void Player::UpdateReload()
 
 		//タイマーの値に応じてY軸を移動させる。
 		++m_reloadMotionTimer;
-		float easingAmount = EasingMaker(Out, Quint, m_reloadMotionTimer / RELOAD_MOTION_PHASE1_TIMER);
+		float easingAmount = EasingMaker(Out, Sine, std::clamp(m_reloadMotionTimer, 0.0f, PHASE1_UPPER_TIMER) / PHASE1_UPPER_TIMER);
 		m_reloadMotionTransform.pos = m_weaponTransform.GetUp() * (easingAmount * RELOAD_MOTION_POSITION_Y_IN_MAG);
 
 		if (RELOAD_MOTION_PHASE1_TIMER < m_reloadMotionTimer) {
@@ -399,11 +399,16 @@ void Player::UpdateReload()
 
 		++m_reloadMotionTimer;
 		//タイマーの値に応じて一気に下に落とす。
-		float easingAmount = EasingMaker(Out, Exp, m_reloadMotionTimer / RELOAD_MOTION_PHASE2_TIMER);
-		m_reloadMotionTransform.pos = m_weaponTransform.GetUp() * (RELOAD_MOTION_POSITION_Y_IN_MAG - (easingAmount * RELOAD_MOTION_POSITION_Y_OUT_MAG));
+		float easingAmount = EasingMaker(Out, Cubic, std::clamp(m_reloadMotionTimer, 0.0f, PHASE2_DOWN_TIMER) / PHASE2_DOWN_TIMER);
+		m_reloadMotionTransform.pos = m_weaponTransform.GetUp() * (RELOAD_MOTION_POSITION_Y_IN_MAG - (easingAmount * (RELOAD_MOTION_POSITION_Y_IN_MAG - RELOAD_MOTION_POSITION_Y_OUT_MAG)));
+		//タイマーが下に落ちる規定時間を超えていたら、慣性を表現する。
+		if (PHASE2_DOWN_TIMER < m_reloadMotionTimer) {
+			m_reloadMotionTransform.pos -= m_weaponTransform.GetUp() * 0.01f;
+		}
 		if (RELOAD_MOTION_PHASE2_TIMER < m_reloadMotionTimer) {
 			m_reloadMotionTimer = 0;
 			m_reloadMotionPhase = RELOAD_MOTION::PHASE_3;
+			m_isPhase3ShowMag = true;
 		}
 
 	}
@@ -411,21 +416,40 @@ void Player::UpdateReload()
 	case Player::RELOAD_MOTION::PHASE_3:
 	{
 
-		//マガジンの位置を元に戻す。
-		m_reloadMotionMagTransform.pos -= m_reloadMotionMagTransform.pos * 0.3f;
+		//最初は銃を既定の位置に戻して、マガジンを見せる。
+		if (m_isPhase3ShowMag) {
 
-		++m_reloadMotionTimer;
-		//タイマーの値に応じて一気に下に落とす。
-		float easingAmount = EasingMaker(Out, Exp, m_reloadMotionTimer / RELOAD_MOTION_PHASE3_TIMER);
-		m_reloadMotionTransform.pos = m_weaponTransform.GetUp() * (RELOAD_MOTION_POSITION_Y_OUT_MAG + (easingAmount * (RELOAD_MOTION_POSITION_Y_IN_MAG - RELOAD_MOTION_POSITION_Y_OUT_MAG)));
-		if (RELOAD_MOTION_PHASE3_TIMER < m_reloadMotionTimer) {
-			m_reloadMotionTimer = 0;
-			m_reloadMotionPhase = RELOAD_MOTION::PHASE_4;
+			m_reloadMotionTransform.pos += (m_weaponTransform.GetUp() * RELOAD_MOTION_POSITION_Y_INSERT_MAG - m_reloadMotionTransform.pos) * 0.1f;
+			m_reloadMotionMagTransform.pos += (m_weaponTransform.GetUp() * -0.15f - m_reloadMotionMagTransform.pos) * 0.5f;
 
-			WeponUIManager::Reload();
+			++m_reloadMotionTimer;
+			if (RELOAD_MOTION_PHASE3_SHOWMAG_TIMER < m_reloadMotionTimer) {
+
+				m_reloadMotionTimer = 0;
+				m_isPhase3ShowMag = false;
+
+			}
 
 		}
+		//マガジンを一気に挿入する。
+		else {
 
+			++m_reloadMotionTimer;
+			const float INSERT_MAG_TIMER = 10.0f;
+			float easingAmountMag = EasingMaker(Out, Exp, std::clamp(m_reloadMotionTimer, 0.0f, INSERT_MAG_TIMER) / INSERT_MAG_TIMER);
+			float easingAmountGun = EasingMaker(InOut, Sine, m_reloadMotionTimer / RELOAD_MOTION_PHASE3_INSERT_TIMER);
+			m_reloadMotionMagTransform.pos = m_weaponTransform.GetUp() * (-0.15f - (-0.15f * easingAmountMag));
+			m_reloadMotionTransform.pos = m_weaponTransform.GetUp() * (RELOAD_MOTION_POSITION_Y_INSERT_MAG + (RELOAD_MOTION_POSITION_Y_INSERT_END_MAG - RELOAD_MOTION_POSITION_Y_INSERT_MAG) * easingAmountMag);
+			if (RELOAD_MOTION_PHASE3_INSERT_TIMER < m_reloadMotionTimer) {
+
+				m_reloadMotionTimer = 0;
+				m_reloadMotionPhase = RELOAD_MOTION::PHASE_4;
+
+				WeponUIManager::Reload();
+
+			}
+
+		}
 	}
 
 	break;

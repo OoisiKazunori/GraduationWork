@@ -70,16 +70,22 @@ private:
 		PHASE_4,	//銃の方向を正しい向きに直す。
 	}m_reloadMotionPhase;
 	bool m_isReloadMotionNow;
+	bool m_isPhase3ShowMag;
 	KazMath::Transform3D m_reloadMotionTransform;	//リロードモーションで武器をデフォルトの位置から変えたいときに使用する。
 	KazMath::Transform3D m_reloadMotionMagTransform;	//リロードモーションでマガジンをデフォルトの位置から変えたいときに使用する。
 	float m_reloadMotionTimer;	//リロードモーションでいろんな使い方をする便利タイマー
+	const float PHASE1_UPPER_TIMER = 15;
 	const float RELOAD_MOTION_PHASE1_TIMER = 20;
+	const float PHASE2_DOWN_TIMER = 10;
 	const float RELOAD_MOTION_PHASE2_TIMER = 15;
-	const float RELOAD_MOTION_PHASE3_TIMER = 20;
+	const float RELOAD_MOTION_PHASE3_SHOWMAG_TIMER = 10;
+	const float RELOAD_MOTION_PHASE3_INSERT_TIMER = 15;
 	const float RELOAD_MOTION_PHASE4_TIMER = 20;
 
-	const float RELOAD_MOTION_POSITION_Y_IN_MAG = 0.4f;	//リロードモーション時にちょっとだけ上にあげるための変数。
-	const float RELOAD_MOTION_POSITION_Y_OUT_MAG = 0.2f;	//リロードモーション時にちょっとだけ上にあげるための変数。
+	const float RELOAD_MOTION_POSITION_Y_IN_MAG = 0.6f;	//リロードモーション時にちょっとだけ上にあげるための変数。
+	const float RELOAD_MOTION_POSITION_Y_OUT_MAG = 0.1f;	//リロードモーション時にちょっとだけ上にあげるための変数。
+	const float RELOAD_MOTION_POSITION_Y_INSERT_MAG = 0.2f;	//リロードモーション時にちょっとだけ上にあげるための変数。
+	const float RELOAD_MOTION_POSITION_Y_INSERT_END_MAG = 0.25f;	//リロードモーション時にちょっとだけ上にあげるための変数。
 
 	//仮で足跡を描画する用。
 	float m_footprintSpan;
