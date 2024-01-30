@@ -16,7 +16,8 @@
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_collisionModel(arg_rasterize, "Resource/Player/Collision/", "collision.gltf"),
-	m_mk23Model(arg_rasterize, "Resource/Weapon/Mk23/", "Mk23.gltf")
+	m_mk23Model(arg_rasterize, "Resource/Weapon/Mk23/", "Mk23.gltf"),
+	m_mk23MagModel(arg_rasterize, "Resource/Weapon/Mk23/", "Mag.gltf")
 {
 
 	m_playerShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
@@ -38,9 +39,6 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	Init();
 
 	m_transform.pos.y += 10.0f;
-
-	m_footprintSpan = 0;
-	m_footprintSide = false;
 }
 
 void Player::Init()
@@ -56,6 +54,7 @@ void Player::Init()
 	m_shotDelay = SHOT_DELAY;
 	m_footprintSpan = 0;
 	m_footprintSide = false;
+	m_isReloadMotionNow = false;
 
 }
 
@@ -108,32 +107,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//アウトラインを出す中心点代入
 	GBufferMgr::Instance()->m_outline->SetOutlineCenterPos(m_transform.pos);
 
-	////エコーを描画
-	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
-
-	//	GBufferMgr::Instance()->m_outline->m_echoData.m_center = m_transform.pos;
-	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius = 0.0f;
-	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = 0.2f;
-
-	//}
-	//else if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE)) {
-
-	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoRadius += 8.0f;
-
-	//}
-	//else {
-
-	//	GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha = std::clamp(GBufferMgr::Instance()->m_outline->m_echoData.m_echoAlpha - 0.01f, 0.0f, 1.0f);
-
-	//}
-
-	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE)) {
-
-	//	EchoArray::Instance()->Generate(m_transform.pos, 100.0f, KazMath::Vec3<float>(0.24f, 0.50f, 0.64f));
-	//	SoundManager::Instance()->SoundPlayerWave(m_sonarSE, 0);
-
-	//}
-
 	m_weaponTransform.pos = m_transform.pos;
 	m_weaponTransform.quaternion = DirectX::XMQuaternionSlerp(m_weaponTransform.quaternion, m_transform.quaternion, 0.9f * StopMgr::Instance()->GetGameSpeed());
 	//武器を持っていなかったら
@@ -165,6 +138,12 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	baseWeaponOffsetPos += m_weaponTransform.GetRight() * m_weaponPosOffset.z;
 	m_weaponTransform.pos += baseWeaponOffsetPos;
 	m_weaponTransform.pos += m_gunReaction;
+	m_weaponTransform.pos += m_reloadMotionTransform.pos;
+	m_weaponTransform.quaternion = DirectX::XMQuaternionMultiply(m_weaponTransform.quaternion, m_reloadMotionTransform.quaternion);
+
+	//マガジンの位置も決める。
+	m_magTransform = m_weaponTransform;
+	m_magTransform.pos += m_reloadMotionMagTransform.pos;
 
 	//銃の反動を更新。
 	if (0.01f < m_gunReaction.Length()) {
@@ -204,6 +183,8 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	}
 
+	//リロードの更新処理
+	UpdateReload();
 
 
 
@@ -265,6 +246,7 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 
 
 	m_mk23Model.m_model.Draw(arg_rasterize, arg_blasVec, m_weaponTransform);
+	m_mk23MagModel.m_model.Draw(arg_rasterize, arg_blasVec, m_magTransform);
 }
 
 void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController)
@@ -311,7 +293,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 
 	//右クリックされている間はADS状態にする。
 	bool isOldADS = m_isADS;
-	m_isADS = KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
+	m_isADS = !m_isReloadMotionNow && KeyBoradInputManager::Instance()->MouseInputState(MOUSE_INPUT_RIGHT);
 	if (!isOldADS && m_isADS) {
 		SoundManager::Instance()->SoundPlayerWave(m_adsSE, 0);
 	}
@@ -327,7 +309,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	case WeponUIManager::e_Hundgun:
 
 		//弾をうつ入力も受け付ける。
-		if (KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
+		if (!m_isReloadMotionNow && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
 
 			if (!WeponUIManager::GetCanShot()) return;
 			WeponUIManager::Shot();
@@ -353,9 +335,15 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 			m_shotDelay = 0;
 
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R)) 
+		if (!m_isReloadMotionNow && KeyBoradInputManager::Instance()->InputTrigger(DIK_R) && WeponUIManager::CanReload())
 		{
-			WeponUIManager::Reload();
+			m_isReloadMotionNow = true;
+			m_reloadMotionPhase = RELOAD_MOTION::PHASE_1;
+			m_reloadMotionTransform = KazMath::Transform3D();
+			m_reloadMotionMagTransform = KazMath::Transform3D();
+			m_reloadMotionTimer = 0;
+
+			//WeponUIManager::Reload();
 		}
 
 
@@ -367,6 +355,100 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	}
 
 
+
+}
+
+void Player::UpdateReload()
+{
+
+	if (!m_isReloadMotionNow) return;
+
+	switch (m_reloadMotionPhase)
+	{
+	case Player::RELOAD_MOTION::PHASE_1:
+	{
+
+		//銃を回転させる。
+		DirectX::XMVECTOR quatenion = DirectX::XMQuaternionIdentity();
+		quatenion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), -DirectX::XMConvertToRadians(30.0f));
+		quatenion = DirectX::XMQuaternionMultiply(quatenion, DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(1, 0, 0, 1), DirectX::XMConvertToRadians(30.0f)));
+		quatenion = DirectX::XMQuaternionMultiply(quatenion, DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 0, 1, 1), DirectX::XMConvertToRadians(10.0f)));
+
+		//補完する。
+		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, quatenion, 0.5f);
+
+		++m_reloadMotionTimer;
+		if (RELOAD_MOTION_PHASE1_TIMER < m_reloadMotionTimer) {
+			m_reloadMotionTimer = 0;
+			m_reloadMotionPhase = RELOAD_MOTION::PHASE_2;
+
+			//マガジンを引っこ抜く瞬間に銃本体を移動させる。
+			m_reloadMotionTransform.pos += m_weaponTransform.GetUp() * 0.5f;
+
+		}
+
+	}
+		break;
+	case Player::RELOAD_MOTION::PHASE_2:
+	{
+
+		//マガジンを引っこ抜く。
+		m_reloadMotionMagTransform.pos -= m_reloadMotionMagTransform.GetUp() * 0.03f;
+
+		++m_reloadMotionTimer;
+		if (RELOAD_MOTION_PHASE2_TIMER < m_reloadMotionTimer) {
+			m_reloadMotionTimer = 0;
+			m_reloadMotionPhase = RELOAD_MOTION::PHASE_3;
+		}
+
+	}
+		break;
+	case Player::RELOAD_MOTION::PHASE_3:
+
+		//マガジンの位置を元に戻す。
+		m_reloadMotionMagTransform.pos -= m_reloadMotionMagTransform.pos * 0.3f;
+
+		++m_reloadMotionTimer;
+		if (RELOAD_MOTION_PHASE3_TIMER < m_reloadMotionTimer) {
+			m_reloadMotionTimer = 0;
+			m_reloadMotionPhase = RELOAD_MOTION::PHASE_4;
+
+			WeponUIManager::Reload();
+
+		}
+
+		break;
+	case Player::RELOAD_MOTION::PHASE_4:
+
+
+		m_reloadMotionTransform.quaternion = DirectX::XMQuaternionSlerp(m_reloadMotionTransform.quaternion, DirectX::XMQuaternionIdentity(), 0.5f);
+
+
+		m_reloadMotionTransform.pos.x += (0.0f - m_reloadMotionTransform.pos.x) * 0.1f;
+		m_reloadMotionTransform.pos.y += (0.0f - m_reloadMotionTransform.pos.y) * 0.1f;
+		m_reloadMotionTransform.pos.z += (0.0f - m_reloadMotionTransform.pos.z) * 0.1f;
+
+		++m_reloadMotionTimer;
+		if (RELOAD_MOTION_PHASE4_TIMER < m_reloadMotionTimer) {
+			
+			m_isReloadMotionNow = false;
+
+		}
+		break;
+	default:
+		break;
+	}
+
+	//フェーズ1,2,3の時はリロードモーションが常に正しい位置になるように補完する。
+	if ((m_reloadMotionPhase == RELOAD_MOTION::PHASE_1) || (m_reloadMotionPhase == RELOAD_MOTION::PHASE_2) || (m_reloadMotionPhase == RELOAD_MOTION::PHASE_3)) {
+
+
+		m_reloadMotionTransform.pos.x += (0.0f - m_reloadMotionTransform.pos.x) * 0.1f;
+		m_reloadMotionTransform.pos.y += (RELOAD_MOTION_POSITION_Y - m_reloadMotionTransform.pos.y) * 0.1f;
+		m_reloadMotionTransform.pos.z += (0.0f - m_reloadMotionTransform.pos.z) * 0.1f;
+
+
+	}
 
 }
 

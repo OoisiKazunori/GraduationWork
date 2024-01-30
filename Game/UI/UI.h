@@ -127,6 +127,7 @@ public:
 	static void Shot();
 	static void Reload();
 	static bool GetCanShot() { return m_isCanShot; };
+	static bool CanReload();
 
 	static bool UseStone();
 	static bool HaveStone()
