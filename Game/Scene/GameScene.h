@@ -97,4 +97,8 @@ private:
 
 	CheckPoint m_goalPoint;
 	bool m_isClear = false;
+
+	BasicDraw::BasicTextureRender m_titleTex;
+	KazMath::Transform2D m_titleTrans;
+	bool m_isTitle = true;
 };

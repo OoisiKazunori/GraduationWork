@@ -31,7 +31,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	}
 
 	//ステージの切り替え処理
-	m_stage->Update();
+	m_stage[m_nowStageNumber]->Update();
 	m_goal->Update();
 
 	//エコーの出し方
@@ -59,9 +59,9 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 		(*itr)->Update();
 	}
 
-	static int bird1Ti = 400;
-	static int bird2Ti = 700;
-	static int bird3Ti = 900;
+	static int bird1Ti = 300;
+	static int bird2Ti = 500;
+	static int bird3Ti = 700;
 	//一ステージめだったら
 	if (m_nowStageNumber == 0)
 	{
@@ -70,17 +70,17 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 		bird3Ti--;
 		if (bird1Ti <= 0)
 		{
-			bird1Ti = 400;
+			bird1Ti = 300;
 			EchoArray::Instance()->Generate(m_Bird1->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
 		}
 		if (bird2Ti <= 0)
 		{
-			bird2Ti = 600;
+			bird2Ti = 500;
 			EchoArray::Instance()->Generate(m_Bird2->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
 		}
 		if (bird3Ti <= 0)
 		{
-			bird3Ti = 800;
+			bird3Ti = 500;
 			EchoArray::Instance()->Generate(m_Bird3->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
 		}
 	}
@@ -88,7 +88,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	m_stage->Draw(arg_rasterize, arg_blasVec);
+ 	m_stage[m_nowStageNumber]->Draw(arg_rasterize, arg_blasVec);
 	//m_goal->Draw(arg_rasterize, arg_blasVec);
 	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
 	{
@@ -128,8 +128,13 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 {
 	m_phone.clear();
 	m_cylinder.clear();
-	m_stage.reset();
+	m_stage[0].reset();
+	m_stage[1].reset();
+	m_stage[2].reset();
 	m_goal.reset();
+	m_colStage[0].reset();
+	m_colStage[1].reset();
+	m_colStage[2].reset();
 	m_block01.clear();
 
 	m_plane.clear();
@@ -141,41 +146,70 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		if (l_mapItr->m_objetName.starts_with("Bird1") == true)
 		{
 			m_Bird1 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		else if (l_mapItr->m_objetName.starts_with("Bird2") == true)
 		{
 			m_Bird2 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		else if (l_mapItr->m_objetName.starts_with("Bird3") == true)
 		{
 			m_Bird3 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 
 		else if (l_mapItr->m_objetName.starts_with("goal") == true)
 		{
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				DirectX::XMFLOAT3(l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, l_mapItr->m_position.z * 5.0f),
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+
+		else if (l_mapItr->m_objetName.starts_with("enemy") == true)
+		{
+			int length = (int)l_mapItr->m_objetName.size();
+
+			std::string str = "";
+			str += l_mapItr->m_objetName.at(length - 1);
+			//順かい順
+			int roadIndex = atoi(str.c_str());
+			str = "";
+			str += l_mapItr->m_objetName.at(length - 2);
+			//エネミー自体の番号
+			int enemyIndex = atoi(str.c_str());
+			m_enemys.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", enemyIndex, roadIndex,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 
 	}
 	//emptyなら入れる
-	if (!m_stage)
+	if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 0)
 	{
-		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model.gltf",
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model.gltf",
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
-		m_colStage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model_collision.gltf",
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model_collision.gltf",
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
-		for (auto& index : m_colStage->m_stageModelRender.m_model.m_modelInfo->modelData) {
+		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting(index.vertexData, m_colStage->m_transform);
-			m_collisions.push_back(collision);
+			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
+		}
+	}
+	else if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 1)
+	{
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model2.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model2.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
 		}
 	}
 }
@@ -268,6 +302,32 @@ void StageManager::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollisi
 KazMath::Transform3D StageManager::GetGoalTransform()
 {
 	return m_goal->m_transform;
+}
+
+int StageManager::GetEnemyCount()
+{
+	int l_enemyCount = 0;
+	for (auto itr = m_enemys.begin(); itr != m_enemys.end(); ++itr)
+	{
+		if ((*itr)->m_enemyIndex > l_enemyCount)
+		{
+			l_enemyCount = (*itr)->m_enemyIndex;
+		}
+	}
+	return l_enemyCount;
+}
+
+std::list<KazMath::Transform3D> StageManager::GetEnemyPositions(int f_enemyNum)
+{
+	std::list<KazMath::Transform3D> l_result;
+	for (auto itr = m_enemys.begin(); itr != m_enemys.end(); ++itr)
+	{
+		if ((*itr)->m_enemyIndex == f_enemyNum)
+		{
+			l_result.push_back((*itr)->m_transform);
+		}
+	}
+	return l_result;
 }
 
 void StageManager::ChangeScene(DrawingByRasterize& arg_rasterize)

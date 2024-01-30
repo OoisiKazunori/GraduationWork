@@ -11,6 +11,8 @@ class StageModel
 public:
 	StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName,
 		DirectX::XMFLOAT3 pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3 rot = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), float f_echo = 0.0f);
+	StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, int enemyIndex, int roadIndex,
+		DirectX::XMFLOAT3 pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3 rot = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3 scale = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), float f_echo = 0.0f);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	BasicDraw::BasicModelRender m_stageModelRender;
@@ -20,7 +22,8 @@ public:
 	bool m_isDrawFlag = false;
 
 	float m_echoRad = 0.0f;
-	
+	int m_enemyIndex = -1;
+	int m_roadIndex = -1;
 private:
 	bool m_prevIsDrawFlag = false;
 	
