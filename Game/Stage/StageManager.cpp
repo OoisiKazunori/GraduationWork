@@ -212,6 +212,18 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_collisions[m_nowStageNumber].push_back(collision);
 		}
 	}
+	else if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 2)
+	{
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model3.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Corizon3.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
+		}
+	}
 }
 
 void StageManager::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision)
