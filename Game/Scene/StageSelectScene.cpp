@@ -31,7 +31,7 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 	m_escSp(arg_rasterize, "Resource/UITexture/ESC.png")
 {
 	m_sceneNum = -1;
-	m_nowSelectNum = 0;
+	m_nowSelectNum = 2;
 
 	mouseSensitivity = cameraSensitivity;
 	volume = f_volume;
