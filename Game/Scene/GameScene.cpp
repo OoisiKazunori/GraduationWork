@@ -33,6 +33,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_goalPoint(arg_rasterize),
 	m_dangerManager(arg_rasterize),
 	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png", true),
+	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
 	m_isClear(false)
 {
 	/*
@@ -85,7 +86,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
-	
+
+	//タイトルロゴモデルの位置を調整。
+	m_titleLogoTransform.pos = KazMath::Vec3<float>(-200.0f, -43.0f, 335.0f);
+	m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), DirectX::XM_PI / 2.0f);
 
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
@@ -281,8 +285,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		/*FieldAI::Instance()->DebugUpdate();
 		FieldAIDebugManager::Instance()->Update();*/
 	}
+	//タイトル画面
 	else
 	{
+
+
 		static bool isHoge = false;
 		if (!isHoge)
 		{
@@ -326,11 +333,12 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
 	
-	if (m_isTitle)
-	{
-		m_titleTrans.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
-		m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
-	}
+	//if (m_isTitle)
+	//{
+
+		m_titleLogoModel.m_model.Draw(arg_rasterize, arg_blasVec, m_titleLogoTransform);
+
+	//}
 
 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);

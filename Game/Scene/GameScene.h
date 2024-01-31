@@ -52,6 +52,9 @@ private:
 
 	KazMath::Transform3D m_stageTransform;
 
+	BasicDraw::BasicModelRender m_titleLogoModel;	//Žg—p‚·‚éƒ‚ƒfƒ‹
+	KazMath::Transform3D m_titleLogoTransform;
+
 	//‰¹--------------------------
 	SoundData m_bgmHandle, m_seHandle;
 
