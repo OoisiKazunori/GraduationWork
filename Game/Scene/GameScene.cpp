@@ -269,7 +269,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
-	m_stageManager.CheckInEcho(m_stageMeshCollision);
+		m_stageManager.CheckInEcho(m_stageMeshCollision);
 
 		m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 		m_goalPoint.Update();
@@ -310,12 +310,12 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_menu.Draw(arg_rasterize);
 	if (!m_resultManager.GetResultShow() && !m_menu.GetIsMenuOpen())
 	{
-		m_uiManager.Draw(arg_rasterize);
-		//m_gadgetMaanager.Draw(arg_rasterize);
-		m_HPBarManager.Draw(arg_rasterize);
-		//m_heartRateManager.Draw(arg_rasterize);
 		if (!m_isTitle)
 		{
+			m_uiManager.Draw(arg_rasterize);
+			//m_gadgetMaanager.Draw(arg_rasterize);
+			m_HPBarManager.Draw(arg_rasterize);
+			//m_heartRateManager.Draw(arg_rasterize);
 			m_dangerManager.Draw(arg_rasterize);
 		}
 

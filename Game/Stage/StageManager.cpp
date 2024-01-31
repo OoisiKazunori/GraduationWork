@@ -204,7 +204,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	{
 		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model2.gltf",
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
-		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model2.gltf",
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Corizon2.gltf",
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
 			auto collision = std::make_shared<MeshCollision>();
