@@ -32,7 +32,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_resultManager(arg_rasterize),
 	m_goalPoint(arg_rasterize),
 	m_dangerManager(arg_rasterize),
-	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png")
+	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png", true)
 {
 
 	/*
@@ -318,17 +318,20 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		{
 			m_dangerManager.Draw(arg_rasterize);
 		}
+
+		m_goalPoint.Draw(arg_rasterize);
 	}
 
+	
+	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
+
+	
 	if (m_isTitle)
 	{
 		m_titleTrans.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
 		m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
 	}
 
-	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
-
-	m_goalPoint.Draw(arg_rasterize);
 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
