@@ -123,7 +123,10 @@
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Echo\Echo.cpp" />
     <ClCompile Include="Game\Echo\EchoArray.cpp" />
+    <ClCompile Include="Game\Effect\BulletFireParticle.cpp" />
+    <ClCompile Include="Game\Effect\MuzzleFlash.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
+    <ClCompile Include="Game\Effect\TurretFireEffect.cpp" />
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Enemy\PatrolData.cpp" />
@@ -250,8 +253,11 @@
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Echo\Echo.h" />
     <ClInclude Include="Game\Echo\EchoArray.h" />
+    <ClInclude Include="Game\Effect\BulletFireParticle.h" />
+    <ClInclude Include="Game\Effect\MuzzleFlash.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
+    <ClInclude Include="Game\Effect\TurretFireEffect.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
     <ClInclude Include="Game\Enemy\EnemyConfig.h" />
     <ClInclude Include="Game\Enemy\EnemyManager.h" />

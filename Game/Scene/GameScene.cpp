@@ -30,7 +30,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_menu(arg_rasterize),
 	m_resultManager(arg_rasterize),
 	m_goalPoint(arg_rasterize),
-	m_dangerManager(arg_rasterize)
+	m_dangerManager(arg_rasterize),
+	m_turret(arg_rasterize)
 {
 
 	/*
@@ -101,10 +102,14 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_1, "DebugCamera", "DIK_1"))
 	{
 		m_debugCameraFlag = !m_debugCameraFlag;
+	}
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
+	{
+		p = m_player->GetTransform().pos;
+		m_turret.Init(&p, KazMath::AngleToRadian(40.0f), 120.0f);
 	}
 }
 
@@ -219,7 +224,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		{
 			m_dangerManager.Update(false);
 		}
-		
+
 	}
 	//リザルト出す
 	else if (m_resultManager.GetResultShow())
@@ -245,9 +250,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 	m_goalPoint.Update();
-
-
+	m_turret.Update();
 	FootprintMgr::Instance()->Update();
+
 
 }
 
@@ -271,7 +276,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		//m_heartRateManager.Draw(arg_rasterize);
 		m_dangerManager.Draw(arg_rasterize);
 	}
-
+	m_turret.Draw(arg_rasterize, arg_blasVec);
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
 	m_goalPoint.Draw(arg_rasterize);

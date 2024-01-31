@@ -12,6 +12,7 @@
 #include "../Menu/Menu.h"
 #include"../Game/UI/CheckPoint.h"
 #include"../KazLibrary/Render/BasicDraw.h"
+#include"../Game/Effect/TurretFireEffect.h"
 
 class EnemyManager;
 class Player;
@@ -95,4 +96,7 @@ private:
 
 	CheckPoint m_goalPoint;
 	bool m_isClear = false;
+
+	KazMath::Vec3<float>p;
+	TurretFireEffect m_turret;
 };
