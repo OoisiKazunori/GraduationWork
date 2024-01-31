@@ -94,7 +94,7 @@ private:
 	Menu m_menu;
 
 	CheckPoint m_goalPoint;
-	bool m_isClear = false;
+	bool m_isClear;
 
 	BasicDraw::BasicTextureRender m_titleTex;
 	KazMath::Transform2D m_titleTrans;

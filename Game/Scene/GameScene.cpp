@@ -32,9 +32,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_resultManager(arg_rasterize),
 	m_goalPoint(arg_rasterize),
 	m_dangerManager(arg_rasterize),
-	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png", true)
+	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png", true),
+	m_isClear(false)
 {
-
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
 	読み込み単体の処理は下の処理になります。(多重読み込み防止あり)
@@ -85,7 +85,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
-
+	
 
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
