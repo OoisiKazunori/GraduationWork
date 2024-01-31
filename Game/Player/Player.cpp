@@ -21,6 +21,7 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_mk23MagModel(arg_rasterize, "Resource/Weapon/Mk23/", "Mag.gltf")
 {
 
+
 	m_playerShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
 	m_playerShotSE.volume = 0.05f;
 
