@@ -99,4 +99,7 @@ private:
 
 	KazMath::Vec3<float>p;
 	TurretFireEffect m_turret;
+	BasicDraw::BasicTextureRender m_titleTex;
+	KazMath::Transform2D m_titleTrans;
+	bool m_isTitle = true;
 };

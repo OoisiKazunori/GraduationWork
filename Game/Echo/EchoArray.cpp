@@ -72,7 +72,7 @@ void EchoArray::Update()
 
 }
 
-void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo::COLOR arg_colorID)
+void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo::COLOR arg_colorID, float arg_memoryTimer)
 {
 
 	//エコーを生成。
@@ -80,7 +80,7 @@ void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo
 
 		if (index.GetIsActive()) continue;
 
-		index.Generate(arg_pos, arg_maxRadius, arg_colorID);
+		index.Generate(arg_pos, arg_maxRadius, arg_colorID, arg_memoryTimer);
 
 		break;
 
@@ -90,7 +90,33 @@ void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo
 
 		if (index.GetIsActive()) continue;
 
-		index.Generate(arg_pos, arg_maxRadius, arg_colorID, true);
+		index.Generate(arg_pos, arg_maxRadius, arg_colorID, arg_memoryTimer, true);
+
+		break;
+
+	}
+
+}
+
+void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo::COLOR arg_colorID)
+{
+
+	//エコーを生成。
+	for (auto& index : m_echo) {
+
+		if (index.GetIsActive()) continue;
+
+		index.Generate(arg_pos, arg_maxRadius, arg_colorID, 1800);
+
+		break;
+
+	}
+	//記録用のエコーも同時に生成。
+	for (auto& index : m_echoMemory) {
+
+		if (index.GetIsActive()) continue;
+
+		index.Generate(arg_pos, arg_maxRadius, arg_colorID, 1800, true);
 
 		break;
 

@@ -12,8 +12,8 @@
                     0.0
                 ],
                 "rotation": [
-                    0.0,
-                    0.0,
+                    180.0,
+                    -0.0,
                     -0.0
                 ],
                 "scaling": [
@@ -30,7 +30,7 @@
             "transform": {
                 "translation": [
                     40.0,
-                    1.0,
+                    0.0,
                     -68.0
                 ],
                 "rotation": [
@@ -47,7 +47,117 @@
         },
         {
             "type": "MESH",
-            "name": "Bird",
+            "name": "enemy11",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    -14.5600004196167,
+                    0.0,
+                    -9.529999732971191
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "enemy12",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    5.46999979019165,
+                    0.0,
+                    -9.529999732971191
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "enemy13",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    5.46999979019165,
+                    0.0,
+                    -29.190000534057617
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "enemy14",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    -14.680000305175781,
+                    0.0,
+                    -29.190000534057617
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "goal",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    37.779998779296875,
+                    0.0,
+                    24.770000457763672
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Bird1",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -69,7 +179,7 @@
         },
         {
             "type": "MESH",
-            "name": "Bird.001",
+            "name": "Bird2",
             "echo": 0.0,
             "transform": {
                 "translation": [
@@ -91,35 +201,13 @@
         },
         {
             "type": "MESH",
-            "name": "Bird.002",
+            "name": "Bird3",
             "echo": 0.0,
             "transform": {
                 "translation": [
                     -30.0,
                     1.0,
                     -34.5
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "goal",
-            "echo": 0.0,
-            "transform": {
-                "translation": [
-                    -39.0,
-                    4.0,
-                    -24.7
                 ],
                 "rotation": [
                     0.0,

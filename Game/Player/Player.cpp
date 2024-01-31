@@ -36,6 +36,8 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 
 	m_transform = f_startPos;
 	Init();
+
+	m_transform.pos.y += 10.0f;
 }
 
 void Player::Init()
@@ -50,6 +52,48 @@ void Player::Init()
 	m_gunReaction = KazMath::Vec3<float>();
 	m_shotDelay = SHOT_DELAY;
 
+}
+
+void Player::TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& arg_rasterize, std::list<std::shared_ptr<MeshCollision>> f_stageColliders)
+{
+	//アウトラインを出す中心点代入
+	GBufferMgr::Instance()->m_outline->SetOutlineCenterPos(m_transform.pos);
+
+	//当たり判定
+	Collision(f_stageColliders);
+
+	//重力をかける。
+	if (!m_onGround) {
+		m_gravity -= GRAVITY;
+	}
+	else {
+		m_gravity = 0.0f;
+	}
+	m_transform.pos.y += m_gravity;
+
+	m_transform.quaternion = arg_camera.lock()->GetShotQuaternion().quaternion;
+
+	//心音のタイマー
+	m_heatbeatTimer += 1.0f * StopMgr::Instance()->GetGameSpeed();
+	float heartBeatTimer = HEARTBEAT_TIMER;
+	float heartBeatRange = 60.0f;
+	if (m_isFoundToEnemy) {
+		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
+		heartBeatRange = 150.0f;
+	}
+	if (heartBeatTimer <= m_heatbeatTimer) {
+
+		SoundManager::Instance()->SoundPlayerWave(m_heartbeatSE, 0);
+		EchoArray::Instance()->Generate(m_transform.pos, heartBeatRange, Echo::COLOR::WHITE);
+		m_heatbeatTimer = 0;
+
+	}
+
+	//銃の連射の遅延を更新。
+	m_shotDelay = std::clamp(m_shotDelay + 1.0f * StopMgr::Instance()->GetGameSpeed(), 0.0f, SHOT_DELAY);
+
+	//メッシュコライダーにトランスフォームを適用
+	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 }
 
 void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI)
@@ -75,7 +119,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	else {
 		m_gravity = 0.0f;
 	}
-	m_transform.pos.y += m_gravity;
+ 	m_transform.pos.y += m_gravity;
 
 
 	//動いた方向に回転させる。

@@ -173,7 +173,7 @@ KazMath::Transform3D MapManager::GetPlayerStartPosition(int f_stageNum)
 	{
 		if (l_mapItr->m_objetName.starts_with("player") == true)
 		{
-			l_result = KazMath::Transform3D({ l_mapItr->m_position.x, l_mapItr->m_position.y, l_mapItr->m_position.z },
+			l_result = KazMath::Transform3D({ -l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y, -l_mapItr->m_position.z * 5.0f },
 				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
 			//ローテーションも後で適応する
 			l_mapItr->m_rotition;
