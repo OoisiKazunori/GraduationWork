@@ -148,7 +148,7 @@ void EnemyManager::Update(
 
 	for (int i = 0; i < m_enemys.size(); ++i)
 	{
-		if (isInput) {
+		/*if (isInput) {
 			std::pair<float, float> ePos = {
 				m_enemys[i]->GetPos().x,
 				m_enemys[i]->GetPos().z };
@@ -158,7 +158,7 @@ void EnemyManager::Update(
 				m_patrolDatas[i].CheckSound(ePos, sPos);
 			m_enemys[i]->SetState(State::Warning);
 			m_enemys[i]->SetCheckSoundPos(l_checkSoundPos);
-		}
+		}*/
 
 		//オフセット
 		m_enemys[i]->SetOffset(std::make_pair(
