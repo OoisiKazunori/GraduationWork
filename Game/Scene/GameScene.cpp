@@ -88,8 +88,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 
 	//タイトルロゴモデルの位置を調整。
-	m_titleLogoTransform.pos = KazMath::Vec3<float>(-200.0f, -43.0f, 335.0f);
+	m_titleLogoTransform.pos = TITLELOGO_POS;
 	m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), DirectX::XM_PI / 2.0f);
+	m_titleLogoSineTimer = 0;
+	m_titleLogoSIneRotationTimer = 0;
 
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
@@ -135,6 +137,7 @@ void GameScene::Input()
 	{
 		m_isTitle = false;
 		//大きめのエコーを出す
+		EchoArray::Instance()->Generate(m_player->GetTransform().pos, 80.0f, Echo::COLOR::WHITE);
 
 	}
 }
@@ -284,11 +287,21 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//EnemyDebugManager::Instance()->Update();
 		/*FieldAI::Instance()->DebugUpdate();
 		FieldAIDebugManager::Instance()->Update();*/
+
+
+		m_titleLogoTransform.pos.z += 2.0f;
 	}
 	//タイトル画面
 	else
 	{
 
+		//サイン波で動かす。
+		m_titleLogoSineTimer += 0.04f;
+		m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
+
+		m_titleLogoSIneRotationTimer += 0.03f;
+		m_titleLogoTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
+		m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0, 1, 0), sinf(m_titleLogoSIneRotationTimer)* DirectX::XM_PI / 50.0f);
 
 		static bool isHoge = false;
 		if (!isHoge)
@@ -336,7 +349,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//if (m_isTitle)
 	//{
 
-		m_titleLogoModel.m_model.Draw(arg_rasterize, arg_blasVec, m_titleLogoTransform);
+		m_titleLogoModel.m_model.DrawRasterize(arg_rasterize, m_titleLogoTransform);
 
 	//}
 

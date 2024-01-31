@@ -102,4 +102,11 @@ private:
 	BasicDraw::BasicTextureRender m_titleTex;
 	KazMath::Transform2D m_titleTrans;
 	bool m_isTitle = true;
+
+	//タイトル用
+	const KazMath::Vec3<float> TITLELOGO_POS = KazMath::Vec3<float>(-200.0f, -43.0f, 335.0f);
+	float m_titleLogoSineTimer;
+	float m_titleLogoSIneRotationTimer;
+	const float TITLELOGO_SINE_MOVE = 0.05f;
+
 };
