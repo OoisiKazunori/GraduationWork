@@ -148,6 +148,7 @@ Texture2D<float4> normalMap : register(t2);
 Texture2D<float4> materialMap : register(t3);
 Texture2D<float4> worldMap : register(t4);
 Texture2D<float4> emissiveMap : register(t5);
+Texture2D<float4> outlineMap : register(t6);
 
 //o—ÍæUAV
 RWTexture2D<float4> finalColor : register(u0);

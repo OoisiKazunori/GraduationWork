@@ -154,11 +154,11 @@ void mainRayGen()
     outlineColor.xyz = float3(0.24f, 0.50f, 0.64f) * blueAlpha;
     //次は残った色を計算。
     otherAlpha = clamp(otherAlpha, 0.0f, 1.0f - blueAlpha);
-    outlineColor.xyz += float3(0.7f, 0.7f, 0.7f) * otherAlpha;
+    outlineColor.xyz += float3(0.53f, 0.53f, 0.53f) * otherAlpha;
     outlineAlbedoTexture[launchIndex.xy] = outlineColor;
     outlineEmissiveTexture[launchIndex.xy] = outlineColor;
     
-    finalColor[launchIndex.xy] = float4(0, 0, 0, 1);
+    finalColor[launchIndex.xy] = float4(0.05f, 0.05f, 0.05f, 1);
     emissiveTexture[launchIndex.xy] = float4(0, 0, 0, 1);
     lensFlareTexture[launchIndex.xy] = float4(0, 0, 0, 1);
   

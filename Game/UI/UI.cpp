@@ -213,6 +213,11 @@ void WeponUIManager::Reload()
 	}
 }
 
+bool WeponUIManager::CanReload()
+{
+	return m_bulletCount < m_magazinSize;
+}
+
 void WeponUIManager::Init()
 {
 	m_nowWepon = e_NonWepon;
