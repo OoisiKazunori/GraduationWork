@@ -123,7 +123,6 @@ SceneManager::SceneManager() :gameFirstInitFlag(false), m_firstFlameFlag(false)
 	//通常エコー用構造体を設定。
 	EchoArray::Instance()->Setting();
 	m_rayPipeline->SetEchoStructuredBufferData(EchoArray::Instance()->GetEchoStructuredBuffer());
-
 }
 
 SceneManager::~SceneManager()

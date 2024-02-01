@@ -17,8 +17,8 @@
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_collisionModel(arg_rasterize, "Resource/Player/Collision/", "collision.gltf"),
-	m_mk23Model(arg_rasterize, "Resource/Weapon/Mk23/", "Mk23.gltf"),
-	m_mk23MagModel(arg_rasterize, "Resource/Weapon/Mk23/", "Mag.gltf")
+	m_mk23Model(arg_rasterize, ModelLoader::Instance()->Load("Resource/Weapon/Mk23/", "Mk23.gltf"), DrawFuncData::SetDefferdRenderingModelAnimationAppearByEchoDepthAlways(ModelLoader::Instance()->Load("Resource/Weapon/Mk23/", "Mk23.gltf"))),
+	m_mk23MagModel(arg_rasterize, ModelLoader::Instance()->Load("Resource/Weapon/Mk23/", "Mag.gltf"), DrawFuncData::SetDefferdRenderingModelAnimationAppearByEchoDepthAlways(ModelLoader::Instance()->Load("Resource/Weapon/Mk23/", "Mag.gltf")))
 {
 
 	m_playerShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
@@ -127,7 +127,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	else {
 		m_gravity = 0.0f;
 	}
- 	m_transform.pos.y += m_gravity;
+	m_transform.pos.y += m_gravity;
 
 
 	//“®‚¢‚½•ûŒü‚É‰ñ“]‚³‚¹‚éB

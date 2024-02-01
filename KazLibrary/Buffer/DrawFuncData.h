@@ -1490,7 +1490,7 @@ namespace DrawFuncData
 
 		return drawCall;
 	};
-	
+
 	static DrawCallData SetDefferdRenderingModelAnimationAppearByEcho(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
 	{
 		DrawCallData drawCall;
@@ -1519,6 +1519,43 @@ namespace DrawFuncData
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
 
+
+		drawCall.SetupRaytracing(arg_isOpaque);
+
+		return drawCall;
+	};
+
+	static DrawCallData SetDefferdRenderingModelAnimationAppearByEchoDepthAlways(std::shared_ptr<ModelInfomation>arg_model, bool arg_isOpaque = true)
+	{
+		DrawCallData drawCall;
+
+		DrawFuncData::PipelineGenerateData lData;
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "AppearEchoModel.hlsl", "VSDefferdAnimationMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/InGame/" + "AppearEchoModel.hlsl", "PSDefferdAnimationMain", "ps_6_4", SHADER_TYPE_PIXEL);
+
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormalBoneNoWeight();
+
+		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			drawCall.pipelineData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+		drawCall.pipelineData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back() = EchoArray::Instance()->GetEchoMemoryStructuredBuffer();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
+		//アニメーション
+		drawCall.extraBufferArray.emplace_back();
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA4;
+
+		drawCall.pipelineData.desc.DepthStencilState.DepthEnable = true;
+		drawCall.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
+		drawCall.pipelineData.desc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
 
 		drawCall.SetupRaytracing(arg_isOpaque);
 
