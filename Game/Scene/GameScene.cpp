@@ -258,6 +258,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 							/*m_isToStartPos = true;
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);*/
 							//ゲームクリア
+							StageSelectScene::startStageNum = 0;
+							m_sceneNum = 1;
 						}
 						else
 						{
