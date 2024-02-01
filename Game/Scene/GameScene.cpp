@@ -90,6 +90,15 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
+	//敵
+	m_enemyManager = std::make_shared<EnemyManager>();
+	for (int i = 0; i < m_stageManager.GetEnemyCount(); ++i)
+	{
+		m_enemyManager->AddEnemyData(
+			i,
+			m_stageManager.GetEnemyPositions(i + 1));
+	}
+	m_enemyManager->SetModelData(arg_rasterize);
 
 	if (f_isGoal)
 	{
@@ -97,6 +106,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 		m_isTitle = false;
 	}
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
+
 }
 
 GameScene::~GameScene()
@@ -105,8 +115,6 @@ GameScene::~GameScene()
 
 void GameScene::Init()
 {
-	//m_enemyManager->Init();
-
 	m_sceneNum = SCENE_NONE;
 	m_bulletMgr->Init();
 	m_uiManager.Init();
@@ -170,6 +178,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_HPBarManager.HitDamage(10, 10);
 	}*/
 
+	//int l_num = m_stageManager.GetEnemyCount();
+	//m_stageManager.GetEnemyPositions(1);
+
 	if (!m_isTitle)
 	{
 		//メニューが開かれていない時に更新を通す
@@ -191,11 +202,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				m_gadgetMaanager.Update();
 
 				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
-				/*m_enemyManager->Update(
+				m_enemyManager->Update(
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
 					m_player->GetTransform().pos,
-					m_stageMeshCollision);*/
+					m_stageMeshCollision);
 
 				if (m_debugCameraFlag)
 				{
@@ -328,11 +339,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				m_gadgetMaanager.Update();
 
 				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
-				/*m_enemyManager->Update(
+				m_enemyManager->Update(
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
 					m_player->GetTransform().pos,
-					m_stageMeshCollision);*/
+					m_stageMeshCollision);
 
 				if (m_debugCameraFlag)
 				{
@@ -438,7 +449,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 		m_goalPoint.Update();
 
-
 		FootprintMgr::Instance()->Update();
 
 		//EnemyDebugManager::Instance()->Update();
@@ -464,7 +474,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
-	//m_enemyManager->Draw(arg_rasterize, arg_blasVec);
+	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
