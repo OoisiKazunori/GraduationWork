@@ -53,7 +53,9 @@ private:
 	KazMath::Transform3D m_stageTransform;
 
 	BasicDraw::BasicModelRender m_titleLogoModel;	//使用するモデル
+	BasicDraw::BasicModelRender m_clickToStart;		//使用するモデル
 	KazMath::Transform3D m_titleLogoTransform;
+	KazMath::Transform3D m_clickToStartTransform;
 
 	//音--------------------------
 	SoundData m_bgmHandle, m_seHandle;

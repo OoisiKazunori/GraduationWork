@@ -34,6 +34,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_dangerManager(arg_rasterize),
 	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png", true),
 	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
+	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf"),
 	m_isClear(false)
 {
 	/*
@@ -289,7 +290,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		FieldAIDebugManager::Instance()->Update();*/
 
 
-		m_titleLogoTransform.pos.z += 2.0f;
+		m_titleLogoTransform.pos.z -= 2.0f;
+		m_clickToStartTransform = m_titleLogoTransform;
 	}
 	//タイトル画面
 	else
@@ -302,6 +304,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_titleLogoSIneRotationTimer += 0.03f;
 		m_titleLogoTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
 		m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0, 1, 0), sinf(m_titleLogoSIneRotationTimer)* DirectX::XM_PI / 50.0f);
+
+		m_clickToStartTransform = m_titleLogoTransform;
+		m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
+		m_clickToStartTransform.pos.y -= 1.5f;
 
 		static bool isHoge = false;
 		if (!isHoge)
@@ -350,6 +356,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//{
 
 		m_titleLogoModel.m_model.DrawRasterize(arg_rasterize, m_titleLogoTransform);
+		m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
 
 	//}
 
