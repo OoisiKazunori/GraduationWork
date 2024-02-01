@@ -26,7 +26,7 @@ class PreEnemy;
 class GameScene :public SceneBase
 {
 public:
-	GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber);
+	GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_isGoal = false);
 	~GameScene();
 
 	void Init();
@@ -63,6 +63,7 @@ private:
 
 	int m_sceneNum;
 	int m_stageNum;
+	bool m_isGoal = false;
 
 	int GetDigits(int arg_value, int arg_m, int arg_n) {
 		int mod_value;

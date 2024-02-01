@@ -209,7 +209,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
 				KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
 				KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
-				if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
+				if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) 
+				{
 
 					//すべてのステージクリア
 					if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
@@ -232,6 +233,31 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					}
 					m_isClear = true;
 				}
+				int l_nowStageNum  = StageSelectScene::GetStartStageNum();
+				static bool isRemoveStartPos = false;
+				if (l_nowStageNum == 1 || l_nowStageNum == 2)
+				{
+					//スタートのポジション
+					goalPos = m_stageManager.m_player->m_transform.pos;
+					playerGoalDistane = goalPos - playerPos;
+					if (isRemoveStartPos && !m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+					{
+						StageSelectScene::startStageNum -= 1;
+						if (StageSelectScene::startStageNum % 2 == 0)
+						{
+							m_sceneNum = 1;
+						}
+						else
+						{
+							m_sceneNum = 3;
+						}
+					}
+					else if (!isRemoveStartPos && (fabs(playerGoalDistane.x) > goalScale.x  || fabs(playerGoalDistane.z) > goalScale.z))
+					{
+						isRemoveStartPos = true;
+					}
+				}
+			
 			}
 			m_HPBarManager.Update(0);
 			//死んだときの更新
