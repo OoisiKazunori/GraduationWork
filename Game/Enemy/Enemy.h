@@ -5,6 +5,7 @@
 #include "../Game/Collision/MeshCollision.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/Reaction.h"
+#include"../Game/AI/EnemyAIData.h"
 #include<memory>
 
 class MeshCollision;
@@ -12,16 +13,6 @@ class BulletMgr;
 
 class Enemy
 {
-public:
-	enum struct State
-	{
-		Patrol,		//巡回
-		Warning,	//警戒
-		Combat,		//戦闘
-		Holdup,		//ホールドアップ(消えそう)
-		Death		//死亡
-	};
-
 private:
 	std::shared_ptr<
 		BasicDraw::BasicModelRender> m_enemyBox;
@@ -85,6 +76,8 @@ private:
 	const float FOOTPRINT_SPAN = 5;
 	bool m_footprintSide;
 
+
+	bool m_isInSightFlag;//視界内に入ったか
 public:
 	Enemy();
 	~Enemy();
@@ -155,7 +148,7 @@ public:
 
 public:
 	void SetData(
-		DrawingByRasterize& arg_rasterize);
+		DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize);
 	void SetCheckPointDelay(
 		std::vector<std::pair<int, int>> arg_checkPointDelay);
 	void SetState(State arg_state) { m_state = arg_state; }
@@ -177,4 +170,9 @@ public:
 		m_offset_x = arg_offsets.first;
 		m_offset_y = arg_offsets.second;
 	}
+
+
+private:
+
+
 };

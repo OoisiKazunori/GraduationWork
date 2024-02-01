@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.6.16",
+        "generator" : "Khronos glTF Blender I/O v3.4.50",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -15,23 +15,13 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Cube",
-            "scale" : [
-                75,
-                10,
-                75
-            ],
-            "translation" : [
-                0,
-                10,
-                0
-            ]
+            "name" : "Mag"
         }
     ],
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Material",
+            "name" : "Gun",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -43,13 +33,13 @@
     ],
     "meshes" : [
         {
-            "name" : "Cube",
+            "name" : "\u7acb\u65b9\u4f53",
             "primitives" : [
                 {
                     "attributes" : {
                         "POSITION" : 0,
-                        "NORMAL" : 1,
-                        "TEXCOORD_0" : 2
+                        "TEXCOORD_0" : 1,
+                        "NORMAL" : 2
                     },
                     "indices" : 3,
                     "material" : 0
@@ -66,66 +56,70 @@
     "images" : [
         {
             "mimeType" : "image/png",
-            "name" : "stageTex",
-            "uri" : "stageTex.png"
+            "name" : "Gun",
+            "uri" : "Gun.png"
         }
     ],
     "accessors" : [
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 24,
+            "count" : 66,
             "max" : [
-                1,
-                1,
-                1
+                0.022164881229400635,
+                -0.054423749446868896,
+                -0.3442634344100952
             ],
             "min" : [
-                -1,
-                -1,
-                -1
+                -0.021835148334503174,
+                -0.2840997576713562,
+                -0.42672133445739746
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 24,
-            "type" : "VEC3"
+            "count" : 66,
+            "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 24,
-            "type" : "VEC2"
+            "count" : 66,
+            "type" : "VEC3"
         },
         {
             "bufferView" : 3,
             "componentType" : 5123,
-            "count" : 36,
+            "count" : 120,
             "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 288,
-            "byteOffset" : 0
+            "byteLength" : 792,
+            "byteOffset" : 0,
+            "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 288,
-            "byteOffset" : 288
+            "byteLength" : 528,
+            "byteOffset" : 792,
+            "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 192,
-            "byteOffset" : 576
+            "byteLength" : 792,
+            "byteOffset" : 1320,
+            "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 72,
-            "byteOffset" : 768
+            "byteLength" : 240,
+            "byteOffset" : 2112,
+            "target" : 34963
         }
     ],
     "samplers" : [
@@ -136,8 +130,8 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 840,
-            "uri" : "Stage.bin"
+            "byteLength" : 2352,
+            "uri" : "Mag.bin"
         }
     ]
 }

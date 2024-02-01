@@ -1,7 +1,7 @@
 #include "Menu.h"
 #include "../Input/Input.h"
 #include"../KazLibrary/Render/BasicDraw.h"
-
+#include "../Scene/StageSelectScene.h"
 bool Menu::isGameEnd = false;
 
 SceneName Menu::m_SceneName;
@@ -76,7 +76,8 @@ void Menu::Update()
 				else if (nowSelectMenu == MenuOptions::Totitle)
 				{
 					isSceneChangeTrigger = true;
-					SetSceneName(SceneName::SCENE_TITLE);
+					SetSceneName(SceneName::SCENE_TUTORIAL);
+					StageSelectScene::startStageNum = 0;
 					isSceneChange = true;
 					m_isMenuOpen = false;
 				}

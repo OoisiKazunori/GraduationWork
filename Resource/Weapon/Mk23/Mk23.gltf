@@ -64,29 +64,29 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 1574,
+            "count" : 1571,
             "max" : [
-                0.04955985024571419,
-                0.19340243935585022,
-                0.5221663117408752
+                0.05281168222427368,
+                0.06227242946624756,
+                0.4827244281768799
             ],
             "min" : [
-                -0.05044017359614372,
-                -0.13865604996681213,
-                -0.43157142400741577
+                -0.04718834161758423,
+                -0.2697860598564148,
+                -0.47101330757141113
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 1574,
+            "count" : 1571,
             "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 1574,
+            "count" : 1571,
             "type" : "VEC3"
         },
         {
@@ -99,26 +99,26 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 18888,
+            "byteLength" : 18852,
             "byteOffset" : 0,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 12592,
-            "byteOffset" : 18888,
+            "byteLength" : 12568,
+            "byteOffset" : 18852,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 18888,
-            "byteOffset" : 31480,
+            "byteLength" : 18852,
+            "byteOffset" : 31420,
             "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 4656,
-            "byteOffset" : 50368,
+            "byteOffset" : 50272,
             "target" : 34963
         }
     ],
@@ -130,7 +130,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 55024,
+            "byteLength" : 54928,
             "uri" : "Mk23.bin"
         }
     ]

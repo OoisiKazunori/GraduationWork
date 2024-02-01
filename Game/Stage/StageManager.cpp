@@ -3,6 +3,8 @@
 #include "../MapLoader/MapLoader.h"
 #include "../Echo/EchoArray.h"
 
+int StageNumCounter::stageNumCount = 0;
+
 StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
 
@@ -29,8 +31,12 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	}
 
 	//ステージの切り替え処理
-	m_stage->Update();
+	m_stage[m_nowStageNumber]->Update();
 	m_goal->Update();
+
+	//エコーの出し方
+	//EchoArray::Instance()->Generate(m_transform.pos, 50.0f, Echo::COLOR::WHITE);
+
 	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Update();
@@ -48,105 +54,59 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 		(*l_block01Itr)->Update();
 	}
 
-	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_River.begin(); itr != m_Wall_River.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_H.begin(); itr != m_Wall_H.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_I.begin(); itr != m_Wall_I.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_L_LPost.begin(); itr != m_Wall_L_LPost.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_NonPost.begin(); itr != m_Wall_NonPost.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_L_Post.begin(); itr != m_Wall_L_Post.end(); itr++)
-	{
-		(*itr)->Update();
-	}
-	for (auto itr = m_Wall_T.begin(); itr != m_Wall_T.end(); itr++)
-	{
-		(*itr)->Update();
-	}
 	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
 	{
 		(*itr)->Update();
+	}
+
+	static int bird1Ti = 300;
+	static int bird2Ti = 500;
+	static int bird3Ti = 700;
+	//一ステージめだったら
+	if (m_nowStageNumber == 0)
+	{
+		bird1Ti--;
+		bird2Ti--;
+		bird3Ti--;
+		if (bird1Ti <= 0)
+		{
+			bird1Ti = 300;
+			EchoArray::Instance()->Generate(m_Bird1->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
+		}
+		if (bird2Ti <= 0)
+		{
+			bird2Ti = 500;
+			EchoArray::Instance()->Generate(m_Bird2->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
+		}
+		if (bird3Ti <= 0)
+		{
+			bird3Ti = 500;
+			EchoArray::Instance()->Generate(m_Bird3->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
+		}
 	}
 }
 
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	m_stage->Draw(arg_rasterize, arg_blasVec);
+ 	m_stage[m_nowStageNumber]->Draw(arg_rasterize, arg_blasVec);
 	//m_goal->Draw(arg_rasterize, arg_blasVec);
 	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
 	{
 		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
 	}
-	for (auto l_cylinderItr = m_cylinder.begin(); l_cylinderItr != m_cylinder.end(); ++l_cylinderItr)
+	/*for (auto l_cylinderItr = m_cylinder.begin(); l_cylinderItr != m_cylinder.end(); ++l_cylinderItr)
 	{
 		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
+	}*/
+	/*for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
 	{
 		(*l_block01Itr)->Draw(arg_rasterize, arg_blasVec);
-	}
+	}*/
 	for (auto l_cylinderItr = m_stone.begin(); l_cylinderItr != m_stone.end(); ++l_cylinderItr)
 	{
 		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
 	}
 
-	for (auto itr = m_Wall_C.begin(); itr != m_Wall_C.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_Four_Forked_Road.begin(); itr != m_Wall_Four_Forked_Road.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_River.begin(); itr != m_Wall_River.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_H.begin(); itr != m_Wall_H.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_I.begin(); itr != m_Wall_I.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_L_LPost.begin(); itr != m_Wall_L_LPost.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_NonPost.begin(); itr != m_Wall_NonPost.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_L_Post.begin(); itr != m_Wall_L_Post.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto itr = m_Wall_T.begin(); itr != m_Wall_T.end(); itr++)
-	{
-		(*itr)->Draw(arg_rasterize, arg_blasVec);
-	}
 	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
 	{
 		(*itr)->Draw(arg_rasterize, arg_blasVec);
@@ -168,189 +128,112 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 {
 	m_phone.clear();
 	m_cylinder.clear();
-	m_stage.reset();
+	m_stage[0].reset();
+	m_stage[1].reset();
+	m_stage[2].reset();
 	m_goal.reset();
+	m_colStage[0].reset();
+	m_colStage[1].reset();
+	m_colStage[2].reset();
 	m_block01.clear();
-
+	m_player.reset();
 	m_plane.clear();
-	m_Wall_C.clear();
-	m_Wall_Four_Forked_Road.clear();
-	m_Wall_River.clear();
-	m_Wall_H.clear();
-
-	m_Wall_I.clear();
-	m_Wall_L_LPost.clear();
-	m_Wall_NonPost.clear();
-	m_Wall_L_Post.clear();
-	m_Wall_T.clear();
+	m_turrets.clear();
 
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
-		if (l_mapItr->m_objetName.starts_with("phone") == true)
+		if (l_mapItr->m_objetName.starts_with("Bird1") == true)
 		{
-			m_phone.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/tree/", "tree2.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale, l_mapItr->echoScale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_phone.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*m_phone.begin())->m_transform);
-			m_collisions.push_back(collision);
+			m_Bird1 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		else if (l_mapItr->m_objetName.starts_with("stone"))
+		else if (l_mapItr->m_objetName.starts_with("Bird2") == true)
 		{
-
-			m_stone.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Weapon/Rock/", "Rock.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale, l_mapItr->echoScale));
-
-			m_stone.back()->m_echoFlag = true;
+			m_Bird2 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		else if (l_mapItr->m_objetName.starts_with("magazin"))
+		else if (l_mapItr->m_objetName.starts_with("Bird3") == true)
 		{
-
-			m_magazin.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/Weapon/Rock/", "Rock.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale, l_mapItr->echoScale));
-
-			m_magazin.back()->m_echoFlag = true;
+			m_Bird3 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-
-		else if (l_mapItr->m_objetName.starts_with("cylinder") == true)
+		else if (l_mapItr->m_objetName.starts_with("player") == true)
 		{
-			m_cylinder.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/cylinder/", "cylinder.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			m_cylinder.back()->m_echoFlag = true;
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_cylinder.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_cylinder.end())->m_transform);
-			m_collisions.push_back(collision);
+			m_player = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		else if (l_mapItr->m_objetName.starts_with("stage") == true)
-		{
-			m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
-		}
-		else if (l_mapItr->m_objetName.starts_with("Goal") == true)
+		else if (l_mapItr->m_objetName.starts_with("goal") == true)
 		{
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale);
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-		else if (l_mapItr->m_objetName.starts_with("Block") == true)
+		else if (l_mapItr->m_objetName.starts_with("Enemy") == true)
 		{
-			auto pos = l_mapItr->m_position;
-			float a = 0.5f;
-			auto sca = l_mapItr->m_scale;
-			float b = 0.5f;
-			sca.x = sca.x * b;
-			sca.y = sca.y * (b);
-			sca.z = sca.z * (b);
+			int length = (int)l_mapItr->m_objetName.size();
 
-
-			m_block01.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				pos, l_mapItr->m_rotition, sca));
-
-			m_block01.back()->m_echoFlag = true;
-
+			std::string str = "";
+			str += l_mapItr->m_objetName.at(length - 1);
+			//順かい順
+			int roadIndex = atoi(str.c_str());
+			str = "";
+			str += l_mapItr->m_objetName.at(length - 2);
+			//エネミー自体の番号
+			int enemyIndex = atoi(str.c_str());
+			m_enemys.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", enemyIndex, roadIndex,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
-
-		else if (l_mapItr->m_objetName.starts_with("plane") == true)
+		else if (l_mapItr->m_objetName.starts_with("Turret") == true)
 		{
-			m_plane.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Plane/", "Plane.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-		}
-		else if (l_mapItr->m_objetName.starts_with("wallC") == true)
-		{
-			m_Wall_C.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_C/", "Wall_C.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-
-
-			auto collision = std::make_shared<MeshCollision>();
-			auto trans = (*--m_Wall_C.end())->m_transform;
-			collision->Setting((*m_Wall_C.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_C.end())->m_transform);
-			m_collisions.push_back(collision);
-		}
-		else if (l_mapItr->m_objetName.starts_with("wall_four-forked_road") == true)
-		{
-			m_Wall_Four_Forked_Road.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_Four_Forked_Road/", "Wall_Four_Forked_Road.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_Four_Forked_Road.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_Four_Forked_Road.end())->m_transform);
-			m_collisions.push_back(collision);
-		}
-		else if (l_mapItr->m_objetName.starts_with("wall_River") == true)
-		{
-			m_Wall_River.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_River/", "Wall_River.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_River.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_River.end())->m_transform);
-			m_collisions.push_back(collision);
-		}
-		else if (l_mapItr->m_objetName.starts_with("wallH") == true)
-		{
-			m_Wall_H.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_H/", "Wall_H.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_H.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_H.end())->m_transform);
-			m_collisions.push_back(collision);
+			//タレットのモデルにする？
+			m_turrets.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 
-		else if (l_mapItr->m_objetName.starts_with("wallI") == true)
-		{
-			m_Wall_I.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_I/", "Wall_I.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_I.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_I.end())->m_transform);
-			m_collisions.push_back(collision);
-		}
-		else if (l_mapItr->m_objetName.starts_with("wallL_LPost") == true)
-		{
-			m_Wall_L_LPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_LPost/", "Wall_L_LPost.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_L_LPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_L_LPost.end())->m_transform);
-			m_collisions.push_back(collision);
-		}
-		else if (l_mapItr->m_objetName.starts_with("wallL_NonPost") == true)
-		{
-			m_Wall_NonPost.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_NonPost/", "Wall_L_NonPost.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_NonPost.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_NonPost.end())->m_transform);
-			m_collisions.push_back(collision);
-		}
-		else if (l_mapItr->m_objetName.starts_with("Wall_L_Post") == true)
-		{
-			m_Wall_L_Post.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_L_Post/", "Wall_L_Post.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_L_Post.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_L_Post.end())->m_transform);
-			m_collisions.push_back(collision);
-		}
-		else if (l_mapItr->m_objetName.starts_with("wallT") == true)
-		{
-			m_Wall_T.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/MapObjects/Wall_T/", "Wall_T.gltf",
-				l_mapItr->m_position, l_mapItr->m_rotition, l_mapItr->m_scale));
-
-			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting((*m_Wall_T.begin())->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, (*--m_Wall_T.end())->m_transform);
-			m_collisions.push_back(collision);
-		}
 	}
 	//emptyなら入れる
-	if (!m_stage)
+	if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 0)
 	{
-		m_stage = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Stage.gltf",
-			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(75.0f, 14.4f, 75.0f));
-		auto collision = std::make_shared<MeshCollision>();
-		collision->Setting(m_stage->m_stageModelRender.m_model.m_modelInfo->modelData[0].vertexData, m_stage->m_transform);
-		m_collisions.push_back(collision);
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model_collision.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
+		}
+	}
+	else if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 1)
+	{
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model2.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Corizon2.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
+		}
+	}
+	else if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 2)
+	{
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model3.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Corizon3.gltf",
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
+		}
 	}
 }
 
@@ -437,6 +320,51 @@ void StageManager::CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollisi
 
 		}
 	}
+}
+
+KazMath::Transform3D StageManager::GetGoalTransform()
+{
+	return m_goal->m_transform;
+}
+
+int StageManager::GetEnemyCount()
+{
+	int l_enemyCount = 0;
+	for (auto itr = m_enemys.begin(); itr != m_enemys.end(); ++itr)
+	{
+		if ((*itr)->m_enemyIndex > l_enemyCount)
+		{
+			l_enemyCount = (*itr)->m_enemyIndex;
+		}
+	}
+	return l_enemyCount;
+}
+
+std::list<KazMath::Transform3D> StageManager::GetEnemyPositions(int f_enemyNum)
+{
+	std::list<KazMath::Transform3D> l_result;
+	for (auto itr = m_enemys.begin(); itr != m_enemys.end(); ++itr)
+	{
+		if ((*itr)->m_enemyIndex == f_enemyNum)
+		{
+			l_result.push_back((*itr)->m_transform);
+		}
+	}
+	return l_result;
+}
+
+int StageManager::GetTurretCount()
+{
+	return (int)m_turrets.size();
+}
+KazMath::Transform3D StageManager::GetTurretPosition(int f_turetNum)
+{
+	auto itr = m_turrets.begin();
+	for (int i = 0; i < f_turetNum; i++)
+	{
+		itr++;
+	}
+	return (*itr)->m_transform;
 }
 
 void StageManager::ChangeScene(DrawingByRasterize& arg_rasterize)

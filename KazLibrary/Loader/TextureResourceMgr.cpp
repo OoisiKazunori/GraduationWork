@@ -1,4 +1,4 @@
- #include"../Loader/TextureResourceMgr.h"
+#include"../Loader/TextureResourceMgr.h"
 #include"../DirectXCommon/DirectX12Device.h"
 #include"../DirectXCommon/DirectX12CmdList.h"
 #include"../Helper/KazHelper.h"
@@ -106,7 +106,16 @@ RESOURCE_HANDLE TextureResourceMgr::LoadGraph(std::string RESOURCE)
 		mipmapUploadBufferArray.emplace_back();
 	}
 
-	cpuBufferArray[elementNum] = KazBufferHelper::SetShaderResourceBufferData(textureDesc);
+	KazBufferHelper::BufferResourceData data
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		textureDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		"TextureUploadBuffer"
+	);
+	cpuBufferArray[elementNum] = data;
 
 	bufferArray[elementNum] = KazBufferHelper::BufferResourceData
 	(
@@ -242,7 +251,7 @@ KazBufferHelper::BufferData TextureResourceMgr::LoadGraphBuffer(std::string RESO
 
 
 		bufferArray[elementNum].bufferWrapper->CopyBuffer(
-			cpuBufferArray[elementNum].bufferWrapper->GetBuffer());
+			cpuBufferArray[elementNum].bufferWrapper);
 	}
 
 

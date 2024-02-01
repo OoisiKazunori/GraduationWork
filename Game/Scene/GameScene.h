@@ -26,7 +26,7 @@ class PreEnemy;
 class GameScene :public SceneBase
 {
 public:
-	GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber);
+	GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_isGoal = false);
 	~GameScene();
 
 	void Init();
@@ -46,10 +46,9 @@ public:
 private:
 
 	//ÉJÉÅÉâ--------------------------
+	bool m_debugCameraFlag;
 	DebugCamera m_debuCamera;
 	std::shared_ptr<Camera> m_camera;
-
-	std::array<std::shared_ptr<PreEnemy>, 1> m_preEnemy;
 
 	KazMath::Transform3D m_stageTransform;
 
@@ -64,6 +63,8 @@ private:
 
 	int m_sceneNum;
 	int m_stageNum;
+	bool m_isGoal = false;
+	bool m_isToStartPos = false;
 
 	int GetDigits(int arg_value, int arg_m, int arg_n) {
 		int mod_value;
@@ -95,5 +96,9 @@ private:
 	Menu m_menu;
 
 	CheckPoint m_goalPoint;
-	bool m_isClear = false;
+	bool m_isClear;
+
+	BasicDraw::BasicTextureRender m_titleTex;
+	KazMath::Transform2D m_titleTrans;
+	bool m_isTitle = true;
 };

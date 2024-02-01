@@ -15,12 +15,12 @@
 #include"../Game/Echo/EchoArray.h"
 #include"../KazLibrary/Debug/DebugKey.h"
 
-SceneManager::SceneManager() :gameFirstInitFlag(false)
+SceneManager::SceneManager() :gameFirstInitFlag(false), m_firstFlameFlag(false)
 {
 	SoundManager::Instance()->SettingSoundManager();
 
 	//デモ用のゲームシーンを設定。
-	m_nowScene = GetScene(0);
+	m_nowScene = GetScene(1);
 	m_nowScene->Init();
 	//シーン遷移を設定
 	m_sceneChange = std::make_unique<ChangeScene::SceneChange>(m_rasterize);
@@ -37,7 +37,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	Raytracing::HitGroupMgr::Instance()->Setting();
 	m_pipelineShaders.push_back({ "Resource/ShaderFiles/RayTracing/RaytracingShader.hlsl", {L"mainRayGen"}, {L"mainMS", L"shadowMS", L"checkHitRayMS"}, {L"mainCHS", L"mainAnyHit"} });
 	int payloadSize = sizeof(float) * 7;
-	m_rayPipeline = std::make_unique<Raytracing::RayPipeline>(m_pipelineShaders, Raytracing::HitGroupMgr::DEF, 6, 3, 6, payloadSize, static_cast<int>(sizeof(KazMath::Vec2<float>)), 6);
+	m_rayPipeline = std::make_unique<Raytracing::RayPipeline>(m_pipelineShaders, Raytracing::HitGroupMgr::DEF, 7, 3, 6, payloadSize, static_cast<int>(sizeof(KazMath::Vec2<float>)), 6);
 
 
 	//ボリュームテクスチャを生成。
@@ -123,7 +123,6 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	//通常エコー用構造体を設定。
 	EchoArray::Instance()->Setting();
 	m_rayPipeline->SetEchoStructuredBufferData(EchoArray::Instance()->GetEchoStructuredBuffer());
-
 }
 
 SceneManager::~SceneManager()
@@ -181,6 +180,7 @@ void SceneManager::Update()
 			m_rasterize.GeneratePipeline();
 			m_nowScene->Init();
 		}
+		m_firstFlameFlag = false;
 	}
 
 	//更新処理
@@ -203,7 +203,10 @@ void SceneManager::Update()
 		m_rasterize.GeneratePipeline();
 	}
 
-	m_blasVector.Update();
+	//シーンが切り替わった最初のフレームのみ更新する。
+	if (!m_firstFlameFlag){
+		m_blasVector.Update();
+	}
 
 	//fpsを制限(今回は60fps)
 	FpsManager::RegulateFps(60);
@@ -239,15 +242,32 @@ void SceneManager::Draw()
 	//ラスタライザ描画
 	m_rasterize.SortAndRender();
 
-	//Tlasを構築 or 再構築する。
-	m_tlas.Build(m_blasVector);
-	//レイトレ用のデータを構築。
-	m_rayPipeline->BuildShaderTable(m_blasVector);
-	if (m_blasVector.GetBlasRefCount() != 0)
-	{
-		m_rayPipeline->TraceRay(m_tlas);
+	//最初の1Fのみビルドする。
+	if (!m_firstFlameFlag) {
+
+		//Tlasを構築 or 再構築する。
+		m_tlas.Build(m_blasVector);
+		//レイトレ用のデータを構築。
+		m_rayPipeline->BuildShaderTable(m_blasVector);
+		if (m_blasVector.GetBlasRefCount() != 0)
+		{
+			m_rayPipeline->TraceRay(m_tlas);
+		}
+
 	}
+	//2F以降はレイトレのみを実行する。
+	else {
+
+		if (m_blasVector.GetBlasRefCount() != 0)
+		{
+			m_rayPipeline->TraceRay(m_tlas);
+		}
+
+	}
+
 	//UI用の描画
 	m_rasterize.UISortAndRender();
 	m_rasterize.StaticSortAndRender();
+
+	m_firstFlameFlag = true;
 }

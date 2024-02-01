@@ -377,6 +377,47 @@ void KazBufferHelper::ID3D12ResourceWrapper::CopyBuffer(const Microsoft::WRL::Co
 	}
 }
 
+void KazBufferHelper::ID3D12ResourceWrapper::CopyBuffer(const std::shared_ptr<ID3D12ResourceWrapper>& SRC_BUFFER) const
+{
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(
+			SRC_BUFFER->GetBuffer().Get(),
+			SRC_BUFFER->GetState(),
+			D3D12_RESOURCE_STATE_COPY_SOURCE
+		)
+	);
+
+	for (int i = 0; i < buffer.size(); ++i)
+	{
+		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(buffer[i].Get(),
+				resourceState,
+				D3D12_RESOURCE_STATE_COPY_DEST
+			)
+		);
+
+		DirectX12CmdList::Instance()->cmdList->CopyResource(buffer[i].Get(), SRC_BUFFER->GetBuffer().Get());
+
+		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(buffer[i].Get(),
+				D3D12_RESOURCE_STATE_COPY_DEST,
+				resourceState
+			)
+		);
+	}
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(SRC_BUFFER->GetBuffer().Get(),
+			D3D12_RESOURCE_STATE_COPY_SOURCE,
+			SRC_BUFFER->GetState()
+		)
+	);
+}
+
 void KazBufferHelper::ID3D12ResourceWrapper::CopyBufferRegion(const Microsoft::WRL::ComPtr<ID3D12Resource>& SRC_BUFFER) const
 {
 	for (int i = 0; i < buffer.size(); ++i)
@@ -499,7 +540,7 @@ void KazBufferHelper::BufferData::CreateUAVView()
 	RESOURCE_HANDLE handle = UavViewHandleMgr::Instance()->GetHandle();
 	D3D12_UNORDERED_ACCESS_VIEW_DESC desc = KazBufferHelper::SetUnorderedAccessView(structureSize, elementNum);
 
-	if (bufferWrapper->GetDimension()== D3D12_RESOURCE_DIMENSION_TEXTURE2D)
+	if (bufferWrapper->GetDimension() == D3D12_RESOURCE_DIMENSION_TEXTURE2D)
 	{
 		desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
 	}

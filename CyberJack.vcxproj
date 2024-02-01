@@ -240,6 +240,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Mineral\Game\Effect\ChromaticAberration.h" />
+    <ClInclude Include="Game\AI\EnemyAIData.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
     <ClInclude Include="Game\Bullet\EchoBullet.h" />
@@ -304,6 +305,7 @@
     <ClInclude Include="KazLibrary\Easing\easing.h" />
     <ClInclude Include="KazLibrary\Fps\FPSManager.h" />
     <ClInclude Include="KazLibrary\Helper\Compute.h" />
+    <ClInclude Include="KazLibrary\Helper\ConvertEnumToString.h" />
     <ClInclude Include="KazLibrary\Helper\DebugColor.h" />
     <ClInclude Include="KazLibrary\Helper\DirtyFlag.h" />
     <ClInclude Include="KazLibrary\Helper\HandleMaker.h" />

@@ -34,6 +34,7 @@ void MeshCollision::Transform(KazMath::Transform3D arg_transform)
 
 MeshCollision::CheckHitResult MeshCollision::CheckHitRay(KazMath::Vec3<float> arg_origin, KazMath::Vec3<float> arg_direction)
 {
+
 	/*-- ① ポリゴンを法線情報をもとにカリングする --*/
 
 	//法線とレイの方向の内積が0より大きかった場合、そのポリゴンは背面なのでカリングする。

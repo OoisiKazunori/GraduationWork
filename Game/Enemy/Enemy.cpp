@@ -28,14 +28,16 @@ Enemy::Enemy()
 
 	m_enemyShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
 	m_enemyShotSE.volume = 0.05f;
+
 }
 
 Enemy::~Enemy()
 {
+	bool debug = false;
 }
 
 void Enemy::SetData(
-	DrawingByRasterize& arg_rasterize)
+	DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize)
 {
 	////モデルデータ代入
 	//m_enemyBox =
@@ -102,6 +104,7 @@ void Enemy::Init()
 	m_checkEyeDelay = MAX_EYE_DELAY;
 
 	m_shotDelay = 0;
+	m_isInSightFlag = false;
 
 	m_footprintSpan = 0;
 
@@ -118,9 +121,49 @@ void Enemy::Update(
 	//前フレーム座標(移動する前の座標)を保存。
 	m_prevPos = m_trans.pos;
 
+	if (m_state == State::Death)
+	{
+		return;
+	}
+
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
 		std::make_pair(arg_playerPos.x, arg_playerPos.z);
+
+	//プレイヤーの思考------------------------------------------------------------
+	//視野角
+	//視線範囲内か
+	//if (CheckDistXZ(
+	//	l_pPos, EnemyConfig::eyeCheckDist) &&
+	//	CheckEye(arg_playerPos, arg_stageColliders))
+	//{
+	//	m_checkEyeDelay--;
+	//	
+	//	//一定時間範囲内だったら
+	//	if (m_checkEyeDelay <= 0)
+	//	{
+	//		//m_isCombat = true;
+	//		//m_state = State::Combat;
+	//		m_rate = MAX_RATE;
+	//		m_checkEyeDelay = MAX_EYE_DELAY;
+	//	}
+	//	m_isInSightFlag = true;
+	//}
+	//else
+	//{
+	//	m_isInSightFlag = false;
+	//	m_checkEyeDelay = MAX_EYE_DELAY;
+	//}
+
+	
+	//発見
+	m_isCombat = false;
+	if (m_state != State::Combat)
+	{
+		m_isCombat = true;
+		m_state = State::Combat;
+	}
+	//プレイヤーの思考------------------------------------------------------------
 
 	//巡回(通常or警戒)
 	if (m_state == State::Patrol ||
@@ -233,31 +276,6 @@ void Enemy::Update(
 		}
 	}
 
-	//死亡
-	else { return; }
-
-	//視線範囲内か
-	m_isCombat = false;
-	if (CheckDistXZ(
-		l_pPos, EnemyConfig::eyeCheckDist) &&
-		CheckEye(arg_playerPos, arg_stageColliders))
-	{
-		m_checkEyeDelay--;
-
-		//一定時間範囲内だったら
-		if (m_checkEyeDelay <= 0)
-		{
-			m_isCombat = true;
-			m_state = State::Combat;
-			m_rate = MAX_RATE;
-			m_checkEyeDelay = MAX_EYE_DELAY;
-		}
-	}
-	else
-	{
-		m_checkEyeDelay = MAX_EYE_DELAY;
-	}
-
 	//回転
 	if (m_oldPos.x >= 0.0f)
 	{
@@ -289,7 +307,7 @@ void Enemy::Update(
 	}
 
 	//判定(メッシュ)
-	Collision(arg_stageColliders, arg_bulletMgr);
+	//Collision(arg_stageColliders, arg_bulletMgr);
 
 	//一旦Y固定
 	m_trans.pos.y = -43.0f;
@@ -300,17 +318,17 @@ void Enemy::Update(
 	{
 		switch (m_state)
 		{
-		case Enemy::State::Patrol:
+		case State::Patrol:
 			break;
-		case Enemy::State::Warning:
+		case State::Warning:
 			m_reaction.Init(EnemyReaction::WARING, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
 			break;
-		case Enemy::State::Combat:
+		case State::Combat:
 			m_reaction.Init(EnemyReaction::COMBAT, { 0.0f,1.0f,0.0f }, KazMath::Color(255, 255, 255, 255));
 			break;
-		case Enemy::State::Holdup:
+		case State::Holdup:
 			break;
-		case Enemy::State::Death:
+		case State::Death:
 			break;
 		default:
 			break;
@@ -377,10 +395,13 @@ void Enemy::Draw(
 	Raytracing::BlasVector& arg_blasVec)
 {
 	m_reaction.Draw(arg_rasterize, arg_blasVec);
+#ifdef DEBUG
 	if (!m_inEcho)
 	{
 		return;
 	}
+#else
+#endif // DEBUG
 
 	if (m_rootPos.size() > 0 &&
 		m_state != State::Death)

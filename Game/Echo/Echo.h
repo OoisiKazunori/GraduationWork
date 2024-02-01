@@ -49,7 +49,7 @@ private:
 	float m_easingTimer;
 	const float APPEAR_EASING_TIMER = 12.0f;
 	const float EXIT_EASING_TIMER = 16.0f;
-	const float EXIT_EASING_TIMER_MEMORY = 1800;
+	float m_exitEasingTimer = 0;
 	const float ALPHA = 0.12f;
 
 	bool m_isMemory;	//このエコーが記録用のやつかどうか。
@@ -72,7 +72,7 @@ public:
 	/// </summary>
 	/// <param name="arg_maxEchoRadius"> エコーの到達半径 </param>
 	/// <param name="arg_echoColor"> エコーの色 </param>
-	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR arg_echoColorID, bool arg_isMemory = false);
+	void Generate(KazMath::Vec3<float> arg_pos, float arg_maxEchoRadius, COLOR arg_echoColorID, float arg_memoryTimer, bool arg_isMemory = false);
 
 	/// <summary>
 	/// 更新処理

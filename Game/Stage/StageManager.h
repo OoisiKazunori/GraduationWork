@@ -1,6 +1,12 @@
 #pragma once
 #include"StageModel.h"
 #include "../Game/Collision/MeshCollision.h"
+
+class StageNumCounter
+{
+public:
+	static int stageNumCount;
+};
 /// <summary>
 /// ステージ全体の管理処理
 /// MapLoaderのデータなどをここで描画している
@@ -17,23 +23,18 @@ private:
 	std::list<std::unique_ptr<StageModel>> m_cylinder;
 
 	std::list<std::unique_ptr<StageModel>> m_block01;
+	std::list<std::unique_ptr<StageModel>> m_enemys;
+	std::list<std::unique_ptr<StageModel>> m_turrets;
 
-
+	std::unique_ptr<StageModel> m_Bird1;
+	std::unique_ptr<StageModel> m_Bird2;
+	std::unique_ptr<StageModel> m_Bird3;
 
 	std::list<std::unique_ptr<StageModel>> m_plane;
-	std::list<std::unique_ptr<StageModel>> m_Wall_C;
-	std::list<std::unique_ptr<StageModel>> m_Wall_Four_Forked_Road;
-	std::list<std::unique_ptr<StageModel>> m_Wall_River;
-	std::list<std::unique_ptr<StageModel>> m_Wall_H;
-
-	std::list<std::unique_ptr<StageModel>> m_Wall_I;
-	std::list<std::unique_ptr<StageModel>> m_Wall_L_LPost;
-	std::list<std::unique_ptr<StageModel>> m_Wall_NonPost;
-	std::list<std::unique_ptr<StageModel>> m_Wall_L_Post;
-	std::list<std::unique_ptr<StageModel>> m_Wall_T;
 
 
-	std::list<std::shared_ptr<MeshCollision>> m_collisions;
+
+	std::list<std::shared_ptr<MeshCollision>> m_collisions[3];
 	//その他木等の外部オブジェクトモデル--------------------------------
 
 	//ステージ切り替え前に必ず呼び出してください
@@ -54,8 +55,17 @@ public:
 	std::list<std::unique_ptr<StageModel>> m_stone;
 	std::list<std::unique_ptr<StageModel>> m_magazin;
 
-	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions; };
-	std::unique_ptr<StageModel> m_stage;
-	KazMath::Transform3D GetGoalTransform() { return m_goal->m_transform; };
+	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions[m_nowStageNumber]; };
+	std::unique_ptr<StageModel> m_stage[3];
+	std::unique_ptr<StageModel> m_colStage[3];
+	std::unique_ptr<StageModel> m_player;
+	KazMath::Transform3D GetGoalTransform();
+	//何体いるか1からカウントされる
+	int GetEnemyCount();
+	//GetEnemyCount - 1を引数にすると丁度いいかも
+	std::list<KazMath::Transform3D> GetEnemyPositions(int f_enemyNum);
+	//タレット用
+	int GetTurretCount();
+	KazMath::Transform3D GetTurretPosition(int f_turetNum);
 };
 

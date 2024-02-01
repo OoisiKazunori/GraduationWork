@@ -17,7 +17,7 @@ private:
 	const float BULLET_SPEED = 20.0f;
 
 	int m_echoCount;
-	const int ECHO_COUNT = 3;
+	const int ECHO_COUNT = 0;
 	float m_echoSpan;
 	const float ECHO_SPAN = 60.0f;
 	int m_disappearTimer;
