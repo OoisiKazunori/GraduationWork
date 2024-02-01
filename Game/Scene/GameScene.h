@@ -110,5 +110,8 @@ private:
 	float m_titleLogoSineTimer;
 	float m_titleLogoSIneRotationTimer;
 	const float TITLELOGO_SINE_MOVE = 0.05f;
+	int m_titleLogoExitTimer;
+	const int TITLELOGO_EXIT_TIMER = 0;
+	float m_titleLogoExitEasingTimer;
 
 };

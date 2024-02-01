@@ -93,6 +93,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), DirectX::XM_PI / 2.0f);
 	m_titleLogoSineTimer = 0;
 	m_titleLogoSIneRotationTimer = 0;
+	m_titleLogoExitTimer = 0;
 
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
@@ -112,6 +113,8 @@ void GameScene::Init()
 	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
 	FootprintMgr::Instance()->Init();
 	m_debugCameraFlag = false;
+	m_titleLogoExitTimer = 0;
+	m_titleLogoExitEasingTimer = 0;
 }
 
 void GameScene::PreInit()
@@ -289,9 +292,23 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		/*FieldAI::Instance()->DebugUpdate();
 		FieldAIDebugManager::Instance()->Update();*/
 
+		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
+		++m_titleLogoExitTimer;
+		if (TITLELOGO_EXIT_TIMER < m_titleLogoExitTimer) {
 
-		m_titleLogoTransform.pos.z -= 2.0f;
-		m_clickToStartTransform = m_titleLogoTransform;
+			m_titleLogoExitEasingTimer = std::clamp(m_titleLogoExitEasingTimer + 0.06f, 0.0f, 1.0f);
+
+			float easingAmount = EasingMaker(In, Back, m_titleLogoExitEasingTimer);
+
+			m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
+			m_titleLogoTransform.pos.y -= easingAmount * 10.0f;
+
+			m_clickToStartTransform = m_titleLogoTransform;
+			m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
+			m_clickToStartTransform.pos.y -= 1.5f;
+
+		}
+
 	}
 	//タイトル画面
 	else
