@@ -24,6 +24,7 @@ private:
 
 	std::list<std::unique_ptr<StageModel>> m_block01;
 	std::list<std::unique_ptr<StageModel>> m_enemys;
+	std::list<std::unique_ptr<StageModel>> m_turets;
 
 	std::unique_ptr<StageModel> m_Bird1;
 	std::unique_ptr<StageModel> m_Bird2;
@@ -57,10 +58,14 @@ public:
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions[m_nowStageNumber]; };
 	std::unique_ptr<StageModel> m_stage[3];
 	std::unique_ptr<StageModel> m_colStage[3];
+	std::unique_ptr<StageModel> m_player;
 	KazMath::Transform3D GetGoalTransform();
 	//何体いるか1からカウントされる
 	int GetEnemyCount();
 	//GetEnemyCount - 1を引数にすると丁度いいかも
 	std::list<KazMath::Transform3D> GetEnemyPositions(int f_enemyNum);
+	//タレット用
+	int GetTuretCount();
+	KazMath::Transform3D GetTuretPosition(int f_turetNum);
 };
 

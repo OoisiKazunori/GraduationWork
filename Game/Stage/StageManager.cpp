@@ -94,14 +94,14 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	{
 		(*l_treeItr)->Draw(arg_rasterize, arg_blasVec);
 	}
-	for (auto l_cylinderItr = m_cylinder.begin(); l_cylinderItr != m_cylinder.end(); ++l_cylinderItr)
+	/*for (auto l_cylinderItr = m_cylinder.begin(); l_cylinderItr != m_cylinder.end(); ++l_cylinderItr)
 	{
 		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
+	}*/
+	/*for (auto l_block01Itr = m_block01.begin(); l_block01Itr != m_block01.end(); ++l_block01Itr)
 	{
 		(*l_block01Itr)->Draw(arg_rasterize, arg_blasVec);
-	}
+	}*/
 	for (auto l_cylinderItr = m_stone.begin(); l_cylinderItr != m_stone.end(); ++l_cylinderItr)
 	{
 		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
@@ -136,9 +136,9 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	m_colStage[1].reset();
 	m_colStage[2].reset();
 	m_block01.clear();
-
+	m_player.reset();
 	m_plane.clear();
-
+	m_turrets.clear();
 
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
@@ -161,12 +161,24 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
-
+		else if (l_mapItr->m_objetName.starts_with("player") == true)
+		{
+			m_player = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
 		else if (l_mapItr->m_objetName.starts_with("goal") == true)
 		{
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("turet") == true)
+		{
+			//タレットのモデルにする？
+			m_turrets.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 
 		else if (l_mapItr->m_objetName.starts_with("enemy") == true)
@@ -340,6 +352,20 @@ std::list<KazMath::Transform3D> StageManager::GetEnemyPositions(int f_enemyNum)
 		}
 	}
 	return l_result;
+}
+
+int StageManager::GetTurretCount()
+{
+	return (int)m_turrets.size();
+}
+KazMath::Transform3D StageManager::GetTurretPosition(int f_turetNum)
+{
+	auto itr = m_turrets.begin();
+	for (int i = 0; i < f_turetNum; i++)
+	{
+		itr++;
+	}
+	return (*itr)->m_transform;
 }
 
 void StageManager::ChangeScene(DrawingByRasterize& arg_rasterize)
