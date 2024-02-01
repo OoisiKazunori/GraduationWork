@@ -107,6 +107,7 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	KazMath::Transform3D GetTransform() { return m_transform; }
+	void SetPosition(KazMath::Vec3<float> f_pos) { m_transform.pos = f_pos; }
 	bool GetIsADS() { return m_isADS; }
 
 private:

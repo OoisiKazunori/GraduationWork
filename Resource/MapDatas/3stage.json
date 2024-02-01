@@ -30,8 +30,52 @@
             "transform": {
                 "translation": [
                     -20.65999984741211,
-                    135.899999618530273,
+                    142.899999618530273,
                     -4.75
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.3,
+                    1.3,
+                    1.3
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "goal",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    10.519999504089355,
+                    142.899999618530273,
+                    10.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -0.0
+                ],
+                "scaling": [
+                    1.3,
+                    1.3,
+                    1.3
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Turret11",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    15.5,
+                    27.0,
+                    0.0
                 ],
                 "rotation": [
                     0.0,
@@ -47,17 +91,61 @@
         },
         {
             "type": "MESH",
-            "name": "goal",
+            "name": "Turret10",
             "echo": 0.0,
             "transform": {
                 "translation": [
-                    10.519999504089355,
-                    135.899999618530273,
-                    10.0
+                    5.5,
+                    27.0,
+                    0.0
                 ],
                 "rotation": [
                     0.0,
+                    -179.99998474121094,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Enemy11",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    -2.0,
+                    27.0,
+                    -4.5
+                ],
+                "rotation": [
                     0.0,
+                    -179.99998474121094,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Enemy12",
+            "echo": 0.0,
+            "transform": {
+                "translation": [
+                    18.0,
+                    27.0,
+                    -4.5
+                ],
+                "rotation": [
+                    0.0,
+                    -179.99998474121094,
                     -0.0
                 ],
                 "scaling": [
