@@ -12,6 +12,7 @@
 #include "../Menu/Menu.h"
 #include"../Game/UI/CheckPoint.h"
 #include"../KazLibrary/Render/BasicDraw.h"
+#include"../Game/Effect/InformEnemy.h"
 
 class EnemyManager;
 class Player;
@@ -99,4 +100,7 @@ private:
 	BasicDraw::BasicTextureRender m_titleTex;
 	KazMath::Transform2D m_titleTrans;
 	bool m_isTitle = true;
+
+	InformEnemy m_inform;
+	KazMath::Vec3<float>pos;
 };

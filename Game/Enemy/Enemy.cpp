@@ -67,6 +67,8 @@ void Enemy::SetData(
 	m_reaction.Load(arg_rasterize);
 	m_shotDelay = 0;
 	m_appearTimer = 0;
+
+	m_inform.Load(arg_rasterize);
 }
 
 void Enemy::SetCheckPointDelay(
@@ -387,6 +389,8 @@ void Enemy::Update(
 			m_footprintSide = !m_footprintSide;
 		}
 	}
+	m_trans.GetFront();
+	//m_inform.Update(m_trans.pos, arg_playerPos);
 
 }
 
@@ -414,6 +418,8 @@ void Enemy::Draw(
 			m_trans,
 			l_player);
 	}
+
+	//m_inform.Draw(arg_rasterize);
 
 
 	//if (m_isCombat) {

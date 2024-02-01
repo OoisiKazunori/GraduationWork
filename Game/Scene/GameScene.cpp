@@ -85,7 +85,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
-	
+	m_inform.Load(arg_rasterize);
 
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
@@ -124,7 +124,7 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
 	{
-		//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
+		pos = m_player->GetTransform().pos;
 	}
 
 	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
@@ -294,6 +294,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 
 	}
+
+	m_inform.Update(pos, m_player->GetTransform());
 }
 
 
@@ -348,6 +350,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		m_resultManager.Draw(arg_rasterize);
 	}
+
+	m_inform.Draw(arg_rasterize,arg_blasVec);
 
 	DebugKey::Instance()->DrawImGui();
 }

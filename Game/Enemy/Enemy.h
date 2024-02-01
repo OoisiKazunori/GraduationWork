@@ -6,6 +6,7 @@
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/Reaction.h"
 #include"../Game/AI/EnemyAIData.h"
+#include"../Game/Effect/InformEnemy.h"
 #include<memory>
 
 class MeshCollision;
@@ -78,6 +79,9 @@ private:
 
 
 	bool m_isInSightFlag;//Ž‹ŠE“à‚É“ü‚Á‚½‚©
+
+	InformEnemy m_inform;
+
 public:
 	Enemy();
 	~Enemy();

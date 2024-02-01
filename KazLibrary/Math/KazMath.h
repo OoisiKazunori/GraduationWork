@@ -642,7 +642,7 @@ namespace KazMath
 		//姿勢から各方向ベクトルを取得
 		Vec3<float> GetRight() { return TransformVec3(DirectX::XMVector3Transform({ 1,0,0 }, DirectX::XMMatrixRotationQuaternion(quaternion))); }
 		Vec3<float> GetUp() { return TransformVec3(DirectX::XMVector3Transform({ 0,1,0 }, DirectX::XMMatrixRotationQuaternion(quaternion))); }
-		Vec3<float> GetFront() { return TransformVec3(DirectX::XMVector3Transform({ 0,0,1 }, DirectX::XMMatrixRotationQuaternion(quaternion))); }
+		Vec3<float> GetFront() { return TransformVec3(DirectX::XMVector3Transform({ 0,0,1 }, DirectX::XMMatrixRotationQuaternion(quaternion))); }const
 
 		//姿勢に任意のベクトル軸の回転をかける。(加算する感じ)
 		void Rotation(Vec3<float> arg_axis, float arg_radian) {
