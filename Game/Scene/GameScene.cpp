@@ -94,9 +94,19 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_enemyManager = std::make_shared<EnemyManager>();
 	for (int i = 0; i < m_stageManager.GetEnemyCount(); ++i)
 	{
+		//0が空
 		m_enemyManager->AddEnemyData(
 			i,
 			m_stageManager.GetEnemyPositions(i + 1));
+	}
+	for (int i = 0; i < m_stageManager.GetTurretCount(); ++i)
+	{
+		std::list<KazMath::Transform3D> l_pos;
+		l_pos.push_back(
+			m_stageManager.GetTurretPosition(i));
+		m_enemyManager->AddEnemyData(
+			i + m_stageManager.GetEnemyCount(),
+			l_pos);
 	}
 	m_enemyManager->SetModelData(arg_rasterize);
 

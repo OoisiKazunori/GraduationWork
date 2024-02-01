@@ -45,7 +45,7 @@ void Enemy::SetData(
 		std::make_unique<BasicDraw::BasicModelRender>(
 			arg_rasterize,
 			"Resource/Enemy/",
-			"Enemy.gltf"
+			"Turret.gltf"
 		);
 
 	m_meshCol = std::make_shared<MeshCollision>();
@@ -67,6 +67,7 @@ void Enemy::Init(
 		itr != m_positions.end(); ++itr)
 	{
 		m_trans.pos = itr->pos;
+		m_trans.scale = { 5.0f,5.0f,5.0f };
 		break;
 	}
 	CalcMoveVec();
@@ -123,6 +124,7 @@ void Enemy::Update(
 		std::make_pair(arg_playerPos.x, arg_playerPos.z);
 
 	//視線範囲内か
+	m_isCombat = false;
 	if (CheckDistXZ(
 		l_pPos, EnemyConfig::eyeCheckDist) &&
 		CheckEye(arg_playerPos, arg_stageColliders))
@@ -134,6 +136,12 @@ void Enemy::Update(
 		{
 			m_rate = MAX_RATE;
 			m_checkEyeDelay = MAX_EYE_DELAY;
+			//発見時
+			if (m_state != State::Combat)
+			{
+				m_isCombat = true;
+				m_state = State::Combat;
+			}
 		}
 		m_isInSightFlag = true;
 	}
@@ -143,16 +151,9 @@ void Enemy::Update(
 		m_checkEyeDelay = MAX_EYE_DELAY;
 	}
 
-	//発見時
-	//m_isCombat = false;
-	//if (m_state != State::Combat)
-	//{
-		//m_isCombat = true;
-		//m_state = State::Combat;
-	//}
-
 	//巡回
-	if (m_state == State::Patrol)
+	if (m_state == State::Patrol &&
+		!m_isInSightFlag)
 	{
 		//チェックポイント
 		if (m_isCheckPoint)
@@ -206,19 +207,19 @@ void Enemy::Update(
 	}
 
 	//回転
-	if (m_oldPos.x >= 0.0f)
+	if (m_prevPos.x >= 0.0f)
 	{
-		if (m_trans.pos != m_oldPos) {
+		if (m_trans.pos != m_prevPos) {
 			DirectX::XMVECTOR l_quaternion =
-				CalMoveQuaternion(m_trans.pos, m_oldPos);
+				CalMoveQuaternion(m_trans.pos, m_prevPos);
 			m_trans.quaternion = l_quaternion;
 		}
 	}
 
-	if (m_state == State::Patrol ||
-		m_state == State::Warning) {
-		//RotateEye();
-	}
+	//if (m_state == State::Patrol ||
+	//	m_state == State::Warning) {
+	//	//RotateEye();
+	//}
 
 	//重力(仮)
 	if (!m_onGround) {
@@ -378,6 +379,8 @@ void Enemy::CalcMoveVec()
 
 void Enemy::Move()
 {
+	if (m_positions.size() <= 1) { return; }
+
 	std::pair<float, float> l_checkPos =
 		std::make_pair(m_nextPos.x, m_nextPos.z);
 
@@ -397,7 +400,7 @@ void Enemy::Move()
 	else {
 		m_trans.pos += m_moveVec * EnemyConfig::speed;
 	}
-	m_trans.pos.y = 25.0f;
+	m_trans.pos.y = 23.0f;
 }
 
 DirectX::XMVECTOR Enemy::CalMoveQuaternion(
