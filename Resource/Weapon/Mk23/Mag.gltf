@@ -15,7 +15,7 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Gun"
+            "name" : "Mag"
         }
     ],
     "materials" : [
@@ -33,7 +33,7 @@
     ],
     "meshes" : [
         {
-            "name" : "Cube",
+            "name" : "\u7acb\u65b9\u4f53",
             "primitives" : [
                 {
                     "attributes" : {
@@ -64,61 +64,61 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 1571,
+            "count" : 66,
             "max" : [
-                0.05281168222427368,
-                0.06227242946624756,
-                0.4827244281768799
+                0.022164881229400635,
+                -0.054423749446868896,
+                -0.3442634344100952
             ],
             "min" : [
-                -0.04718834161758423,
-                -0.2697860598564148,
-                -0.47101330757141113
+                -0.021835148334503174,
+                -0.2840997576713562,
+                -0.42672133445739746
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 1571,
+            "count" : 66,
             "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 1571,
+            "count" : 66,
             "type" : "VEC3"
         },
         {
             "bufferView" : 3,
             "componentType" : 5123,
-            "count" : 2328,
+            "count" : 120,
             "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 18852,
+            "byteLength" : 792,
             "byteOffset" : 0,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 12568,
-            "byteOffset" : 18852,
+            "byteLength" : 528,
+            "byteOffset" : 792,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 18852,
-            "byteOffset" : 31420,
+            "byteLength" : 792,
+            "byteOffset" : 1320,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 4656,
-            "byteOffset" : 50272,
+            "byteLength" : 240,
+            "byteOffset" : 2112,
             "target" : 34963
         }
     ],
@@ -130,8 +130,8 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 54928,
-            "uri" : "Mk23.bin"
+            "byteLength" : 2352,
+            "uri" : "Mag.bin"
         }
     ]
 }

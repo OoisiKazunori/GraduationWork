@@ -114,7 +114,7 @@ BasicDrawGBufferOutput PSDefferdAnimationMain(PosUvNormalTangentBinormalOutput i
             output.metalnessRoughness = float4(0, 0, 0, 1);
             output.world = float4(input.worldPos, 1.0f);
             output.emissive = EmissiveTex.Sample(smp, input.uv);
-            output.outline = float4(0,0,0,1);
+            output.outline = float4(1, 1, 1, 1) * color;
             output.outlineWorld = float4(0,0,0,1);
             return output;
         }

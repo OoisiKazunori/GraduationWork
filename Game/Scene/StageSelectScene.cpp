@@ -5,8 +5,8 @@
 #include "../UI/UI.h"
 
 float StageSelectScene::volume = 1.0f;
-int StageSelectScene::startStageNum = 0;
-const int StageSelectScene::C_StageMaxNum = 2;
+int StageSelectScene::startStageNum = 1;
+const int StageSelectScene::C_StageMaxNum = 3;
 
 StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, float f_volume, bool f_isFlip) :
 	m_backSp(arg_rasterize, "Resource/MenuTex/SelectSceneBack.png"),
@@ -31,7 +31,7 @@ StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float came
 	m_escSp(arg_rasterize, "Resource/UITexture/ESC.png")
 {
 	m_sceneNum = -1;
-	m_nowSelectNum = 0;
+	m_nowSelectNum = 2;
 
 	mouseSensitivity = cameraSensitivity;
 	volume = f_volume;

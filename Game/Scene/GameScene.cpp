@@ -22,7 +22,7 @@
 #include"../Footprint/FootprintMgr.h"
 #include "../Effect/StopMgr.h"
 
-GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
+GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_isGoal) :
 	//DrawFuncHelperでのモデル読み込み
 	m_uiManager(arg_rasterize),
 	m_gadgetMaanager(arg_rasterize),
@@ -32,10 +32,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_resultManager(arg_rasterize),
 	m_goalPoint(arg_rasterize),
 	m_dangerManager(arg_rasterize),
-	m_turret(arg_rasterize),
-	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png")
+	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png", true),
+	m_isClear(false),
+	m_turret(arg_rasterize)
 {
-
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
 	読み込み単体の処理は下の処理になります。(多重読み込み防止あり)
@@ -50,10 +50,14 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_stageTransform.pos = { 0.0f, -20.0f, 0.0f };
 	m_stageTransform.scale = { 8.0f, 1.0f, 8.0f };
 
+	//帰って行くときのフラグ
+	m_isToStartPos = f_isGoal;
+
+	m_stageNum = f_mapNumber;
 	MapManager::Init();
 	int stageNumber = 0;
 	m_stageManager.Init(arg_rasterize, f_mapNumber);
-	m_stageNum = f_mapNumber;
+
 
 	if (f_mapNumber == 0)
 	{
@@ -87,7 +91,11 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
 
-
+	if (f_isGoal)
+	{
+		m_player->SetPosition(m_stageManager.GetGoalTransform().pos);
+		m_isTitle = false;
+	}
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
 
@@ -103,9 +111,17 @@ void GameScene::Init()
 	m_bulletMgr->Init();
 	m_uiManager.Init();
 	m_gadgetMaanager.Init();
-	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+	if (m_isToStartPos)
+	{
+		m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
+	}
+	else
+	{
+		m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+	}
 	FootprintMgr::Instance()->Init();
 	m_debugCameraFlag = false;
+	EchoArray::Instance()->Init();
 }
 
 void GameScene::PreInit()
@@ -191,9 +207,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				}
 
 				m_stageManager.Update(arg_rasterize);
+				//auto hogehoge = m_stageManager.GetTurretPosition(0);
+
 				m_bulletMgr->Update(m_stageManager.GetColliders());
 
-				static bool flag = false;
+				/*static bool flag = false;
 				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
 				{
 					if (flag) flag = false;
@@ -206,36 +224,55 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				else
 				{
 					m_heartRateManager.Update(120);
-				}
+				}*/
 				//nextステージへいくところを踏んだら
 				//プレイヤーとゴールの当たり判定
 				KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
 				KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
 				KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
 				KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
-				if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
 
+				int l_nowStageNum = StageSelectScene::GetStartStageNum();
+
+				if (!m_isToStartPos && !m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+				{
 					//すべてのステージクリア
+					//インタラクト入れるなら入れる
 					if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 					{
-						m_resultManager.ShowResult();
-						m_resultManager.SetClear();
-						StageSelectScene::startStageNum = 0;
+						m_isToStartPos = true;
+						m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
 					}
 					else
 					{
 						StageSelectScene::startStageNum += 1;
-						if (StageSelectScene::startStageNum % 2 == 0)
+						m_sceneNum = 1;
+						m_isClear = true;
+					}
+				}
+				else if (m_isToStartPos && (l_nowStageNum == 1 || l_nowStageNum == 2))
+				{
+					//スタートのポジション
+					goalPos = m_stageManager.m_player->m_transform.pos;
+					playerGoalDistane = goalPos - playerPos;
+					if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+					{
+						if (StageSelectScene::GetStartStageNum() == 0)
 						{
+							/*m_isToStartPos = true;
+							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);*/
+							//ゲームクリア
+							StageSelectScene::startStageNum = 0;
 							m_sceneNum = 1;
 						}
 						else
 						{
+							StageSelectScene::startStageNum -= 1;
 							m_sceneNum = 3;
 						}
 					}
-					m_isClear = true;
 				}
+
 			}
 			m_HPBarManager.Update(0);
 			//死んだときの更新
@@ -376,7 +413,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 			{
 				//タイトルに戻る
-				m_sceneNum = 0;
+				//m_sceneNum = 0;
+				m_sceneNum = 1;
+				StageSelectScene::startStageNum = 0;
 			}
 		}
 
@@ -424,7 +463,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	m_player->Draw(arg_rasterize, arg_blasVec);
 
 	//m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
@@ -432,18 +470,28 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
+
+	m_player->Draw(arg_rasterize, arg_blasVec);
+
+
 	m_menu.Draw(arg_rasterize);
 	if (!m_resultManager.GetResultShow() && !m_menu.GetIsMenuOpen())
 	{
-		m_uiManager.Draw(arg_rasterize);
-		//m_gadgetMaanager.Draw(arg_rasterize);
-		m_HPBarManager.Draw(arg_rasterize);
-		//m_heartRateManager.Draw(arg_rasterize);
 		if (!m_isTitle)
 		{
+			m_uiManager.Draw(arg_rasterize);
+			//m_gadgetMaanager.Draw(arg_rasterize);
+			m_HPBarManager.Draw(arg_rasterize);
+			//m_heartRateManager.Draw(arg_rasterize);
 			m_dangerManager.Draw(arg_rasterize);
 		}
+
+		m_goalPoint.Draw(arg_rasterize);
 	}
+
+
+	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
+
 
 	if (m_isTitle)
 	{

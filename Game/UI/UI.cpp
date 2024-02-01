@@ -112,7 +112,7 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
 	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
 	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_Stone.png"),
-	m_TabSp(arg_rasterize, "Resource/UITexture/Tab.png"),
+	m_TabSp(arg_rasterize, "Resource/UITexture/Mouse.png"),
 	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),
 	m_eSp(arg_rasterize, "Resource/UITexture/E.png"),
 	m_aimTop(arg_rasterize, "Resource/UITexture/gunAim.png"),
@@ -211,6 +211,11 @@ void WeponUIManager::Reload()
 	{
 
 	}
+}
+
+bool WeponUIManager::CanReload()
+{
+	return m_bulletCount < m_magazinSize;
 }
 
 void WeponUIManager::Init()
@@ -441,8 +446,8 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 	{
 		m_TabSp.m_color = { 255, 255, 255, 255 };
 		m_TabSp.Draw(arg_rasterize);
-		m_qSp.Draw(arg_rasterize);
-		m_eSp.Draw(arg_rasterize);
+		/*m_qSp.Draw(arg_rasterize);
+		m_eSp.Draw(arg_rasterize);*/
 		for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 		{
 			if ((*itr).first == e_NonWepon)

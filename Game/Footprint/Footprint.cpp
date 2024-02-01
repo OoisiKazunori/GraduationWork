@@ -30,5 +30,5 @@ void Footprint::Update()
 
 void Footprint::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform, KazMath::Color(93, 44, 44, 255));
 }
