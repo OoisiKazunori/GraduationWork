@@ -86,7 +86,7 @@ private:
 	StageManager m_stageManager;
 	
 	WeponUIManager m_uiManager;
-	GadgetUIManager m_gadgetMaanager;
+	//GadgetUIManager m_gadgetMaanager;
 	HPUI m_HPBarManager;
 	ResultUI m_resultManager;
 	DangerUIManager m_dangerManager;

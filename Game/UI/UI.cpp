@@ -110,7 +110,7 @@ void UI2DElement::SetColorEaseEnd(KazMath::Color& f_endColor)
 
 WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 	m_hundgun(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
-	m_echo(arg_rasterize, "Resource/UITexture/Weapon_UI_ECHO.png"),
+	m_echo(arg_rasterize, "Resource/UITexture/UI_handGun.png"),
 	m_nonWepon(arg_rasterize, "Resource/UITexture/UI_Stone.png"),
 	m_TabSp(arg_rasterize, "Resource/UITexture/Mouse.png"),
 	m_qSp(arg_rasterize, "Resource/UITexture/Q.png"),

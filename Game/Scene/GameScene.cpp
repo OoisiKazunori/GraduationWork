@@ -25,7 +25,7 @@
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_isGoal) :
 	//DrawFuncHelperでのモデル読み込み
 	m_uiManager(arg_rasterize),
-	m_gadgetMaanager(arg_rasterize),
+	//m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
 	m_heartRateManager(arg_rasterize),
 	m_menu(arg_rasterize),
@@ -128,7 +128,7 @@ void GameScene::Init()
 	m_sceneNum = SCENE_NONE;
 	m_bulletMgr->Init();
 	m_uiManager.Init();
-	m_gadgetMaanager.Init();
+	//m_gadgetMaanager.Init();
 	if (m_isToStartPos)
 	{
 		m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
@@ -209,7 +209,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			if (m_HPBarManager.GetHP() > 0)
 			{
 				m_uiManager.Update(m_stageManager, m_player->GetTransform());
-				m_gadgetMaanager.Update();
+				//m_gadgetMaanager.Update();
 
 				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
 				m_enemyManager->Update(
@@ -346,7 +346,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			if (m_HPBarManager.GetHP() > 0)
 			{
 				m_uiManager.Update(m_stageManager, m_player->GetTransform());
-				m_gadgetMaanager.Update();
+				//m_gadgetMaanager.Update();
 
 				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
 				m_enemyManager->Update(

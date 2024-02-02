@@ -128,6 +128,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		m_gravity = 0.0f;
 	}
 	m_transform.pos.y += m_gravity;
+	//m_transform.pos.y = 50.0f;
 
 
 	//“®‚¢‚½•ûŒü‚É‰ñ“]‚³‚¹‚éB

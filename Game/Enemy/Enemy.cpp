@@ -67,7 +67,7 @@ void Enemy::Init(
 		itr != m_positions.end(); ++itr)
 	{
 		m_trans.pos = itr->pos;
-		m_trans.scale = { 5.0f,5.0f,5.0f };
+		m_trans.scale = { 2.5f,2.5f,2.5f };
 		break;
 	}
 	CalcMoveVec();
@@ -379,6 +379,7 @@ void Enemy::CalcMoveVec()
 
 void Enemy::Move()
 {
+	//m_trans.pos.y = 23.0f;
 	if (m_positions.size() <= 1) { return; }
 
 	std::pair<float, float> l_checkPos =
@@ -400,7 +401,6 @@ void Enemy::Move()
 	else {
 		m_trans.pos += m_moveVec * EnemyConfig::speed;
 	}
-	m_trans.pos.y = 23.0f;
 }
 
 DirectX::XMVECTOR Enemy::CalMoveQuaternion(
