@@ -22,14 +22,15 @@ void Camera::Init()
 	m_cameraXAngle = CAMERA_X_ANGLE_INIT_AMOUNT;
 	m_isOldADS = false;
 	m_ADSEasingTimer = 0.0f;
+	m_titleCameraMove = 0.0f;
 
 }
 
-void Camera::Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<MeshCollision> arg_stageMeshCollision, bool arg_isADS)
+void Camera::Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<MeshCollision> arg_stageMeshCollision, bool arg_isADS, bool arg_isTitle)
 {
 
 	//入力を取る。
-	Input();
+	Input(arg_isTitle);
 
 	//ADSした瞬間 or やめた瞬間だったら
 	if ((arg_isADS && !m_isOldADS) || (!arg_isADS && m_isOldADS)) {
@@ -91,7 +92,7 @@ KazMath::Transform3D Camera::GetShotQuaternion()
 {
 	KazMath::Transform3D cameraTransform = m_shotQuaternion;
 	cameraTransform.Rotation(cameraTransform.GetRight(), m_cameraXAngle);
-	cameraTransform.Rotation({0,1,0}, DirectX::XM_PI);
+	cameraTransform.Rotation({ 0,1,0 }, DirectX::XM_PI);
 
 	////ADSしていると撃つ方向とカメラの中心がずれるので、それを補正する。
 	//if (m_isOldADS) {
@@ -102,11 +103,30 @@ KazMath::Transform3D Camera::GetShotQuaternion()
 
 	return cameraTransform;
 }
-void Camera::Input()
+void Camera::Input(bool arg_isTitle)
 {
 
-	//左右のカメラ操作
-	m_shotQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * (0.001f * CameraSensitivity));
+	//タイトル画面だったら
+	if (arg_isTitle) {
+
+		float inputMove = KeyBoradInputManager::Instance()->GetMouseVel().x * (0.001f * CameraSensitivity);
+
+		//回転量を制限する。
+		m_titleCameraMove += inputMove;
+		m_titleCameraMove = std::clamp(m_titleCameraMove, -TITLE_CAMERA_MOVE, TITLE_CAMERA_MOVE);
+
+		m_shotQuaternion.quaternion = DirectX::XMQuaternionIdentity();
+		m_shotQuaternion.Rotation({ 0,1,0 }, m_titleCameraMove);
+
+	}
+	else {
+
+
+		//左右のカメラ操作
+		m_shotQuaternion.Rotation({ 0,1,0 }, KeyBoradInputManager::Instance()->GetMouseVel().x * (0.001f * CameraSensitivity));
+
+	}
+
 
 	//上下のカメラ操作
 	if (!isFlip)

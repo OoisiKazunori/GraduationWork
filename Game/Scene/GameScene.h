@@ -53,6 +53,11 @@ private:
 
 	KazMath::Transform3D m_stageTransform;
 
+	BasicDraw::BasicModelRender m_titleLogoModel;	//使用するモデル
+	BasicDraw::BasicModelRender m_clickToStart;		//使用するモデル
+	KazMath::Transform3D m_titleLogoTransform;
+	KazMath::Transform3D m_clickToStartTransform;
+
 	//音--------------------------
 	SoundData m_bgmHandle, m_seHandle;
 
@@ -104,4 +109,14 @@ private:
 	BasicDraw::BasicTextureRender m_titleTex;
 	KazMath::Transform2D m_titleTrans;
 	bool m_isTitle = true;
+
+	//タイトル用
+	const KazMath::Vec3<float> TITLELOGO_POS = KazMath::Vec3<float>(-200.0f, -43.0f, 335.0f);
+	float m_titleLogoSineTimer;
+	float m_titleLogoSIneRotationTimer;
+	const float TITLELOGO_SINE_MOVE = 0.05f;
+	int m_titleLogoExitTimer;
+	const int TITLELOGO_EXIT_TIMER = 0;
+	float m_titleLogoExitEasingTimer;
+
 };

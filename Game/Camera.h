@@ -21,7 +21,10 @@ private:
 	const float EYE_TARGET_DISTANCE = 20.0f;
 
 	//ƒJƒƒ‰‚ÌX•ûŒü‚Ì‰ñ“]—Ê‚Ì‰Šú’l
-	const float CAMERA_X_ANGLE_INIT_AMOUNT = -0.72f;
+	const float CAMERA_X_ANGLE_INIT_AMOUNT = 0.016f;
+	
+	float m_titleCameraMove;
+	const float TITLE_CAMERA_MOVE = 1.0f;
 
 
 public:
@@ -30,7 +33,7 @@ public:
 
 	void Init();
 
-	void Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<MeshCollision> arg_stageMeshCollision, bool arg_isADS);
+	void Update(KazMath::Transform3D arg_playerTransform, std::weak_ptr<MeshCollision> arg_stageMeshCollision, bool arg_isADS, bool arg_isTitle);
 
 	KazMath::Transform3D GetShotQuaternion();
 	KazMath::Vec3<float> GetEyePos() { return m_eye; }
@@ -39,7 +42,7 @@ public:
 	static bool isFlip;
 private:
 
-	void Input();
+	void Input(bool arg_isTitle);
 
 	//XMVECTOR‚ğVec3<float>‚É•ÏŠ·
 	KazMath::Vec3<float> TransformVec3(DirectX::XMVECTOR arg_input) {

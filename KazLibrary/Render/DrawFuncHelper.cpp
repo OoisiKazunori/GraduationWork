@@ -272,6 +272,21 @@ void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize& arg_rasterize, Raytra
 	}
 }
 
+void DrawFuncHelper::ModelRender::DrawRasterize(DrawingByRasterize& arg_rasterize, KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor, float arg_timeScale)
+{
+	if (m_animator)
+	{
+		m_animator->Update(arg_timeScale);
+		DrawFunc::DrawModel(m_drawCommand, arg_trasform3D, m_animator->GetBoneMatBuff(), arg_addColor);
+	}
+	else
+	{
+		DrawFunc::DrawModel(m_drawCommand, arg_trasform3D, arg_addColor);
+	}
+	//ラスタライザ描画命令
+	arg_rasterize.ObjectRender(m_drawCommandData);
+}
+
 void DrawFuncHelper::ModelRender::Error()
 {
 	if (!m_modelInfo)
