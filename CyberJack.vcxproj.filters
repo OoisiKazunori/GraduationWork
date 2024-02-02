@@ -126,6 +126,9 @@
     <ClCompile Include="Game\Echo\EchoArray.cpp" />
     <ClCompile Include="Game\Enemy\PreEnemy.cpp" />
     <ClCompile Include="Game\Effect\InformEnemy.cpp" />
+    <ClCompile Include="Game\Effect\TurretFireEffect.cpp" />
+    <ClCompile Include="Game\Effect\BulletFireParticle.cpp" />
+    <ClCompile Include="Game\Effect\MuzzleFlash.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -274,6 +277,9 @@
     <ClInclude Include="Game\Enemy\PreEnemy.h" />
     <ClInclude Include="KazLibrary\Helper\ConvertEnumToString.h" />
     <ClInclude Include="Game\Effect\InformEnemy.h" />
+    <ClInclude Include="Game\Effect\TurretFireEffect.h" />
+    <ClInclude Include="Game\Effect\BulletFireParticle.h" />
+    <ClInclude Include="Game\Effect\MuzzleFlash.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
