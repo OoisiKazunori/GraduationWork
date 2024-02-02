@@ -349,6 +349,26 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_dangerManager.Update(false);
 		}
 
+
+
+
+		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
+		++m_titleLogoExitTimer;
+		if (TITLELOGO_EXIT_TIMER < m_titleLogoExitTimer) {
+
+			m_titleLogoExitEasingTimer = std::clamp(m_titleLogoExitEasingTimer + 0.06f, 0.0f, 1.0f);
+
+			float easingAmount = EasingMaker(In, Back, m_titleLogoExitEasingTimer);
+
+			m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
+			m_titleLogoTransform.pos.y -= easingAmount * 10.0f;
+
+			m_clickToStartTransform = m_titleLogoTransform;
+			m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
+			m_clickToStartTransform.pos.y -= 1.5f;
+
+		}
+
 	}
 	//リザルト出す
 	else if (m_resultManager.GetResultShow())
@@ -488,23 +508,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		/*FieldAI::Instance()->DebugUpdate();
 		FieldAIDebugManager::Instance()->Update();*/
 
-		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
-		++m_titleLogoExitTimer;
-		if (TITLELOGO_EXIT_TIMER < m_titleLogoExitTimer) {
-
-			m_titleLogoExitEasingTimer = std::clamp(m_titleLogoExitEasingTimer + 0.06f, 0.0f, 1.0f);
-
-			float easingAmount = EasingMaker(In, Back, m_titleLogoExitEasingTimer);
-
-			m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
-			m_titleLogoTransform.pos.y -= easingAmount * 10.0f;
-
-			m_clickToStartTransform = m_titleLogoTransform;
-			m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
-			m_clickToStartTransform.pos.y -= 1.5f;
-
-		}
-
 	}
 	//タイトル画面
 	else
@@ -572,7 +575,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	if (m_isTitle)
 	{
 		m_titleTrans.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
-		m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
+		//m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
 	}
 	m_turret.Draw(arg_rasterize, arg_blasVec);
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
