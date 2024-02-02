@@ -33,12 +33,6 @@ void CheckPoint::Update()
 
 void CheckPoint::Draw(DrawingByRasterize& arg_rasterize)
 {
-#ifdef _DEBUG
-	ImGui::Begin("ScreenPos");
-	ImGui::Text("X:%f,Y:%f,Z:%f", m_screenPos.x, m_screenPos.y, m_screenPos.z);
-	ImGui::End();
-#endif // _DEBUG
-
 	if (1.0f <= m_screenPos.z)
 	{
 		return;

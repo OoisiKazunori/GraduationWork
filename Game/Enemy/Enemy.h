@@ -7,6 +7,8 @@
 #include"../Game/UI/Reaction.h"
 #include"../Game/AI/EnemyAIData.h"
 #include <memory>
+#include"../Game/Effect/InformEnemy.h"
+#include<memory>
 
 class MeshCollision;
 class BulletMgr;
@@ -83,6 +85,9 @@ private:
 
 
 	bool m_isInSightFlag;//Ž‹ŠE“à‚É“ü‚Á‚½‚©
+
+	InformEnemy m_inform;
+
 public:
 	Enemy();
 	~Enemy();

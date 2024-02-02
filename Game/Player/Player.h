@@ -90,7 +90,7 @@ private:
 
 	//‰¼‚Å‘«Õ‚ğ•`‰æ‚·‚é—pB
 	float m_footprintSpan;
-	const float FOOTPRINT_SPAN = 5;
+	const float FOOTPRINT_SPAN = 1;
 	bool m_footprintSide;
 
 

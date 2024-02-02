@@ -48,62 +48,62 @@ public:
 	static void Init();
 
 	//ステージ番号を入れるとトランスフォームのリストが帰ってくる
-	//static std::list<MapObject> GetStageData(int f_stageNum)
-	//{
-	//	std::list<std::list<MapObject>>::iterator l_itr = m_maps.begin();
-	//	for (int i = 0; i < f_stageNum; i++)
-	//	{
-	//		l_itr++;
-	//	}
-	//	return *l_itr;
-	//};
-	////最大敵数9最大チェックポイント9
-	//static std::list<EnemyData> GetEnemyData(int f_stageNum)
-	//{
-	//	std::list<std::list<EnemyData>>::iterator l_itr = m_enemys.begin();
-	//	for (int i = 0; i < f_stageNum; i++)
-	//	{
-	//		l_itr++;
-	//	}
-	//	return *l_itr;
-	//};
-	//static DirectX::XMINT2 GetMapSizeData(int f_stageNum)
-	//{
-	//	std::list<DirectX::XMINT2>::iterator l_itr = m_mapSize.begin();
-	//	for (int i = 0; i < f_stageNum; i++)
-	//	{
-	//		l_itr++;
-	//	}
-	//	return *l_itr;
-	//};
-	//static std::list<std::list<int>> GetMapChips(int f_stageNum)
-	//{
-	//	auto l_itr = m_mapChips.begin();
-	//	for (int i = 0; i < f_stageNum; i++)
-	//	{
-	//		l_itr++;
-	//	}
-	//	return *l_itr;
-	//};
-	//static int GetMapChips(int f_stageNum, int f_x, int f_y)
-	//{
-	//	auto l_itr = m_mapChips.begin();
-	//	for (int i = 0; i < f_stageNum; i++)
-	//	{
-	//		l_itr++;
-	//	}
-	//	auto y_itr = l_itr->begin();
-	//	for (int i = 0; i < f_y; i++)
-	//	{
-	//		y_itr++;
-	//	}
-	//	auto xy_itr = y_itr->begin();
-	//	for (int i = 0; i < f_x; i++)
-	//	{
-	//		xy_itr++;
-	//	}
-	//	return *xy_itr;
-	//};
+	static std::list<MapObject> GetStageData(int f_stageNum)
+	{
+		std::list<std::list<MapObject>>::iterator l_itr = m_maps.begin();
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		return *l_itr;
+	};
+	//最大敵数9最大チェックポイント9
+	static std::list<EnemyData> GetEnemyData(int f_stageNum)
+	{
+		std::list<std::list<EnemyData>>::iterator l_itr = m_enemys.begin();
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		return *l_itr;
+	};
+	static DirectX::XMINT2 GetMapSizeData(int f_stageNum)
+	{
+		std::list<DirectX::XMINT2>::iterator l_itr = m_mapSize.begin();
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		return *l_itr;
+	};
+	static std::list<std::list<int>> GetMapChips(int f_stageNum)
+	{
+		auto l_itr = m_mapChips.begin();
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		return *l_itr;
+	};
+	static int GetMapChips(int f_stageNum, int f_x, int f_y)
+	{
+		auto l_itr = m_mapChips.begin();
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		auto y_itr = l_itr->begin();
+		for (int i = 0; i < f_y; i++)
+		{
+			y_itr++;
+		}
+		auto xy_itr = y_itr->begin();
+		for (int i = 0; i < f_x; i++)
+		{
+			xy_itr++;
+		}
+		return *xy_itr;
+	};
 
 	static KazMath::Transform3D GetPlayerStartPosition(int f_stageNum);
 };

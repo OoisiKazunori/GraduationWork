@@ -92,6 +92,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
+<<<<<<< HEAD
 	//敵
 	m_enemyManager = std::make_shared<EnemyManager>();
 	for (int i = 0; i < m_stageManager.GetEnemyCount(); ++i)
@@ -111,8 +112,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 			l_pos);
 	}
 	m_enemyManager->SetModelData(arg_rasterize);
-
+=======
 	m_inform.Load(arg_rasterize);
+>>>>>>> origin/dev_Footprint
 
 	//タイトルロゴモデルの位置を調整。
 	m_titleLogoTransform.pos = TITLELOGO_POS;
@@ -170,6 +172,7 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
+<<<<<<< HEAD
 		p = m_player->GetTransform().pos;
 		m_turret.Init(&p, KazMath::AngleToRadian(40.0f), 120.0f);
 		if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
@@ -177,9 +180,9 @@ void GameScene::Input()
 			//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
 		}
 		//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
-
+=======
 		pos = m_player->GetTransform().pos;
-
+>>>>>>> origin/dev_Footprint
 	}
 
 	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
