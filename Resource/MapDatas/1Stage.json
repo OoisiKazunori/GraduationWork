@@ -52,7 +52,7 @@
             "transform": {
                 "translation": [
                     6.5,
-                    0.0,
+                    -55.0,
                     -26.0
                 ],
                 "rotation": [
@@ -74,7 +74,7 @@
             "transform": {
                 "translation": [
                     20.0,
-                    0.0,
+                    -55.0,
                     -8.5
                 ],
                 "rotation": [
@@ -96,7 +96,7 @@
             "transform": {
                 "translation": [
                     -5.75,
-                    0.0,
+                    -55.0,
                     7.450000286102295
                 ],
                 "rotation": [
@@ -118,7 +118,7 @@
             "transform": {
                 "translation": [
                     26.5,
-                    0.0,
+                    -55.0,
                     18.5
                 ],
                 "rotation": [
@@ -140,7 +140,7 @@
             "transform": {
                 "translation": [
                     16.5,
-                    0.0,
+                    -55.0,
                     4.5
                 ],
                 "rotation": [
@@ -162,7 +162,7 @@
             "transform": {
                 "translation": [
                     4.5,
-                    0.0,
+                    -55.0,
                     16.5
                 ],
                 "rotation": [
@@ -184,7 +184,7 @@
             "transform": {
                 "translation": [
                     35.0,
-                    0.0,
+                    -55.0,
                     16.0
                 ],
                 "rotation": [
@@ -206,7 +206,7 @@
             "transform": {
                 "translation": [
                     -5.5,
-                    0.0,
+                    -55.0,
                     26.5
                 ],
                 "rotation": [
@@ -228,7 +228,7 @@
             "transform": {
                 "translation": [
                     -14.5,
-                    0.0,
+                    -55.0,
                     -9.5
                 ],
                 "rotation": [
@@ -250,7 +250,7 @@
             "transform": {
                 "translation": [
                     5.5,
-                    0.0,
+                    -55.0,
                     -9.5
                 ],
                 "rotation": [
@@ -272,7 +272,7 @@
             "transform": {
                 "translation": [
                     5.5,
-                    0.0,
+                    -55.0,
                     -29.5
                 ],
                 "rotation": [
@@ -294,7 +294,7 @@
             "transform": {
                 "translation": [
                     -14.5,
-                    0.0,
+                    -55.0,
                     -29.5
                 ],
                 "rotation": [
@@ -316,7 +316,7 @@
             "transform": {
                 "translation": [
                     25.5,
-                    0.0,
+                    -55.0,
                     -4.5
                 ],
                 "rotation": [
@@ -338,7 +338,7 @@
             "transform": {
                 "translation": [
                     -4.5,
-                    0.0,
+                    -55.0,
                     -4.5
                 ],
                 "rotation": [
@@ -360,7 +360,7 @@
             "transform": {
                 "translation": [
                     -4.5,
-                    0.0,
+                    -55.0,
                     25.5
                 ],
                 "rotation": [
@@ -382,7 +382,7 @@
             "transform": {
                 "translation": [
                     25.5,
-                    0.0,
+                    -55.0,
                     25.5
                 ],
                 "rotation": [
