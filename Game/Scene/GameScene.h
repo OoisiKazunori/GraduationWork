@@ -13,6 +13,7 @@
 #include"../Game/UI/CheckPoint.h"
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../Game/Effect/TurretFireEffect.h"
+#include"../Game/Effect/InformEnemy.h"
 
 class EnemyManager;
 class Player;
@@ -109,6 +110,9 @@ private:
 	BasicDraw::BasicTextureRender m_titleTex;
 	KazMath::Transform2D m_titleTrans;
 	bool m_isTitle = true;
+
+	InformEnemy m_inform;
+	KazMath::Vec3<float>pos;
 
 	//タイトル用
 	const KazMath::Vec3<float> TITLELOGO_POS = KazMath::Vec3<float>(-200.0f, -43.0f, 335.0f);
