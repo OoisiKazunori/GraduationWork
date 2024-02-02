@@ -22,9 +22,10 @@ class UI2DElement
 	KazMath::Color m_easeEndColor;
 	KazMath::Color m_easeAddColor = { 0, 0, 0, 1 };
 
-	bool m_isColorEase = false;
+	
 public:
 	KazMath::Color m_color;
+	bool m_isColorEase = false;
 	UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath);
 	UI2DElement();
 	void Init(DrawingByRasterize& arg_rasterize, std::string f_filePath);
@@ -311,4 +312,15 @@ public:
 	bool GetResultShow() { return m_isResultShow; };
 	void ShowResult() { m_isResultShow = true; };
 	void SetClear() { m_isClear = true; };
+};
+
+class IntractUI
+{
+	UI2DElement _fKeyTex;
+public:
+	static bool isIntract;
+	IntractUI(DrawingByRasterize& arg_rasterize);
+	void Init();
+	void Update();
+	void Draw(DrawingByRasterize& arg_rasterize);
 };

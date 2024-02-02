@@ -1047,3 +1047,38 @@ void DangerUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		m_timerTex[hoge100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
 	}
 }
+
+bool IntractUI::isIntract = false;
+
+IntractUI::IntractUI(DrawingByRasterize& arg_rasterize):
+	_fKeyTex(arg_rasterize, "Resource/UITexture/F.png")
+{
+}
+
+void IntractUI::Init()
+{
+	_fKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), 1.0f);
+}
+
+void IntractUI::Update()
+{
+	if (IntractUI::isIntract)
+	{
+		_fKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 255));
+	}
+	else
+	{
+		if (_fKeyTex.m_isColorEase)
+		{
+			_fKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 0));
+		}
+	}
+	_fKeyTex.Update();
+}
+
+void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
+{
+	_fKeyTex.Draw(arg_rasterize);
+}
+
+
