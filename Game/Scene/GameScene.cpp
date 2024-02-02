@@ -178,7 +178,7 @@ void GameScene::Input()
 		}
 		//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
 
-		pos = m_player->GetTransform().pos;
+		//pos = m_player->GetTransform().pos;
 
 	}
 
@@ -188,11 +188,6 @@ void GameScene::Input()
 		//大きめのエコーを出す
 		EchoArray::Instance()->Generate(m_player->GetTransform().pos, 80.0f, Echo::COLOR::WHITE);
 
-		if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
-		{
-			m_isTitle = false;
-			//大きめのエコーを出す
-		}
 	}
 }
 
@@ -499,10 +494,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_turret.Update();
 		FootprintMgr::Instance()->Update();
 
-		m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
+		/*m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 		m_goalPoint.Update();
 
-		FootprintMgr::Instance()->Update();
+		FootprintMgr::Instance()->Update();*/
 
 		//EnemyDebugManager::Instance()->Update();
 		/*FieldAI::Instance()->DebugUpdate();
@@ -587,14 +582,14 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
 	//}
 
-	m_goalPoint.Draw(arg_rasterize);
+	//m_goalPoint.Draw(arg_rasterize);
 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 	//m_menu.Draw(arg_rasterize);
 	//m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+	//m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);
 
 	if (m_resultManager.GetResultShow())
