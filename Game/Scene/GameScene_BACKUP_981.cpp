@@ -87,7 +87,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
+<<<<<<< HEAD
 	m_inform.Load(arg_rasterize);
+=======
 
 	//タイトルロゴモデルの位置を調整。
 	m_titleLogoTransform.pos = TITLELOGO_POS;
@@ -95,6 +97,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_titleLogoSineTimer = 0;
 	m_titleLogoSIneRotationTimer = 0;
 	m_titleLogoExitTimer = 0;
+>>>>>>> dev_Title
 
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 }

@@ -33,8 +33,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 	m_goalPoint(arg_rasterize),
 	m_dangerManager(arg_rasterize),
 	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png", true),
-	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
-	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf"),
 	m_isClear(false)
 {
 	/*
@@ -87,14 +85,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
-	m_inform.Load(arg_rasterize);
-
-	//タイトルロゴモデルの位置を調整。
-	m_titleLogoTransform.pos = TITLELOGO_POS;
-	m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), DirectX::XM_PI / 2.0f);
-	m_titleLogoSineTimer = 0;
-	m_titleLogoSIneRotationTimer = 0;
-	m_titleLogoExitTimer = 0;
+	
 
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 }
@@ -114,8 +105,6 @@ void GameScene::Init()
 	m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
 	FootprintMgr::Instance()->Init();
 	m_debugCameraFlag = false;
-	m_titleLogoExitTimer = 0;
-	m_titleLogoExitEasingTimer = 0;
 }
 
 void GameScene::PreInit()
@@ -135,14 +124,13 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
 	{
-		pos = m_player->GetTransform().pos;
+		//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
 	}
 
 	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 	{
 		m_isTitle = false;
 		//大きめのエコーを出す
-		EchoArray::Instance()->Generate(m_player->GetTransform().pos, 80.0f, Echo::COLOR::WHITE);
 
 	}
 }
@@ -195,7 +183,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				}
 				else
 				{
-					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
+					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 				}
 
 				m_stageManager.Update(arg_rasterize);
@@ -292,41 +280,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//EnemyDebugManager::Instance()->Update();
 		/*FieldAI::Instance()->DebugUpdate();
 		FieldAIDebugManager::Instance()->Update();*/
-
-		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
-		++m_titleLogoExitTimer;
-		if (TITLELOGO_EXIT_TIMER < m_titleLogoExitTimer) {
-
-			m_titleLogoExitEasingTimer = std::clamp(m_titleLogoExitEasingTimer + 0.06f, 0.0f, 1.0f);
-
-			float easingAmount = EasingMaker(In, Back, m_titleLogoExitEasingTimer);
-
-			m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
-			m_titleLogoTransform.pos.y -= easingAmount * 10.0f;
-
-			m_clickToStartTransform = m_titleLogoTransform;
-			m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
-			m_clickToStartTransform.pos.y -= 1.5f;
-
-		}
-
 	}
-	//タイトル画面
 	else
 	{
-
-		//サイン波で動かす。
-		m_titleLogoSineTimer += 0.04f;
-		m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
-
-		m_titleLogoSIneRotationTimer += 0.03f;
-		m_titleLogoTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
-		m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0, 1, 0), sinf(m_titleLogoSIneRotationTimer)* DirectX::XM_PI / 50.0f);
-
-		m_clickToStartTransform = m_titleLogoTransform;
-		m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
-		m_clickToStartTransform.pos.y -= 1.5f;
-
 		static bool isHoge = false;
 		if (!isHoge)
 		{
@@ -335,27 +291,22 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		}
 		m_player->TitleUpdate(m_camera, arg_rasterize, m_stageManager.GetColliders());
 
-		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
+		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 
 	}
-
-	m_inform.Update(pos, m_player->GetTransform());
 }
 
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
+	m_player->Draw(arg_rasterize, arg_blasVec);
 
 	//m_enemyManager->Draw(arg_rasterize, arg_blasVec);
-	
+
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
-
-	m_player->Draw(arg_rasterize, arg_blasVec);
-
-
 	m_menu.Draw(arg_rasterize);
 	if (!m_resultManager.GetResultShow() && !m_menu.GetIsMenuOpen())
 	{
@@ -375,13 +326,11 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
 	
-	//if (m_isTitle)
-	//{
-
-		m_titleLogoModel.m_model.DrawRasterize(arg_rasterize, m_titleLogoTransform);
-		m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
-
-	//}
+	if (m_isTitle)
+	{
+		m_titleTrans.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
+		m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
+	}
 
 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
@@ -396,8 +345,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		m_resultManager.Draw(arg_rasterize);
 	}
-
-	m_inform.Draw(arg_rasterize,arg_blasVec);
 
 	DebugKey::Instance()->DrawImGui();
 }

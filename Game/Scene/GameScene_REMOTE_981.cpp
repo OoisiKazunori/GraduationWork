@@ -87,7 +87,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
-	m_inform.Load(arg_rasterize);
 
 	//タイトルロゴモデルの位置を調整。
 	m_titleLogoTransform.pos = TITLELOGO_POS;
@@ -135,7 +134,7 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
 	{
-		pos = m_player->GetTransform().pos;
+		//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
 	}
 
 	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
@@ -338,24 +337,19 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 
 	}
-
-	m_inform.Update(pos, m_player->GetTransform());
 }
 
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
+	m_player->Draw(arg_rasterize, arg_blasVec);
 
 	//m_enemyManager->Draw(arg_rasterize, arg_blasVec);
-	
+
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
-
-	m_player->Draw(arg_rasterize, arg_blasVec);
-
-
 	m_menu.Draw(arg_rasterize);
 	if (!m_resultManager.GetResultShow() && !m_menu.GetIsMenuOpen())
 	{
@@ -396,8 +390,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		m_resultManager.Draw(arg_rasterize);
 	}
-
-	m_inform.Draw(arg_rasterize,arg_blasVec);
 
 	DebugKey::Instance()->DrawImGui();
 }

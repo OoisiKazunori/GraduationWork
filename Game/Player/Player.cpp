@@ -21,6 +21,7 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_mk23MagModel(arg_rasterize, ModelLoader::Instance()->Load("Resource/Weapon/Mk23/", "Mag.gltf"), DrawFuncData::SetDefferdRenderingModelAnimationAppearByEchoDepthAlways(ModelLoader::Instance()->Load("Resource/Weapon/Mk23/", "Mag.gltf")))
 {
 
+
 	m_playerShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
 	m_playerShotSE.volume = 0.05f;
 
@@ -84,11 +85,7 @@ void Player::TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& a
 	//心音のタイマー
 	m_heatbeatTimer += 1.0f * StopMgr::Instance()->GetGameSpeed();
 	float heartBeatTimer = HEARTBEAT_TIMER;
-	float heartBeatRange = 60.0f;
-	if (m_isFoundToEnemy) {
-		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
-		heartBeatRange = 150.0f;
-	}
+	float heartBeatRange = 20.0f;
 	if (heartBeatTimer <= m_heatbeatTimer) {
 
 		SoundManager::Instance()->SoundPlayerWave(m_heartbeatSE, 0);
@@ -610,15 +607,14 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 	m_onGround = false;
 
 	int counter = 0;
-	const float GROUND_RAY_OFFSET = -5.0f;
 	for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr) {
 
 		//下方向の当たり判定
-		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos + KazMath::Vec3<float>(0, 1, 0) * GROUND_RAY_OFFSET, -KazMath::Vec3<float>(0, 1, 0));
-		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY + GROUND_RAY_OFFSET) {
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos, -KazMath::Vec3<float>(0, 1, 0));
+		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY) {
 
 			//押し戻し。
-			m_transform.pos += rayResult.m_normal * (GROUND_RAY + GROUND_RAY_OFFSET - rayResult.m_distance);
+			m_transform.pos += rayResult.m_normal * (GROUND_RAY - rayResult.m_distance);
 			m_onGround = true;
 
 		}
