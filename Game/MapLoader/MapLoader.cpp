@@ -167,19 +167,19 @@ bool MapManager::GetFileNames(std::string f_folderPath, std::list<std::string>& 
 KazMath::Transform3D MapManager::GetPlayerStartPosition(int f_stageNum)
 {
 	KazMath::Transform3D l_result;
-	auto l_map = MapManager::GetStageData(f_stageNum);
+	//auto l_map = MapManager::GetStageData(f_stageNum);
 
-	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
-	{
-		if (l_mapItr->m_objetName.starts_with("player") == true)
-		{
-			l_result = KazMath::Transform3D({ -l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y, -l_mapItr->m_position.z * 5.0f },
-				{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
-			//ローテーションも後で適応する
-			l_mapItr->m_rotition;
-			break;
-		}
-	}
+	//for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
+	//{
+	//	if (l_mapItr->m_objetName.starts_with("player") == true)
+	//	{
+	//		l_result = KazMath::Transform3D({ -l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y, -l_mapItr->m_position.z * 5.0f },
+	//			{ l_mapItr->m_scale.x, l_mapItr->m_scale.y, l_mapItr->m_scale.z });
+	//		//ローテーションも後で適応する
+	//		l_mapItr->m_rotition;
+	//		break;
+	//	}
+	//}
 
 	return l_result;
 }

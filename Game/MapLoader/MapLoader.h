@@ -48,15 +48,15 @@ public:
 	static void Init();
 
 	//ステージ番号を入れるとトランスフォームのリストが帰ってくる
-	//static std::list<MapObject> GetStageData(int f_stageNum)
-	//{
-	//	std::list<std::list<MapObject>>::iterator l_itr = m_maps.begin();
-	//	for (int i = 0; i < f_stageNum; i++)
-	//	{
-	//		l_itr++;
-	//	}
-	//	return *l_itr;
-	//};
+	static std::list<MapObject> GetStageData(int f_stageNum)
+	{
+		std::list<std::list<MapObject>>::iterator l_itr = m_maps.begin();
+		for (int i = 0; i < f_stageNum; i++)
+		{
+			l_itr++;
+		}
+		return *l_itr;
+	};
 	////最大敵数9最大チェックポイント9
 	//static std::list<EnemyData> GetEnemyData(int f_stageNum)
 	//{
