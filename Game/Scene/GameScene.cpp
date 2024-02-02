@@ -194,7 +194,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				}
 				else
 				{
-					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 				}
 
 				m_stageManager.Update(arg_rasterize);
@@ -334,7 +334,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		}
 		m_player->TitleUpdate(m_camera, arg_rasterize, m_stageManager.GetColliders());
 
-		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 
 	}
 }
