@@ -20,7 +20,8 @@ private:
 public:
 	EnemyManager();
 	~EnemyManager();
-	void Init();
+	void Init(
+		DrawingByRasterize& arg_rasterize);
 	void Update(
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
@@ -32,9 +33,13 @@ public:
 		Raytracing::BlasVector& arg_blasVec);
 
 public:
-	void SetMapData(
-		int arg_stageNum,
-		std::list<EnemyData> arg_mapDatas,
+	void ClearEnemyData() { m_enemys.clear(); }
+
+	void SetModelData(
 		DrawingByRasterize& arg_rasterize);
+
+	void AddEnemyData(
+		int arg_enemyNum,
+		std::list<KazMath::Transform3D> arg_enemyList);
 };
 

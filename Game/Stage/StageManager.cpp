@@ -22,13 +22,13 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize, int f_stageNum)
 void StageManager::Update(DrawingByRasterize& arg_rasterize)
 {
 	//if (m_nowStageNumber != m_nextStageNumber)
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_4))
-	{
-		ChangeScene(arg_rasterize);
-		//ステージの切り替え処理
-		int changeSceneNum = 0;
-		AddMapDatas(arg_rasterize, changeSceneNum);
-	}
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_4))
+	//{
+	//	ChangeScene(arg_rasterize);
+	//	//ステージの切り替え処理
+	//	int changeSceneNum = 0;
+	//	AddMapDatas(arg_rasterize, changeSceneNum);
+	//}
 
 	//ステージの切り替え処理
 	m_stage[m_nowStageNumber]->Update();
@@ -145,19 +145,19 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	{
 		if (l_mapItr->m_objetName.starts_with("Bird1") == true)
 		{
-			m_Bird1 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+			m_Bird1 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",true,
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		else if (l_mapItr->m_objetName.starts_with("Bird2") == true)
 		{
-			m_Bird2 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+			m_Bird2 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", true,
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		else if (l_mapItr->m_objetName.starts_with("Bird3") == true)
 		{
-			m_Bird3 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+			m_Bird3 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", true,
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
@@ -169,13 +169,13 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		}
 		else if (l_mapItr->m_objetName.starts_with("player") == true)
 		{
-			m_player = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+			m_player = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", true,
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		else if (l_mapItr->m_objetName.starts_with("goal") == true)
 		{
-			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
+			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", true,
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
@@ -191,15 +191,15 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			str += l_mapItr->m_objetName.at(length - 2);
 			//エネミー自体の番号
 			int enemyIndex = atoi(str.c_str());
-			m_enemys.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", enemyIndex, roadIndex,
-				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 10.0f, -l_mapItr->m_position.z * 5.0f),
-				l_mapItr->m_rotition, l_mapItr->m_scale, false));
+			m_enemys.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", false, enemyIndex, roadIndex,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 6.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 		else if (l_mapItr->m_objetName.starts_with("Turret") == true)
 		{
 			//タレットのモデルにする？
-			m_turrets.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf",
-				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+			m_turrets.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", false,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 6.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 
@@ -207,9 +207,9 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	//emptyなら入れる
 	if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 0)
 	{
-		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model.gltf",
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model.gltf", true,
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
-		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model_collision.gltf",
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model_collision.gltf", true,
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
 			auto collision = std::make_shared<MeshCollision>();
@@ -219,9 +219,9 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	}
 	else if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 1)
 	{
-		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model2.gltf",
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model2.gltf", true,
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
-		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Corizon2.gltf",
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Corizon2.gltf", true,
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
 			auto collision = std::make_shared<MeshCollision>();
@@ -231,9 +231,9 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	}
 	else if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 2)
 	{
-		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model3.gltf",
+		m_stage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model3.gltf", true,
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
-		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Corizon3.gltf",
+		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Corizon3.gltf", true,
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
 			auto collision = std::make_shared<MeshCollision>();

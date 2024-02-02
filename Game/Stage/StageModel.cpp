@@ -1,7 +1,7 @@
 #include "StageModel.h"
 
-StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName,
-	DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, DirectX::XMFLOAT3 scale, float f_echo, bool f_useOffset) :
+StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool f_useOffset,
+	DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, DirectX::XMFLOAT3 scale, float f_echo) :
 	//ステージに使用する描画情報は右端は必ずフラグを立てるようにする。
 	m_stageModelRender(
 		arg_rasterize,
@@ -36,8 +36,8 @@ StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg
 
 }
 
-StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName,
-						int enemyIndex, int roadIndex, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, DirectX::XMFLOAT3 scale, float f_echo, bool f_useOffset):
+StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool f_useOffset,
+						int enemyIndex, int roadIndex, DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 rot, DirectX::XMFLOAT3 scale, float f_echo):
 	m_stageModelRender(
 		arg_rasterize,
 		ModelLoader::Instance()->Load(arg_fileDir, arg_fileName),

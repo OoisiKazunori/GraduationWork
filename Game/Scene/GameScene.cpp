@@ -25,7 +25,7 @@
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_isGoal) :
 	//DrawFuncHelperでのモデル読み込み
 	m_uiManager(arg_rasterize),
-	m_gadgetMaanager(arg_rasterize),
+	//m_gadgetMaanager(arg_rasterize),
 	m_HPBarManager(arg_rasterize),
 	m_heartRateManager(arg_rasterize),
 	m_menu(arg_rasterize),
@@ -33,7 +33,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_goalPoint(arg_rasterize),
 	m_dangerManager(arg_rasterize),
 	m_titleTex(arg_rasterize, "Resource/Title/TaitleLogo.png", true),
-	m_isClear(false)
+	m_isClear(false),
+	m_turret(arg_rasterize),
+	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
+	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf")
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -89,6 +92,32 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
+	//敵
+	m_enemyManager = std::make_shared<EnemyManager>();
+	for (int i = 0; i < m_stageManager.GetEnemyCount(); ++i)
+	{
+		//0が空
+		m_enemyManager->AddEnemyData(
+			i,
+			m_stageManager.GetEnemyPositions(i + 1));
+	}
+	for (int i = 0; i < m_stageManager.GetTurretCount(); ++i)
+	{
+		std::list<KazMath::Transform3D> l_pos;
+		l_pos.push_back(
+			m_stageManager.GetTurretPosition(i));
+		m_enemyManager->AddEnemyData(
+			i + m_stageManager.GetEnemyCount(),
+			l_pos);
+	}
+	m_enemyManager->SetModelData(arg_rasterize);
+
+	//タイトルロゴモデルの位置を調整。
+	m_titleLogoTransform.pos = TITLELOGO_POS;
+	m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), DirectX::XM_PI / 2.0f);
+	m_titleLogoSineTimer = 0;
+	m_titleLogoSIneRotationTimer = 0;
+	m_titleLogoExitTimer = 0;
 
 	if (f_isGoal)
 	{
@@ -96,6 +125,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 		m_isTitle = false;
 	}
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
+
 }
 
 GameScene::~GameScene()
@@ -104,12 +134,10 @@ GameScene::~GameScene()
 
 void GameScene::Init()
 {
-	//m_enemyManager->Init();
-
 	m_sceneNum = SCENE_NONE;
 	m_bulletMgr->Init();
 	m_uiManager.Init();
-	m_gadgetMaanager.Init();
+	//m_gadgetMaanager.Init();
 	if (m_isToStartPos)
 	{
 		m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
@@ -120,7 +148,8 @@ void GameScene::Init()
 	}
 	FootprintMgr::Instance()->Init();
 	m_debugCameraFlag = false;
-	EchoArray::Instance()->Init();
+	m_titleLogoExitTimer = 0;
+	m_titleLogoExitEasingTimer = 0;
 }
 
 void GameScene::PreInit()
@@ -133,13 +162,18 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_1, "DebugCamera", "DIK_1"))
 	{
 		m_debugCameraFlag = !m_debugCameraFlag;
 	}
-	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
+		p = m_player->GetTransform().pos;
+		m_turret.Init(&p, KazMath::AngleToRadian(40.0f), 120.0f);
+		if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
+		{
+			//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
+		}
 		//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
 	}
 
@@ -147,7 +181,13 @@ void GameScene::Input()
 	{
 		m_isTitle = false;
 		//大きめのエコーを出す
+		EchoArray::Instance()->Generate(m_player->GetTransform().pos, 80.0f, Echo::COLOR::WHITE);
 
+		if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+		{
+			m_isTitle = false;
+			//大きめのエコーを出す
+		}
 	}
 }
 
@@ -165,6 +205,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	{
 		m_HPBarManager.HitDamage(10, 10);
 	}*/
+
+	//int l_num = m_stageManager.GetEnemyCount();
+	//m_stageManager.GetEnemyPositions(1);
 
 	if (!m_isTitle)
 	{
@@ -184,14 +227,14 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			if (m_HPBarManager.GetHP() > 0)
 			{
 				m_uiManager.Update(m_stageManager, m_player->GetTransform());
-				m_gadgetMaanager.Update();
+				//m_gadgetMaanager.Update();
 
 				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
-				/*m_enemyManager->Update(
+				m_enemyManager->Update(
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
 					m_player->GetTransform().pos,
-					m_stageMeshCollision);*/
+					m_stageMeshCollision);
 
 				if (m_debugCameraFlag)
 				{
@@ -199,7 +242,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				}
 				else
 				{
-					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 				}
 
 				m_stageManager.Update(arg_rasterize);
@@ -286,6 +329,122 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			}
 
 		}
+		m_HPBarManager.Update(0);
+		//死んだときの更新
+		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
+		{
+			m_resultManager.ShowResult();
+		}
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
+		{
+			m_dangerManager.Update(true);
+		}
+		else
+		{
+			m_dangerManager.Update(false);
+		}
+
+	}
+	//リザルト出す
+	else if (m_resultManager.GetResultShow())
+	{
+		//メニューが開かれていない時に更新を通す
+		if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
+		{
+			//m_uiManager.Update();
+			//m_gadgetMaanager.Update();
+			//m_HPBarManager.Update(0);
+
+			//m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
+			//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+			//m_bulletMgr->Update(m_stageMeshCollision);
+
+			m_stageManager.Update(arg_rasterize);
+
+			if (m_HPBarManager.GetHP() > 0)
+			{
+				m_uiManager.Update(m_stageManager, m_player->GetTransform());
+				//m_gadgetMaanager.Update();
+
+				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
+				m_enemyManager->Update(
+					m_stageManager.GetColliders(),
+					m_bulletMgr,
+					m_player->GetTransform().pos,
+					m_stageMeshCollision);
+
+				if (m_debugCameraFlag)
+				{
+					m_debuCamera.Update();
+				}
+				else
+				{
+					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
+				}
+
+				m_stageManager.Update(arg_rasterize);
+				m_bulletMgr->Update(m_stageManager.GetColliders());
+
+				static bool flag = false;
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+				{
+					if (flag) flag = false;
+					else flag = true;
+				}
+				if (flag)
+				{
+					m_heartRateManager.Update(60);
+				}
+				else
+				{
+					m_heartRateManager.Update(120);
+				}
+				//nextステージへいくところを踏んだら
+				//プレイヤーとゴールの当たり判定
+				KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
+				KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
+				KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
+				KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
+				if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
+
+					//すべてのステージクリア
+					if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
+					{
+						m_resultManager.ShowResult();
+						m_resultManager.SetClear();
+						StageSelectScene::startStageNum = 0;
+					}
+					else
+					{
+						StageSelectScene::startStageNum += 1;
+						if (StageSelectScene::startStageNum % 2 == 0)
+						{
+							m_sceneNum = 1;
+						}
+						else
+						{
+							m_sceneNum = 3;
+						}
+					}
+					m_isClear = true;
+				}
+			}
+			m_HPBarManager.Update(0);
+			//死んだときの更新
+			if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
+			{
+				m_resultManager.ShowResult();
+			}
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
+			{
+				m_dangerManager.Update(true);
+			}
+			else
+			{
+				m_dangerManager.Update(false);
+			}
+
+		}
 		//リザルト出す
 		else if (m_resultManager.GetResultShow())
 		{
@@ -312,16 +471,52 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 		m_goalPoint.Update();
+		m_turret.Update();
+		FootprintMgr::Instance()->Update();
 
+		m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
+		m_goalPoint.Update();
 
 		FootprintMgr::Instance()->Update();
 
 		//EnemyDebugManager::Instance()->Update();
 		/*FieldAI::Instance()->DebugUpdate();
 		FieldAIDebugManager::Instance()->Update();*/
+
+		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
+		++m_titleLogoExitTimer;
+		if (TITLELOGO_EXIT_TIMER < m_titleLogoExitTimer) {
+
+			m_titleLogoExitEasingTimer = std::clamp(m_titleLogoExitEasingTimer + 0.06f, 0.0f, 1.0f);
+
+			float easingAmount = EasingMaker(In, Back, m_titleLogoExitEasingTimer);
+
+			m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
+			m_titleLogoTransform.pos.y -= easingAmount * 10.0f;
+
+			m_clickToStartTransform = m_titleLogoTransform;
+			m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
+			m_clickToStartTransform.pos.y -= 1.5f;
+
+		}
+
 	}
+	//タイトル画面
 	else
 	{
+
+		//サイン波で動かす。
+		m_titleLogoSineTimer += 0.04f;
+		m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
+
+		m_titleLogoSIneRotationTimer += 0.03f;
+		m_titleLogoTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
+		m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0, 1, 0), sinf(m_titleLogoSIneRotationTimer) * DirectX::XM_PI / 50.0f);
+
+		m_clickToStartTransform = m_titleLogoTransform;
+		m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
+		m_clickToStartTransform.pos.y -= 1.5f;
+
 		static bool isHoge = false;
 		if (!isHoge)
 		{
@@ -330,7 +525,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		}
 		m_player->TitleUpdate(m_camera, arg_rasterize, m_stageManager.GetColliders());
 
-		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+		m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 
 	}
 }
@@ -339,7 +534,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
-	//m_enemyManager->Draw(arg_rasterize, arg_blasVec);
+	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
@@ -367,13 +562,22 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
-
 	if (m_isTitle)
 	{
 		m_titleTrans.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
 		m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
 	}
+	m_turret.Draw(arg_rasterize, arg_blasVec);
+	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
+	//if (m_isTitle)
+	//{
+
+	m_titleLogoModel.m_model.DrawRasterize(arg_rasterize, m_titleLogoTransform);
+	m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
+	//}
+
+	m_goalPoint.Draw(arg_rasterize);
 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
