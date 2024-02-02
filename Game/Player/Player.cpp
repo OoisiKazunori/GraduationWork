@@ -115,7 +115,15 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		Collision(*itr);
 	}*/
 	//当たり判定
-	Collision(f_stageColliders);
+	if (m_isDebug) {
+
+		m_onGround = true;
+
+	}
+	else {
+		Collision(f_stageColliders);
+
+	}
 
 	//重力をかける。
 	if (!m_onGround) {
@@ -204,6 +212,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
 		heartBeatRange = 150.0f;
 	}
+	if (m_isDebug) {
+		heartBeatRange = 1500;
+	}
 	if (heartBeatTimer <= m_heatbeatTimer) {
 
 		SoundManager::Instance()->SoundPlayerWave(m_heartbeatSE, 0);
@@ -277,6 +288,11 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	}
 
+
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_UP)) {
+		m_isDebug = !m_isDebug;
+	}
+
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -318,6 +334,15 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		inputMoveVec += rightVec;
 	}
 	m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
+
+	if (m_isDebug) {
+
+
+		m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
+		m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
+		m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
+
+	}
 
 	//CTRLが押されたらステータスを切り返る。
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LCONTROL)) {
