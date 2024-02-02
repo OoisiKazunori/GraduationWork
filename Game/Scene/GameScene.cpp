@@ -319,14 +319,15 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			{
 				m_resultManager.ShowResult();
 			}
-			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
+			//dangerを出すのをいったん切る
+			/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
 			{
 				m_dangerManager.Update(true);
 			}
 			else
 			{
 				m_dangerManager.Update(false);
-			}
+			}*/
 
 		}
 		m_HPBarManager.Update(0);

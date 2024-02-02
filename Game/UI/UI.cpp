@@ -203,9 +203,19 @@ void WeponUIManager::Reload()
 	}
 	else if (0 < m_haveBulletNum)
 	{
-		m_bulletCount = m_haveBulletNum;
-		m_haveBulletNum = 0;
-		m_isCanShot = true;
+		if (m_magazinSize - m_bulletCount <= m_haveBulletNum)
+		{
+			int hoge = m_magazinSize - m_bulletCount;
+			m_bulletCount += hoge;
+			m_haveBulletNum -= hoge;
+			m_isCanShot = true;
+		}
+		else
+		{
+			m_bulletCount += m_haveBulletNum;
+			m_haveBulletNum = 0;
+			m_isCanShot = true;
+		}
 	}
 	else
 	{
@@ -242,7 +252,7 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 	float lengZ;
 	float leng = 0;
 	float getLeng = 8.0f;
-	bool isIntract  = false;
+	bool isIntract = false;
 	for (; stoneItr != f_stageManager.m_magazin.end(); ++stoneItr)
 	{
 		lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
@@ -311,7 +321,7 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 		GetUI((*itr).first).Update();
 	}
 	easeTimer += 0.1f;
-	
+
 }
 
 void WeponUIManager::EaseInit()
