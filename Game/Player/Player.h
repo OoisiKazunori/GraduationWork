@@ -93,6 +93,8 @@ private:
 	const float FOOTPRINT_SPAN = 1;
 	bool m_footprintSide;
 
+	bool m_isDebug = false;
+
 
 public:
 
@@ -109,6 +111,7 @@ public:
 	KazMath::Transform3D GetTransform() { return m_transform; }
 	void SetPosition(KazMath::Vec3<float> f_pos) { m_transform.pos = f_pos; }
 	bool GetIsADS() { return m_isADS; }
+
 
 private:
 
