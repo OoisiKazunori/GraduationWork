@@ -2,7 +2,7 @@
 #include "../Echo/EchoArray.h"
 
 Footprint::Footprint(DrawingByRasterize& arg_rasterize) :
-	m_model(arg_rasterize, "Resource/Test/", "footprint.gltf")
+	m_model(arg_rasterize, "Resource/Footprint/", "footprint.gltf")
 {
 	Init();
 }
