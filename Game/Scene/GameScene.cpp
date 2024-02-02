@@ -222,6 +222,15 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 			//m_bulletMgr->Update(m_stageMeshCollision);
 
+			m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
+
+			m_stageManager.CheckInEcho(m_stageMeshCollision);
+
+			m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
+			m_goalPoint.Update();
+			m_turret.Update();
+			FootprintMgr::Instance()->Update();
+
 			m_stageManager.Update(arg_rasterize);
 
 			if (m_HPBarManager.GetHP() > 0)
@@ -330,6 +339,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			}*/
 
 		}
+
+		m_menu.Update();
 		m_HPBarManager.Update(0);
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
@@ -484,16 +495,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
 		//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
 
-		m_menu.Update();
 
-		m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
-
-		m_stageManager.CheckInEcho(m_stageMeshCollision);
-
-		m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
-		m_goalPoint.Update();
-		m_turret.Update();
-		FootprintMgr::Instance()->Update();
 
 		/*m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 		m_goalPoint.Update();
