@@ -207,14 +207,12 @@ void Enemy::Update(
 	}
 
 	//‰ñ“]
-	if (m_prevPos.x >= 0.0f)
-	{
-		if (m_trans.pos != m_prevPos) {
-			DirectX::XMVECTOR l_quaternion =
-				CalMoveQuaternion(m_trans.pos, m_prevPos);
-			m_trans.quaternion = l_quaternion;
-		}
+	if (m_trans.pos != m_prevPos) {
+		DirectX::XMVECTOR l_quaternion =
+			CalMoveQuaternion(m_trans.pos, m_prevPos);
+		m_trans.quaternion = l_quaternion;
 	}
+
 
 	//if (m_state == State::Patrol ||
 	//	m_state == State::Warning) {
@@ -410,6 +408,10 @@ DirectX::XMVECTOR Enemy::CalMoveQuaternion(
 	//Y²•ûŒü‚ÌˆÚ“®—Ê‚ğ‘‚«Á‚·B
 	arg_pos.y = 0;
 	arg_prevPos.y = 0;
+
+	if (KazMath::Vec3<float>(arg_pos - arg_prevPos).Length() <= 0.01f) {
+		return m_trans.quaternion;
+	}
 
 	//“®‚¢‚½•ûŒü‚ÉŒX‚¯‚éB
 	KazMath::Vec3<float> moveVec = arg_pos - arg_prevPos;
