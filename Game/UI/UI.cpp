@@ -215,7 +215,7 @@ void WeponUIManager::Reload()
 
 bool WeponUIManager::CanReload()
 {
-	return m_bulletCount < m_magazinSize;
+	return m_bulletCount < m_magazinSize && 0 < m_haveBulletNum;
 }
 
 void WeponUIManager::Init()

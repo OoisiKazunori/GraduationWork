@@ -6,7 +6,8 @@
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/Reaction.h"
 #include"../Game/AI/EnemyAIData.h"
-#include <memory>
+#include"../Game/Effect/InformEnemy.h"
+#include<memory>
 
 class MeshCollision;
 class BulletMgr;
@@ -23,18 +24,13 @@ private:
 	bool m_isCombat;
 
 private:
-	std::list<KazMath::Transform3D> m_positions;
-	const int CHECK_POINT_DELAY = 240;
-	int m_currentPoint = 0;
-	KazMath::Vec3<float> m_moveVec;
-	KazMath::Vec3<float> m_nextPos;
-
+	std::vector<std::pair<float, float>> m_rootPos;
 	std::vector<std::pair<int, int>> m_checkPointDelay;
 	KazMath::Transform3D m_trans;
 	KazMath::Vec3<float> m_prevPos;	//前フレーム座標
-	State m_state, m_oldState;
+	State m_state,m_oldState;
 	int m_delayNum;
-	//int m_count;
+	int m_count;
 	int m_delay;
 	bool m_isCheckPoint;
 	bool m_onGround;
@@ -83,11 +79,13 @@ private:
 
 
 	bool m_isInSightFlag;//視界内に入ったか
+
+	InformEnemy m_inform;
+
 public:
 	Enemy();
 	~Enemy();
-	void Init(
-		std::list<KazMath::Transform3D> arg_enemyList);
+	void Init();
 	void Update(
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
@@ -154,7 +152,7 @@ public:
 
 public:
 	void SetData(
-		DrawingByRasterize& arg_rasterize);
+		DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize);
 	void SetCheckPointDelay(
 		std::vector<std::pair<int, int>> arg_checkPointDelay);
 	void SetState(State arg_state) { m_state = arg_state; }
@@ -162,7 +160,7 @@ public:
 public:
 	void SetRootPos(
 		std::vector<std::pair<float, float>> arg_rootPos) {
-		//m_rootPos = arg_rootPos;
+		m_rootPos = arg_rootPos;
 	}
 	void SetCheckSoundPos(
 		std::vector<std::pair<float, float>> arg_checkSoundPos) {
@@ -179,6 +177,6 @@ public:
 
 
 private:
-	void Move();
-	void CalcMoveVec();
+
+
 };
