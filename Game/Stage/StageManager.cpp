@@ -163,7 +163,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		}
 		else if (l_mapItr->m_objetName.starts_with("bullet"))
 		{
-			m_magazin.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/BulletBox/", "Bullet_Box.gltf",
+			m_magazin.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/BulletBox/", "Bullet_Box.gltf", false,
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}

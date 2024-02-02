@@ -233,49 +233,29 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 {
 	bool isDirty = false;
 
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+
+	auto stoneItr = f_stageManager.m_magazin.begin();
+	auto eraseItr = f_stageManager.m_magazin.begin();
+	bool l_isGet = false;
+	float lengX;
+	float lengY;
+	float lengZ;
+	float leng = 0;
+	float getLeng = 8.0f;
+	bool isIntract  = false;
+	for (; stoneItr != f_stageManager.m_magazin.end(); ++stoneItr)
 	{
-		auto stoneItr = f_stageManager.m_stone.begin();
-		auto eraseItr = f_stageManager.m_stone.begin();
-		bool l_isGet = false;
-		float lengX;
-		float lengY;
-		float lengZ;
-		float leng = 0;
-		float getLeng = 8.0f;
-		for (; stoneItr != f_stageManager.m_stone.end(); ++stoneItr)
+		lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
+		lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
+		lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
+		lengX = (float)pow(lengX, 2);
+		lengY = (float)pow(lengY, 2);
+		lengZ = (float)pow(lengZ, 2);
+		leng = sqrtf(lengX + lengY + lengZ);
+		if (leng < getLeng)
 		{
-			lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
-			lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
-			lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
-			lengX = (float)pow(lengX, 2);
-			lengY = (float)pow(lengY, 2);
-			lengZ = (float)pow(lengZ, 2);
-			leng = sqrtf(lengX + lengY + lengZ);
-			if (leng < getLeng)
-			{
-				GetStone(5);
-				eraseItr = stoneItr;
-				l_isGet = true;
-			}
-		}
-		if (l_isGet)
-		{
-			f_stageManager.m_stone.erase(eraseItr);
-			l_isGet = false;
-		}
-		stoneItr = f_stageManager.m_magazin.begin();
-		eraseItr = f_stageManager.m_magazin.begin();
-		for (; stoneItr != f_stageManager.m_magazin.end(); ++stoneItr)
-		{
-			lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
-			lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
-			lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
-			lengX = (float)pow(lengX, 2);
-			lengY = (float)pow(lengY, 2);
-			lengZ = (float)pow(lengZ, 2);
-			leng = sqrtf(lengX + lengY + lengZ);
-			if (leng < getLeng)
+			IntractUI::isIntract = true;
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 			{
 				//‚±‚±‚¾‚¯“ü‚ê‘Ö‚¦‚é
 				GetMagazin(5);
@@ -322,22 +302,16 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 
 		}
 	}
-	//‚Ä‚·‚Æ
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F8))
-	{
-		AddWepon(WeponNumber::e_Hundgun);
-		isDirty = true;
-	}
 	if (isDirty)
 	{
 		EaseInit();
 	}
-
 	for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 	{
 		GetUI((*itr).first).Update();
 	}
 	easeTimer += 0.1f;
+	
 }
 
 void WeponUIManager::EaseInit()
@@ -1050,7 +1024,7 @@ void DangerUIManager::Draw(DrawingByRasterize& arg_rasterize)
 
 bool IntractUI::isIntract = false;
 
-IntractUI::IntractUI(DrawingByRasterize& arg_rasterize):
+IntractUI::IntractUI(DrawingByRasterize& arg_rasterize) :
 	_fKeyTex(arg_rasterize, "Resource/UITexture/F.png")
 {
 }
