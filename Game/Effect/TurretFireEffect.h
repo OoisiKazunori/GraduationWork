@@ -12,9 +12,11 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 
+	void Stop();
+
 private:
 	//弾丸の線
-	std::array<BulletFireParticle, 50>m_fireEffectArray;
+	std::array<BulletFireParticle, 200>m_fireEffectArray;
 	//マズルフラッシュ
 	std::array<MuzzleFlash, 10>m_muzzleFlashArray;
 
@@ -24,5 +26,7 @@ private:
 
 	KazMath::Timer m_shotTimer;
 	bool m_isActiveFlag;
+
+	bool m_stopFlag;
 };
 

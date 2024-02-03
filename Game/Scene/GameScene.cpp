@@ -175,16 +175,11 @@ void GameScene::Input()
 	{
 		p = m_player->GetTransform().pos;
 		m_turret.Init(&p, KazMath::AngleToRadian(40.0f), 120.0f);
-		if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
-		{
-			//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
-		}
-		//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
-
-		//pos = m_player->GetTransform().pos;
-
 	}
-
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_3, "rota", "DIK_3"))
+	{
+		m_turret.Stop();
+	}
 	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 	{
 		m_isTitle = false;
