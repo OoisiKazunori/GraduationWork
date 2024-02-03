@@ -33,3 +33,11 @@ private:
 	const int SeenTime = 300;
 };
 
+
+class MagazinModel : public StageModel
+{
+public:
+	using StageModel::StageModel;
+
+	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
+};
