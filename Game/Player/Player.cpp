@@ -13,6 +13,7 @@
 #include "../Footprint/FootprintMgr.h"
 #include "../Effect/StopMgr.h"
 #include "../KazLibrary/Easing/easing.h"
+#include "../KazLibrary/Debug/DebugKey.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
@@ -244,7 +245,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 
 
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_I)) {
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_I, "Hakken", "I")) {
 		m_isFoundToEnemy = !m_isFoundToEnemy;
 		StopMgr::Instance()->HitStopStart({ 120, 0.1f });
 	}
@@ -288,8 +289,8 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	}
 
-
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_UP)) {
+	
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_UP, "PlayerDebugMode", "UPKey")) {
 		m_isDebug = !m_isDebug;
 	}
 
@@ -344,20 +345,20 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 
 	}
 
-	//CTRLが押されたらステータスを切り返る。
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LCONTROL)) {
-		switch (m_playerAttitude)
-		{
-		case Player::PlayerAttitude::STAND:
-			m_playerAttitude = PlayerAttitude::SQUAT;
-			break;
-		case Player::PlayerAttitude::SQUAT:
-			m_playerAttitude = PlayerAttitude::STAND;
-			break;
-		default:
-			break;
-		}
-	}
+	////CTRLが押されたらステータスを切り返る。
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LCONTROL)) {
+	//	switch (m_playerAttitude)
+	//	{
+	//	case Player::PlayerAttitude::STAND:
+	//		m_playerAttitude = PlayerAttitude::SQUAT;
+	//		break;
+	//	case Player::PlayerAttitude::SQUAT:
+	//		m_playerAttitude = PlayerAttitude::STAND;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
 
 	//右クリックされている間はADS状態にする。
 	bool isOldADS = m_isADS;

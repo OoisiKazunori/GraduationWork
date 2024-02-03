@@ -114,7 +114,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 #ifdef _DEBUG
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_9)) {
-		//	isWindowClip = !isWindowClip;
+			isWindowClip = !isWindowClip;
 		}
 		if (isWindowClip)
 		{
