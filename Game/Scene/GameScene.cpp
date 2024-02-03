@@ -37,7 +37,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_turret(arg_rasterize),
 	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
 	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf"),
-	m_intractUI(arg_rasterize)
+	m_intractUI(arg_rasterize),
+	m_todo(arg_rasterize)
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -188,6 +189,7 @@ void GameScene::Input()
 	{
 		m_isTitle = false;
 		Menu::InitGetFileIndex();
+		m_todo.Init();
 		//大きめのエコーを出す
 		EchoArray::Instance()->Generate(m_player->GetTransform().pos, 80.0f, Echo::COLOR::WHITE);
 
@@ -510,6 +512,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			FieldAIDebugManager::Instance()->Update();*/
 
 		}
+
+		m_todo.Update();
 	}
 
 	//タイトル画面
@@ -541,6 +545,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	}
 
 	m_inform.Update(pos, m_player->GetTransform());
+	//m_todo.Update();
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
 }
@@ -571,6 +576,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 			m_dangerManager.Draw(arg_rasterize);
 			m_intractUI.Draw(arg_rasterize);
 			m_goalPoint.Draw(arg_rasterize);
+			m_todo.Draw(arg_rasterize);
 		}
 	}
 

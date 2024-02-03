@@ -101,6 +101,7 @@ private:
 	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
 	HeartRate m_heartRateManager;
 	Menu m_menu;
+	ToDoUI m_todo;
 
 	CheckPoint m_goalPoint;
 	bool m_isClear;

@@ -331,17 +331,23 @@ class ToDoUI
 public:
 	enum class ToDoList
 	{
+		None = -1,
 		LookFile,
 		ToThirdFloor,
 		ToHome,
 		ToDoMax,
 	};
+	const int BaseX = 1180;
+	const int BaseY = 230;
 
 	static ToDoList _nowTask;
-
-
+	static ToDoList _oldTask;
+	static ToDoList _oldDrawTask;
+	std::array<UI2DElement, (int)ToDoList::ToDoMax> m_toDoTex;
+	UI2DElement _todo;
+	ToDoUI(DrawingByRasterize& arg_rasterize);
 	//É^ÉCÉgÉãÇÃÇ∆Ç±Ç≈èâä˙âªÇµÇΩÇ¢
 	void Init();
 	void Update();
-	void Draw();
+	void Draw(DrawingByRasterize& arg_rasterize);
 };

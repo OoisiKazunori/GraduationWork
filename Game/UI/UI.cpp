@@ -1069,19 +1069,70 @@ void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
 }
 
 ToDoUI::ToDoList ToDoUI::_nowTask = ToDoList::LookFile;
-
+ToDoUI::ToDoList ToDoUI::_oldTask = ToDoList::None;
+ToDoUI::ToDoList ToDoUI::_oldDrawTask = ToDoList::None;
+ToDoUI::ToDoUI(DrawingByRasterize& arg_rasterize) :
+	m_toDoTex{
+		UI2DElement(arg_rasterize, "Resource/UITexture/ToDo_Text1.png"),
+		UI2DElement(arg_rasterize, "Resource/UITexture/ToDo_Text2.png"),
+		UI2DElement(arg_rasterize, "Resource/UITexture/ToDo_Text3.png"),
+	},
+	_todo(arg_rasterize, "Resource/UITexture/ToDo.png")
+{
+	for (int i = 0; i < (int)ToDoList::ToDoMax; i++)
+	{
+		m_toDoTex[i].SetPosition({ 1500.0f, (float)BaseY });
+		//m_toDoTex[i].EasePosInit({ 1500.0f, (float)BaseY }, { (float)BaseX, (float)BaseY }, 0.1f);
+	}
+	_oldTask = ToDoList::None;
+}
 
 void ToDoUI::Init()
 {
-
+	_nowTask = ToDoList::LookFile;
+	_oldTask = ToDoList::None;
 }
 
 void ToDoUI::Update()
 {
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_7))
+	{
+		int task = (int)_nowTask;
+		task++;
+		if (task >= (int)ToDoList::ToDoMax)
+		{
+			task = 0;
+		}
+		_nowTask = (ToDoList)task;
+	}
+	if (true)//タイトルでない時的なフラグを入れる
+	{
 
+	}
+	if (_nowTask != _oldTask)
+	{
+		if (_oldTask != ToDoList::None)
+		{
+			m_toDoTex[(int)_oldTask].SetPosition({ (float)BaseX, (float)BaseY });
+			m_toDoTex[(int)_oldTask].EasePosInit({ (float)BaseX, (float)BaseY }, { 1500.0f, (float)BaseY }, 0.1f);
+		}
+		m_toDoTex[(int)_nowTask].SetPosition({ 1500.0f, (float)BaseY });
+		m_toDoTex[(int)_nowTask].EasePosInit({ 1500.0f, (float)BaseY }, { (float)BaseX, (float)BaseY }, 0.1f);
+		_oldDrawTask = _oldTask;
+	}
+	if (_oldDrawTask != ToDoList::None)
+	{
+		m_toDoTex[(int)_oldDrawTask].Update();
+	}
+	m_toDoTex[(int)_nowTask].Update();
+	_oldTask = _nowTask;
 }
 
-void ToDoUI::Draw()
+void ToDoUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-
+	for (int i = 0; i < (int)ToDoList::ToDoMax; i++)
+	{
+		m_toDoTex[i].Draw(arg_rasterize);
+	}
+	_todo.m_2DSprite.m_tex.Draw2D(arg_rasterize, { {(float)BaseX, (float)BaseY - 55}, {1.0f, 1.0f} });
 }
