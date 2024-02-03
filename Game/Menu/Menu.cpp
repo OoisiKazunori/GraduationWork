@@ -182,10 +182,10 @@ void Menu::Draw(DrawingByRasterize& arg_rasterize)
 				{
 					_fileMenus[i].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
 				}
-				/*else
+				else
 				{
 					_doNotHaveFileMenus[i].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
-				}*/
+				}
 				if (_selectFileIndex == i)
 				{
 					m_selectBack.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
@@ -338,10 +338,10 @@ Menu::Menu(DrawingByRasterize& arg_rasterize) :
 		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name4.png")
 	},
 	_doNotHaveFileMenus{
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png")
+		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png")
 	},
 	_files{
 		MenuElement(arg_rasterize, "Resource/MenuTex/File1.png"),
