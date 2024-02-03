@@ -18,6 +18,9 @@ class Enemy
 private:
 	std::shared_ptr<
 		BasicDraw::BasicModelRender> m_enemyBox;
+	std::shared_ptr<
+		BasicDraw::BasicModelRender> m_pedestal;
+
 	std::shared_ptr<MeshCollision> m_meshCol;
 
 	BasicDraw::BasicLineRender m_line;
@@ -30,6 +33,7 @@ private:
 	int m_currentPoint = 0;
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;
+	float m_rotRate = 0.0f;
 
 	std::vector<std::pair<int, int>> m_checkPointDelay;
 	KazMath::Transform3D m_trans;

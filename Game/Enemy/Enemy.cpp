@@ -40,13 +40,33 @@ Enemy::~Enemy()
 void Enemy::SetData(
 	DrawingByRasterize& arg_rasterize)
 {
-	//モデルデータ代入
-	m_enemyBox =
-		std::make_unique<BasicDraw::BasicModelRender>(
-			arg_rasterize,
-			"Resource/Enemy/",
-			"Turret.gltf"
-		);
+	if (m_positions.size() > 1)
+	{
+		//モデルデータ代入
+		m_enemyBox =
+			std::make_unique<BasicDraw::BasicModelRender>(
+				arg_rasterize,
+				"Resource/Enemy/",
+				"Move_Turret.gltf"
+			);
+	}
+	else
+	{
+		//モデルデータ代入
+		m_enemyBox =
+			std::make_unique<BasicDraw::BasicModelRender>(
+				arg_rasterize,
+				"Resource/Enemy/",
+				"Gun.gltf"
+			);
+
+		m_pedestal =
+			std::make_unique<BasicDraw::BasicModelRender>(
+				arg_rasterize,
+				"Resource/Enemy/",
+				"Pedestal.gltf"
+			);
+	}
 
 	m_meshCol = std::make_shared<MeshCollision>();
 	m_meshCol->Setting(
@@ -134,6 +154,15 @@ void Enemy::Update(
 		CheckEye(arg_playerPos, arg_stageColliders))
 	{
 		m_checkEyeDelay--;
+		m_isInSightFlag = true;
+
+		//プレイヤー方向
+		/*KazMath::Vec3<float> l_pPos =
+			(arg_playerPos * m_rotRate) +
+			(m_trans.pos * (1.0f - m_rotRate));
+		m_trans.quaternion =
+			CalMoveQuaternion(l_pPos, m_trans.pos);
+		m_rotRate += 0.01f;*/
 
 		//一定時間範囲内だったら
 		if (m_checkEyeDelay <= 0)
@@ -147,12 +176,12 @@ void Enemy::Update(
 				m_state = State::Combat;
 			}
 		}
-		m_isInSightFlag = true;
 	}
 	else
 	{
 		m_isInSightFlag = false;
 		m_checkEyeDelay = MAX_EYE_DELAY;
+		m_rotRate = 0.0f;
 
 		if (m_positions.size() == 1) {
 			float l_rad =
@@ -226,11 +255,6 @@ void Enemy::Update(
 			m_trans.quaternion = l_quaternion;
 		}
 	}
-
-	//if (m_state == State::Patrol ||
-	//	m_state == State::Warning) {
-	//	//RotateEye();
-	//}
 
 	//重力(仮)
 	if (!m_onGround) {
@@ -339,12 +363,19 @@ void Enemy::Draw(
 
 	if (m_state != State::Death)
 	{
-		KazMath::Color l_player = { 172, 50, 50, 255 };
-
 		m_enemyBox->m_model.DrawRasterize(
 			arg_rasterize,
-			m_trans,
-			l_player);
+			m_trans);
+	}
+	if (m_positions.size() == 1)
+	{
+		KazMath::Transform3D l_trans;
+		l_trans.scale = m_trans.scale;
+		l_trans.pos = m_trans.pos;
+
+		m_pedestal->m_model.DrawRasterize(
+			arg_rasterize,
+			l_trans);
 	}
 }
 
