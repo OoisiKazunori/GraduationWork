@@ -294,8 +294,13 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					//インタラクト入れるなら入れる
 					if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 					{
-						m_isToStartPos = true;
-						m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
+						m_intractUI.isIntract = true;
+						if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+						{
+							m_isToStartPos = true;
+							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
+							m_todo.NextTask();
+						}
 					}
 					else
 					{
@@ -510,8 +515,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		}
 
-		//nextステージへいくところを踏んだら
-		//プレイヤーとゴールの当たり判定
+		//クリップとの当たり判定
 		KazMath::Vec3<float> clipPos;
 		KazMath::Vec3<float> goalScale = { 3.0f, 0.7f, 7.0f };
 		KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
@@ -528,6 +532,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_stageManager.m_clip1.reset();
 					//とった処理ここに入れる
 					Menu::GetFile(0);
+					m_todo.NextTask();
 				}
 			}
 		}

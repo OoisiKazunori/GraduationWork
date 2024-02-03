@@ -350,4 +350,5 @@ public:
 	void Init();
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
+	void NextTask();
 };

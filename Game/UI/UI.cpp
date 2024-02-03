@@ -1095,16 +1095,7 @@ void ToDoUI::Init()
 
 void ToDoUI::Update()
 {
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_7))
-	{
-		int task = (int)_nowTask;
-		task++;
-		if (task >= (int)ToDoList::ToDoMax)
-		{
-			task = 0;
-		}
-		_nowTask = (ToDoList)task;
-	}
+	
 	if (true)//タイトルでない時的なフラグを入れる
 	{
 
@@ -1126,6 +1117,17 @@ void ToDoUI::Update()
 	}
 	m_toDoTex[(int)_nowTask].Update();
 	_oldTask = _nowTask;
+}
+
+void ToDoUI::NextTask()
+{
+	int task = (int)_nowTask;
+	task++;
+	/*if (task >= (int)ToDoList::ToDoMax)
+	{
+		task = 0;
+	}*/
+	_nowTask = (ToDoList)task;
 }
 
 void ToDoUI::Draw(DrawingByRasterize& arg_rasterize)
