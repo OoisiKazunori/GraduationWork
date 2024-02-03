@@ -363,9 +363,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_dangerManager.Update(false);
 		}
 
-
-
-
 		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
 		++m_titleLogoExitTimer;
 		if (TITLELOGO_EXIT_TIMER < m_titleLogoExitTimer) {
@@ -513,6 +510,68 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		}
 
+		//nextステージへいくところを踏んだら
+		//プレイヤーとゴールの当たり判定
+		KazMath::Vec3<float> clipPos;
+		KazMath::Vec3<float> goalScale = { 3.0f, 0.7f, 7.0f };
+		KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
+		KazMath::Vec3<float> playerGoalDistane;
+		if (m_stageManager.m_clip1)
+		{
+			clipPos = m_stageManager.m_clip1->m_transform.pos;
+			playerGoalDistane = clipPos - playerPos;
+			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			{
+				IntractUI::isIntract = true;
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				{
+					m_stageManager.m_clip1.reset();
+					//とった処理ここに入れる
+				}
+			}
+		}
+		if (m_stageManager.m_clip2)
+		{
+			clipPos = m_stageManager.m_clip2->m_transform.pos;
+			playerGoalDistane = clipPos - playerPos;
+			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			{
+				IntractUI::isIntract = true;
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				{
+					m_stageManager.m_clip2.reset();
+					//とった処理ここに入れる
+				}
+			}
+		}
+		if (m_stageManager.m_clip3)
+		{
+			clipPos = m_stageManager.m_clip3->m_transform.pos;
+			playerGoalDistane = clipPos - playerPos;
+			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			{
+				IntractUI::isIntract = true;
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				{
+					m_stageManager.m_clip3.reset();
+					//とった処理ここに入れる
+				}
+			}
+		}
+		if (m_stageManager.m_clip4)
+		{
+			clipPos = m_stageManager.m_clip4->m_transform.pos;
+			playerGoalDistane = clipPos - playerPos;
+			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			{
+				IntractUI::isIntract = true;
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				{
+					m_stageManager.m_clip4.reset();
+					//とった処理ここに入れる
+				}
+			}
+		}
 		m_todo.Update();
 	}
 
