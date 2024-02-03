@@ -191,6 +191,7 @@ void SceneManager::Update()
 	if (sceneNum != SCENE_NONE)
 	{
 		m_nextSceneNumber = sceneNum;
+		m_nowSceneNumber = -1;
 	}
 	if (Menu::IsSceneChange())
 	{

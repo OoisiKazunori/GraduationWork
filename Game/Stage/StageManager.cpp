@@ -149,6 +149,10 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	m_turrets.clear();
 	m_magazin.clear();
 
+	m_clip1.reset();
+	m_clip2.reset();
+	m_clip3.reset();
+
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
 	{
@@ -185,7 +189,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		else if (l_mapItr->m_objetName.starts_with("goal") == true)
 		{
 			m_goal = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", true,
-				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 0.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		else if (l_mapItr->m_objetName.starts_with("Enemy") == true)
@@ -201,14 +205,14 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			//エネミー自体の番号
 			int enemyIndex = atoi(str.c_str());
 			m_enemys.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", false, enemyIndex, roadIndex,
-				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 6.0f, -l_mapItr->m_position.z * 5.0f),
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 5.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 		else if (l_mapItr->m_objetName.starts_with("Turret") == true)
 		{
 			//タレットのモデルにする？
 			m_turrets.push_back(std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", false,
-				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 6.0f, -l_mapItr->m_position.z * 5.0f),
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 5.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 

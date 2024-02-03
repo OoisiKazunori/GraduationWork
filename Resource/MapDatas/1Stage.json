@@ -30,7 +30,7 @@
             "transform": {
                 "translation": [
                     40.0,
-                    20.0,
+                    5.0,
                     -68.0
                 ],
                 "rotation": [
@@ -404,7 +404,7 @@
             "transform": {
                 "translation": [
                     37.779998779296875,
-                    20.0,
+                    7.0,
                     24.770000457763672
                 ],
                 "rotation": [
