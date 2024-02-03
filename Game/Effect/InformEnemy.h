@@ -6,15 +6,16 @@ class InformEnemy
 {
 public:
 	InformEnemy();
-	void Load(DrawingByRasterize& arg_rasterize);
-	void Update(const KazMath::Vec3<float>& arg_pos, KazMath::Transform3D& arg_playerPos);
-	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
+	void Load(DrawingByRasterize &arg_rasterize);
+	void Update(const KazMath::Vec3<float> &arg_pos, KazMath::Transform3D &arg_playerPos);
+	void Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blas);
 
 private:
 	KazMath::Transform2D m_transform;
 	BasicDraw::BasicTextureRender m_circle;
 
 	KazMath::Transform2D m_screen;
+	KazMath::Transform2D m_larpSreen;
 	BasicDraw::BasicTextureRender m_screenTex;
 	bool m_activeFlag;
 
@@ -28,7 +29,7 @@ private:
 	BasicDraw::BasicTextureRender m_interBoxTex;
 
 
-	std::vector<KazMath::Vec2<float>> getCrossPoints(const KazMath::Vec2<float>& arg_startPos, const KazMath::Vec2<float>& arg_endPos, const KazMath::Vec2<float>& arg_circlePos, float arg_radius)
+	std::vector<KazMath::Vec2<float>> GetCrossPoints(const KazMath::Vec2<float> &arg_startPos, const KazMath::Vec2<float> &arg_endPos, const KazMath::Vec2<float> &arg_circlePos, float arg_radius, float *arg_radian)
 	{
 		//ax + by + c = 0 ÇÃíËêîçÄ
 		float a = arg_endPos.y - arg_startPos.y;
@@ -77,6 +78,7 @@ private:
 			//åì_ÇÃç¿ïWÇãÅÇﬂÇÈ
 			result.emplace_back(arg_radius * cos(alpha) + arg_circlePos.x, arg_radius * sin(alpha) + arg_circlePos.y);
 			result.emplace_back(arg_radius * cos(beta) + arg_circlePos.x, arg_radius * sin(beta) + arg_circlePos.y);
+			*arg_radian = beta;
 			return result;
 		}
 	};
