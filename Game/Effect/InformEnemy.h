@@ -21,9 +21,12 @@ private:
 
 	float m_cross;
 	float m_radian;
+	float m_lerpRadian;
 	float m_offset;
 	float m_angle;
 	bool m_crossFlag, m_prevCrossFlag;
+	bool m_radianFlag, m_prevRadianFlag;
+	float m_angleOffset;
 	KazMath::Vec3<float>m_playerPos, m_enemyPos, m_playerFrontVec;
 	KazMath::Transform2D m_interBox, m_interBox2;
 	BasicDraw::BasicTextureRender m_interBoxTex;
