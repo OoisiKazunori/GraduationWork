@@ -372,7 +372,7 @@ void Enemy::WriteFootprint()
 
 	//地面に移動。
 	KazMath::Transform3D footprintTransform = m_trans;
-	footprintTransform.pos.y = -49.0f;
+	footprintTransform.pos.y += 0.5f;
 
 	//移動した方向から回転を計算する。上ベクトルは一旦固定。
 	KazMath::Vec3<float> axisX = KazMath::Vec3<float>(KazMath::Vec3<float>(m_trans.pos.x, 0.0f, m_trans.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).GetNormal();
