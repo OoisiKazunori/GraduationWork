@@ -187,6 +187,7 @@ void GameScene::Input()
 	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 	{
 		m_isTitle = false;
+		Menu::InitGetFileIndex();
 		//大きめのエコーを出す
 		EchoArray::Instance()->Generate(m_player->GetTransform().pos, 80.0f, Echo::COLOR::WHITE);
 
@@ -301,14 +302,14 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 						m_isClear = true;
 					}
 				}
-				else if (m_isToStartPos && (l_nowStageNum == 1 || l_nowStageNum == 2))
+				else if (m_isToStartPos)
 				{
 					//スタートのポジション
 					goalPos = m_stageManager.m_player->m_transform.pos;
 					playerGoalDistane = goalPos - playerPos;
 					if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 					{
-						if (StageSelectScene::GetStartStageNum() == 0)
+						if (StageSelectScene::startStageNum == 0)
 						{
 							/*m_isToStartPos = true;
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);*/
@@ -320,6 +321,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 						{
 							StageSelectScene::startStageNum -= 1;
 							m_sceneNum = 3;
+							m_isClear = true;
 						}
 					}
 				}
@@ -327,10 +329,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			}
 			m_HPBarManager.Update(0);
 			//死んだときの更新
-			if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
+			/*if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
 			{
 				m_resultManager.ShowResult();
-			}
+			}*/
 			//dangerを出すのをいったん切る
 			/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
 			{
@@ -378,138 +380,138 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_clickToStartTransform.pos.y -= 1.5f;
 
 		}
-
-	}
-	//リザルト出す
-	else if (m_resultManager.GetResultShow())
-	{
-		//メニューが開かれていない時に更新を通す
-		if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
+		//リザルト出す
+		if (m_resultManager.GetResultShow())
 		{
-			//m_uiManager.Update();
-			//m_gadgetMaanager.Update();
-			//m_HPBarManager.Update(0);
-
-			//m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
-			//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-			//m_bulletMgr->Update(m_stageMeshCollision);
-
-			m_stageManager.Update(arg_rasterize);
-
-			if (m_HPBarManager.GetHP() > 0)
+			//メニューが開かれていない時に更新を通す
+			if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 			{
-				m_uiManager.Update(m_stageManager, m_player->GetTransform());
+				//m_uiManager.Update();
 				//m_gadgetMaanager.Update();
+				//m_HPBarManager.Update(0);
 
-				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
-				m_enemyManager->Update(
-					m_stageManager.GetColliders(),
-					m_bulletMgr,
-					m_player->GetTransform().pos,
-					m_stageMeshCollision);
-
-				if (m_debugCameraFlag)
-				{
-					m_debuCamera.Update();
-				}
-				else
-				{
-					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
-				}
+				//m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
+				//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
+				//m_bulletMgr->Update(m_stageMeshCollision);
 
 				m_stageManager.Update(arg_rasterize);
-				m_bulletMgr->Update(m_stageManager.GetColliders());
 
-				static bool flag = false;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+				if (m_HPBarManager.GetHP() > 0)
 				{
-					if (flag) flag = false;
-					else flag = true;
-				}
-				if (flag)
-				{
-					m_heartRateManager.Update(60);
-				}
-				else
-				{
-					m_heartRateManager.Update(120);
-				}
-				//nextステージへいくところを踏んだら
-				//プレイヤーとゴールの当たり判定
-				KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
-				KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
-				KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
-				KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
-				if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
+					m_uiManager.Update(m_stageManager, m_player->GetTransform());
+					//m_gadgetMaanager.Update();
 
-					//すべてのステージクリア
-					if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
+					m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
+					m_enemyManager->Update(
+						m_stageManager.GetColliders(),
+						m_bulletMgr,
+						m_player->GetTransform().pos,
+						m_stageMeshCollision);
+
+					if (m_debugCameraFlag)
 					{
-						m_resultManager.ShowResult();
-						m_resultManager.SetClear();
-						StageSelectScene::startStageNum = 0;
+						m_debuCamera.Update();
 					}
 					else
 					{
-						StageSelectScene::startStageNum += 1;
-						if (StageSelectScene::startStageNum % 2 == 0)
+						m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
+					}
+
+					m_stageManager.Update(arg_rasterize);
+					m_bulletMgr->Update(m_stageManager.GetColliders());
+
+					/*static bool flag = false;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+					{
+						if (flag) flag = false;
+						else flag = true;
+					}
+					if (flag)
+					{
+						m_heartRateManager.Update(60);
+					}
+					else
+					{
+						m_heartRateManager.Update(120);
+					}*/
+					//nextステージへいくところを踏んだら
+					//プレイヤーとゴールの当たり判定
+					KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
+					KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
+					KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
+					KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
+					if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
+
+						//すべてのステージクリア
+						if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
 						{
-							m_sceneNum = 1;
+							m_resultManager.ShowResult();
+							m_resultManager.SetClear();
+							StageSelectScene::startStageNum = 0;
 						}
 						else
 						{
-							m_sceneNum = 3;
+							StageSelectScene::startStageNum += 1;
+							if (StageSelectScene::startStageNum % 2 == 0)
+							{
+								m_sceneNum = 1;
+							}
+							else
+							{
+								m_sceneNum = 3;
+							}
 						}
+						m_isClear = true;
 					}
-					m_isClear = true;
+				}
+				m_HPBarManager.Update(0);
+				//死んだときの更新
+				/*if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
+				{
+					m_resultManager.ShowResult();
+				}*/
+				/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
+				{
+					m_dangerManager.Update(true);
+				}*/
+				/*else
+				{
+					m_dangerManager.Update(false);
+				}*/
+
+			}
+			//リザルト出す
+			else if (m_resultManager.GetResultShow())
+			{
+				m_resultManager.Update();
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+				{
+					//タイトルに戻る
+					//m_sceneNum = 0;
+					m_sceneNum = 1;
+					StageSelectScene::startStageNum = 0;
 				}
 			}
-			m_HPBarManager.Update(0);
-			//死んだときの更新
-			if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
-			{
-				m_resultManager.ShowResult();
-			}
-			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
-			{
-				m_dangerManager.Update(true);
-			}
-			else
-			{
-				m_dangerManager.Update(false);
-			}
+
+			//auto hogehoge = MapManager::GetEnemyData(m_stageNum);
+
+			//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
+			//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
+
+
+
+			/*m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
+			m_goalPoint.Update();
+
+			FootprintMgr::Instance()->Update();*/
+
+			//EnemyDebugManager::Instance()->Update();
+			/*FieldAI::Instance()->DebugUpdate();
+			FieldAIDebugManager::Instance()->Update();*/
 
 		}
-		//リザルト出す
-		else if (m_resultManager.GetResultShow())
-		{
-			m_resultManager.Update();
-			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
-			{
-				//タイトルに戻る
-				//m_sceneNum = 0;
-				m_sceneNum = 1;
-				StageSelectScene::startStageNum = 0;
-			}
-		}
-
-		//auto hogehoge = MapManager::GetEnemyData(m_stageNum);
-
-		//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
-		//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
-
-
-
-		/*m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
-		m_goalPoint.Update();
-
-		FootprintMgr::Instance()->Update();*/
-
-		//EnemyDebugManager::Instance()->Update();
-		/*FieldAI::Instance()->DebugUpdate();
-		FieldAIDebugManager::Instance()->Update();*/
-
 	}
+
 	//タイトル画面
 	else
 	{
@@ -568,9 +570,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 			//m_heartRateManager.Draw(arg_rasterize);
 			m_dangerManager.Draw(arg_rasterize);
 			m_intractUI.Draw(arg_rasterize);
+			m_goalPoint.Draw(arg_rasterize);
 		}
-
-		m_goalPoint.Draw(arg_rasterize);
 	}
 
 
@@ -606,7 +607,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_resultManager.Draw(arg_rasterize);
 	}
 
-	m_inform.Draw(arg_rasterize,arg_blasVec);
+	m_inform.Draw(arg_rasterize, arg_blasVec);
 
 	DebugKey::Instance()->DrawImGui();
 }

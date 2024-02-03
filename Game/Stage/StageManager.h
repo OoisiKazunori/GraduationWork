@@ -32,8 +32,6 @@ private:
 
 	std::list<std::unique_ptr<StageModel>> m_plane;
 
-
-
 	std::list<std::shared_ptr<MeshCollision>> m_collisions[3];
 	//その他木等の外部オブジェクトモデル--------------------------------
 
@@ -54,6 +52,9 @@ public:
 
 	std::list<std::unique_ptr<StageModel>> m_stone;
 	std::list<std::unique_ptr<MagazinModel>> m_magazin;
+	std::unique_ptr<MagazinModel> m_clip1;
+	std::unique_ptr<MagazinModel> m_clip2;
+	std::unique_ptr<MagazinModel> m_clip3;
 
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions[m_nowStageNumber]; };
 	std::unique_ptr<StageModel> m_stage[3];

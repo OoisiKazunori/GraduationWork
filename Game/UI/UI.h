@@ -325,3 +325,23 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize);
 };
+
+class ToDoUI
+{
+public:
+	enum class ToDoList
+	{
+		LookFile,
+		ToThirdFloor,
+		ToHome,
+		ToDoMax,
+	};
+
+	static ToDoList _nowTask;
+
+
+	//ƒ^ƒCƒgƒ‹‚Ì‚Æ‚±‚Å‰Šú‰»‚µ‚½‚¢
+	void Init();
+	void Update();
+	void Draw();
+};

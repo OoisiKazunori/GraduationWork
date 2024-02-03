@@ -7,6 +7,9 @@ bool Menu::isGameEnd = false;
 SceneName Menu::m_SceneName;
 bool Menu::isSceneChange = false;
 bool Menu::isSceneChangeTrigger = false;
+bool Menu::isLookFileList;
+bool Menu::isLookFile;
+std::array<bool, Menu::C_FileCount> Menu::_getFileIndex = { true, true, true, true };
 
 void Menu::Init()
 {
@@ -26,7 +29,20 @@ void Menu::Update()
 		//メニュー閉じる
 		else
 		{
-			MenuClose();
+			//一気にメニューが閉じないようなシステム
+			if (!isLookFileList && !isLookFile)
+			{
+				MenuClose();
+			}
+			else if (isLookFileList && !isLookFile)
+			{
+				isLookFileList = false;
+				isLookFile = false;
+			}
+			else if (isLookFile)
+			{
+				isLookFile = false;
+			}
 		}
 	}
 	//開くアニメーション中
@@ -46,48 +62,86 @@ void Menu::Update()
 		{
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
 			{
-				int nowNum = static_cast<int>(nowSelectMenu);
-				nowNum += 1;
-				if (nowNum >= static_cast<int>(MenuOptions::OptionsMax))
+				if (!isLookFileList && !isLookFile)
 				{
-					nowNum = 0;
+					int nowNum = static_cast<int>(nowSelectMenu);
+					nowNum += 1;
+					if (nowNum >= static_cast<int>(MenuOptions::OptionsMax))
+					{
+						nowNum = 0;
+					}
+					nowSelectMenu = static_cast<MenuOptions>(nowNum);
+					m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
 				}
-				nowSelectMenu = static_cast<MenuOptions>(nowNum);
-				m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum)});
+				else if (isLookFileList && !isLookFile)
+				{
+					_selectFileIndex++;
+					if (_selectFileIndex >= C_FileCount)
+					{
+						_selectFileIndex = 0;
+					}
+				}
 			}
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
 			{
-				int nowNum = static_cast<int>(nowSelectMenu);
-				nowNum -= 1;
-				if (nowNum < 0)
+				if (!isLookFileList && !isLookFile)
 				{
-					nowNum = (int)MenuOptions::OptionsMax - 1;
+					int nowNum = static_cast<int>(nowSelectMenu);
+					nowNum -= 1;
+					if (nowNum < 0)
+					{
+						nowNum = (int)MenuOptions::OptionsMax - 1;
+					}
+					nowSelectMenu = static_cast<MenuOptions>(nowNum);
+					m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
 				}
-				nowSelectMenu = static_cast<MenuOptions>(nowNum);
-				m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
+				else if (isLookFileList && !isLookFile)
+				{
+					_selectFileIndex--;
+					if (_selectFileIndex < 0)
+					{
+						_selectFileIndex = C_FileCount - 1;
+					}
+				}
 			}
 
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 			{
-				if (nowSelectMenu == MenuOptions::Return)
+				if (!isLookFileList)
 				{
-					MenuClose();
+					if (nowSelectMenu == MenuOptions::Return)
+					{
+						MenuClose();
+					}
+					else if (nowSelectMenu == MenuOptions::Totitle)
+					{
+						isSceneChangeTrigger = true;
+						SetSceneName(SceneName::SCENE_TUTORIAL);
+						StageSelectScene::startStageNum = 0;
+						isSceneChange = true;
+						m_isMenuOpen = false;
+					}
+					else if (nowSelectMenu == MenuOptions::File)
+					{
+						//ファイルをMenuを見せる処理
+						ShowFilesInit();
+					}
+					else if (nowSelectMenu == MenuOptions::ToEnd)
+					{
+						isGameEnd = true;
+					}
 				}
-				else if (nowSelectMenu == MenuOptions::Totitle)
+				else if (isLookFileList && !isLookFile)
 				{
-					isSceneChangeTrigger = true;
-					SetSceneName(SceneName::SCENE_TUTORIAL);
-					StageSelectScene::startStageNum = 0;
-					isSceneChange = true;
-					m_isMenuOpen = false;
-				}
-				else if (nowSelectMenu == MenuOptions::File)
-				{
-					//ファイルをMenuを見せる処理
-				}
-				else if (nowSelectMenu == MenuOptions::ToEnd)
-				{
-					isGameEnd = true;
+					if (_getFileIndex[_selectFileIndex])
+					{
+						isLookFile = true;
+					}
+					else
+					{
+						//開けない時
+						//SEでもならすか
+					}
 				}
 			}
 		}
@@ -102,19 +156,49 @@ void Menu::Update()
 void Menu::Draw(DrawingByRasterize& arg_rasterize)
 {
 	if (!m_isMenuOpen) return;
-
-	returnStrTex.Draw(arg_rasterize);
-	fileStrTex.Draw(arg_rasterize);
-	toTitleStrTex.Draw(arg_rasterize);
-	toEndStrTex.Draw(arg_rasterize);
-
-	m_selectBack.Draw(arg_rasterize);
-
-	for (auto itr = m_nonSelectBack.begin(); itr != m_nonSelectBack.end(); ++itr)
+	if (!isLookFileList && !isLookFile)
 	{
-		itr->Draw(arg_rasterize);
-	}
+		returnStrTex.Draw(arg_rasterize);
+		fileStrTex.Draw(arg_rasterize);
+		toTitleStrTex.Draw(arg_rasterize);
+		toEndStrTex.Draw(arg_rasterize);
 
+		m_selectBack.Draw(arg_rasterize);
+
+		for (auto itr = m_nonSelectBack.begin(); itr != m_nonSelectBack.end(); ++itr)
+		{
+			itr->Draw(arg_rasterize);
+		}
+	}
+	else
+	{
+		if (!isLookFile)
+		{
+			//ファイルリストを魅せる処理
+			for (int i = 0; i < C_FileCount; i++)
+			{
+				KazMath::Transform2D l_trans = { {(float)C_MenuBaseX ,(float)C_MenuBaseY + (C_MenuDistanceY * i)}, {1.0f, 1.0f} };
+				/*if (_getFileIndex[i])
+				{
+					_fileMenus[i].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+				}
+				else
+				{
+					_doNotHaveFileMenus[i].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+				}*/
+				if (_selectFileIndex == i)
+				{
+					m_selectBack.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+				}
+				m_nonSelectBack[i].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+			}
+		}
+		else
+		{
+			KazMath::Transform2D l_trans = { {1280.0f / 2.0f ,720.0f / 2.0f}, {1.0f, 1.0f} };
+			_files[_selectFileIndex].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+		}
+	}
 	m_MenuBackTex.Draw(arg_rasterize);
 }
 
@@ -170,7 +254,7 @@ void Menu::MenuInit()
 	float l_easeSpeed = 0.08f;
 	for (int i = 0; i < static_cast<int>(MenuOptions::OptionsMax); i++)
 	{
-		m_nonSelectBack[i].EasePosInit({1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i}, {(float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, (-diray * (float)i));
+		m_nonSelectBack[i].EasePosInit({ 1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, { (float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)i }, (-diray * (float)i));
 		m_nonSelectBack[i].SetEasePosAddTime(l_easeSpeed);
 	}
 	m_selectBack.EasePosInit({ 1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)nowSelectMenu }, { (float)C_MenuBaseX,(float)C_MenuBaseY }, (-diray * (float)nowSelectMenu));
@@ -215,7 +299,26 @@ void Menu::MenuClose()
 	toEndStrTex.EasePosInit({ (float)C_MenuBaseX, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, { 1280.0f + 500.0f,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, (-diray * (float)l_lineCount));
 }
 
-Menu::Menu(DrawingByRasterize& arg_rasterize):
+void Menu::ShowFilesInit()
+{
+	isLookFileList = true;
+	isLookFile = false;
+	_selectFileIndex = 0;
+}
+
+void Menu::ShowFilesDraw()
+{
+}
+
+void Menu::InitGetFileIndex()
+{
+	for (int i = 0; i < C_FileCount; i++)
+	{
+		//_getFileIndex[i] = false;
+	}
+}
+
+Menu::Menu(DrawingByRasterize& arg_rasterize) :
 	m_MenuBackTex(arg_rasterize, "Resource/MenuTex/MenuBackTex.png"),
 	m_selectBack(arg_rasterize, "Resource/MenuTex/MenuSelectBack.png"),
 	m_nonSelectBack{
@@ -227,14 +330,32 @@ Menu::Menu(DrawingByRasterize& arg_rasterize):
 	returnStrTex(arg_rasterize, "Resource/MenuTex/MenuReturn.png"),
 	fileStrTex(arg_rasterize, "Resource/MenuTex/File.png"),
 	toTitleStrTex(arg_rasterize, "Resource/MenuTex/MenuTitle.png"),
-	toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuEnd.png")
+	toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuEnd.png"),
+	_fileMenus{
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png")
+	},
+	_doNotHaveFileMenus{
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png")
+	},
+	_files{
+		MenuElement(arg_rasterize, "Resource/MenuTex/File1.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File2.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File3.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File4.png")
+	}
 {
-	m_MenuBackTex.SetPosition({1280.0f / 2.0f, 720.0f / 2.0f});
+	m_MenuBackTex.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
 	for (int i = 0; i < (int)MenuOptions::OptionsMax; i++)
 	{
 		m_nonSelectBack[i].SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + ((float)C_MenuDistanceY * (float)i) });
 	}
-	m_selectBack.SetPosition({(float)C_MenuBaseX, (float)C_MenuBaseY});
+	m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY });
 
 	returnStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
 	fileStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
