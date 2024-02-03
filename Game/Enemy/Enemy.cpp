@@ -149,6 +149,14 @@ void Enemy::Update(
 	{
 		m_isInSightFlag = false;
 		m_checkEyeDelay = MAX_EYE_DELAY;
+
+		if (m_positions.size() == 1) {
+			float l_rad =
+				DirectX::XMConvertToRadians(2.0f);
+			m_trans.Rotation(
+				KazMath::Vec3<float>(0, 1, 0),
+				l_rad);
+		}
 	}
 
 	//„‰ñ
@@ -207,12 +215,13 @@ void Enemy::Update(
 	}
 
 	//‰ñ“]
-	if (m_trans.pos != m_prevPos) {
-		DirectX::XMVECTOR l_quaternion =
-			CalMoveQuaternion(m_trans.pos, m_prevPos);
-		m_trans.quaternion = l_quaternion;
+	if (m_positions.size() > 1) {
+		if (m_trans.pos != m_prevPos) {
+			DirectX::XMVECTOR l_quaternion =
+				CalMoveQuaternion(m_trans.pos, m_prevPos);
+			m_trans.quaternion = l_quaternion;
+		}
 	}
-
 
 	//if (m_state == State::Patrol ||
 	//	m_state == State::Warning) {
