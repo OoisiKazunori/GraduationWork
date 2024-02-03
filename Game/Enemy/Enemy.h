@@ -1,14 +1,14 @@
 #pragma once
-#include"../KazLibrary/Render/BasicDraw.h"
+#include <memory>
 #include "PatrolData.h"
 #include "../Echo/EchoArray.h"
+#include "../Game/UI/Reaction.h"
+#include "../Game/AI/EnemyAIData.h"
+#include "../Game/Effect/InformEnemy.h"
+#include "../Game/Effect/TurretFireEffect.h"
 #include "../Game/Collision/MeshCollision.h"
-#include"../KazLibrary/Sound/SoundManager.h"
-#include"../Game/UI/Reaction.h"
-#include"../Game/AI/EnemyAIData.h"
-#include <memory>
-#include"../Game/Effect/InformEnemy.h"
-#include<memory>
+#include "../KazLibrary/Render/BasicDraw.h"
+#include "../KazLibrary/Sound/SoundManager.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -28,13 +28,16 @@ private:
 	bool m_isCombat;
 
 private:
+	//新規
 	std::list<KazMath::Transform3D> m_positions;
 	const int CHECK_POINT_DELAY = 240;
 	int m_currentPoint = 0;
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;
 	float m_rotRate = 0.0f;
+	std::shared_ptr<TurretFireEffect> m_gunEffect;
 
+	//過去
 	std::vector<std::pair<int, int>> m_checkPointDelay;
 	KazMath::Transform3D m_trans;
 	KazMath::Vec3<float> m_prevPos;	//前フレーム座標

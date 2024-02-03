@@ -1,8 +1,7 @@
 #include "Enemy.h"
 #include "EnemyConfig.h"
-#include "../Game/Bullet/BulletMgr.h"
 #include "../Footprint/FootprintMgr.h"
-#include "../Game/Effect/TurretFireEffect.h"
+#include "../Game/Bullet/BulletMgr.h"
 
 Enemy::Enemy()
 {
@@ -81,6 +80,9 @@ void Enemy::SetData(
 	m_appearTimer = 0;
 
 	m_inform.Load(arg_rasterize);
+
+	m_gunEffect =
+		std::make_shared<TurretFireEffect>(arg_rasterize);
 }
 
 void Enemy::Init(
@@ -169,6 +171,11 @@ void Enemy::Update(
 		{
 			m_rate = MAX_RATE;
 			m_checkEyeDelay = MAX_EYE_DELAY;
+			m_gunEffect->Init(
+				&m_trans.pos,
+				0,
+				static_cast<float>(MAX_RATE));
+
 			//”­Œ©Žž
 			if (m_state != State::Combat)
 			{
@@ -219,10 +226,13 @@ void Enemy::Update(
 	else if (m_state == State::Combat)
 	{
 		//Ž‹ü”ÍˆÍ“à‚È‚çŒü‚«‚È‚ª‚çŽËŒ‚
-		if (CheckEye(arg_playerPos, arg_stageColliders))
+		if (CheckDistXZ(
+			l_pPos, EnemyConfig::eyeCheckDist) &&
+			CheckEye(arg_playerPos, arg_stageColliders))
 		{
 			//ƒvƒŒƒCƒ„[•ûŒü
-			m_trans.quaternion = CalMoveQuaternion(arg_playerPos, m_trans.pos);
+			m_trans.quaternion =
+				CalMoveQuaternion(arg_playerPos, m_trans.pos);
 
 			//ŽËŒ‚
 			++m_shotDelay;
@@ -346,6 +356,7 @@ void Enemy::Update(
 	m_trans.GetFront();
 	//m_inform.Update(m_trans.pos, arg_playerPos);
 
+	m_gunEffect->Update();
 }
 
 void Enemy::Draw(
@@ -377,6 +388,8 @@ void Enemy::Draw(
 			arg_rasterize,
 			l_trans);
 	}
+
+	m_gunEffect->Draw(arg_rasterize, arg_blasVec);
 }
 
 void Enemy::CalcMoveVec()
