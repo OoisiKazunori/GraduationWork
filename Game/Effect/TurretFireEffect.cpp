@@ -30,6 +30,7 @@ void TurretFireEffect::Init(const KazMath::Vec3<float>* arg_pos, float arg_radia
 	}
 	m_shotTimer.Reset(arg_shotTimer);
 	m_isActiveFlag = true;
+	m_stopFlag = false;
 }
 
 void TurretFireEffect::Update()
@@ -39,10 +40,9 @@ void TurretFireEffect::Update()
 		return;
 	}
 
-
 	for (auto& obj : m_fireEffectArray)
 	{
-		if (!obj.IsActive())
+		if (!obj.IsActive() && !m_stopFlag)
 		{
 			obj.Init(*m_emittPos, KazMath::AngleToRadian(m_radian));
 			break;
@@ -80,6 +80,13 @@ void TurretFireEffect::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 	{
 		obj.Draw(arg_rasterize, arg_blas);
 	}
+	if (!m_stopFlag)
+	{
+		m_muzzleFlashArray[m_emittTimer].Draw(arg_rasterize, arg_blas);
+	}
+}
 
-	m_muzzleFlashArray[m_emittTimer].Draw(arg_rasterize, arg_blas);
+void TurretFireEffect::Stop()
+{
+	m_stopFlag = true;
 }
