@@ -533,6 +533,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					//とった処理ここに入れる
 					Menu::GetFile(0);
 					m_todo.NextTask();
+					Menu::firstLookFile = true;
+					Menu::firstLookFileIndex = 0;
 				}
 			}
 		}
@@ -548,6 +550,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_stageManager.m_clip2.reset();
 					//とった処理ここに入れる
 					Menu::GetFile(1);
+					Menu::firstLookFile = true;
+					Menu::firstLookFileIndex = 1;
 				}
 			}
 		}
@@ -563,6 +567,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_stageManager.m_clip3.reset();
 					//とった処理ここに入れる
 					Menu::GetFile(2);
+					Menu::firstLookFile = true;
+					Menu::firstLookFileIndex = 2;
 				}
 			}
 		}
@@ -578,6 +584,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_stageManager.m_clip4.reset();
 					//とった処理ここに入れる
 					Menu::GetFile(3);
+					Menu::firstLookFile = true;
+					Menu::firstLookFileIndex = 3;
 				}
 			}
 		}

@@ -11,150 +11,187 @@ bool Menu::isLookFileList;
 bool Menu::isLookFile;
 std::array<bool, Menu::C_FileCount> Menu::_getFileIndex = { false, false, false, false };
 
+bool Menu::firstLookFile = false;
+int Menu::firstLookFileIndex = -1;
+
 void Menu::Init()
 {
-
+	
 }
 
 void Menu::Update()
 {
-	//メニューのOnOff
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
+	//ファイルを初めて開いたとき
+	if (firstLookFile)
 	{
-		//メニューを開き始める
-		if (!m_isMenuOpen)
+		m_isMenuOpen = true;
+		if (firstLookFileIndex < 0)
 		{
-			MenuInit();
+			//
 		}
-		//メニュー閉じる
 		else
 		{
-			//一気にメニューが閉じないようなシステム
-			if (!isLookFileList && !isLookFile)
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE) || KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 			{
-				MenuClose();
-			}
-			else if (isLookFileList && !isLookFile)
-			{
-				isLookFileList = false;
-				isLookFile = false;
-			}
-			else if (isLookFile)
-			{
-				isLookFile = false;
+				firstLookFile = false;
+				m_isMenuOpen = false;
 			}
 		}
-	}
-	//開くアニメーション中
-	if (m_isNowOpen)
-	{
-		UpdateOpen();
-	}
-	//閉じるアニメーション中
-	else if (m_isNowClose)
-	{
-		UpdateClose();
 	}
 	else
 	{
-		//キーの入力に応じて更新する
-		if (m_isMenuOpen)
+		//メニューのOnOff
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
 		{
-			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
+			//メニューを開き始める
+			if (!m_isMenuOpen)
 			{
+				MenuInit();
+			}
+			//メニュー閉じる
+			else
+			{
+				//一気にメニューが閉じないようなシステム
 				if (!isLookFileList && !isLookFile)
 				{
-					int nowNum = static_cast<int>(nowSelectMenu);
-					nowNum += 1;
-					if (nowNum >= static_cast<int>(MenuOptions::OptionsMax))
-					{
-						nowNum = 0;
-					}
-					nowSelectMenu = static_cast<MenuOptions>(nowNum);
-					m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
+					MenuClose();
 				}
 				else if (isLookFileList && !isLookFile)
 				{
-					_selectFileIndex++;
-					if (_selectFileIndex >= C_FileCount)
-					{
-						_selectFileIndex = 0;
-					}
+					isLookFileList = false;
+					isLookFile = false;
 				}
-			}
-			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
-			{
-				if (!isLookFileList && !isLookFile)
+				else if (isLookFile)
 				{
-					int nowNum = static_cast<int>(nowSelectMenu);
-					nowNum -= 1;
-					if (nowNum < 0)
-					{
-						nowNum = (int)MenuOptions::OptionsMax - 1;
-					}
-					nowSelectMenu = static_cast<MenuOptions>(nowNum);
-					m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
-				}
-				else if (isLookFileList && !isLookFile)
-				{
-					_selectFileIndex--;
-					if (_selectFileIndex < 0)
-					{
-						_selectFileIndex = C_FileCount - 1;
-					}
-				}
-			}
-
-			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
-			{
-				if (!isLookFileList)
-				{
-					if (nowSelectMenu == MenuOptions::Return)
-					{
-						MenuClose();
-					}
-					else if (nowSelectMenu == MenuOptions::Totitle)
-					{
-						isSceneChangeTrigger = true;
-						SetSceneName(SceneName::SCENE_TUTORIAL);
-						StageSelectScene::startStageNum = 0;
-						isSceneChange = true;
-						m_isMenuOpen = false;
-					}
-					else if (nowSelectMenu == MenuOptions::File)
-					{
-						//ファイルをMenuを見せる処理
-						ShowFilesInit();
-					}
-					else if (nowSelectMenu == MenuOptions::ToEnd)
-					{
-						isGameEnd = true;
-					}
-				}
-				else if (isLookFileList && !isLookFile)
-				{
-					if (_getFileIndex[_selectFileIndex])
-					{
-						isLookFile = true;
-					}
-					else
-					{
-						//開けない時
-						//SEでもならすか
-					}
+					isLookFile = false;
 				}
 			}
 		}
+		//開くアニメーション中
+		if (m_isNowOpen)
+		{
+			UpdateOpen();
+		}
+		//閉じるアニメーション中
+		else if (m_isNowClose)
+		{
+			UpdateClose();
+		}
 		else
 		{
-			//メニュー開いてない
-			return;
+			//キーの入力に応じて更新する
+			if (m_isMenuOpen)
+			{
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_S) || KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN))
+				{
+					if (!isLookFileList && !isLookFile)
+					{
+						int nowNum = static_cast<int>(nowSelectMenu);
+						nowNum += 1;
+						if (nowNum >= static_cast<int>(MenuOptions::OptionsMax))
+						{
+							nowNum = 0;
+						}
+						nowSelectMenu = static_cast<MenuOptions>(nowNum);
+						m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
+					}
+					else if (isLookFileList && !isLookFile)
+					{
+						_selectFileIndex++;
+						if (_selectFileIndex >= C_FileCount)
+						{
+							_selectFileIndex = 0;
+						}
+					}
+				}
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
+				{
+					if (!isLookFileList && !isLookFile)
+					{
+						int nowNum = static_cast<int>(nowSelectMenu);
+						nowNum -= 1;
+						if (nowNum < 0)
+						{
+							nowNum = (int)MenuOptions::OptionsMax - 1;
+						}
+						nowSelectMenu = static_cast<MenuOptions>(nowNum);
+						m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
+					}
+					else if (isLookFileList && !isLookFile)
+					{
+						_selectFileIndex--;
+						if (_selectFileIndex < 0)
+						{
+							_selectFileIndex = C_FileCount - 1;
+						}
+					}
+				}
+
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+				{
+					if (!isLookFileList)
+					{
+						if (nowSelectMenu == MenuOptions::Return)
+						{
+							MenuClose();
+						}
+						else if (nowSelectMenu == MenuOptions::Totitle)
+						{
+							isSceneChangeTrigger = true;
+							SetSceneName(SceneName::SCENE_TUTORIAL);
+							StageSelectScene::startStageNum = 0;
+							isSceneChange = true;
+							m_isMenuOpen = false;
+						}
+						else if (nowSelectMenu == MenuOptions::File)
+						{
+							//ファイルをMenuを見せる処理
+							ShowFilesInit();
+						}
+						else if (nowSelectMenu == MenuOptions::ToEnd)
+						{
+							isGameEnd = true;
+						}
+					}
+					else if (isLookFileList && !isLookFile)
+					{
+						if (_getFileIndex[_selectFileIndex])
+						{
+							isLookFile = true;
+						}
+						else
+						{
+							//開けない時
+							//SEでもならすか
+						}
+					}
+				}
+			}
+			else
+			{
+				//メニュー開いてない
+				return;
+			}
 		}
 	}
 }
 
 void Menu::Draw(DrawingByRasterize& arg_rasterize)
 {
+	if (firstLookFile)
+	{
+		if (firstLookFileIndex < 0)
+		{
+			//
+		}
+		else
+		{
+			KazMath::Transform2D l_trans = { {1280.0f / 2.0f ,720.0f / 2.0f}, {1.0f, 1.0f} };
+			_files[firstLookFileIndex].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
+		}
+		m_MenuBackTex.Draw(arg_rasterize);
+		return;
+	}
 	if (!m_isMenuOpen) return;
 	if (!isLookFileList && !isLookFile)
 	{
@@ -326,29 +363,29 @@ Menu::Menu(DrawingByRasterize& arg_rasterize) :
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png")
-	},
-	returnStrTex(arg_rasterize, "Resource/MenuTex/MenuReturn.png"),
-	fileStrTex(arg_rasterize, "Resource/MenuTex/File.png"),
-	toTitleStrTex(arg_rasterize, "Resource/MenuTex/MenuTitle.png"),
-	toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuEnd.png"),
-	_fileMenus{
-		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name1.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name2.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name3.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name4.png")
-	},
-	_doNotHaveFileMenus{
-		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png")
-	},
-	_files{
-		MenuElement(arg_rasterize, "Resource/MenuTex/File1.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File2.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File3.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/File4.png")
-	}
+},
+returnStrTex(arg_rasterize, "Resource/MenuTex/MenuReturn.png"),
+fileStrTex(arg_rasterize, "Resource/MenuTex/File.png"),
+toTitleStrTex(arg_rasterize, "Resource/MenuTex/MenuTitle.png"),
+toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuEnd.png"),
+_fileMenus{
+	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name1.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name2.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name3.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name4.png")
+},
+_doNotHaveFileMenus{
+	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name5.png")
+},
+_files{
+	MenuElement(arg_rasterize, "Resource/MenuTex/File1.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File2.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File3.png"),
+	MenuElement(arg_rasterize, "Resource/MenuTex/File4.png")
+}
 {
 	m_MenuBackTex.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
 	for (int i = 0; i < (int)MenuOptions::OptionsMax; i++)
@@ -365,6 +402,6 @@ Menu::Menu(DrawingByRasterize& arg_rasterize) :
 
 void Menu::GetFile(int f_index)
 {
-	if (f_index <= -1 || f_index >=_getFileIndex.size()) return;
+	if (f_index <= -1 || f_index >= _getFileIndex.size()) return;
 	_getFileIndex[f_index] = true;
 }

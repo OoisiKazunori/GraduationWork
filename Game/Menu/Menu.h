@@ -67,6 +67,7 @@ class Menu
 	//ファイルを選択して見てるとき
 	static bool isLookFile;
 
+
 	//ファイルを持っているか
 	static std::array<bool, C_FileCount> _getFileIndex;
 	//ファイルを選択するときの見出し文字
@@ -80,6 +81,8 @@ class Menu
 	void ShowFilesDraw();
 
 public:
+	static bool firstLookFile;
+	static int firstLookFileIndex;
 	//持ってるファイルを初期化する
 	//タイトルのとこで初期化しようかな
 	static void InitGetFileIndex();
