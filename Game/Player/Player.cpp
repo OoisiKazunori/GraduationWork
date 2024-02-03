@@ -102,14 +102,16 @@ void Player::TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& a
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI)
+void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle)
 {
 
 	//“®‚©‚·‘O‚ÌÀ•WB
 	m_prevPos = m_transform.pos;
 
 	//“ü—Íˆ—
-	Input(arg_camera, arg_bulletMgr, arg_weaponNumber, arg_throwableObjectController);
+	if (!arg_isTitle) {
+		Input(arg_camera, arg_bulletMgr, arg_weaponNumber, arg_throwableObjectController);
+	}
 
 	/*for (auto itr = f_stageColliders.begin(); itr != f_stageColliders.end(); ++itr)
 	{

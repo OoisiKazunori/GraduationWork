@@ -181,7 +181,7 @@ void GameScene::Input()
 	{
 		m_turret.Stop();
 	}
-	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+	if (m_isTitle && KeyBoradInputManager::Instance()->MouseInputTrigger(MouseInputNumber::MOUSE_INPUT_LEFT))
 	{
 		m_isTitle = false;
 		Menu::InitGetFileIndex();
@@ -240,7 +240,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 				//m_gadgetMaanager.Update();
 
-				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
+				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager, m_isTitle);
 				m_enemyManager->Update(
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
@@ -403,7 +403,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_uiManager.Update(m_stageManager, m_player->GetTransform());
 					//m_gadgetMaanager.Update();
 
-					m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
+					m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager, m_isTitle);
 					m_enemyManager->Update(
 						m_stageManager.GetColliders(),
 						m_bulletMgr,
