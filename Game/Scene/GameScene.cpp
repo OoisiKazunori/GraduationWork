@@ -61,7 +61,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	MapManager::Init();
 	int stageNumber = 0;
 	m_stageManager.Init(arg_rasterize, f_mapNumber);
-
+	if (f_mapNumber == 0 && !f_isGoal)
+	{
+		Menu::InitGetFileIndex();
+	}
 
 	if (f_mapNumber == 0)
 	{

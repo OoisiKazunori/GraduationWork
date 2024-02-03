@@ -2,6 +2,7 @@
 #include"Input/KeyBoradInputManager.h"
 #include "../MapLoader/MapLoader.h"
 #include "../Echo/EchoArray.h"
+#include "../Menu/Menu.h"
 
 int StageNumCounter::stageNumCount = 0;
 
@@ -96,19 +97,47 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 
 	if (m_clip1)
 	{
-		m_clip1->Draw(arg_rasterize, arg_blasVec);
+		if (!Menu::GetNowGetFiles()[0])
+		{
+			m_clip1->Draw(arg_rasterize, arg_blasVec);
+		}
+		else
+		{
+			m_clip1.reset();
+		}
 	}
 	if (m_clip2)
 	{
-		m_clip2->Draw(arg_rasterize, arg_blasVec);
+		if (!Menu::GetNowGetFiles()[1])
+		{
+			m_clip2->Draw(arg_rasterize, arg_blasVec);
+		}
+		else
+		{
+			m_clip2.reset();
+		}
 	}
 	if (m_clip3)
 	{
-		m_clip3->Draw(arg_rasterize, arg_blasVec);
+		if (!Menu::GetNowGetFiles()[2])
+		{
+			m_clip3->Draw(arg_rasterize, arg_blasVec);
+		}
+		else
+		{
+			m_clip3.reset();
+		}
 	}
 	if (m_clip4)
 	{
-		m_clip4->Draw(arg_rasterize, arg_blasVec);
+		if (!Menu::GetNowGetFiles()[3])
+		{
+			m_clip4->Draw(arg_rasterize, arg_blasVec);
+		}
+		else
+		{
+			m_clip4.reset();
+		}
 	}
 	//m_goal->Draw(arg_rasterize, arg_blasVec);
 	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)

@@ -9,7 +9,7 @@ bool Menu::isSceneChange = false;
 bool Menu::isSceneChangeTrigger = false;
 bool Menu::isLookFileList;
 bool Menu::isLookFile;
-std::array<bool, Menu::C_FileCount> Menu::_getFileIndex = { true, true, true, true };
+std::array<bool, Menu::C_FileCount> Menu::_getFileIndex = { false, false, false, false };
 
 void Menu::Init()
 {
@@ -178,11 +178,11 @@ void Menu::Draw(DrawingByRasterize& arg_rasterize)
 			for (int i = 0; i < C_FileCount; i++)
 			{
 				KazMath::Transform2D l_trans = { {(float)C_MenuBaseX ,(float)C_MenuBaseY + (C_MenuDistanceY * i)}, {1.0f, 1.0f} };
-				/*if (_getFileIndex[i])
+				if (_getFileIndex[i])
 				{
 					_fileMenus[i].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
 				}
-				else
+				/*else
 				{
 					_doNotHaveFileMenus[i].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
 				}*/
@@ -332,10 +332,10 @@ Menu::Menu(DrawingByRasterize& arg_rasterize) :
 	toTitleStrTex(arg_rasterize, "Resource/MenuTex/MenuTitle.png"),
 	toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuEnd.png"),
 	_fileMenus{
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png")
+		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name1.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name2.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name3.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File_Name4.png")
 	},
 	_doNotHaveFileMenus{
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
