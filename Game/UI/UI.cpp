@@ -1069,3 +1069,19 @@ void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
 }
 
 ToDoUI::ToDoList ToDoUI::_nowTask = ToDoList::LookFile;
+
+
+void ToDoUI::Init()
+{
+
+}
+
+void ToDoUI::Update()
+{
+
+}
+
+void ToDoUI::Draw()
+{
+
+}

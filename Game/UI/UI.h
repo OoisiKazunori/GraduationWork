@@ -338,6 +338,8 @@ public:
 	};
 
 	static ToDoList _nowTask;
+
+
 	//ƒ^ƒCƒgƒ‹‚Ì‚Æ‚±‚Å‰Šú‰»‚µ‚½‚¢
 	void Init();
 	void Update();

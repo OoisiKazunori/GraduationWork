@@ -9,7 +9,7 @@ bool Menu::isSceneChange = false;
 bool Menu::isSceneChangeTrigger = false;
 bool Menu::isLookFileList;
 bool Menu::isLookFile;
-std::array<bool, Menu::C_FileCount> Menu::_getFileIndex = { true, true, false, false };
+std::array<bool, Menu::C_FileCount> Menu::_getFileIndex = { true, true, true, true };
 
 void Menu::Init()
 {
@@ -346,8 +346,8 @@ Menu::Menu(DrawingByRasterize& arg_rasterize) :
 	_files{
 		MenuElement(arg_rasterize, "Resource/MenuTex/File1.png"),
 		MenuElement(arg_rasterize, "Resource/MenuTex/File2.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
-		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png")
+		MenuElement(arg_rasterize, "Resource/MenuTex/File3.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/File4.png")
 	}
 {
 	m_MenuBackTex.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
