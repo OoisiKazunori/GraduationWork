@@ -96,7 +96,7 @@ private:
 	HPUI m_HPBarManager;
 	ResultUI m_resultManager;
 	DangerUIManager m_dangerManager;
-
+	IntractUI m_intractUI;
 
 	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
 	HeartRate m_heartRateManager;

@@ -273,11 +273,11 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 				l_isGet = true;
 			}
 		}
-		if (l_isGet)
-		{
-			f_stageManager.m_magazin.erase(eraseItr);
-			l_isGet = false;
-		}
+	}
+	if (l_isGet)
+	{
+		f_stageManager.m_magazin.erase(eraseItr);
+		l_isGet = false;
 	}
 	if (KeyBoradInputManager::Instance()->GetMouseVel().z != 0)
 	{
@@ -1034,6 +1034,8 @@ void DangerUIManager::Draw(DrawingByRasterize& arg_rasterize)
 
 bool IntractUI::isIntract = false;
 
+bool IntractUI::oldIsIntract = false;
+
 IntractUI::IntractUI(DrawingByRasterize& arg_rasterize) :
 	_fKeyTex(arg_rasterize, "Resource/UITexture/F.png")
 {
@@ -1042,6 +1044,8 @@ IntractUI::IntractUI(DrawingByRasterize& arg_rasterize) :
 void IntractUI::Init()
 {
 	_fKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), 1.0f);
+	_fKeyTex.SetColor(KazMath::Color(255, 255, 255, 0));
+	_fKeyTex.SetAddColor(KazMath::Color(0, 0, 0, 25));
 }
 
 void IntractUI::Update()
@@ -1052,17 +1056,16 @@ void IntractUI::Update()
 	}
 	else
 	{
-		if (_fKeyTex.m_isColorEase)
-		{
-			_fKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 0));
-		}
+		_fKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 0));
 	}
 	_fKeyTex.Update();
 }
 
 void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	_fKeyTex.Draw(arg_rasterize);
+	if (_fKeyTex.m_color.color.a < 30)return;
+	KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 45.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
+	_fKeyTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, _fKeyTex.m_color);
 }
 
 

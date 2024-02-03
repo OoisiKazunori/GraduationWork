@@ -319,6 +319,7 @@ class IntractUI
 	UI2DElement _fKeyTex;
 public:
 	static bool isIntract;
+	static bool oldIsIntract;
 	IntractUI(DrawingByRasterize& arg_rasterize);
 	void Init();
 	void Update();

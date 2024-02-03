@@ -36,7 +36,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_isClear(false),
 	m_turret(arg_rasterize),
 	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
-	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf")
+	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf"),
+	m_intractUI(arg_rasterize)
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -152,6 +153,7 @@ void GameScene::Init()
 	m_debugCameraFlag = false;
 	m_titleLogoExitTimer = 0;
 	m_titleLogoExitEasingTimer = 0;
+	m_intractUI.Init();
 }
 
 void GameScene::PreInit()
@@ -208,12 +210,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	//int l_num = m_stageManager.GetEnemyCount();
 	//m_stageManager.GetEnemyPositions(1);
-
 	if (!m_isTitle)
 	{
 		//メニューが開かれていない時に更新を通す
 		if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 		{
+			m_intractUI.isIntract = false;
 			//m_uiManager.Update();
 			//m_gadgetMaanager.Update();
 			//m_HPBarManager.Update(0);
@@ -236,6 +238,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			if (m_HPBarManager.GetHP() > 0)
 			{
 				m_uiManager.Update(m_stageManager, m_player->GetTransform());
+
 				//m_gadgetMaanager.Update();
 
 				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
@@ -536,6 +539,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	}
 
 	m_inform.Update(pos, m_player->GetTransform());
+	m_intractUI.Update();
+	m_intractUI.oldIsIntract = m_intractUI.isIntract;
 }
 
 
@@ -562,6 +567,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 			m_HPBarManager.Draw(arg_rasterize);
 			//m_heartRateManager.Draw(arg_rasterize);
 			m_dangerManager.Draw(arg_rasterize);
+			m_intractUI.Draw(arg_rasterize);
 		}
 
 		m_goalPoint.Draw(arg_rasterize);
