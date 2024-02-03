@@ -330,11 +330,10 @@ void Enemy::Draw(
 
 	if (m_state != State::Death)
 	{
-		KazMath::Color l_player = { 0, 255, 255,255 };
+		KazMath::Color l_player = { 172, 50, 50, 255 };
 
-		m_enemyBox->m_model.Draw(
+		m_enemyBox->m_model.DrawRasterize(
 			arg_rasterize,
-			arg_blasVec,
 			m_trans,
 			l_player);
 	}
