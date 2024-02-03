@@ -55,6 +55,7 @@ public:
 	std::unique_ptr<MagazinModel> m_clip1;
 	std::unique_ptr<MagazinModel> m_clip2;
 	std::unique_ptr<MagazinModel> m_clip3;
+	std::unique_ptr<MagazinModel> m_clip4;
 
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions[m_nowStageNumber]; };
 	std::unique_ptr<StageModel> m_stage[3];

@@ -93,6 +93,23 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
  	m_stage[m_nowStageNumber]->Draw(arg_rasterize, arg_blasVec);
+
+	if (m_clip1)
+	{
+		m_clip1->Draw(arg_rasterize, arg_blasVec);
+	}
+	if (m_clip2)
+	{
+		m_clip2->Draw(arg_rasterize, arg_blasVec);
+	}
+	if (m_clip3)
+	{
+		m_clip3->Draw(arg_rasterize, arg_blasVec);
+	}
+	if (m_clip4)
+	{
+		m_clip4->Draw(arg_rasterize, arg_blasVec);
+	}
 	//m_goal->Draw(arg_rasterize, arg_blasVec);
 	for (auto l_treeItr = m_phone.begin(); l_treeItr != m_phone.end(); ++l_treeItr)
 	{
@@ -179,6 +196,30 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_magazin.push_back(std::make_unique<MagazinModel>(arg_rasterize, "Resource/BulletBox/", "Bullet_Box.gltf", false,
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 0.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale));
+		}
+		else if (l_mapItr->m_objetName.starts_with("Clip1"))
+		{
+			m_clip1 = std::make_unique<MagazinModel>(arg_rasterize, "Resource/ClipBoard/", "ClipBoard.gltf", false,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 0.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("Clip2"))
+		{
+			m_clip2 = std::make_unique<MagazinModel>(arg_rasterize, "Resource/ClipBoard/", "ClipBoard.gltf", false,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 0.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("Clip3"))
+		{
+			m_clip3 = std::make_unique<MagazinModel>(arg_rasterize, "Resource/ClipBoard/", "ClipBoard.gltf", false,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 0.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("Clip4"))
+		{
+			m_clip4 = std::make_unique<MagazinModel>(arg_rasterize, "Resource/ClipBoard/", "ClipBoard.gltf", false,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 0.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale);
 		}
 		else if (l_mapItr->m_objetName.starts_with("player") == true)
 		{
