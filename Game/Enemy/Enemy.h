@@ -34,7 +34,6 @@ private:
 	int m_currentPoint = 0;
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;
-	float m_rotRate = 0.0f;
 	std::shared_ptr<TurretFireEffect> m_gunEffect;
 
 	//âﬂãé
@@ -148,7 +147,8 @@ private:
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
 		std::weak_ptr<BulletMgr> arg_bulletMgr);
-	void RotateEye();
+	void RotateEye(
+		KazMath::Vec3<float>& arg_playerPos);
 	bool CheckDistXZ(
 		std::pair<float, float> arg_checkPos, float arg_dist);
 	bool CheckEye(
@@ -189,8 +189,31 @@ public:
 		m_offset_y = arg_offsets.second;
 	}
 
-
+	//êVãK
 private:
 	void Move();
 	void CalcMoveVec();
+	void Patrol();
+	void Combat(
+		std::weak_ptr<BulletMgr> arg_bulletMgr,
+		KazMath::Vec3<float> arg_playerPos);
+	void Death();
+
+	bool IsInSight(
+		KazMath::Vec3<float>& arg_playerPos,
+		std::list<std::shared_ptr<MeshCollision>>
+		& arg_stageColliders);
+
+	bool IsDeath() {
+		if (m_state == State::Death) {
+			return true;
+		}
+		return false;
+	}
+	bool IsFixedTurret() {
+		if (m_positions.size() == 1) {
+			return true;
+		}
+		return false;
+	}
 };
