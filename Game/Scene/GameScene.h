@@ -14,6 +14,7 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../Game/Effect/TurretFireEffect.h"
 #include"../Game/Effect/InformEnemy.h"
+#include"../Game/Effect/Smoke/SmokeEmitter.h"
 
 class EnemyManager;
 class Player;
@@ -46,6 +47,8 @@ public:
 	}
 
 private:
+
+	SmokeEmitter m_emitter;
 
 	//ƒJƒƒ‰--------------------------
 	bool m_debugCameraFlag;

@@ -130,6 +130,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	}
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 
+	m_emitter.Load(arg_rasterize);
+
 }
 
 GameScene::~GameScene()
@@ -173,8 +175,10 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
-		p = m_player->GetTransform().pos;
-		m_turret.Init(&p, KazMath::AngleToRadian(40.0f), 120.0f);
+		m_emitter.Init(
+			m_player->GetTransform().pos + KazMath::Vec3<float>(0.0f, 0.0f, -10.0f),
+			KazMath::Vec3<float>(0.5f, 1.0f, 0.5f)
+		);
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_3, "rota", "DIK_3"))
 	{
@@ -611,11 +615,15 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	//m_todo.Update();
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
+
+	m_emitter.Update();
 }
 
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
+
+	m_emitter.Draw(arg_rasterize, arg_blasVec);
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 

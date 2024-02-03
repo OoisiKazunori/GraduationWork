@@ -126,6 +126,8 @@
     <ClCompile Include="Game\Effect\BulletFireParticle.cpp" />
     <ClCompile Include="Game\Effect\InformEnemy.cpp" />
     <ClCompile Include="Game\Effect\MuzzleFlash.cpp" />
+    <ClCompile Include="Game\Effect\Smoke\SmokeEmitter.cpp" />
+    <ClCompile Include="Game\Effect\Smoke\SmokeParticle.cpp" />
     <ClCompile Include="Game\Effect\StopMgr.cpp" />
     <ClCompile Include="Game\Effect\TurretFireEffect.cpp" />
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
@@ -258,6 +260,8 @@
     <ClInclude Include="Game\Effect\InformEnemy.h" />
     <ClInclude Include="Game\Effect\MuzzleFlash.h" />
     <ClInclude Include="Game\Effect\ShakeMgr.h" />
+    <ClInclude Include="Game\Effect\Smoke\SmokeEmitter.h" />
+    <ClInclude Include="Game\Effect\Smoke\SmokeParticle.h" />
     <ClInclude Include="Game\Effect\StopMgr.h" />
     <ClInclude Include="Game\Effect\TurretFireEffect.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
