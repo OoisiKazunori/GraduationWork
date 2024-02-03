@@ -94,3 +94,12 @@ void StageModel::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector&
 	}
 	m_stageModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
 }
+
+void MagazinModel::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
+{
+	if (m_drawTimer <= 0 && m_echoFlag)
+	{
+		return;
+	}
+	m_stageModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+}
