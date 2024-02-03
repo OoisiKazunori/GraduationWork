@@ -106,7 +106,6 @@ private:
 	KazMath::Transform2D m_titleTrans;
 	bool m_isTitle = true;
 
-	InformEnemy m_inform;
 	KazMath::Vec3<float>pos;
 
 	//タイトル用

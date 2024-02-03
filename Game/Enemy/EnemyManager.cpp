@@ -143,7 +143,7 @@ void EnemyManager::Update(
 	std::list<std::shared_ptr<MeshCollision>>
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
-	KazMath::Vec3<float> arg_playerPos,
+	KazMath::Transform3D arg_playerTransform,
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
 	bool isInput = false;
@@ -185,7 +185,7 @@ void EnemyManager::Update(
 		m_enemys[i]->Update(
 			arg_stageColliders,
 			arg_bulletMgr,
-			arg_playerPos,
+			arg_playerTransform,
 			arg_stageMeshCollision);
 
 		//”­Œ©Žž

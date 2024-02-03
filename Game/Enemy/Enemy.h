@@ -11,6 +11,7 @@
 
 class MeshCollision;
 class BulletMgr;
+class InformEnemy;
 
 class Enemy
 {
@@ -80,6 +81,7 @@ private:
 
 	bool m_isInSightFlag;//‹ŠE“à‚É“ü‚Á‚½‚©
 
+	//“G‚ÌˆÊ’u‚ğ‰æ–Ê‚É•\¦‚·‚é‚â‚ÂB
 	InformEnemy m_inform;
 
 public:
@@ -90,7 +92,7 @@ public:
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
 		std::weak_ptr<BulletMgr> arg_bulletMgr,
-		KazMath::Vec3<float> arg_playerPos,
+		KazMath::Transform3D arg_playerTransform,
 		std::weak_ptr<MeshCollision> arg_stageMeshCollision
 	);
 	void Draw(

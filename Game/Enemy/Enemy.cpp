@@ -116,7 +116,7 @@ void Enemy::Update(
 	std::list<std::shared_ptr<MeshCollision>>
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
-	KazMath::Vec3<float> arg_playerPos,
+	KazMath::Transform3D arg_playerTransform,
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
 
@@ -130,7 +130,7 @@ void Enemy::Update(
 
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
-		std::make_pair(arg_playerPos.x, arg_playerPos.z);
+		std::make_pair(arg_playerTransform.pos.x, arg_playerTransform.pos.z);
 
 	//プレイヤーの思考------------------------------------------------------------
 	//視野角
@@ -249,10 +249,10 @@ void Enemy::Update(
 	else if (m_state == State::Combat)
 	{
 		//視線範囲内なら向きながら射撃
-		if (CheckEye(arg_playerPos, arg_stageColliders))
+		if (CheckEye(arg_playerTransform.pos, arg_stageColliders))
 		{
 			//プレイヤー方向
-			m_trans.quaternion = CalMoveQuaternion(arg_playerPos, m_trans.pos);
+			m_trans.quaternion = CalMoveQuaternion(arg_playerTransform.pos, m_trans.pos);
 
 			//射撃
 			++m_shotDelay;
@@ -390,7 +390,7 @@ void Enemy::Update(
 		}
 	}
 	m_trans.GetFront();
-	//m_inform.Update(m_trans.pos, arg_playerPos);
+	m_inform.Update(m_trans.pos, arg_playerTransform);
 
 }
 
@@ -419,7 +419,7 @@ void Enemy::Draw(
 			l_player);
 	}
 
-	//m_inform.Draw(arg_rasterize);
+	m_inform.Draw(arg_rasterize, arg_blasVec);
 
 
 	//if (m_isCombat) {

@@ -87,8 +87,6 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber) :
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
-	m_inform.Load(arg_rasterize);
-
 	//タイトルロゴモデルの位置を調整。
 	m_titleLogoTransform.pos = TITLELOGO_POS;
 	m_titleLogoTransform.Rotation(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), DirectX::XM_PI / 2.0f);
@@ -339,7 +337,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	}
 
-	m_inform.Update(pos, m_player->GetTransform());
 }
 
 
@@ -396,8 +393,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		m_resultManager.Draw(arg_rasterize);
 	}
-
-	m_inform.Draw(arg_rasterize,arg_blasVec);
 
 	DebugKey::Instance()->DrawImGui();
 }
