@@ -57,6 +57,10 @@ void Enemy::SetData(
 
 	m_line.Generate(arg_rasterize);
 	m_reaction.Load(arg_rasterize);
+	m_shotDelay = 0;
+	m_appearTimer = 0;
+
+	m_inform.Load(arg_rasterize);
 }
 
 void Enemy::Init(
@@ -315,6 +319,8 @@ void Enemy::Update(
 			m_footprintSide = !m_footprintSide;
 		}
 	}
+	m_trans.GetFront();
+	//m_inform.Update(m_trans.pos, arg_playerPos);
 
 }
 
@@ -333,11 +339,10 @@ void Enemy::Draw(
 
 	if (m_state != State::Death)
 	{
-		KazMath::Color l_player = { 0, 255, 255,255 };
+		KazMath::Color l_player = { 172, 50, 50, 255 };
 
-		m_enemyBox->m_model.Draw(
+		m_enemyBox->m_model.DrawRasterize(
 			arg_rasterize,
-			arg_blasVec,
 			m_trans,
 			l_player);
 	}
@@ -346,6 +351,8 @@ void Enemy::Draw(
 void Enemy::CalcMoveVec()
 {
 	if (m_positions.size() <= 1) { return; }
+	//m_inform.Draw(arg_rasterize);
+
 
 	KazMath::Vec3<float> l_firstPos;
 	KazMath::Vec3<float> l_basePos;

@@ -9,7 +9,7 @@ StageModel::StageModel(DrawingByRasterize& arg_rasterize, const std::string& arg
 		DrawFuncData::SetDefferdRenderingModelAnimationAppearByEcho(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)),
 		true)
 {
-	const float l_stageScle = 5.2f;
+	const float l_stageScle = 5.0f;
 	const float yoffset = 50;
 	//m_transform = KazMath::Transform3D({ pos.x * l_stageScle, (pos.y * l_stageScle) - yoffset, pos.z * l_stageScle }, { scale.x * l_stageScle, scale.y * l_stageScle , scale.z * l_stageScle });
 	if (f_useOffset)
@@ -93,4 +93,13 @@ void StageModel::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector&
 		return;
 	}
 	m_stageModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+}
+
+void MagazinModel::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
+{
+	if (m_drawTimer <= 0 && m_echoFlag)
+	{
+		return;
+	}
+	m_stageModelRender.m_model.DrawRasterize(arg_rasterize, m_transform, KazMath::Color(39,202, 60,255));
 }

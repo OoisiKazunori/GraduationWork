@@ -203,9 +203,19 @@ void WeponUIManager::Reload()
 	}
 	else if (0 < m_haveBulletNum)
 	{
-		m_bulletCount = m_haveBulletNum;
-		m_haveBulletNum = 0;
-		m_isCanShot = true;
+		if (m_magazinSize - m_bulletCount <= m_haveBulletNum)
+		{
+			int hoge = m_magazinSize - m_bulletCount;
+			m_bulletCount += hoge;
+			m_haveBulletNum -= hoge;
+			m_isCanShot = true;
+		}
+		else
+		{
+			m_bulletCount += m_haveBulletNum;
+			m_haveBulletNum = 0;
+			m_isCanShot = true;
+		}
 	}
 	else
 	{
@@ -215,7 +225,7 @@ void WeponUIManager::Reload()
 
 bool WeponUIManager::CanReload()
 {
-	return m_bulletCount < m_magazinSize;
+	return m_bulletCount < m_magazinSize && 0 < m_haveBulletNum;
 }
 
 void WeponUIManager::Init()
@@ -233,49 +243,29 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 {
 	bool isDirty = false;
 
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+
+	auto stoneItr = f_stageManager.m_magazin.begin();
+	auto eraseItr = f_stageManager.m_magazin.begin();
+	bool l_isGet = false;
+	float lengX;
+	float lengY;
+	float lengZ;
+	float leng = 0;
+	float getLeng = 8.0f;
+	bool isIntract = false;
+	for (; stoneItr != f_stageManager.m_magazin.end(); ++stoneItr)
 	{
-		auto stoneItr = f_stageManager.m_stone.begin();
-		auto eraseItr = f_stageManager.m_stone.begin();
-		bool l_isGet = false;
-		float lengX;
-		float lengY;
-		float lengZ;
-		float leng = 0;
-		float getLeng = 8.0f;
-		for (; stoneItr != f_stageManager.m_stone.end(); ++stoneItr)
+		lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
+		lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
+		lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
+		lengX = (float)pow(lengX, 2);
+		lengY = (float)pow(lengY, 2);
+		lengZ = (float)pow(lengZ, 2);
+		leng = sqrtf(lengX + lengY + lengZ);
+		if (leng < getLeng)
 		{
-			lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
-			lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
-			lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
-			lengX = (float)pow(lengX, 2);
-			lengY = (float)pow(lengY, 2);
-			lengZ = (float)pow(lengZ, 2);
-			leng = sqrtf(lengX + lengY + lengZ);
-			if (leng < getLeng)
-			{
-				GetStone(5);
-				eraseItr = stoneItr;
-				l_isGet = true;
-			}
-		}
-		if (l_isGet)
-		{
-			f_stageManager.m_stone.erase(eraseItr);
-			l_isGet = false;
-		}
-		stoneItr = f_stageManager.m_magazin.begin();
-		eraseItr = f_stageManager.m_magazin.begin();
-		for (; stoneItr != f_stageManager.m_magazin.end(); ++stoneItr)
-		{
-			lengX = (*stoneItr)->m_transform.pos.x - f_playerTrans.pos.x;
-			lengY = (*stoneItr)->m_transform.pos.y - f_playerTrans.pos.y;
-			lengZ = (*stoneItr)->m_transform.pos.z - f_playerTrans.pos.z;
-			lengX = (float)pow(lengX, 2);
-			lengY = (float)pow(lengY, 2);
-			lengZ = (float)pow(lengZ, 2);
-			leng = sqrtf(lengX + lengY + lengZ);
-			if (leng < getLeng)
+			IntractUI::isIntract = true;
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 			{
 				//‚±‚±‚¾‚¯“ü‚ê‘Ö‚¦‚é
 				GetMagazin(5);
@@ -283,11 +273,11 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 				l_isGet = true;
 			}
 		}
-		if (l_isGet)
-		{
-			f_stageManager.m_magazin.erase(eraseItr);
-			l_isGet = false;
-		}
+	}
+	if (l_isGet)
+	{
+		f_stageManager.m_magazin.erase(eraseItr);
+		l_isGet = false;
 	}
 	if (KeyBoradInputManager::Instance()->GetMouseVel().z != 0)
 	{
@@ -322,22 +312,16 @@ void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& 
 
 		}
 	}
-	//‚Ä‚·‚Æ
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F8))
-	{
-		AddWepon(WeponNumber::e_Hundgun);
-		isDirty = true;
-	}
 	if (isDirty)
 	{
 		EaseInit();
 	}
-
 	for (auto itr = m_haveWepons.begin(); itr != m_haveWepons.end(); ++itr)
 	{
 		GetUI((*itr).first).Update();
 	}
 	easeTimer += 0.1f;
+
 }
 
 void WeponUIManager::EaseInit()
@@ -1047,3 +1031,41 @@ void DangerUIManager::Draw(DrawingByRasterize& arg_rasterize)
 		m_timerTex[hoge100 + 20].m_tex.Draw2D(arg_rasterize, l_trans);
 	}
 }
+
+bool IntractUI::isIntract = false;
+
+bool IntractUI::oldIsIntract = false;
+
+IntractUI::IntractUI(DrawingByRasterize& arg_rasterize) :
+	_fKeyTex(arg_rasterize, "Resource/UITexture/F.png")
+{
+}
+
+void IntractUI::Init()
+{
+	_fKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), 1.0f);
+	_fKeyTex.SetColor(KazMath::Color(255, 255, 255, 0));
+	_fKeyTex.SetAddColor(KazMath::Color(0, 0, 0, 25));
+}
+
+void IntractUI::Update()
+{
+	if (IntractUI::isIntract)
+	{
+		_fKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 255));
+	}
+	else
+	{
+		_fKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 0));
+	}
+	_fKeyTex.Update();
+}
+
+void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
+{
+	if (_fKeyTex.m_color.color.a < 30)return;
+	KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 45.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
+	_fKeyTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, _fKeyTex.m_color);
+}
+
+

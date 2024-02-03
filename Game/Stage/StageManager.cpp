@@ -53,6 +53,10 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	{
 		(*l_block01Itr)->Update();
 	}
+	for (auto l_magazin = m_magazin.begin(); l_magazin != m_magazin.end(); ++l_magazin)
+	{
+		(*l_magazin)->Update();
+	}
 
 	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
 	{
@@ -111,6 +115,10 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	{
 		(*itr)->Draw(arg_rasterize, arg_blasVec);
 	}
+	for (auto l_magazin = m_magazin.begin(); l_magazin != m_magazin.end(); ++l_magazin)
+	{
+		(*l_magazin)->Draw(arg_rasterize, arg_blasVec);
+	}
 }
 
 bool StageManager::ChangeSceneTrigger()
@@ -139,6 +147,7 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 	m_player.reset();
 	m_plane.clear();
 	m_turrets.clear();
+	m_magazin.clear();
 
 	std::list<MapObject> l_map = MapManager::GetStageData(f_stageNum);
 	for (auto l_mapItr = l_map.begin(); l_mapItr != l_map.end(); ++l_mapItr)
@@ -160,6 +169,12 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			m_Bird3 = std::make_unique<StageModel>(arg_rasterize, "Resource/GoalTest/", "stageObjects1.gltf", true,
 				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 3.0f, -l_mapItr->m_position.z * 5.0f),
 				l_mapItr->m_rotition, l_mapItr->m_scale);
+		}
+		else if (l_mapItr->m_objetName.starts_with("Bullet"))
+		{
+			m_magazin.push_back(std::make_unique<MagazinModel>(arg_rasterize, "Resource/BulletBox/", "Bullet_Box.gltf", false,
+				DirectX::XMFLOAT3(-l_mapItr->m_position.x * 5.0f, l_mapItr->m_position.y + 0.0f, -l_mapItr->m_position.z * 5.0f),
+				l_mapItr->m_rotition, l_mapItr->m_scale));
 		}
 		else if (l_mapItr->m_objetName.starts_with("player") == true)
 		{

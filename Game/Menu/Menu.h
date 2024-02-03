@@ -14,6 +14,7 @@ class Menu
 	enum class MenuOptions
 	{
 		Return,
+		File,
 		Totitle,
 		ToEnd,
 		OptionsMax
@@ -27,6 +28,7 @@ class Menu
 	MenuElement m_selectBack;
 
 	MenuElement returnStrTex;
+	MenuElement fileStrTex;
 	MenuElement toTitleStrTex;
 	MenuElement toEndStrTex;
 

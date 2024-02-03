@@ -36,8 +36,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_isClear(false),
 	m_turret(arg_rasterize),
 	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
-	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf"),
-	m_intractUI(arg_rasterize)
+	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf")
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -93,6 +92,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 
 	FootprintMgr::Instance()->Setting(arg_rasterize);
 
+<<<<<<< HEAD
 	//敵
 	m_enemyManager = std::make_shared<EnemyManager>();
 	for (int i = 0; i < m_stageManager.GetEnemyCount(); ++i)
@@ -112,8 +112,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 			l_pos);
 	}
 	m_enemyManager->SetModelData(arg_rasterize);
-
+=======
 	m_inform.Load(arg_rasterize);
+>>>>>>> origin/dev_Footprint
 
 	//タイトルロゴモデルの位置を調整。
 	m_titleLogoTransform.pos = TITLELOGO_POS;
@@ -153,7 +154,6 @@ void GameScene::Init()
 	m_debugCameraFlag = false;
 	m_titleLogoExitTimer = 0;
 	m_titleLogoExitEasingTimer = 0;
-	m_intractUI.Init();
 }
 
 void GameScene::PreInit()
@@ -172,6 +172,7 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
+<<<<<<< HEAD
 		p = m_player->GetTransform().pos;
 		m_turret.Init(&p, KazMath::AngleToRadian(40.0f), 120.0f);
 		if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "AI", "DIK_2"))
@@ -179,9 +180,9 @@ void GameScene::Input()
 			//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
 		}
 		//EnemyDebugManager::Instance()->m_debugAIFlag = !EnemyDebugManager::Instance()->m_debugAIFlag;
-
-		//pos = m_player->GetTransform().pos;
-
+=======
+		pos = m_player->GetTransform().pos;
+>>>>>>> origin/dev_Footprint
 	}
 
 	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
@@ -190,6 +191,11 @@ void GameScene::Input()
 		//大きめのエコーを出す
 		EchoArray::Instance()->Generate(m_player->GetTransform().pos, 80.0f, Echo::COLOR::WHITE);
 
+		if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+		{
+			m_isTitle = false;
+			//大きめのエコーを出す
+		}
 	}
 }
 
@@ -210,12 +216,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	//int l_num = m_stageManager.GetEnemyCount();
 	//m_stageManager.GetEnemyPositions(1);
+
 	if (!m_isTitle)
 	{
 		//メニューが開かれていない時に更新を通す
 		if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 		{
-			m_intractUI.isIntract = false;
 			//m_uiManager.Update();
 			//m_gadgetMaanager.Update();
 			//m_HPBarManager.Update(0);
@@ -224,21 +230,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 			//m_bulletMgr->Update(m_stageMeshCollision);
 
-			m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
-
-			m_stageManager.CheckInEcho(m_stageMeshCollision);
-
-			m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
-			m_goalPoint.Update();
-			m_turret.Update();
-			FootprintMgr::Instance()->Update();
-
 			m_stageManager.Update(arg_rasterize);
 
 			if (m_HPBarManager.GetHP() > 0)
 			{
 				m_uiManager.Update(m_stageManager, m_player->GetTransform());
-
 				//m_gadgetMaanager.Update();
 
 				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager);
@@ -331,19 +327,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			{
 				m_resultManager.ShowResult();
 			}
-			//dangerを出すのをいったん切る
-			/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
+			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
 			{
 				m_dangerManager.Update(true);
 			}
 			else
 			{
 				m_dangerManager.Update(false);
-			}*/
+			}
 
 		}
-
-		m_menu.Update();
 		m_HPBarManager.Update(0);
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
@@ -357,26 +350,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		else
 		{
 			m_dangerManager.Update(false);
-		}
-
-
-
-
-		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
-		++m_titleLogoExitTimer;
-		if (TITLELOGO_EXIT_TIMER < m_titleLogoExitTimer) {
-
-			m_titleLogoExitEasingTimer = std::clamp(m_titleLogoExitEasingTimer + 0.06f, 0.0f, 1.0f);
-
-			float easingAmount = EasingMaker(In, Back, m_titleLogoExitEasingTimer);
-
-			m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
-			m_titleLogoTransform.pos.y -= easingAmount * 10.0f;
-
-			m_clickToStartTransform = m_titleLogoTransform;
-			m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
-			m_clickToStartTransform.pos.y -= 1.5f;
-
 		}
 
 	}
@@ -498,16 +471,42 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
 		//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
 
+		m_menu.Update();
 
+		m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
-		/*m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
+		m_stageManager.CheckInEcho(m_stageMeshCollision);
+
+		m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
+		m_goalPoint.Update();
+		m_turret.Update();
+		FootprintMgr::Instance()->Update();
+
+		m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
 		m_goalPoint.Update();
 
-		FootprintMgr::Instance()->Update();*/
+		FootprintMgr::Instance()->Update();
 
 		//EnemyDebugManager::Instance()->Update();
 		/*FieldAI::Instance()->DebugUpdate();
 		FieldAIDebugManager::Instance()->Update();*/
+
+		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
+		++m_titleLogoExitTimer;
+		if (TITLELOGO_EXIT_TIMER < m_titleLogoExitTimer) {
+
+			m_titleLogoExitEasingTimer = std::clamp(m_titleLogoExitEasingTimer + 0.06f, 0.0f, 1.0f);
+
+			float easingAmount = EasingMaker(In, Back, m_titleLogoExitEasingTimer);
+
+			m_titleLogoTransform.pos.y = TITLELOGO_POS.y + sinf(m_titleLogoSineTimer) * TITLELOGO_SINE_MOVE;
+			m_titleLogoTransform.pos.y -= easingAmount * 10.0f;
+
+			m_clickToStartTransform = m_titleLogoTransform;
+			m_clickToStartTransform.quaternion = DirectX::XMQuaternionRotationAxis(DirectX::XMVectorSet(0, 1, 0, 1), DirectX::XM_PI / 2.0f);
+			m_clickToStartTransform.pos.y -= 1.5f;
+
+		}
 
 	}
 	//タイトル画面
@@ -539,8 +538,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	}
 
 	m_inform.Update(pos, m_player->GetTransform());
-	m_intractUI.Update();
-	m_intractUI.oldIsIntract = m_intractUI.isIntract;
 }
 
 
@@ -567,7 +564,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 			m_HPBarManager.Draw(arg_rasterize);
 			//m_heartRateManager.Draw(arg_rasterize);
 			m_dangerManager.Draw(arg_rasterize);
-			m_intractUI.Draw(arg_rasterize);
 		}
 
 		m_goalPoint.Draw(arg_rasterize);
@@ -579,7 +575,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	if (m_isTitle)
 	{
 		m_titleTrans.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
-		//m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
+		m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
 	}
 	m_turret.Draw(arg_rasterize, arg_blasVec);
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
@@ -591,14 +587,14 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
 	//}
 
-	//m_goalPoint.Draw(arg_rasterize);
+	m_goalPoint.Draw(arg_rasterize);
 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 	//m_menu.Draw(arg_rasterize);
 	//m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
-	//m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
+	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);
 
 	if (m_resultManager.GetResultShow())

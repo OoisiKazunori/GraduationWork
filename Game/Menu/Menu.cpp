@@ -81,6 +81,10 @@ void Menu::Update()
 					isSceneChange = true;
 					m_isMenuOpen = false;
 				}
+				else if (nowSelectMenu == MenuOptions::File)
+				{
+					//ÉtÉ@ÉCÉãÇMenuÇå©ÇπÇÈèàóù
+				}
 				else if (nowSelectMenu == MenuOptions::ToEnd)
 				{
 					isGameEnd = true;
@@ -100,6 +104,7 @@ void Menu::Draw(DrawingByRasterize& arg_rasterize)
 	if (!m_isMenuOpen) return;
 
 	returnStrTex.Draw(arg_rasterize);
+	fileStrTex.Draw(arg_rasterize);
 	toTitleStrTex.Draw(arg_rasterize);
 	toEndStrTex.Draw(arg_rasterize);
 
@@ -123,6 +128,7 @@ void Menu::UpdateOpen()
 	m_selectBack.Update();
 
 	returnStrTex.Update();
+	fileStrTex.Update();
 	toTitleStrTex.Update();
 	toEndStrTex.Update();
 
@@ -143,6 +149,7 @@ void Menu::UpdateClose()
 	m_selectBack.Update();
 
 	returnStrTex.Update();
+	fileStrTex.Update();
 	toTitleStrTex.Update();
 	toEndStrTex.Update();
 
@@ -174,6 +181,9 @@ void Menu::MenuInit()
 	returnStrTex.EasePosInit({ 1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, { (float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, (-diray * (float)l_lineCount - strDiray));
 	returnStrTex.SetEasePosAddTime(l_easeSpeed);
 	l_lineCount++;
+	fileStrTex.EasePosInit({ 1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, { (float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, (-diray * (float)l_lineCount - strDiray));
+	fileStrTex.SetEasePosAddTime(l_easeSpeed);
+	l_lineCount++;
 	toTitleStrTex.EasePosInit({ 1280.0f + 500.0f, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, { (float)C_MenuBaseX,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, (-diray * (float)l_lineCount - strDiray));
 	toTitleStrTex.SetEasePosAddTime(l_easeSpeed);
 	l_lineCount++;
@@ -198,6 +208,8 @@ void Menu::MenuClose()
 	int l_lineCount = 0;
 	returnStrTex.EasePosInit({ (float)C_MenuBaseX, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, { 1280.0f + 500.0f,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, (-diray * (float)l_lineCount));
 	l_lineCount++;
+	fileStrTex.EasePosInit({ (float)C_MenuBaseX, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, { 1280.0f + 500.0f,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, (-diray * (float)l_lineCount));
+	l_lineCount++;
 	toTitleStrTex.EasePosInit({ (float)C_MenuBaseX, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, { 1280.0f + 500.0f,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, (-diray * (float)l_lineCount));
 	l_lineCount++;
 	toEndStrTex.EasePosInit({ (float)C_MenuBaseX, (float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, { 1280.0f + 500.0f,(float)C_MenuBaseY + (float)C_MenuDistanceY * (float)l_lineCount }, (-diray * (float)l_lineCount));
@@ -209,9 +221,11 @@ Menu::Menu(DrawingByRasterize& arg_rasterize):
 	m_nonSelectBack{
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
+		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png"),
 		MenuElement(arg_rasterize, "Resource/MenuTex/MenuNonSelectBack.png")
 	},
 	returnStrTex(arg_rasterize, "Resource/MenuTex/MenuReturn.png"),
+	fileStrTex(arg_rasterize, "Resource/MenuTex/File.png"),
 	toTitleStrTex(arg_rasterize, "Resource/MenuTex/MenuTitle.png"),
 	toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuEnd.png")
 {
@@ -223,6 +237,7 @@ Menu::Menu(DrawingByRasterize& arg_rasterize):
 	m_selectBack.SetPosition({(float)C_MenuBaseX, (float)C_MenuBaseY});
 
 	returnStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
+	fileStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
 	toTitleStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
 	toEndStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
 }

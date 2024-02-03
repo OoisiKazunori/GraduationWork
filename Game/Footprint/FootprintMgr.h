@@ -10,7 +10,7 @@ class FootprintMgr : public ISingleton<FootprintMgr> {
 
 private:
 
-	static const int FOOTPRINT_COUNT = 128;
+	static const int FOOTPRINT_COUNT = 256;
 	std::array<std::shared_ptr<Footprint>, FOOTPRINT_COUNT> m_footprints;
 
 public:
