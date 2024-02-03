@@ -9,12 +9,18 @@ void BulletFireParticle::Load(DrawingByRasterize& arg_rasterize)
 	m_model.Load(arg_rasterize, "Resource/Test/Box/", "Gard_Hp_Box.gltf");
 }
 
-void BulletFireParticle::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_radian)
+void BulletFireParticle::Init(
+	const KazMath::Vec3<float>& arg_emittPos,
+	float arg_radian,
+	const KazMath::Vec3<float>& arg_size,
+	float arg_speed)
 {
 	Finalize();
 	m_activeFlag = true;
 	m_radian = arg_radian;
 	m_transform.pos = arg_emittPos;
+	m_transform.scale = arg_size;
+	m_baseScale = arg_size.z * 3.0f;
 
 	int angle = KazMath::RadianToAngle(arg_radian);
 	float sign = 1.0f;
@@ -46,10 +52,9 @@ void BulletFireParticle::Init(const KazMath::Vec3<float>& arg_emittPos, float ar
 	}
 
 	//à⁄ìÆó ê›íË
-	const float speed = 2.0f;
-	m_vel *= speed;
+	m_vel *= arg_speed;
 
-	m_timer.Reset(30.0f);
+	m_timer.Reset(120.0f);
 }
 
 void BulletFireParticle::Finalize()
@@ -73,7 +78,7 @@ void BulletFireParticle::Update()
 		m_activeFlag = false;
 	}
 	m_transform.pos += m_vel;
-	m_transform.scale.z = 6.0f * m_timer.GetTimeRate();
+	m_transform.scale.z = m_baseScale * m_timer.GetTimeRate();
 }
 
 void BulletFireParticle::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)

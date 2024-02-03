@@ -10,10 +10,15 @@ public:
 	BulletFireParticle();
 
 	void Load(DrawingByRasterize& arg_rasterize);
-	void Init(const KazMath::Vec3<float>& arg_emittPos,float arg_radian);
+	void Init(
+		const KazMath::Vec3<float>& arg_emittPos,
+		float arg_radian,
+		const KazMath::Vec3<float>& arg_size = { 0.1f,0.1f,2.0f },
+		float arg_speed = 2.0f
+	);
 	void Finalize();
 	void Update();
-	void Draw(DrawingByRasterize& arg_rasterize,Raytracing::BlasVector& arg_blas);
+	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 
 	bool IsActive();
 private:
@@ -22,6 +27,7 @@ private:
 	BasicDraw::BasicModelRender m_model;
 	bool m_activeFlag;
 	float m_radian;
+	float m_baseScale;
 	KazMath::Timer m_timer;
 };
 
