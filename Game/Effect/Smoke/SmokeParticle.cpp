@@ -19,7 +19,7 @@ void SmokeParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec
 	m_timer.Reset(arg_emittTimer);
 	m_activeFlag = true;
 
-	m_speed = KazMath::Rand<float>(0.1f,0.01f);
+	m_speed = KazMath::Rand<float>(0.1f, 0.01f);
 
 	m_angle = 0;
 	m_angleVel = KazMath::Rand<float>(0.5f, 0.1f);
@@ -31,19 +31,17 @@ void SmokeParticle::Update()
 	{
 		return;
 	}
-
-
-	m_angle += m_angleVel;
-
+	//è„è∏Ç∆âÒì]
 	m_transform.pos.y += m_speed;
-	m_transform.Rotation({0.0f,0.0f,1.0f}, KazMath::AngleToRadian(m_angle));
-
+	m_angle += m_angleVel;
+	m_transform.Rotation({ 0.0f,0.0f,1.0f }, KazMath::AngleToRadian(m_angle));
 	//èkè¨äJén
 	const float startShirinkScale = 0.2f;
 	if (m_timer.GetInverseTimeRate() <= startShirinkScale)
 	{
 		m_transform.scale = m_baseTransform.scale * (m_timer.GetInverseTimeRate() / startShirinkScale);
 	}
+	//éûä‘êÿÇÍÇÕèIóπ
 	m_activeFlag = !m_timer.UpdateTimer();
 }
 
@@ -53,8 +51,7 @@ void SmokeParticle::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVect
 	{
 		return;
 	}
-
-	m_smokeRender.m_tex.Draw3DBillBoard(arg_rasterize, arg_blas, m_transform);
+	m_smokeRender.m_tex.Draw3DBillBoard(arg_rasterize, arg_blas, m_transform, KazMath::Color(100, 100, 100, 255));
 }
 
 const bool& SmokeParticle::IsActive()

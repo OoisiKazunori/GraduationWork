@@ -177,7 +177,8 @@ void GameScene::Input()
 	{
 		m_emitter.Init(
 			m_player->GetTransform().pos + KazMath::Vec3<float>(0.0f, 0.0f, -10.0f),
-			KazMath::Vec3<float>(0.5f, 1.0f, 0.5f)
+			KazMath::Vec3<float>(0.5f, 1.0f, 0.5f),
+			600
 		);
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_3, "rota", "DIK_3"))

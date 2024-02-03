@@ -10,7 +10,14 @@ public:
 	SmokeEmitter();
 
 	void Load(DrawingByRasterize& arg_rasterize);
-	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_range);
+
+	/// <summary>
+	/// ‰Šú‰»
+	/// </summary>
+	/// <param name="arg_pos">”­¶’n“_</param>
+	/// <param name="arg_range">”­¶”ÍˆÍ</param>
+	/// <param name="arg_smokeTimer">”­¶ŠÔ</param>
+	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_range,int arg_smokeTimer);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 
@@ -18,5 +25,7 @@ private:
 	std::array<SmokeParticle, 50>m_smokeParticleArray;
 	std::array<int, 50>m_smokeEmittTimeArray;
 	KazMath::Vec3<float>m_emittPos;
+	KazMath::Vec3<float>m_range;
+	int m_emittTimer, m_emittMaxTimer;
 };
 
