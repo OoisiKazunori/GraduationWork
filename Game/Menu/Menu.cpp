@@ -127,7 +127,7 @@ void Menu::Update()
 					}
 				}
 
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE) || KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
 				{
 					if (!isLookFileList)
 					{
