@@ -28,7 +28,7 @@ Enemy::Enemy()
 	m_angle = 0.0f;
 
 	m_enemyShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
-	m_enemyShotSE.volume = 0.05f;
+	m_enemyShotSE.volume = DEFAULT_SHOT_VOLUME;
 
 	m_footprintSpan = 0;
 
@@ -196,6 +196,13 @@ void Enemy::Update(
 				arg_bulletMgr.lock()->
 					GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
 				m_shotDelay = 0;
+
+				//‹——£‚É‚æ‚Á‚Ä‰¹‚ğ¬‚³‚­‚·‚éB
+				float distance = KazMath::Vec3<float>(arg_playerTransform.pos - m_trans.pos).Length();
+				float range = 1.0f - std::clamp(distance / SOUND_RANGE, 0.0f, 1.0f);
+				range = EasingMaker(In, Quad, range);
+
+				m_enemyShotSE.volume = DEFAULT_SHOT_VOLUME * range;
 				SoundManager::Instance()->
 					SoundPlayerWave(m_enemyShotSE, 0);
 			}
