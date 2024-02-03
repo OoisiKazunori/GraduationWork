@@ -24,14 +24,13 @@ private:
 
 	std::list<std::unique_ptr<StageModel>> m_block01;
 	std::list<std::unique_ptr<StageModel>> m_enemys;
+	std::list<std::unique_ptr<StageModel>> m_turrets;
 
 	std::unique_ptr<StageModel> m_Bird1;
 	std::unique_ptr<StageModel> m_Bird2;
 	std::unique_ptr<StageModel> m_Bird3;
 
 	std::list<std::unique_ptr<StageModel>> m_plane;
-
-
 
 	std::list<std::shared_ptr<MeshCollision>> m_collisions[3];
 	//その他木等の外部オブジェクトモデル--------------------------------
@@ -52,15 +51,23 @@ public:
 	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision);
 
 	std::list<std::unique_ptr<StageModel>> m_stone;
-	std::list<std::unique_ptr<StageModel>> m_magazin;
+	std::list<std::unique_ptr<MagazinModel>> m_magazin;
+	std::unique_ptr<MagazinModel> m_clip1;
+	std::unique_ptr<MagazinModel> m_clip2;
+	std::unique_ptr<MagazinModel> m_clip3;
+	std::unique_ptr<MagazinModel> m_clip4;
 
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions[m_nowStageNumber]; };
 	std::unique_ptr<StageModel> m_stage[3];
 	std::unique_ptr<StageModel> m_colStage[3];
+	std::unique_ptr<StageModel> m_player;
 	KazMath::Transform3D GetGoalTransform();
 	//何体いるか1からカウントされる
 	int GetEnemyCount();
 	//GetEnemyCount - 1を引数にすると丁度いいかも
 	std::list<KazMath::Transform3D> GetEnemyPositions(int f_enemyNum);
+	//タレット用
+	int GetTurretCount();
+	KazMath::Transform3D GetTurretPosition(int f_turetNum);
 };
 

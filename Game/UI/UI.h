@@ -22,9 +22,10 @@ class UI2DElement
 	KazMath::Color m_easeEndColor;
 	KazMath::Color m_easeAddColor = { 0, 0, 0, 1 };
 
-	bool m_isColorEase = false;
+	
 public:
 	KazMath::Color m_color;
+	bool m_isColorEase = false;
 	UI2DElement(DrawingByRasterize& arg_rasterize, const char* f_filePath);
 	UI2DElement();
 	void Init(DrawingByRasterize& arg_rasterize, std::string f_filePath);
@@ -311,4 +312,43 @@ public:
 	bool GetResultShow() { return m_isResultShow; };
 	void ShowResult() { m_isResultShow = true; };
 	void SetClear() { m_isClear = true; };
+};
+
+class IntractUI
+{
+	UI2DElement _fKeyTex;
+public:
+	static bool isIntract;
+	static bool oldIsIntract;
+	IntractUI(DrawingByRasterize& arg_rasterize);
+	void Init();
+	void Update();
+	void Draw(DrawingByRasterize& arg_rasterize);
+};
+
+class ToDoUI
+{
+public:
+	enum class ToDoList
+	{
+		None = -1,
+		LookFile,
+		ToThirdFloor,
+		ToHome,
+		ToDoMax,
+	};
+	const int BaseX = 1180;
+	const int BaseY = 230;
+
+	static ToDoList _nowTask;
+	static ToDoList _oldTask;
+	static ToDoList _oldDrawTask;
+	std::array<UI2DElement, (int)ToDoList::ToDoMax> m_toDoTex;
+	UI2DElement _todo;
+	ToDoUI(DrawingByRasterize& arg_rasterize);
+	//É^ÉCÉgÉãÇÃÇ∆Ç±Ç≈èâä˙âªÇµÇΩÇ¢
+	void Init();
+	void Update();
+	void Draw(DrawingByRasterize& arg_rasterize);
+	void NextTask();
 };

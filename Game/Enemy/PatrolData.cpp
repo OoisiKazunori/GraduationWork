@@ -19,12 +19,15 @@ void PatrolData::SetData(
 
 void PatrolData::Init()
 {
-	//マップチップ検索
-	std::vector<std::pair<int, int>> l_base_chipRoots;
-	l_base_chipRoots = CalcChipRoots(m_checkPoints);
+	//新規移動処理,検索
 
-	//角をケアしながら通過座標の算出
-	m_rootPos = CalcRootPos(l_base_chipRoots);
+
+	////マップチップ検索
+	//std::vector<std::pair<int, int>> l_base_chipRoots;
+	//l_base_chipRoots = CalcChipRoots(m_checkPoints);
+
+	////角をケアしながら通過座標の算出
+	//m_rootPos = CalcRootPos(l_base_chipRoots);
 }
 
 void PatrolData::Update()

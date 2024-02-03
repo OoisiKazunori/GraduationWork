@@ -20,16 +20,16 @@ void EchoArray::Init()
 {
 
 	//配列をクリア。
-	for (auto& index : m_echoArray) {
+	for (auto& index : m_echo) {
 
-		index.m_radius = 0.0f;
-
+		//index.m_radius = 0.0f;
+		index.Init();
 	}
-	for (auto& index : m_echoMemoryArray) {
+	for (auto& index : m_echoMemory) {
 
-		index.m_radius = 0.0f;
-		index.m_isActive = false;
-
+		/*index.m_radius = 0.0f;
+		index.m_isActive = false;*/
+		index.Init();
 	}
 
 }

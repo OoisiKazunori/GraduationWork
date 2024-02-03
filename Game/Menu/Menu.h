@@ -14,6 +14,7 @@ class Menu
 	enum class MenuOptions
 	{
 		Return,
+		File,
 		Totitle,
 		ToEnd,
 		OptionsMax
@@ -27,6 +28,7 @@ class Menu
 	MenuElement m_selectBack;
 
 	MenuElement returnStrTex;
+	MenuElement fileStrTex;
 	MenuElement toTitleStrTex;
 	MenuElement toEndStrTex;
 
@@ -49,6 +51,7 @@ class Menu
 	//メニューの閉じる演出初期化
 	void MenuClose();
 
+
 	const int C_MenuBaseX = 1000;
 	const int C_MenuBaseY = 200;
 	const int C_MenuDistanceY = 50;
@@ -56,11 +59,35 @@ class Menu
 	static SceneName m_SceneName;
 	static bool isSceneChange;
 	static bool isSceneChangeTrigger;
+
+	//ファイルの総数
+	static const int C_FileCount = 4;
+	//ファイルの一覧を見てるとき
+	static bool isLookFileList;
+	//ファイルを選択して見てるとき
+	static bool isLookFile;
+
+	//ファイルを持っているか
+	static std::array<bool, C_FileCount> _getFileIndex;
+	//ファイルを選択するときの見出し文字
+	std::array<MenuElement, C_FileCount> _fileMenus;
+	//まだ持ってないファイルはこれで出す横線にする
+	std::array<MenuElement, C_FileCount> _doNotHaveFileMenus;
+	//ファイル自体
+	std::array<MenuElement, C_FileCount> _files;
+	int _selectFileIndex = 0;
+	void ShowFilesInit();
+	void ShowFilesDraw();
+
 public:
+	//持ってるファイルを初期化する
+	//タイトルのとこで初期化しようかな
+	static void InitGetFileIndex();
 	Menu(DrawingByRasterize& arg_rasterize);
 	static bool GetIsGameEnd(){ return isGameEnd; }
 	static void SetIsGameEnd(bool f_flag) { isGameEnd = f_flag; }
 	static void SetSceneName(SceneName f_sceneName){ m_SceneName = f_sceneName; }
+	static void GetFile(int f_index);
 	static bool IsSceneChange()
 	{
 		if (!isSceneChange)return false;

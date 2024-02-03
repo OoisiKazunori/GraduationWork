@@ -13,6 +13,7 @@
 #include "../Footprint/FootprintMgr.h"
 #include "../Effect/StopMgr.h"
 #include "../KazLibrary/Easing/easing.h"
+#include "../KazLibrary/Debug/DebugKey.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
@@ -115,7 +116,15 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		Collision(*itr);
 	}*/
 	//当たり判定
-	Collision(f_stageColliders);
+	if (m_isDebug) {
+
+		m_onGround = true;
+
+	}
+	else {
+		Collision(f_stageColliders);
+
+	}
 
 	//重力をかける。
 	if (!m_onGround) {
@@ -125,6 +134,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		m_gravity = 0.0f;
 	}
 	m_transform.pos.y += m_gravity;
+	//m_transform.pos.y = 50.0f;
 
 
 	//動いた方向に回転させる。
@@ -198,10 +208,13 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//心音のタイマー
 	m_heatbeatTimer += 1.0f * StopMgr::Instance()->GetGameSpeed();
 	float heartBeatTimer = HEARTBEAT_TIMER;
-	float heartBeatRange = 60.0f;
+	float heartBeatRange = 40.0f;
 	if (m_isFoundToEnemy) {
 		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
-		heartBeatRange = 150.0f;
+		heartBeatRange = 90.0f;
+	}
+	if (m_isDebug) {
+		heartBeatRange = 1500;
 	}
 	if (heartBeatTimer <= m_heatbeatTimer) {
 
@@ -232,49 +245,16 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 
 
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_I)) {
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_I, "Hakken", "I")) {
 		m_isFoundToEnemy = !m_isFoundToEnemy;
 		StopMgr::Instance()->HitStopStart({ 120, 0.1f });
 	}
 
 	PlayerStatus::Instance()->m_isFound = m_isFoundToEnemy;
 
-
-	float moveLength = KazMath::Vec3<float>(KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).Length();
-	if (m_onGround) {
-		m_footprintSpan += moveLength;
-		if (FOOTPRINT_SPAN <= m_footprintSpan) {
-
-			KazMath::Transform3D footprintTransform = m_transform;
-
-			//地面に移動。
-			footprintTransform.pos.y = -49.0f;
-
-			//移動した方向から回転を計算する。上ベクトルは一旦固定。
-			KazMath::Vec3<float> axisX = KazMath::Vec3<float>(KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).GetNormal();
-			KazMath::Vec3<float> axisY = KazMath::Vec3<float>(0.0f, 1.0f, 0.0f);
-			KazMath::Vec3<float> axisZ = axisX.Cross(axisY);
-			DirectX::XMMATRIX rotationMat = DirectX::XMMatrixIdentity();
-			rotationMat.r[0] = { axisX.x, axisX.y, axisX.z, 0.0f };
-			rotationMat.r[1] = { axisY.x, axisY.y, axisY.z, 0.0f };
-			rotationMat.r[2] = { axisZ.x, axisZ.y, axisZ.z, 0.0f };
-			footprintTransform.quaternion = DirectX::XMQuaternionRotationMatrix(rotationMat);
-
-			//どっちの足の足跡を出すかを決める。
-			KazMath::Vec3<float> footprintSide = {};
-			if (m_footprintSide) {
-				footprintSide = footprintTransform.GetFront() * 1.0f;
-			}
-			else {
-				footprintSide = -footprintTransform.GetFront() * 1.0f;
-			}
-			footprintTransform.pos += footprintSide;
-
-			FootprintMgr::Instance()->Generate(footprintTransform);
-
-			m_footprintSpan = 0;
-			m_footprintSide = !m_footprintSide;
-		}
+	
+	if (DebugKey::Instance()->DebugKeyTrigger(DIK_UP, "PlayerDebugMode", "UPKey")) {
+		m_isDebug = !m_isDebug;
 	}
 
 }
@@ -319,20 +299,29 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 	}
 	m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
 
-	//CTRLが押されたらステータスを切り返る。
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LCONTROL)) {
-		switch (m_playerAttitude)
-		{
-		case Player::PlayerAttitude::STAND:
-			m_playerAttitude = PlayerAttitude::SQUAT;
-			break;
-		case Player::PlayerAttitude::SQUAT:
-			m_playerAttitude = PlayerAttitude::STAND;
-			break;
-		default:
-			break;
-		}
+	if (m_isDebug) {
+
+
+		m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
+		m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
+		m_transform.pos += inputMoveVec.GetNormal() * GetMoveSpeed() * StopMgr::Instance()->GetGameSpeed();
+
 	}
+
+	////CTRLが押されたらステータスを切り返る。
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LCONTROL)) {
+	//	switch (m_playerAttitude)
+	//	{
+	//	case Player::PlayerAttitude::STAND:
+	//		m_playerAttitude = PlayerAttitude::SQUAT;
+	//		break;
+	//	case Player::PlayerAttitude::SQUAT:
+	//		m_playerAttitude = PlayerAttitude::STAND;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
 
 	//右クリックされている間はADS状態にする。
 	bool isOldADS = m_isADS;

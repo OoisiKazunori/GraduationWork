@@ -6,6 +6,7 @@
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/Reaction.h"
 #include"../Game/AI/EnemyAIData.h"
+#include <memory>
 #include"../Game/Effect/InformEnemy.h"
 #include<memory>
 
@@ -25,13 +26,18 @@ private:
 	bool m_isCombat;
 
 private:
-	std::vector<std::pair<float, float>> m_rootPos;
+	std::list<KazMath::Transform3D> m_positions;
+	const int CHECK_POINT_DELAY = 240;
+	int m_currentPoint = 0;
+	KazMath::Vec3<float> m_moveVec;
+	KazMath::Vec3<float> m_nextPos;
+
 	std::vector<std::pair<int, int>> m_checkPointDelay;
 	KazMath::Transform3D m_trans;
 	KazMath::Vec3<float> m_prevPos;	//前フレーム座標
-	State m_state,m_oldState;
+	State m_state, m_oldState;
 	int m_delayNum;
-	int m_count;
+	//int m_count;
 	int m_delay;
 	bool m_isCheckPoint;
 	bool m_onGround;
@@ -75,7 +81,7 @@ private:
 
 	//仮で足跡を描画する用。
 	float m_footprintSpan;
-	const float FOOTPRINT_SPAN = 5;
+	const float FOOTPRINT_SPAN = 2;
 	bool m_footprintSide;
 
 
@@ -87,7 +93,8 @@ private:
 public:
 	Enemy();
 	~Enemy();
-	void Init();
+	void Init(
+		std::list<KazMath::Transform3D> arg_enemyList);
 	void Update(
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
@@ -154,7 +161,7 @@ public:
 
 public:
 	void SetData(
-		DrawingByRasterize& arg_rasterize, const KazMath::Vec2<int>& arg_mapIDMaxSize);
+		DrawingByRasterize& arg_rasterize);
 	void SetCheckPointDelay(
 		std::vector<std::pair<int, int>> arg_checkPointDelay);
 	void SetState(State arg_state) { m_state = arg_state; }
@@ -162,7 +169,7 @@ public:
 public:
 	void SetRootPos(
 		std::vector<std::pair<float, float>> arg_rootPos) {
-		m_rootPos = arg_rootPos;
+		//m_rootPos = arg_rootPos;
 	}
 	void SetCheckSoundPos(
 		std::vector<std::pair<float, float>> arg_checkSoundPos) {
@@ -177,8 +184,10 @@ public:
 		m_offset_y = arg_offsets.second;
 	}
 
+	void WriteFootprint();
+
 
 private:
-
-
+	void Move();
+	void CalcMoveVec();
 };
