@@ -12,7 +12,7 @@ public:
 	void Load(DrawingByRasterize& arg_rasterize);
 
 	/// <summary>
-	/// 初期化
+	/// 初期化。UpdateとDrawが呼ばれていれば、Initを一度呼ぶ事で煙が現れます。
 	/// </summary>
 	/// <param name="arg_pos">発生地点</param>
 	/// <param name="arg_range">発生範囲</param>
