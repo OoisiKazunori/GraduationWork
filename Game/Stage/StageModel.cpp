@@ -101,5 +101,5 @@ void MagazinModel::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	{
 		return;
 	}
-	m_stageModelRender.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+	m_stageModelRender.m_model.DrawRasterize(arg_rasterize, m_transform, KazMath::Color(39,202, 60,255));
 }
