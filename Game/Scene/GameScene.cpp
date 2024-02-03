@@ -187,6 +187,7 @@ void GameScene::Input()
 	if (m_isTitle && KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
 	{
 		m_isTitle = false;
+		Menu::InitGetFileIndex();
 		//大きめのエコーを出す
 		EchoArray::Instance()->Generate(m_player->GetTransform().pos, 80.0f, Echo::COLOR::WHITE);
 
@@ -301,14 +302,14 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 						m_isClear = true;
 					}
 				}
-				else if (m_isToStartPos && (l_nowStageNum == 1 || l_nowStageNum == 2))
+				else if (m_isToStartPos)
 				{
 					//スタートのポジション
 					goalPos = m_stageManager.m_player->m_transform.pos;
 					playerGoalDistane = goalPos - playerPos;
 					if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 					{
-						if (StageSelectScene::GetStartStageNum() == 0)
+						if (StageSelectScene::startStageNum == 0)
 						{
 							/*m_isToStartPos = true;
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);*/
@@ -320,6 +321,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 						{
 							StageSelectScene::startStageNum -= 1;
 							m_sceneNum = 3;
+							m_isClear = true;
 						}
 					}
 				}
