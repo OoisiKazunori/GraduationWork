@@ -8,7 +8,7 @@ private:
 	BasicDraw::BasicModelRender m_model;
 	KazMath::Transform3D m_transform;
 	int m_exitTimer;
-	const int EXIT_TIMER = 90;
+	const int EXIT_TIMER = 240;
 	bool m_isActive;
 
 public:

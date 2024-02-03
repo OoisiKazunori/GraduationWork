@@ -80,7 +80,7 @@ private:
 
 	//‰¼‚Å‘«Õ‚ğ•`‰æ‚·‚é—pB
 	float m_footprintSpan;
-	const float FOOTPRINT_SPAN = 5;
+	const float FOOTPRINT_SPAN = 2;
 	bool m_footprintSide;
 
 
@@ -181,6 +181,8 @@ public:
 		m_offset_x = arg_offsets.first;
 		m_offset_y = arg_offsets.second;
 	}
+
+	void WriteFootprint();
 
 
 private:

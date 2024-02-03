@@ -208,10 +208,10 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//心音のタイマー
 	m_heatbeatTimer += 1.0f * StopMgr::Instance()->GetGameSpeed();
 	float heartBeatTimer = HEARTBEAT_TIMER;
-	float heartBeatRange = 60.0f;
+	float heartBeatRange = 40.0f;
 	if (m_isFoundToEnemy) {
 		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
-		heartBeatRange = 150.0f;
+		heartBeatRange = 90.0f;
 	}
 	if (m_isDebug) {
 		heartBeatRange = 1500;
@@ -251,43 +251,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	}
 
 	PlayerStatus::Instance()->m_isFound = m_isFoundToEnemy;
-
-
-	////移動した量
-	//float moveLength = KazMath::Vec3<float>(KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).Length();
-
-	////移動した量が0だったら処理を飛ばす。
-	//if (0.01f < moveLength) {
-
-	//	KazMath::Transform3D footprintTransform = m_transform;
-
-	//	//地面に移動。
-	//	footprintTransform.pos.y = -49.0f;
-
-	//	//移動した方向から回転を計算する。上ベクトルは一旦固定。
-	//	KazMath::Vec3<float> axisX = KazMath::Vec3<float>(KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).GetNormal();
-	//	KazMath::Vec3<float> axisY = KazMath::Vec3<float>(0.0f, 1.0f, 0.0f);
-	//	KazMath::Vec3<float> axisZ = axisX.Cross(axisY);
-	//	DirectX::XMMATRIX rotationMat = DirectX::XMMatrixIdentity();
-	//	rotationMat.r[0] = { axisX.x, axisX.y, axisX.z, 0.0f };
-	//	rotationMat.r[1] = { axisY.x, axisY.y, axisY.z, 0.0f };
-	//	rotationMat.r[2] = { axisZ.x, axisZ.y, axisZ.z, 0.0f };
-	//	footprintTransform.quaternion = DirectX::XMQuaternionRotationMatrix(rotationMat);
-
-	//	const float FOOTPRINT_LENGTH = 0.2f;
-	//	int footprintCount = static_cast<int>(moveLength / FOOTPRINT_LENGTH);
-	//	for (int index = 0; index < 1; ++index) {
-
-	//		//足跡を生成。
-	//		FootprintMgr::Instance()->Generate(footprintTransform);
-
-	//		//足跡の位置をずらす。
-	//		footprintTransform.pos += KazMath::Vec3<float>(KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).GetNormal() * FOOTPRINT_LENGTH;
-
-
-	//	}
-
-	//}
 
 	
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_UP, "PlayerDebugMode", "UPKey")) {

@@ -95,6 +95,21 @@ bool CheckOutline(uint2 arg_uv, float4 arg_baseNormal, float4 arg_baseWorld, ino
     
 }
 
+bool CanWriteStageOutline(uint2 arg_uv)
+{
+    
+    float3 color = SamplingPixel(OutlineColor, arg_uv);
+    
+    //サンプリング先が白かった場合、そこはステージなので書き込んで良し。
+    bool isStage = 0.99f < color.r && 0.99f < color.g && 0.99f < color.b;
+    
+    //サンプリング先が真っ黒だった場合、そこはステージ外なのでOK
+    bool isOutStage = length(color) <= 0.0f;
+    
+    return isStage || isOutStage;
+    
+}
+
 [numthreads(16, 16, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
@@ -148,6 +163,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
     normal += SamplingPixel(TargetNormal, DTid.xy + uint2(-OUTLINE_THICKNESS, -OUTLINE_THICKNESS)).xyz;
     normal += SamplingPixel(TargetNormal, DTid.xy + uint2(-OUTLINE_THICKNESS, OUTLINE_THICKNESS)).xyz;
     normal += SamplingPixel(TargetNormal, DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS)).xyz;
+    normal /= 8.0f;
 
 	//周囲のピクセルの深度値の平均を計算する。
     float depth = length(m_outlineCenterPos - SamplingPixel(TargetWorld, DTid.xy + uint2(OUTLINE_THICKNESS, 0)).xyz);
@@ -169,6 +185,32 @@ void main(uint3 DTid : SV_DispatchThreadID)
         isOutline = false;
     }
     
+    //アウトラインの色が白の場合、ステージである。
+    float4 outlineColor = SamplingPixel(OutlineColor, DTid.xy);
+    bool isStage = 0.99f < outlineColor.r && 0.99f < outlineColor.g && 0.99f < outlineColor.b;
+    
+    //ステージだった場合周囲の色を検索し、真っ黒(何も描画されていない)以外の色があったらエッジを描画しない。
+    if (isStage)
+    {
+        
+        bool isOtherColor = false;
+        
+        isOtherColor |= !CanWriteStageOutline(DTid.xy + uint2(OUTLINE_THICKNESS, 0));
+        isOtherColor |= !CanWriteStageOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, 0));
+        isOtherColor |= !CanWriteStageOutline(DTid.xy + uint2(0, OUTLINE_THICKNESS));
+        isOtherColor |= !CanWriteStageOutline(DTid.xy + uint2(0, -OUTLINE_THICKNESS));
+        isOtherColor |= !CanWriteStageOutline(DTid.xy + uint2(OUTLINE_THICKNESS, OUTLINE_THICKNESS));
+        isOtherColor |= !CanWriteStageOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, -OUTLINE_THICKNESS));
+        isOtherColor |= !CanWriteStageOutline(DTid.xy + uint2(-OUTLINE_THICKNESS, OUTLINE_THICKNESS));
+        isOtherColor |= !CanWriteStageOutline(DTid.xy + uint2(OUTLINE_THICKNESS, -OUTLINE_THICKNESS));
+        
+        if (isOtherColor)
+        {
+            isOutline = false;
+
+        }
+        
+    }
     
 
     //シルエット用のマスクならアウトラインを描画しない
@@ -187,9 +229,10 @@ void main(uint3 DTid : SV_DispatchThreadID)
         //サンプリングした位置に応じて色を暗くする。
         float edgeDistance = 1.0f - clamp(length(sampleWorldPos - m_outlineCenterPos) / m_outlineLength, 0.0f, 0.8f);
         
-        float4 outlineColor = SamplingPixel(OutlineColor, DTid.xy);
         OutputAlbedo[DTid.xy] += outlineColor * edgeDistance;
         OutputEmissive[DTid.xy] += outlineColor * edgeDistance;
+            
+        
     }
     else
     {
@@ -198,7 +241,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
             float4 silhouetteTexture = SilhouetteTex[DTid.xy];
             OutputAlbedo[DTid.xy] = silhouetteTexture;
             OutputEmissive[DTid.xy] = silhouetteTexture;
-        }      
+        }
     }
     
     ////中心地点から一定の距離だったら
