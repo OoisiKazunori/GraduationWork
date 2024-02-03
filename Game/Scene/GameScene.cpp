@@ -527,6 +527,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				{
 					m_stageManager.m_clip1.reset();
 					//とった処理ここに入れる
+					Menu::GetFile(0);
 				}
 			}
 		}
@@ -541,6 +542,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				{
 					m_stageManager.m_clip2.reset();
 					//とった処理ここに入れる
+					Menu::GetFile(1);
 				}
 			}
 		}
@@ -555,6 +557,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				{
 					m_stageManager.m_clip3.reset();
 					//とった処理ここに入れる
+					Menu::GetFile(2);
 				}
 			}
 		}
@@ -569,6 +572,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				{
 					m_stageManager.m_clip4.reset();
 					//とった処理ここに入れる
+					Menu::GetFile(3);
 				}
 			}
 		}

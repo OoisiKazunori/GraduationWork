@@ -314,7 +314,7 @@ void Menu::InitGetFileIndex()
 {
 	for (int i = 0; i < C_FileCount; i++)
 	{
-		//_getFileIndex[i] = false;
+		_getFileIndex[i] = false;
 	}
 }
 
@@ -361,4 +361,10 @@ Menu::Menu(DrawingByRasterize& arg_rasterize) :
 	fileStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
 	toTitleStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
 	toEndStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
+}
+
+void Menu::GetFile(int f_index)
+{
+	if (f_index <= -1 || f_index >=_getFileIndex.size()) return;
+	_getFileIndex[f_index] = true;
 }
