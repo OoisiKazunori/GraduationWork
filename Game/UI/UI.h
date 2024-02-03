@@ -337,6 +337,9 @@ public:
 		ToDoMax,
 	};
 
-	ToDoList _nowTask;
-
+	static ToDoList _nowTask;
+	//ƒ^ƒCƒgƒ‹‚Ì‚Æ‚±‚Å‰Šú‰»‚µ‚½‚¢
+	void Init();
+	void Update();
+	void Draw();
 };

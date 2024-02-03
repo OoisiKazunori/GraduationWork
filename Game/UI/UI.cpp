@@ -1068,4 +1068,4 @@ void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
 	_fKeyTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, _fKeyTex.m_color);
 }
 
-
+ToDoUI::ToDoList ToDoUI::_nowTask = ToDoList::LookFile;
