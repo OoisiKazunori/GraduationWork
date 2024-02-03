@@ -87,6 +87,7 @@ public:
 	static bool GetIsGameEnd(){ return isGameEnd; }
 	static void SetIsGameEnd(bool f_flag) { isGameEnd = f_flag; }
 	static void SetSceneName(SceneName f_sceneName){ m_SceneName = f_sceneName; }
+	static void GetFile(int f_index);
 	static bool IsSceneChange()
 	{
 		if (!isSceneChange)return false;
