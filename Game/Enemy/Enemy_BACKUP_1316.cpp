@@ -133,7 +133,7 @@ void Enemy::Update(
 	m_isCombat = false;
 	if (CheckDistXZ(
 		l_pPos, EnemyConfig::eyeCheckDist) &&
-		CheckEye(arg_playerTransform.pos, arg_stageColliders))
+		CheckEye(arg_playerPos, arg_stageColliders))
 	{
 		m_checkEyeDelay--;
 
@@ -282,7 +282,7 @@ void Enemy::Update(
 
 
 	m_trans.GetFront();
-	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
+	m_inform.Update(m_trans.pos, arg_playerTransform);
 
 }
 
@@ -308,14 +308,16 @@ void Enemy::Draw(
 			m_trans,
 			l_player);
 	}
-
-	m_inform.Draw(arg_rasterize, arg_blasVec);
-
 }
 
+<<<<<<< HEAD
+	m_inform.Draw(arg_rasterize, arg_blasVec);
+=======
 void Enemy::CalcMoveVec()
 {
 	if (m_positions.size() <= 1) { return; }
+	//m_inform.Draw(arg_rasterize);
+>>>>>>> origin/dev_Bullet
 
 
 	KazMath::Vec3<float> l_firstPos;
