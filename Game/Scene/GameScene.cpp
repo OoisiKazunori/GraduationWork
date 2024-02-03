@@ -241,7 +241,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				m_enemyManager->Update(
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
-					m_player->GetTransform().pos,
+					m_player->GetTransform(),
 					m_stageMeshCollision);
 
 				if (m_debugCameraFlag)
@@ -402,7 +402,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_enemyManager->Update(
 						m_stageManager.GetColliders(),
 						m_bulletMgr,
-						m_player->GetTransform().pos,
+						m_player->GetTransform(),
 						m_stageMeshCollision);
 
 					if (m_debugCameraFlag)

@@ -282,7 +282,7 @@ void Enemy::Update(
 
 
 	m_trans.GetFront();
-	m_inform.Update(m_trans.pos, arg_playerTransform);
+	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 
 }
 
