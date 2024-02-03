@@ -8,168 +8,48 @@ InformEnemy::InformEnemy()
 void InformEnemy::Load(DrawingByRasterize& arg_rasterize)
 {
 	m_circle.m_tex.Load(arg_rasterize, "Resource/Inform/Ring.png", true);
-	m_screenTex.m_tex.Load(arg_rasterize, "Resource/Test/white1x1.png", true);
-	m_interBoxTex.m_tex.Load(arg_rasterize, "Resource/Test/white1x1.png", true);
 
-	m_screen.scale = { 50.0f,50.0f };
-	m_interBox.scale = { 50.0f,50.0f };
-	m_larpSreen.scale = { 50.0f,50.0f };
 }
 
-void InformEnemy::Update(const KazMath::Vec3<float>& arg_pos, KazMath::Transform3D& arg_playerPos)
+void InformEnemy::Update(const KazMath::Vec3<float>& arg_enemyPos, KazMath::Transform3D& arg_playerTransform)
 {
-	m_playerPos = arg_playerPos.pos;
-	m_enemyPos = arg_pos;
-	if (100.0f <= arg_pos.Distance(arg_playerPos.pos))
-	{
-		m_activeFlag = false;
-		return;
-	}
-	else
-	{
-		m_activeFlag = true;
-	}
+	
+	//プレイヤーから敵までのベクトル
+	KazMath::Vec3<float> playerToEnemyVec = KazMath::Vec3<float>(arg_enemyPos - arg_playerTransform.pos).GetNormal();
+	//プレイヤーの正面ベクトル
+	KazMath::Vec3<float> playerForwardVec = arg_playerTransform.GetFront();
 
+	//各ベクトルのY軸を0にしてXZ平面にする。
+	playerToEnemyVec.y = 0.0f;
+	playerToEnemyVec.Normalize();
+	playerForwardVec.y = 0.0f;
+	playerForwardVec.Normalize();
 
+	//正面ベクトルを基準にXZ平面での角度を求める。
+	m_xzAngle = acosf(playerForwardVec.Dot(playerToEnemyVec));
 
-
-
-	//敵のいる方向を内積取って角度を得る
-	if (m_crossFlag)
-	{
-		//float dotNum = acos(pZVec2.Dot(peVec2));
-		//m_radian = m_offset + (m_offset - dotNum);
+	//正面ベクトル基準で右か左かで対照的に動くため、ここでは左側だった場合に-1.0fを書けることで正しい角度に修正する。
+	if (0.0f < playerForwardVec.Cross(playerToEnemyVec).y) {
+		m_xzAngle *= -1.0f;
 	}
 
+	//回転を適用。
+	m_transform.rotation = -DirectX::XMConvertToDegrees(m_xzAngle);
 
-	const KazMath::Vec2<float>centralPos(1280.0f / 2, 720.0f / 2.0f);
-	//敵の位置
-	KazMath::Vec3<float> screenPos = KazMath::ConvertWorldPosToScreenPos(
-		arg_pos,
-		CameraMgr::Instance()->GetViewMatrix(),
-		CameraMgr::Instance()->GetPerspectiveMatProjection()
-	);
+	//位置を調整。
+	m_transform.pos = KazMath::Vec2<float>(1280.0f / 2.0f, 720.0f / 2.0f);
+	KazMath::Vec2<float> screenPos = KazMath::Vec2<float>(sinf(m_xzAngle), cosf(m_xzAngle));
+	screenPos.x *= -1.0f;
+	screenPos.y *= -1.0f;
+	m_transform.pos += screenPos * 200.0f;
 
-	const float radius = 300.0f;
-	std::vector<KazMath::Vec2<float>>posArray;
-	//画面内の処理--------------------------------
-	if (screenPos.z < 1.0f)
-	{
-		m_screen.pos = screenPos.ConvertVec2();
-		m_screen.pos.x = std::clamp(m_screen.pos.x, 0.0f, 1280.0f);
-		m_screen.pos.y = std::clamp(m_screen.pos.y, 0.0f, 720.0f);
-
-		//画面中心-enemy
-		KazMath::Vec2<float>c_ePos(m_screen.pos - centralPos);
-		c_ePos.Normalize();
-
-		m_cross = KazMath::Vec2<float>(0.0f, -1.0f).Cross(c_ePos);
-		posArray = GetCrossPoints(centralPos, centralPos + c_ePos * 400.0f, centralPos, radius, &m_radian);
-
-		m_crossFlag = m_cross <= 0.0f;
-		if (m_crossFlag != m_prevCrossFlag)
-		{
-			m_offset = m_radian;
-			m_lerpRadian = m_offset;
-		}
-		m_prevCrossFlag = m_crossFlag;
-
-		//正面かつ画面下に敵がいる場合は画面上部にもっていく
-		if (m_screen.pos.x <= WIN_X / 2.0f - 100.0f && WIN_X / 2.0f + 100.0f <= m_screen.pos.x)
-		{
-			posArray[1] = { cosf(KazMath::AngleToRadian(90.0f)) * radius,sinf(KazMath::AngleToRadian(90.0f)) * radius };
-		}
-	}
-	//画面内の処理--------------------------------
-	//画面外の処理--------------------------------
-	else
-	{
-		KazMath::Vec3<float>playerEenemyVec(arg_playerPos.pos - arg_pos);
-		playerEenemyVec.Normalize();
-		KazMath::Vec3<float>playerZVec(arg_playerPos.GetFront());
-		playerZVec.y = 0.0f;
-		m_playerFrontVec = playerZVec;
-
-		KazMath::Vec2<float>peVec2(playerEenemyVec.x, playerEenemyVec.z);
-		KazMath::Vec2<float>pZVec2(playerZVec.x, playerZVec.z);
-
-		m_cross = pZVec2.Cross(peVec2);
-
-		//敵が左側ならこの位置
-		if (m_cross <= -0.2f)
-		{
-			m_radian = KazMath::AngleToRadian(140.0f);
-		}
-		else if (0.2f <= m_cross)
-		{
-			m_radian = KazMath::AngleToRadian(40.0f);
-		}
-		else
-		{
-			m_radian = KazMath::AngleToRadian(90.0f);
-		}
-
-
-		//m_radian = atan(pZVec2.Dot(peVec2));
-
-
-		//std::vector<KazMath::Vec2<float>>posArray = GetCrossPoints(centralPos, centralPos + peVec2 * 400.0f, centralPos, radius, &m_radian);
-		//if (posArray.size() != 0)
-		//{
-		//	m_interBox.pos = posArray[0];
-		//	m_transform.pos = { 1280.0f / 2.0f + cosf(m_radian) * radius,720.0f / 2.0f + sinf(m_radian) * radius };
-		//}
-
-	}
-	//画面外の処理--------------------------------
-
-
-	KazMath::Larp(m_radian, &m_lerpRadian, 0.1f);
-	if (screenPos.z < 1.0f)
-	{
-		if (posArray.size() != 0)
-		{
-			m_interBox.pos = posArray[1];
-			m_transform.pos = { 1280.0f / 2.0f + cosf(m_lerpRadian) * radius,720.0f / 2.0f + sinf(m_lerpRadian) * radius };
-		}
-		if (m_crossFlag)
-		{
-			m_transform.rotation = (float)KazMath::RadianToAngle(m_lerpRadian) + 90.0f;
-		}
-		else
-		{
-			m_radianFlag = posArray[1].y <= WIN_Y / 2.0f;
-			if (m_radianFlag != m_prevRadianFlag)
-			{
-				m_angleOffset = m_transform.rotation;
-			}
-			m_prevRadianFlag = m_radianFlag;
-			//右上半分は正常な回転
-			if (m_radianFlag)
-			{
-				m_transform.rotation = -(float)KazMath::RadianToAngle(m_lerpRadian) + 90.0f;
-			}
-			//右下半分は逆回転になるのでその調整
-			else
-			{
-				m_transform.rotation = (float)KazMath::RadianToAngle(m_lerpRadian) + 90.0f;
-			}
-		}
-	}
-	else
-	{
-		m_interBox.pos = { centralPos.x + cosf(m_lerpRadian) * radius,centralPos.y + sinf(m_lerpRadian) * radius };
-		m_transform.pos = { 1280.0f / 2.0f + cosf(m_lerpRadian) * radius,720.0f / 2.0f + sinf(m_lerpRadian) * radius };
-		m_transform.rotation = (float)KazMath::RadianToAngle(m_lerpRadian) + 90.0f;
-	}
 }
 
 void InformEnemy::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)
 {
+
 	ImGui::Begin("InformEnemy");
-	ImGui::Text("cross:%f", m_cross);
-	ImGui::Text("angle:%d", KazMath::RadianToAngle(m_radian));
-	ImGui::DragFloat("Angle", &m_transform.rotation);
+	ImGui::DragFloat("XZAngle : ", &m_transform.rotation);
 	ImGui::End();
 
 	if (!m_activeFlag)
@@ -177,8 +57,5 @@ void InformEnemy::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 		return;
 	}
 	m_circle.m_tex.Draw2D(arg_rasterize, m_transform);
-	m_screenTex.m_tex.Draw2D(arg_rasterize, m_screen);
-
-	m_interBoxTex.m_tex.Draw2D(arg_rasterize, m_interBox, KazMath::Color(255, 0, 0, 255));
 
 }
