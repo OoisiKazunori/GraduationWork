@@ -300,6 +300,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 							m_isToStartPos = true;
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
 							m_todo.NextTask();
+							//なんか見せるならフラグ立てるか
+
 						}
 					}
 					else
