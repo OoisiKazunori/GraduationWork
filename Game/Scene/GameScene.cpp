@@ -553,6 +553,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					Menu::firstLookFile = true;
 					Menu::firstLookFileIndex = 0;
 					isClip = false;
+					m_stageManager.Erase1StageCol();
 					m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
 				}
 			}

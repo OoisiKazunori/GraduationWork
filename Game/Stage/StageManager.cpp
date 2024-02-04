@@ -202,6 +202,13 @@ bool StageManager::ChangeSceneTrigger()
 	return false;
 }
 
+void StageManager::Erase1StageCol()
+{
+	auto itr = m_collisions[m_nowStageNumber].end();
+	--itr;
+	m_collisions[m_nowStageNumber].erase(itr);
+}
+
 void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum)
 {
 	m_phone.clear();
@@ -346,6 +353,17 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			auto collision = std::make_shared<MeshCollision>();
 			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
 			m_collisions[m_nowStageNumber].push_back(collision);
+		}
+	}
+	if ((int)m_collisions[3].size() == 0)
+	{
+		m_colStage[3] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "1stagesaku.gltf", true,
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		for (auto& index : m_colStage[3]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting(index.vertexData, m_colStage[3]->m_transform);
+			m_collisions[0].push_back(collision);
+			m_collisions[3].push_back(collision);
 		}
 	}
 }

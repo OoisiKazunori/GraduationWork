@@ -36,7 +36,7 @@ private:
 
 	std::list<std::unique_ptr<StageModel>> m_plane;
 
-	std::list<std::shared_ptr<MeshCollision>> m_collisions[3];
+	std::list<std::shared_ptr<MeshCollision>> m_collisions[4];
 	//その他木等の外部オブジェクトモデル--------------------------------
 
 	//ステージ切り替え前に必ず呼び出してください
@@ -55,6 +55,7 @@ public:
 
 	void CheckInEcho(std::weak_ptr<MeshCollision> arg_stageMeshCollision);
 
+	void Erase1StageCol();
 	std::list<std::unique_ptr<StageModel>> m_stone;
 	std::list<std::unique_ptr<MagazinModel>> m_magazin;
 	std::unique_ptr<MagazinModel> m_clip1;
@@ -64,7 +65,7 @@ public:
 
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions[m_nowStageNumber]; };
 	std::unique_ptr<StageModel> m_stage[3];
-	std::unique_ptr<StageModel> m_colStage[3];
+	std::unique_ptr<StageModel> m_colStage[4];
 	std::unique_ptr<StageModel> m_player;
 	KazMath::Transform3D GetGoalTransform();
 	//何体いるか1からカウントされる
