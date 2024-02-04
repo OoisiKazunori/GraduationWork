@@ -114,6 +114,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\BGM\BGMController.cpp" />
     <ClCompile Include="Game\Bullet\Bullet.cpp" />
     <ClCompile Include="Game\Bullet\BulletMgr.cpp" />
     <ClCompile Include="Game\Bullet\EchoBullet.cpp" />
@@ -247,6 +248,7 @@
   <ItemGroup>
     <ClInclude Include="..\Mineral\Game\Effect\ChromaticAberration.h" />
     <ClInclude Include="Game\AI\EnemyAIData.h" />
+    <ClInclude Include="Game\BGM\BGMController.h" />
     <ClInclude Include="Game\Bullet\Bullet.h" />
     <ClInclude Include="Game\Bullet\BulletMgr.h" />
     <ClInclude Include="Game\Bullet\EchoBullet.h" />

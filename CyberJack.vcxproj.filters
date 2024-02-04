@@ -129,6 +129,9 @@
     <ClCompile Include="Game\Effect\TurretFireEffect.cpp" />
     <ClCompile Include="Game\Effect\BulletFireParticle.cpp" />
     <ClCompile Include="Game\Effect\MuzzleFlash.cpp" />
+    <ClCompile Include="Game\Effect\Smoke\SmokeEmitter.cpp" />
+    <ClCompile Include="Game\Effect\Smoke\SmokeParticle.cpp" />
+    <ClCompile Include="Game\BGM\BGMController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -280,6 +283,9 @@
     <ClInclude Include="Game\Effect\TurretFireEffect.h" />
     <ClInclude Include="Game\Effect\BulletFireParticle.h" />
     <ClInclude Include="Game\Effect\MuzzleFlash.h" />
+    <ClInclude Include="Game\Effect\Smoke\SmokeEmitter.h" />
+    <ClInclude Include="Game\Effect\Smoke\SmokeParticle.h" />
+    <ClInclude Include="Game\BGM\BGMController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
