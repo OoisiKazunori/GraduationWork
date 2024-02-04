@@ -43,6 +43,8 @@ private:
 	bool m_onGround;
 
 	SoundData m_enemyShotSE;
+	const float DEFAULT_SHOT_VOLUME = 0.05f;
+	const float SOUND_RANGE = 200.0f;	//‰¹‚Ì•·‚±‚¦‚é”ÍˆÍB
 
 	std::vector<std::pair<float, float>> m_checkSoundPos;
 	int m_checkSoundCount;

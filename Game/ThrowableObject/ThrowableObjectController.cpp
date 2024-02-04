@@ -82,7 +82,7 @@ void ThrowableObjectController::Update(KazMath::Transform3D arg_playerTransform,
 
 		if (!index->GetIsActive()) continue;
 
-		index->Update(arg_stageColliders);
+		index->Update(arg_stageColliders, arg_playerTransform.pos);
 
 	}
 
