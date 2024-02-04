@@ -3,6 +3,7 @@
 #include "../MapLoader/MapLoader.h"
 #include "../Echo/EchoArray.h"
 #include "../Menu/Menu.h"
+#include "../KazLibrary/Easing/easing.h"
 
 int StageNumCounter::stageNumCount = 0;
 
@@ -81,15 +82,10 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3
 			bird1Ti = 300;
 			EchoArray::Instance()->Generate(m_Bird1->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 150.0f);
 			
-			auto leng = m_Bird1->m_transform.pos - f_playerPos.pos;
-			float hoge = leng.x + leng.y + leng.z;
-			hoge = hoge / 200.0f;
-			if (hoge < 0)
-			{
-				hoge = hoge * -1.0f;
-			}
-			hoge = (1.0f - hoge);
-			birdSound1.volume = 0.09f * hoge;
+			float distance = KazMath::Vec3<float>(m_Bird1->m_transform.pos - f_playerPos.pos).Length();
+			float range = 1.0f - std::clamp(distance / 200.0f, 0.0f, 1.0f);
+			range = EasingMaker(In, Quad, range);
+			birdSound1.volume = 0.06f * range;
 			SoundManager::Instance()->SoundPlayerWave(birdSound1, 0);
 		}
 		if (bird2Ti <= 0)
@@ -97,15 +93,10 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3
 			bird2Ti = 500;
 			EchoArray::Instance()->Generate(m_Bird2->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
 			
-			auto leng = m_Bird2->m_transform.pos - f_playerPos.pos;
-			float hoge = leng.x + leng.y + leng.z;
-			hoge = hoge / 200.0f;
-			if (hoge < 0)
-			{
-				hoge = hoge * -1.0f;
-			}
-			hoge = (1.0f - hoge);
-			birdSound2.volume = 0.09f * hoge;
+			float distance = KazMath::Vec3<float>(m_Bird2->m_transform.pos - f_playerPos.pos).Length();
+			float range = 1.0f - std::clamp(distance / 200.0f, 0.0f, 1.0f);
+			range = EasingMaker(In, Quad, range);
+			birdSound2.volume = 0.06f * range;
 			
 			SoundManager::Instance()->SoundPlayerWave(birdSound2, 0);
 		}
@@ -114,15 +105,10 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3
 			bird3Ti = 500;
 			EchoArray::Instance()->Generate(m_Bird3->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
 			
-			auto leng = m_Bird3->m_transform.pos - f_playerPos.pos;
-			float hoge = leng.x + leng.y + leng.z;
-			hoge = hoge / 200.0f;
-			if (hoge < 0)
-			{
-				hoge = hoge * -1.0f;
-			}
-			hoge = (1.0f - hoge);
-			birdSound3.volume = 0.09f * hoge;
+			float distance = KazMath::Vec3<float>(m_Bird3->m_transform.pos - f_playerPos.pos).Length();
+			float range = 1.0f - std::clamp(distance / 200.0f, 0.0f, 1.0f);
+			range = EasingMaker(In, Quad, range);
+			birdSound3.volume = 0.06f * range;
 
 			SoundManager::Instance()->SoundPlayerWave(birdSound3, 0);
 		}
