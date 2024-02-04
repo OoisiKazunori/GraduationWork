@@ -77,7 +77,9 @@ void Enemy::SetData(
 		m_trans);
 
 
-	m_line.Generate(arg_rasterize);
+	for (auto& index : m_line) {
+		index.Generate(arg_rasterize);
+	}
 	m_reaction.Load(arg_rasterize);
 	m_shotDelay = 0;
 	m_appearTimer = 0;
@@ -133,6 +135,8 @@ void Enemy::Init(
 
 	m_currentPoint = 0;
 	m_radian = 0.0f;
+
+	m_sightRotation = 0;
 }
 
 void Enemy::Update(
@@ -276,33 +280,43 @@ void Enemy::Update(
 
 	//正面方向にレイを飛ばして、照準線用のデータを計算する。
 	float minLength = (std::numeric_limits<float>::max)();
-	KazMath::Vec3<float> impactPoint;
 	bool isHit = false;
+	KazMath::Transform3D checkHitTransform = m_trans;
+	checkHitTransform.pos.y += 4.0f;
 	for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr)
 	{
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(checkHitTransform.pos, checkHitTransform.GetFront());
 
-		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_trans.pos, m_trans.GetFront());
+		if (rayResult.m_isHit) {
+			int a = 0;
+		}
 
 		//どこかに当たった場合
-		if (!(rayResult.m_isHit && 0.0f < rayResult.m_distance)) continue;
+		if (!(rayResult.m_isHit && 0 < rayResult.m_distance)) continue;
 
 		//距離を比べる
 		if (minLength < rayResult.m_distance) continue;
 
 		minLength = rayResult.m_distance;
-		impactPoint = rayResult.m_position;
 		isHit = true;
 
 	}
 
 	if (isHit) {
 
-		m_lineOfSightPos[0] = m_trans.pos;
-		m_lineOfSightPos[0] += 4.0f;
-		m_lineOfSightPos[1] = impactPoint;
-		m_lineOfSightPos[1] += 4.0f;
+		m_lineOfSightPos[0] = checkHitTransform.pos;
+		m_lineOfSightPos[0].y -= 0.5f;
+		m_lineOfSightPos[1] = checkHitTransform.pos + m_trans.GetFront() * minLength;
+		m_lineOfSightPos[1].y -= 0.5f;
 
 	}
+	else {
+
+		m_lineOfSightPos[0] = KazMath::Vec3<float>();
+		m_lineOfSightPos[1] = KazMath::Vec3<float>();
+
+	}
+	m_sightRotation += 0.3f;
 
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 }
@@ -339,7 +353,17 @@ void Enemy::Draw(
 
 	m_gunEffect->Draw(arg_rasterize, arg_blasVec);
 
-	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0], m_lineOfSightPos[1], KazMath::Color(172, 50, 50, 255));
+	if (0 < KazMath::Vec3<float>(m_lineOfSightPos[0] - m_lineOfSightPos[1]).Length()) {
+		KazMath::Transform3D transform = m_trans;
+		transform.Rotation(transform.GetFront(), m_sightRotation);
+		KazMath::Vec3<float> right = transform.GetRight() * 0.05f;
+		KazMath::Vec3<float> up = transform.GetUp() * 0.05f;
+		m_line[0].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] + right + up, m_lineOfSightPos[1] + right + up, KazMath::Color(172, 50, 50, 255));
+		m_line[1].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] - right + up, m_lineOfSightPos[1] - right + up, KazMath::Color(172, 50, 50, 255));
+		m_line[2].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] - right - up, m_lineOfSightPos[1] - right - up, KazMath::Color(172, 50, 50, 255));
+		m_line[3].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] + right - up, m_lineOfSightPos[1] + right - up, KazMath::Color(172, 50, 50, 255));
+	}
+
 }
 
 bool Enemy::IsInSight(

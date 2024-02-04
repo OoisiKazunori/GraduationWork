@@ -23,8 +23,9 @@ private:
 		BasicDraw::BasicModelRender> m_pedestal;
 
 	//Æ€ü—p
-	BasicDraw::BasicLineRender m_line;
+	std::array<BasicDraw::BasicLineRender, 4> m_line;
 	std::array<KazMath::Vec3<float>, 2> m_lineOfSightPos;
+	float m_sightRotation;	//Æ€ü‚ğ‚®‚é‚®‚é‰ñ“]‚³‚¹‚é—p
 
 	std::shared_ptr<MeshCollision> m_meshCol;
 
