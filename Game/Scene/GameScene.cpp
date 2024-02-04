@@ -394,7 +394,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		}
 		//リザルト出す
-		if (m_resultManager.GetResultShow())
+		if (m_resultManager.GetResultShow() && !m_resultManager.m_isClear)
 		{
 			m_resultManager.Update();
 			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
@@ -405,6 +405,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				StageSelectScene::startStageNum = 0;
 				//
 			}
+		}
+		else if (m_resultManager.GetResultShow() && m_resultManager.isToTile)
+		{
+			m_sceneNum = 1;
+			StageSelectScene::startStageNum = 0;
 		}
 
 		//クリップとの当たり判定
