@@ -125,7 +125,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false), m_firstFlameFlag(false)
 	EchoArray::Instance()->Setting();
 	m_rayPipeline->SetEchoStructuredBufferData(EchoArray::Instance()->GetEchoStructuredBuffer());
 
-	//BGMController::Instance()->Setting();
+	BGMController::Instance()->Setting();
 }
 
 SceneManager::~SceneManager()

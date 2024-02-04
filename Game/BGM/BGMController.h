@@ -9,9 +9,9 @@ public:
 
 	enum class BGM {
 
-		EMERGENCY,	//”­Œ©ŽžBGM
-		INDOOR,		//Žº“à
 		OUTSIDE,	//ŽºŠO
+		INDOOR,		//Žº“à
+		EMERGENCY,	//”­Œ©ŽžBGM
 		MAX,
 
 	};
