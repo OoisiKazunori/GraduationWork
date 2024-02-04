@@ -1837,13 +1837,18 @@ namespace DrawFuncData
 		//’¸“_î•ñ
 		drawCallData.drawCommandType = VERT_TYPE::INSTANCE;
 
+		struct MatrixData
+		{
+			DirectX::XMMATRIX m_worldMat;
+			DirectX::XMMATRIX m_viewProjMat;
+		};
 		//s—ñî•ñ
 		drawCallData.extraBufferArray.emplace_back(
-			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX))
+			KazBufferHelper::SetConstBufferData(sizeof(MatrixData))
 		);
 		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
-		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMMATRIX);
+		drawCallData.extraBufferArray.back().structureSize = sizeof(MatrixData);
 		//Fî•ñ
 		drawCallData.extraBufferArray.emplace_back(
 			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMFLOAT4))
@@ -1852,8 +1857,14 @@ namespace DrawFuncData
 		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
 		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMFLOAT4);
 
+		drawCallData.extraBufferArray.emplace_back();
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
 		drawCallData.pipelineData = lData;
 		drawCallData.drawInstanceCommandData.topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+
+		drawCallData.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 		return drawCallData;
 	}
 

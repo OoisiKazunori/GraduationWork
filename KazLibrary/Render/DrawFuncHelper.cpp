@@ -374,11 +374,21 @@ void DrawFuncHelper::LineRender::Draw(DrawingByRasterize& arg_rasterize, Raytrac
 	posArray[1] = arg_endPos;
 	//座標更新
 	VertexBufferMgr::Instance()->GetVertexBuffer(m_drawCommand.m_modelVertDataHandle).vertBuffer->bufferWrapper->TransData(&posArray, sizeof(DirectX::XMFLOAT3) * 2);
-	DirectX::XMMATRIX mat(DirectX::XMMatrixIdentity() * CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection());
-	m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&mat, sizeof(DirectX::XMMATRIX));
+	struct WorldMatData
+	{
+		DirectX::XMMATRIX world;
+		DirectX::XMMATRIX viewProj;
+	};
+	WorldMatData data;
+	data.world = DirectX::XMMatrixIdentity();
+	data.viewProj= CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+	m_drawCommand.extraBufferArray[0].bufferWrapper->TransData(&data, sizeof(WorldMatData));
 	//色
 	DirectX::XMFLOAT4 color = arg_color.ConvertColorRateToXMFLOAT4();
 	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&color, sizeof(DirectX::XMFLOAT4));
+
+	m_drawCommand.extraBufferArray.back() = EchoArray::Instance()->GetEchoMemoryStructuredBuffer();
+	m_drawCommand.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
 
 	arg_rasterize.ObjectRender(m_drawCommandData);
 }
