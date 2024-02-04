@@ -1837,13 +1837,18 @@ namespace DrawFuncData
 		//í∏ì_èÓïÒ
 		drawCallData.drawCommandType = VERT_TYPE::INSTANCE;
 
+		struct MatrixData
+		{
+			DirectX::XMMATRIX m_worldMat;
+			DirectX::XMMATRIX m_viewProjMat;
+		};
 		//çsóÒèÓïÒ
 		drawCallData.extraBufferArray.emplace_back(
-			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX))
+			KazBufferHelper::SetConstBufferData(sizeof(MatrixData))
 		);
 		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
-		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMMATRIX);
+		drawCallData.extraBufferArray.back().structureSize = sizeof(MatrixData);
 		//êFèÓïÒ
 		drawCallData.extraBufferArray.emplace_back(
 			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMFLOAT4))

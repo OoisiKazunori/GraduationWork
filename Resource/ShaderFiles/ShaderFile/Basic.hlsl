@@ -46,11 +46,18 @@ struct VSOutputWorld
     float3 worldPos : POSITION;
 };
 
+cbuffer MatrixBuffer : register(b0)
+{
+    matrix worldMat;
+    matrix viewProjMat;
+}
+
 VSOutputWorld GBufferVSmain(float4 pos : POSITION)
 {
 	VSOutputWorld op;
-	op.svpos = mul(mat, pos);
-    op.worldPos = float3(0,0,0);
+	op.svpos = mul(worldMat, pos);
+    op.worldPos = op.svpos.xyz;
+    op.svpos = mul(viewProjMat, pos);
 	return op;
 }
 
