@@ -2,6 +2,7 @@
 #include "EnemyConfig.h"
 #include "../Footprint/FootprintMgr.h"
 #include "../Game/Bullet/BulletMgr.h"
+#include <limits>
 
 Enemy::Enemy()
 {
@@ -330,7 +331,39 @@ void Enemy::Update(
 	m_trans.GetFront();
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 
-	//m_inform.Update(m_trans.pos, arg_playerPos);
+
+
+	//正面方向にレイを飛ばして、照準線用のデータを計算する。
+	float minLength = (std::numeric_limits<float>::max)();
+	KazMath::Vec3<float> impactPoint;
+	bool isHit = false;
+	for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr)
+	{
+
+		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_trans.pos, m_trans.GetFront());
+
+		//どこかに当たった場合
+		if (!(rayResult.m_isHit && 0.0f < rayResult.m_distance)) continue;
+
+		//距離を比べる
+		if (minLength < rayResult.m_distance) continue;
+
+		minLength = rayResult.m_distance;
+		impactPoint = rayResult.m_position;
+		isHit = true;
+
+	}
+
+	if (isHit) {
+
+		m_lineOfSightPos[0] = m_trans.pos;
+		m_lineOfSightPos[0] += 4.0f;
+		m_lineOfSightPos[1] = impactPoint;
+		m_lineOfSightPos[1] += 4.0f;
+
+	}
+
+	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 }
 
 
@@ -365,6 +398,8 @@ void Enemy::Draw(
 	m_inform.Draw(arg_rasterize, arg_blasVec);
 
 	m_gunEffect->Draw(arg_rasterize, arg_blasVec);
+
+	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0], m_lineOfSightPos[1], KazMath::Color(172, 50, 50, 255));
 }
 
 bool Enemy::IsInSight(

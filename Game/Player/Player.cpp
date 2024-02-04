@@ -600,7 +600,7 @@ void Player::Collision(std::list<std::shared_ptr<MeshCollision>> f_stageCollider
 		if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= GROUND_RAY) {
 
 			//‰Ÿ‚µ–ß‚µB
-			m_transform.pos += rayResult.m_normal * (GROUND_RAY - rayResult.m_distance);
+			m_transform.pos += rayResult.m_normal * (GROUND_RAY - rayResult.m_distance - 0.2f);
 			m_onGround = true;
 
 		}
