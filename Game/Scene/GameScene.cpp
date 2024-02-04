@@ -523,19 +523,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
 
-
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_RIGHT)) {
-		BGMController::Instance()->ChangeBGM(BGMController::BGM::EMERGENCY);
-	}
-	else if (KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN)) {
-		BGMController::Instance()->ChangeBGM(BGMController::BGM::OUTSIDE);
-	}
-	else if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LEFT)) {
-		BGMController::Instance()->ChangeBGM(BGMController::BGM::INDOOR);
-	}
-	else if (KeyBoradInputManager::Instance()->InputTrigger(DIK_UP)) {
-		BGMController::Instance()->Termination();
-	}
 	BGMController::Instance()->Update();
 }
 

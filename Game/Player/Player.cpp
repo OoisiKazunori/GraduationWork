@@ -14,6 +14,7 @@
 #include "../Effect/StopMgr.h"
 #include "../KazLibrary/Easing/easing.h"
 #include "../KazLibrary/Debug/DebugKey.h"
+#include "../BGM/BGMController.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
@@ -244,15 +245,23 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//リロードの更新処理
 	UpdateReload();
 
+	//BGMを更新。
+	if (PlayerStatus::Instance()->m_isFound) {
 
+		BGMController::Instance()->ChangeBGM(BGMController::BGM::EMERGENCY);
+
+	}
+	else {
+
+		BGMController::Instance()->ChangeBGM(BGMController::BGM::OUTSIDE);
+
+	}
 
 
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_I, "Hakken", "I")) {
 		m_isFoundToEnemy = !m_isFoundToEnemy;
 		StopMgr::Instance()->HitStopStart({ 120, 0.1f });
 	}
-
-	PlayerStatus::Instance()->m_isFound = m_isFoundToEnemy;
 
 	
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_UP, "PlayerDebugMode", "UPKey")) {

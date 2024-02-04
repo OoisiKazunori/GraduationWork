@@ -4,9 +4,9 @@ void BGMController::Setting()
 {
 
 
-	m_BGM[0] = BGMData("Resource/Sound/BGM/EmergencyBGM.wav");
+	m_BGM[0] = BGMData("Resource/Sound/BGM/Kankyo_SE_1_.wav");
 	m_BGM[1] = BGMData("Resource/Sound/BGM/Kankyo_SE_2_.wav");
-	m_BGM[2] = BGMData("Resource/Sound/BGM/Kankyo_SE_1_.wav");
+	m_BGM[2] = BGMData("Resource/Sound/BGM/EmergencyBGM_.wav");
 
 	for (auto& index : m_BGM) {
 		index.m_soundData.volume = 0.0f;
