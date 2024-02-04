@@ -171,6 +171,54 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 		KazMath::Vec3<float>(-21.2f, 90.0f, -4.0f);
 	m_serverEmittData[5].m_emittPos =
 		KazMath::Vec3<float>(-84.2f, 90.0f, -6.0f);
+
+	m_serverEmittData[6].m_emittPos =
+		KazMath::Vec3<float>(-52.9f, 91.7f, -41.8f);
+	m_serverEmittData[6].m_minScale = 0.005f;
+	m_serverEmittData[6].m_maxScale = 0.01f;
+	m_serverEmittData[6].m_minActiveTime = 30;
+	m_serverEmittData[6].m_maxActiveTime = 50;
+	m_serverEmittData[6].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[6].m_smokeTime = 60 * 10;
+
+
+	m_serverEmittData[7].m_emittPos =
+		KazMath::Vec3<float>(-48.9f, 92.0f, -42.8f);
+	m_serverEmittData[7].m_minScale = 0.005f;
+	m_serverEmittData[7].m_maxScale = 0.01f;
+	m_serverEmittData[7].m_minActiveTime = 30;
+	m_serverEmittData[7].m_maxActiveTime = 50;
+	m_serverEmittData[7].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[7].m_smokeTime = 60 * 10;
+
+	m_serverEmittData[8].m_emittPos =
+		KazMath::Vec3<float>(-55.9f, 92.0f, -42.8f);
+	m_serverEmittData[8].m_minScale = 0.005f;
+	m_serverEmittData[8].m_maxScale = 0.01f;
+	m_serverEmittData[8].m_minActiveTime = 30;
+	m_serverEmittData[8].m_maxActiveTime = 50;
+	m_serverEmittData[8].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[8].m_smokeTime = 60 * 10;
+
+
+	m_serverEmittData[9].m_emittPos =
+		KazMath::Vec3<float>(-56.9f, 91.0f, -42.8f);
+	m_serverEmittData[9].m_minScale = 0.005f;
+	m_serverEmittData[9].m_maxScale = 0.01f;
+	m_serverEmittData[9].m_minActiveTime = 30;
+	m_serverEmittData[9].m_maxActiveTime = 50;
+	m_serverEmittData[9].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[9].m_smokeTime = 60 * 10;
+
+	m_serverEmittData[10].m_emittPos =
+		KazMath::Vec3<float>(-46.9f, 91.0f, -43.8f);
+	m_serverEmittData[10].m_minScale = 0.005f;
+	m_serverEmittData[10].m_maxScale = 0.01f;
+	m_serverEmittData[10].m_minActiveTime = 30;
+	m_serverEmittData[10].m_maxActiveTime = 50;
+	m_serverEmittData[10].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[10].m_smokeTime = 60 * 10;
+
 	m_keySound = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Server/Saver_SE_1.wav");
 	m_serverErrorSound = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Server/Saver_SE_2.wav");
 
@@ -196,10 +244,10 @@ void GameScene::Init()
 	{
 		if (m_stageNum == 0)
 		{
-			m_goalPoint.Init({m_stageManager.m_clip1->m_transform.pos.x,
+			m_goalPoint.Init({ m_stageManager.m_clip1->m_transform.pos.x,
 							  m_stageManager.m_clip1->m_transform.pos.y + 5.0f,
 							  m_stageManager.m_clip1->m_transform.pos.z,
-			});
+				});
 			isClip = true;
 		}
 		else
@@ -371,7 +419,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					{
 						if (isClip)
 						{
-							
+
 						}
 						else
 						{
