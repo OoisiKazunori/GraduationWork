@@ -23,9 +23,6 @@ private:
 		BasicDraw::BasicModelRender> m_pedestal;
 
 	//Æ€ü—p
-	std::shared_ptr<
-		BasicDraw::BasicModelRender> m_lineOfSight;
-	KazMath::Transform3D m_lineOfSightTransform;
 	BasicDraw::BasicLineRender m_line;
 	std::array<KazMath::Vec3<float>, 2> m_lineOfSightPos;
 
