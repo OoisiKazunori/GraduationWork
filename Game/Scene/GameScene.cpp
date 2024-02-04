@@ -130,7 +130,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 		m_isTitle = false;
 	}
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
-
+	EchoArray::Instance()->Init();
 }
 
 GameScene::~GameScene()
