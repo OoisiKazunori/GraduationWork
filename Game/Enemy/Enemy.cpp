@@ -349,7 +349,7 @@ void Enemy::Draw(
 
 	m_enemyBox->m_model.DrawRasterize(
 		arg_rasterize,
-		m_trans);
+		m_trans, KazMath::Color(172, 50, 50, 255));
 
 	if (IsFixedTurret())
 	{
@@ -359,7 +359,7 @@ void Enemy::Draw(
 
 		m_pedestal->m_model.DrawRasterize(
 			arg_rasterize,
-			l_trans);
+			l_trans, KazMath::Color(172, 50, 50, 255));
 	}
 
 	m_inform.Draw(arg_rasterize, arg_blasVec);
