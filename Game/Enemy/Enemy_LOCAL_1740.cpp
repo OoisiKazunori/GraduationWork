@@ -1,7 +1,8 @@
 #include "Enemy.h"
 #include "EnemyConfig.h"
-#include "../Footprint/FootprintMgr.h"
 #include "../Game/Bullet/BulletMgr.h"
+#include "../Footprint/FootprintMgr.h"
+#include "../Game/Effect/TurretFireEffect.h"
 
 Enemy::Enemy()
 {
@@ -41,33 +42,13 @@ Enemy::~Enemy()
 void Enemy::SetData(
 	DrawingByRasterize& arg_rasterize)
 {
-	if (m_positions.size() > 1)
-	{
-		//モデルデータ代入
-		m_enemyBox =
-			std::make_unique<BasicDraw::BasicModelRender>(
-				arg_rasterize,
-				"Resource/Enemy/",
-				"Move_Turret.gltf"
-			);
-	}
-	else
-	{
-		//モデルデータ代入
-		m_enemyBox =
-			std::make_unique<BasicDraw::BasicModelRender>(
-				arg_rasterize,
-				"Resource/Enemy/",
-				"Gun.gltf"
-			);
-
-		m_pedestal =
-			std::make_unique<BasicDraw::BasicModelRender>(
-				arg_rasterize,
-				"Resource/Enemy/",
-				"Pedestal.gltf"
-			);
-	}
+	//モデルデータ代入
+	m_enemyBox =
+		std::make_unique<BasicDraw::BasicModelRender>(
+			arg_rasterize,
+			"Resource/Enemy/",
+			"Turret.gltf"
+		);
 
 	m_meshCol = std::make_shared<MeshCollision>();
 	m_meshCol->Setting(
@@ -82,9 +63,6 @@ void Enemy::SetData(
 	m_appearTimer = 0;
 
 	m_inform.Load(arg_rasterize);
-
-	m_gunEffect =
-		std::make_shared<TurretFireEffect>(arg_rasterize);
 }
 
 void Enemy::Init(
@@ -138,9 +116,12 @@ void Enemy::Update(
 	KazMath::Transform3D arg_playerTransform,
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
 {
+	//前フレーム座標(移動する前の座標)を保存。
+	m_prevPos = m_trans.pos;
+
 	//死んだら終了
-	if (IsDeath()) {
-		Death();
+	if (m_state == State::Death)
+	{
 		return;
 	}
 
@@ -153,29 +134,14 @@ void Enemy::Update(
 	if (CheckDistXZ(
 		l_pPos, EnemyConfig::eyeCheckDist) &&
 		CheckEye(arg_playerTransform.pos, arg_stageColliders))
-
-		//前フレーム座標(移動する前の座標)を保存。
-		m_prevPos = m_trans.pos;
-
-	//視線範囲内か
-	m_isCombat = false;
-	if (IsInSight(arg_playerTransform.pos, arg_stageColliders))
 	{
 		m_checkEyeDelay--;
-		m_isInSightFlag = true;
-
-		RotateEye(arg_playerTransform.pos);
 
 		//一定時間範囲内だったら
 		if (m_checkEyeDelay <= 0)
 		{
 			m_rate = MAX_RATE;
 			m_checkEyeDelay = MAX_EYE_DELAY;
-			m_gunEffect->Init(
-				&m_trans.pos,
-				0,
-				static_cast<float>(MAX_RATE));
-
 			//発見時
 			if (m_state != State::Combat)
 			{
@@ -183,38 +149,34 @@ void Enemy::Update(
 				m_state = State::Combat;
 			}
 		}
+		m_isInSightFlag = true;
 	}
 	else
 	{
 		m_isInSightFlag = false;
 		m_checkEyeDelay = MAX_EYE_DELAY;
-
-		if (IsFixedTurret()) {
-			float l_rad =
-				DirectX::XMConvertToRadians(2.0f);
-			m_trans.Rotation(
-				KazMath::Vec3<float>(0, 1, 0),
-				l_rad);
-		}
 	}
 
-	//巡回時
+	//巡回
 	if (m_state == State::Patrol &&
-		!m_isInSightFlag) {
-		Patrol();
-	}
+		!m_isInSightFlag)
+	{
+		//チェックポイント
+		if (m_isCheckPoint)
+		{
+			m_delay++;
+			if (m_delay ==
+				CHECK_POINT_DELAY)
+			{
+				m_delay = 0;
+				m_isCheckPoint = false;
+			}
+		}
 
-	//戦闘時
-	else if (m_state == State::Combat) {
-		Combat(arg_bulletMgr, arg_playerTransform.pos);
-	}
-
-	//移動方向を向く(移動タレット限定)
-	if (!IsFixedTurret()) {
-		if (m_trans.pos != m_prevPos) {
-			DirectX::XMVECTOR l_quaternion =
-				CalMoveQuaternion(m_trans.pos, m_prevPos);
-			m_trans.quaternion = l_quaternion;
+		//通常
+		else
+		{
+			Move();
 		}
 	}
 
@@ -284,9 +246,6 @@ void Enemy::Update(
 	//判定(メッシュ)
 	//Collision(arg_stageColliders, arg_bulletMgr);
 
-	//銃演出
-	m_gunEffect->Update();
-
 	if (m_state != m_oldState)
 	{
 		switch (m_state)
@@ -322,6 +281,8 @@ void Enemy::Update(
 		m_inEcho = false;
 	}
 
+
+
 	//足跡(タイヤ痕)を書き込む。
 	WriteFootprint();
 
@@ -330,9 +291,7 @@ void Enemy::Update(
 	m_trans.GetFront();
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 
-	//m_inform.Update(m_trans.pos, arg_playerPos);
 }
-
 
 void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
@@ -347,48 +306,24 @@ void Enemy::Draw(
 #else
 #endif // DEBUG
 
-	m_enemyBox->m_model.DrawRasterize(
-		arg_rasterize,
-		m_trans);
-
-	if (IsFixedTurret())
+	if (m_state != State::Death)
 	{
-		KazMath::Transform3D l_trans;
-		l_trans.scale = m_trans.scale;
-		l_trans.pos = m_trans.pos;
+		KazMath::Color l_player = { 172, 50, 50, 255 };
 
-		m_pedestal->m_model.DrawRasterize(
+		m_enemyBox->m_model.DrawRasterize(
 			arg_rasterize,
-			l_trans);
+			m_trans,
+			l_player);
 	}
 
 	m_inform.Draw(arg_rasterize, arg_blasVec);
 
-	m_gunEffect->Draw(arg_rasterize, arg_blasVec);
-}
-
-bool Enemy::IsInSight(
-	KazMath::Vec3<float>& arg_playerPos,
-	std::list<std::shared_ptr<MeshCollision>>
-	& arg_stageColliders)
-{
-	//プレイヤーXZ座標
-	std::pair<float, float> l_pPos =
-		std::make_pair(arg_playerPos.x, arg_playerPos.z);
-
-	if (CheckDistXZ(
-		l_pPos, EnemyConfig::eyeCheckDist) &&
-		CheckEye(arg_playerPos, arg_stageColliders)) {
-		return true;
-	}
-	return false;
 }
 
 void Enemy::CalcMoveVec()
 {
 	if (m_positions.size() <= 1) { return; }
-	if (!IsFixedTurret()) { return; }
-	//m_inform.Draw(arg_rasterize);
+
 
 	KazMath::Vec3<float> l_firstPos;
 	KazMath::Vec3<float> l_basePos;
@@ -468,7 +403,8 @@ void Enemy::WriteFootprint()
 
 void Enemy::Move()
 {
-	if (!IsFixedTurret()) { return; }
+	//m_trans.pos.y = 23.0f;
+	if (m_positions.size() <= 1) { return; }
 
 	std::pair<float, float> l_checkPos =
 		std::make_pair(m_nextPos.x, m_nextPos.z);
@@ -488,64 +424,6 @@ void Enemy::Move()
 	//通常移動
 	else {
 		m_trans.pos += m_moveVec * EnemyConfig::speed;
-	}
-}
-
-void Enemy::Patrol()
-{
-	//チェックポイント
-	if (m_isCheckPoint)
-	{
-		m_delay++;
-		if (m_delay ==
-			CHECK_POINT_DELAY)
-		{
-			m_delay = 0;
-			m_isCheckPoint = false;
-		}
-	}
-
-	//通常
-	else
-	{
-		Move();
-	}
-}
-
-void Enemy::Death()
-{
-
-}
-
-void Enemy::Combat(
-	std::weak_ptr<BulletMgr> arg_bulletMgr,
-	KazMath::Vec3<float> arg_playerPos)
-{
-	//プレイヤー方向
-	RotateEye(arg_playerPos);
-
-	if (!m_isInSightFlag)
-	{
-		m_rate--;
-		if (m_rate < 0)
-		{
-			m_state = State::Patrol;
-			m_rate = MAX_RATE;
-		}
-	}
-	else {
-		m_rate = MAX_RATE;
-		m_shotDelay++;
-	}
-
-	//射撃
-	if (SHOT_DELAY < m_shotDelay) {
-
-		arg_bulletMgr.lock()->
-			GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
-		m_shotDelay = 0;
-		SoundManager::Instance()->
-			SoundPlayerWave(m_enemyShotSE, 0);
 	}
 }
 
@@ -582,37 +460,23 @@ DirectX::XMVECTOR Enemy::CalMoveQuaternion(
 		cross.z }, angle);
 }
 
-void Enemy::RotateEye(
-	KazMath::Vec3<float>& arg_playerPos)
+void Enemy::RotateEye()
 {
-	//敵からプレイヤー方向
-	KazMath::Vec3<float> l_vec =
-		arg_playerPos - m_trans.pos;
-	float l_mag = sqrtf(
-		powf(l_vec.x, 2.0f) +
-		powf(l_vec.z, 2.0f));
-	KazMath::Vec3<float> l_trans = l_vec / l_mag;
-	//2つのベクトルの外積(xz平面だとyに結果が出る)
-	KazMath::Vec3<float> l_cross =
-		m_trans.GetFront().Cross(l_trans);
-	//2つのベクトルの内積(1.0fだと正面)
-	if (m_trans.GetFront().Dot(l_trans) < 1.0f)
-	{
-		float l_rad =
-			DirectX::XMConvertToRadians(0.5f);
+	//進行先
+	//m_oldQuaternion = m_trans.quaternion;
 
-		if (l_cross.y < 0.0f) {
-			l_rad *= -1.0f;
-			m_trans.Rotation(
-				KazMath::Vec3<float>(0, 1, 0),
-				l_rad);
-		}
-		else {
-			m_trans.Rotation(
-				KazMath::Vec3<float>(0, 1, 0),
-				l_rad);
-		}
-	}
+	//30度
+	m_angle += 0.01f;
+	float l_rad = DirectX::XMConvertToRadians(30.0f);
+	l_rad *= std::sinf(m_angle);
+
+	//ラジアンを加算
+	KazMath::Transform3D l_trans = m_trans;
+	l_trans.Rotation(
+		KazMath::Vec3<float>(0, 1, 0),
+		l_rad);
+
+	m_trans.quaternion = l_trans.quaternion;
 }
 
 //-----判定系-----//

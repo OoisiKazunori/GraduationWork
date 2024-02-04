@@ -9,28 +9,23 @@
             "name" : "Scene",
             "nodes" : [
                 0,
-                1,
-                2
+                1
             ]
         }
     ],
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "No_Move"
-        },
-        {
-            "mesh" : 1,
             "name" : "Gun"
         },
         {
-            "mesh" : 2,
+            "mesh" : 1,
             "name" : "Move.001"
         }
     ],
     "meshes" : [
         {
-            "name" : "\u7acb\u65b9\u4f53.001",
+            "name" : "\u7acb\u65b9\u4f53",
             "primitives" : [
                 {
                     "attributes" : {
@@ -43,7 +38,7 @@
             ]
         },
         {
-            "name" : "\u7acb\u65b9\u4f53",
+            "name" : "\u7acb\u65b9\u4f53.003",
             "primitives" : [
                 {
                     "attributes" : {
@@ -54,58 +49,11 @@
                     "indices" : 7
                 }
             ]
-        },
-        {
-            "name" : "\u7acb\u65b9\u4f53.003",
-            "primitives" : [
-                {
-                    "attributes" : {
-                        "POSITION" : 8,
-                        "NORMAL" : 9,
-                        "TEXCOORD_0" : 10
-                    },
-                    "indices" : 11
-                }
-            ]
         }
     ],
     "accessors" : [
         {
             "bufferView" : 0,
-            "componentType" : 5126,
-            "count" : 346,
-            "max" : [
-                0.9100001454353333,
-                1.076246738433838,
-                0.7450001239776611
-            ],
-            "min" : [
-                -0.8900001049041748,
-                0.0012466907501220703,
-                -0.7450001239776611
-            ],
-            "type" : "VEC3"
-        },
-        {
-            "bufferView" : 1,
-            "componentType" : 5126,
-            "count" : 346,
-            "type" : "VEC3"
-        },
-        {
-            "bufferView" : 2,
-            "componentType" : 5126,
-            "count" : 346,
-            "type" : "VEC2"
-        },
-        {
-            "bufferView" : 3,
-            "componentType" : 5123,
-            "count" : 540,
-            "type" : "SCALAR"
-        },
-        {
-            "bufferView" : 4,
             "componentType" : 5126,
             "count" : 572,
             "max" : [
@@ -121,25 +69,25 @@
             "type" : "VEC3"
         },
         {
-            "bufferView" : 5,
+            "bufferView" : 1,
             "componentType" : 5126,
             "count" : 572,
             "type" : "VEC3"
         },
         {
-            "bufferView" : 6,
+            "bufferView" : 2,
             "componentType" : 5126,
             "count" : 572,
             "type" : "VEC2"
         },
         {
-            "bufferView" : 7,
+            "bufferView" : 3,
             "componentType" : 5123,
             "count" : 1026,
             "type" : "SCALAR"
         },
         {
-            "bufferView" : 8,
+            "bufferView" : 4,
             "componentType" : 5126,
             "count" : 430,
             "max" : [
@@ -155,19 +103,19 @@
             "type" : "VEC3"
         },
         {
-            "bufferView" : 9,
+            "bufferView" : 5,
             "componentType" : 5126,
             "count" : 430,
             "type" : "VEC3"
         },
         {
-            "bufferView" : 10,
+            "bufferView" : 6,
             "componentType" : 5126,
             "count" : 430,
             "type" : "VEC2"
         },
         {
-            "bufferView" : 11,
+            "bufferView" : 7,
             "componentType" : 5123,
             "count" : 738,
             "type" : "SCALAR"
@@ -176,69 +124,49 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 4152,
+            "byteLength" : 6864,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 4152,
-            "byteOffset" : 4152
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 2768,
-            "byteOffset" : 8304
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 1080,
-            "byteOffset" : 11072
-        },
-        {
-            "buffer" : 0,
             "byteLength" : 6864,
-            "byteOffset" : 12152
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 6864,
-            "byteOffset" : 19016
+            "byteOffset" : 6864
         },
         {
             "buffer" : 0,
             "byteLength" : 4576,
-            "byteOffset" : 25880
+            "byteOffset" : 13728
         },
         {
             "buffer" : 0,
             "byteLength" : 2052,
-            "byteOffset" : 30456
+            "byteOffset" : 18304
         },
         {
             "buffer" : 0,
             "byteLength" : 5160,
-            "byteOffset" : 32508
+            "byteOffset" : 20356
         },
         {
             "buffer" : 0,
             "byteLength" : 5160,
-            "byteOffset" : 37668
+            "byteOffset" : 25516
         },
         {
             "buffer" : 0,
             "byteLength" : 3440,
-            "byteOffset" : 42828
+            "byteOffset" : 30676
         },
         {
             "buffer" : 0,
             "byteLength" : 1476,
-            "byteOffset" : 46268
+            "byteOffset" : 34116
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 47744,
-            "uri" : "Turret.bin"
+            "byteLength" : 35592,
+            "uri" : "Move_Turret.bin"
         }
     ]
 }

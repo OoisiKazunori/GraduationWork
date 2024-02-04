@@ -144,6 +144,7 @@ void Enemy::Update(
 		return;
 	}
 
+<<<<<<< HEAD
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
 		std::make_pair(arg_playerTransform.pos.x, arg_playerTransform.pos.z);
@@ -153,18 +154,19 @@ void Enemy::Update(
 	if (CheckDistXZ(
 		l_pPos, EnemyConfig::eyeCheckDist) &&
 		CheckEye(arg_playerTransform.pos, arg_stageColliders))
-
-		//前フレーム座標(移動する前の座標)を保存。
-		m_prevPos = m_trans.pos;
+=======
+	//前フレーム座標(移動する前の座標)を保存。
+	m_prevPos = m_trans.pos;
 
 	//視線範囲内か
 	m_isCombat = false;
-	if (IsInSight(arg_playerTransform.pos, arg_stageColliders))
+	if (IsInSight(arg_playerPos, arg_stageColliders))
+>>>>>>> origin/dev_Enemy
 	{
 		m_checkEyeDelay--;
 		m_isInSightFlag = true;
 
-		RotateEye(arg_playerTransform.pos);
+		RotateEye(arg_playerPos);
 
 		//一定時間範囲内だったら
 		if (m_checkEyeDelay <= 0)
@@ -206,7 +208,7 @@ void Enemy::Update(
 
 	//戦闘時
 	else if (m_state == State::Combat) {
-		Combat(arg_bulletMgr, arg_playerTransform.pos);
+		Combat(arg_bulletMgr, arg_playerPos);
 	}
 
 	//移動方向を向く(移動タレット限定)
@@ -218,6 +220,7 @@ void Enemy::Update(
 		}
 	}
 
+<<<<<<< HEAD
 	//戦闘中
 	else if (m_state == State::Combat)
 	{
@@ -279,6 +282,8 @@ void Enemy::Update(
 	}
 	//m_trans.pos.y += m_gravity;
 
+=======
+>>>>>>> origin/dev_Enemy
 	m_oldPos = m_trans.pos;
 
 	//判定(メッシュ)
@@ -322,17 +327,29 @@ void Enemy::Update(
 		m_inEcho = false;
 	}
 
+<<<<<<< HEAD
+
+=======
+	//仮で足跡を描画。
+	float moveLength = KazMath::Vec3<float>(KazMath::Vec3<float>(m_trans.pos.x, 0.0f, m_trans.pos.z) - KazMath::Vec3<float>(m_prevPos.x, 0.0f, m_prevPos.z)).Length();
+	if (m_onGround) {
+		m_footprintSpan += moveLength;
+		if (FOOTPRINT_SPAN <= m_footprintSpan) {
+>>>>>>> origin/dev_Enemy
+
 	//足跡(タイヤ痕)を書き込む。
 	WriteFootprint();
 
 
 
 	m_trans.GetFront();
+<<<<<<< HEAD
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 
+=======
 	//m_inform.Update(m_trans.pos, arg_playerPos);
+>>>>>>> origin/dev_Enemy
 }
-
 
 void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
@@ -362,8 +379,10 @@ void Enemy::Draw(
 			l_trans);
 	}
 
+<<<<<<< HEAD
 	m_inform.Draw(arg_rasterize, arg_blasVec);
 
+=======
 	m_gunEffect->Draw(arg_rasterize, arg_blasVec);
 }
 
@@ -382,13 +401,17 @@ bool Enemy::IsInSight(
 		return true;
 	}
 	return false;
+>>>>>>> origin/dev_Enemy
 }
 
 void Enemy::CalcMoveVec()
 {
+<<<<<<< HEAD
 	if (m_positions.size() <= 1) { return; }
+=======
 	if (!IsFixedTurret()) { return; }
 	//m_inform.Draw(arg_rasterize);
+>>>>>>> origin/dev_Enemy
 
 	KazMath::Vec3<float> l_firstPos;
 	KazMath::Vec3<float> l_basePos;
