@@ -62,6 +62,7 @@ void Player::Init()
 	m_footprintSpan = 0;
 	m_footprintSide = false;
 	m_isReloadMotionNow = false;
+	m_inRoom = false;
 
 }
 
@@ -245,7 +246,16 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//リロードの更新処理
 	UpdateReload();
 
+	//室内か外かを判断する。
+	if (KazMath::Vec3<float>(BGM_OUTDOOR_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
+		m_inRoom = false;
+	}
+	if (KazMath::Vec3<float>(BGM_ROOM_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
+		m_inRoom = true;
+	}
+
 	//BGMを更新。
+	PlayerStatus::Instance()->m_isFound = m_isFoundToEnemy && 0.99f < StopMgr::Instance()->GetGameSpeed();
 	if (PlayerStatus::Instance()->m_isFound) {
 
 		BGMController::Instance()->ChangeBGM(BGMController::BGM::EMERGENCY);
@@ -253,7 +263,12 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	}
 	else {
 
-		BGMController::Instance()->ChangeBGM(BGMController::BGM::OUTSIDE);
+		if (m_inRoom) {
+			BGMController::Instance()->ChangeBGM(BGMController::BGM::INDOOR);
+		}
+		else {
+			BGMController::Instance()->ChangeBGM(BGMController::BGM::OUTSIDE);
+		}
 
 	}
 
