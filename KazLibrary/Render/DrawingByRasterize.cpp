@@ -48,9 +48,12 @@ const DrawFuncData::DrawData* DrawingByRasterize::SetPipeline(DrawFuncData::Draw
 void DrawingByRasterize::GeneratePipeline()
 {
 	int index = 0;
+	int counter = 0;
 	//ソートが終わったらDirectX12のコマンドリストに命令出来るように描画情報を生成する。
 	for (auto& callData : m_drawCallStackDataArray)
 	{
+		++counter;
+
 		DrawFuncData::DrawData result;
 
 		result.generateFlag = callData->m_deleteInSceneFlag;

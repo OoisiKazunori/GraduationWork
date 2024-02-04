@@ -70,14 +70,6 @@ void Enemy::SetData(
 			);
 	}
 
-
-	m_lineOfSight =
-		std::make_unique<BasicDraw::BasicModelRender>(
-			arg_rasterize,
-			"Resource/Enemy/",
-			"LineOfSightModel.gltf"
-		);
-
 	m_meshCol = std::make_shared<MeshCollision>();
 	m_meshCol->Setting(
 		m_enemyBox.get()->m_model.
@@ -364,16 +356,6 @@ void Enemy::Update(
 
 	if (isHit) {
 
-		//照準線用モデルの中心点を衝突点と敵の中間地点にする。
-		m_lineOfSightTransform.pos = m_trans.pos + m_trans.GetFront() * (minLength / 2.0f);
-		m_lineOfSightTransform.pos.y += 4.0f;
-
-		//照準線モデルのスケールが良い感じの長さになるように調整。
-		m_lineOfSightTransform.scale = KazMath::Vec3<float>(1.0f, 1.0f, minLength / 2.0f);
-
-		//回転もいい感じにする。
-		m_lineOfSightTransform.quaternion = m_trans.quaternion;
-
 		m_lineOfSightPos[0] = m_trans.pos;
 		m_lineOfSightPos[0] += 4.0f;
 		m_lineOfSightPos[1] = impactPoint;
@@ -412,8 +394,6 @@ void Enemy::Draw(
 			arg_rasterize,
 			l_trans, KazMath::Color(172, 50, 50, 255));
 	}
-
-	m_lineOfSight->m_model.DrawRasterize(arg_rasterize, m_lineOfSightTransform, KazMath::Color(172, 50, 50, 255));
 
 	m_inform.Draw(arg_rasterize, arg_blasVec);
 
