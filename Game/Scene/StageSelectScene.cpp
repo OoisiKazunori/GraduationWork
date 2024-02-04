@@ -5,7 +5,7 @@
 #include "../UI/UI.h"
 
 float StageSelectScene::volume = 1.0f;
-int StageSelectScene::startStageNum = 2;
+int StageSelectScene::startStageNum = 0;
 const int StageSelectScene::C_StageMaxNum = 3;
 
 StageSelectScene::StageSelectScene(DrawingByRasterize& arg_rasterize, float cameraSensitivity, float f_volume, bool f_isFlip) :
