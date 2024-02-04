@@ -9,8 +9,8 @@ class SmokeParticle
 public:
 	SmokeParticle();
 
-	void Load(DrawingByRasterize &arg_rasterize);
-	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_scale, float arg_emittTimer);
+	void Load(DrawingByRasterize& arg_rasterize);
+	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_scale, float arg_emittTimer, const KazMath::Color& arg_color);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 
@@ -21,6 +21,7 @@ private:
 	KazMath::Timer m_timer;
 	float m_speed;
 	bool m_activeFlag;
-	float m_angle,m_angleVel;
+	float m_angle, m_angleVel;
+	KazMath::Color m_color;
 };
 

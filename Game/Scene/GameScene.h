@@ -47,8 +47,10 @@ public:
 	}
 
 private:
-
-	SmokeEmitter m_emitter;
+	SmokeEmitter::EmittData m_serverEmittData;
+	SmokeEmitter m_serverSmokeEmitter;
+	SmokeEmitter::EmittData m_roomEmittData;
+	SmokeEmitter m_roomSmokeEmitter;
 
 	//ƒJƒƒ‰--------------------------
 	bool m_debugCameraFlag;

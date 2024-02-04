@@ -7,6 +7,16 @@
 class SmokeEmitter
 {
 public:
+	struct EmittData
+	{
+		KazMath::Vec3<float> m_emittPos;
+		float m_minScale = 0.005f, m_maxScale = 0.01f;
+		KazMath::Vec3<float> m_range;
+		int m_smokeTime;
+		bool m_loopFlag;
+		KazMath::Color m_color;
+	};
+
 	SmokeEmitter();
 
 	void Load(DrawingByRasterize& arg_rasterize);
@@ -17,7 +27,7 @@ public:
 	/// <param name="arg_pos">î≠ê∂ínì_</param>
 	/// <param name="arg_range">î≠ê∂îÕàÕ</param>
 	/// <param name="arg_smokeTimer">î≠ê∂éûä‘</param>
-	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_range,int arg_smokeTimer);
+	void Init(const EmittData& arg_emittData);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas);
 
@@ -25,7 +35,11 @@ private:
 	std::array<SmokeParticle, 50>m_smokeParticleArray;
 	std::array<int, 50>m_smokeEmittTimeArray;
 	KazMath::Vec3<float>m_emittPos;
+	float m_minScale, m_maxScale;
 	KazMath::Vec3<float>m_range;
 	int m_emittTimer, m_emittMaxTimer;
+	bool m_loopFlag;
+
+	KazMath::Color m_color;
 };
 

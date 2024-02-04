@@ -9,7 +9,7 @@ void SmokeParticle::Load(DrawingByRasterize& arg_rasterize)
 	m_smokeRender.m_tex.Load(arg_rasterize, "Resource/Effect/Smoke.png", false);
 }
 
-void SmokeParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_scale, float arg_emittTimer)
+void SmokeParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_scale, float arg_emittTimer, const KazMath::Color& arg_color)
 {
 	m_transform.pos = arg_pos;
 	m_transform.scale = arg_scale;
@@ -23,6 +23,8 @@ void SmokeParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec
 
 	m_angle = 0;
 	m_angleVel = KazMath::Rand<float>(0.5f, 0.1f);
+
+	m_color = arg_color;
 }
 
 void SmokeParticle::Update()
@@ -51,7 +53,7 @@ void SmokeParticle::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVect
 	{
 		return;
 	}
-	m_smokeRender.m_tex.Draw3DBillBoard(arg_rasterize, arg_blas, m_transform, KazMath::Color(100, 100, 100, 255));
+	m_smokeRender.m_tex.Draw3DBillBoard(arg_rasterize, arg_blas, m_transform, m_color);
 }
 
 const bool& SmokeParticle::IsActive()

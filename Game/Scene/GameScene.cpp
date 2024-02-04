@@ -130,7 +130,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	}
 	//EnemyDebugManager::Instance()->Init(arg_rasterize);
 
-	m_emitter.Load(arg_rasterize);
+	m_serverSmokeEmitter.Load(arg_rasterize);
+	m_roomSmokeEmitter.Load(arg_rasterize);
 
 }
 
@@ -175,10 +176,38 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
-		m_emitter.Init(
-			m_player->GetTransform().pos + KazMath::Vec3<float>(0.0f, 0.0f, -10.0f),
-			KazMath::Vec3<float>(0.5f, 1.0f, 0.5f),
-			600
+		m_serverEmittData.m_emittPos =
+			KazMath::Vec3<float>(-52.0f, 91.0f, -43.0f);
+		m_serverEmittData.m_range =
+			KazMath::Vec3<float>(6.0f, 1.0f, 2.0f);
+		m_serverEmittData.m_smokeTime =
+			60;
+		m_serverEmittData.m_loopFlag =
+			true;
+		m_serverEmittData.m_color =
+			KazMath::Color(255, 255, 255, 255);
+		m_serverSmokeEmitter.Init(
+			m_serverEmittData
+		);
+
+
+
+		m_roomEmittData.m_emittPos =
+			KazMath::Vec3<float>(-54.0f, 85.0f, -24.0f);
+		m_roomEmittData.m_minScale =
+			0.01f;
+		m_roomEmittData.m_maxScale =
+			0.1f;
+		m_roomEmittData.m_range =
+			KazMath::Vec3<float>(50.0f, 10.0f, 50.0f);
+		m_roomEmittData.m_smokeTime =
+			60 * 10;
+		m_roomEmittData.m_loopFlag =
+			true;
+		m_roomEmittData.m_color =
+			KazMath::Color(255, 255, 255, 255);
+		m_roomSmokeEmitter.Init(
+			m_roomEmittData
 		);
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_3, "rota", "DIK_3"))
@@ -237,6 +266,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			FootprintMgr::Instance()->Update();
 
 			m_stageManager.Update(arg_rasterize);
+
+			m_serverSmokeEmitter.Update();
+			m_roomSmokeEmitter.Update();
 
 			if (m_HPBarManager.GetHP() > 0)
 			{
@@ -300,6 +332,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 							m_isToStartPos = true;
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
 							m_todo.NextTask();
+
+							m_serverSmokeEmitter.Init(m_serverEmittData);
 						}
 					}
 					else
@@ -617,14 +651,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
 
-	m_emitter.Update();
 }
 
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
-	m_emitter.Draw(arg_rasterize, arg_blasVec);
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
@@ -635,6 +667,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
+	m_serverSmokeEmitter.Draw(arg_rasterize, arg_blasVec);
+	m_roomSmokeEmitter.Draw(arg_rasterize, arg_blasVec);
 
 	m_menu.Draw(arg_rasterize);
 	if (!m_resultManager.GetResultShow() && !m_menu.GetIsMenuOpen())
