@@ -21,6 +21,7 @@
 #include"../KazLibrary/Debug/DebugKey.h"
 #include"../Footprint/FootprintMgr.h"
 #include "../Effect/StopMgr.h"
+#include "../BGM/BGMController.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_isGoal) :
 	//DrawFuncHelperでのモデル読み込み
@@ -191,10 +192,10 @@ void GameScene::Init()
 	{
 		if (m_stageNum == 0)
 		{
-			m_goalPoint.Init({m_stageManager.m_clip1->m_transform.pos.x,
+			m_goalPoint.Init({ m_stageManager.m_clip1->m_transform.pos.x,
 							  m_stageManager.m_clip1->m_transform.pos.y + 5.0f,
 							  m_stageManager.m_clip1->m_transform.pos.z,
-			});
+				});
 			isClip = true;
 		}
 		else
@@ -328,7 +329,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					{
 						if (isClip)
 						{
-							
+
 						}
 						else
 						{
@@ -374,7 +375,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		{
 			m_resultManager.ShowResult();
 		}
-			m_dangerManager.Update(false);
+		m_dangerManager.Update(false);
 
 		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
 		++m_titleLogoExitTimer;
@@ -517,6 +518,20 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
 
+
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_RIGHT)) {
+		BGMController::Instance()->ChangeBGM(BGMController::BGM::EMERGENCY);
+	}
+	else if (KeyBoradInputManager::Instance()->InputTrigger(DIK_DOWN)) {
+		BGMController::Instance()->ChangeBGM(BGMController::BGM::OUTSIDE);
+	}
+	else if (KeyBoradInputManager::Instance()->InputTrigger(DIK_LEFT)) {
+		BGMController::Instance()->ChangeBGM(BGMController::BGM::INDOOR);
+	}
+	else if (KeyBoradInputManager::Instance()->InputTrigger(DIK_UP)) {
+		BGMController::Instance()->Termination();
+	}
+	BGMController::Instance()->Update();
 }
 
 
