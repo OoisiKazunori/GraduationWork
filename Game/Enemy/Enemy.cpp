@@ -130,6 +130,9 @@ void Enemy::Init(
 
 	m_shotDelay = 0;
 	m_appearTimer = 0;
+
+	m_currentPoint = 0;
+	m_radian = 0.0f;
 }
 
 void Enemy::Update(
@@ -160,6 +163,8 @@ void Enemy::Update(
 	{
 		m_checkEyeDelay--;
 		m_isInSightFlag = true;
+		m_radian = atan2(
+			m_trans.GetFront().z, m_trans.GetFront().x);
 
 		RotateEye(arg_playerTransform.pos);
 
@@ -168,9 +173,11 @@ void Enemy::Update(
 		{
 			m_rate = MAX_RATE;
 			m_checkEyeDelay = MAX_EYE_DELAY;
+
+			//正面ベクトルを角度に
 			m_gunEffect->Init(
 				&m_trans.pos,
-				0,
+				&m_radian,
 				static_cast<float>(MAX_RATE));
 
 			//発見時
@@ -485,9 +492,6 @@ void Enemy::Combat(
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
 	KazMath::Vec3<float> arg_playerPos)
 {
-	//プレイヤー方向
-	RotateEye(arg_playerPos);
-
 	if (!m_isInSightFlag)
 	{
 		m_rate--;
@@ -498,6 +502,9 @@ void Enemy::Combat(
 		}
 	}
 	else {
+		//プレイヤー方向
+		RotateEye(arg_playerPos);
+
 		m_rate = MAX_RATE;
 		m_shotDelay++;
 	}
@@ -575,7 +582,7 @@ void Enemy::RotateEye(
 	if (m_trans.GetFront().Dot(l_trans) < 1.0f)
 	{
 		float l_rad =
-			DirectX::XMConvertToRadians(0.5f);
+			DirectX::XMConvertToRadians(0.8f);
 
 		if (l_cross.y < 0.0f) {
 			l_rad *= -1.0f;
