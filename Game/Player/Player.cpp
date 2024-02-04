@@ -263,11 +263,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-#ifdef _DEBUG
-	ImGui::Begin("PlayerPos");
-	ImGui::Text("X:%f,Y:%f,Z:%f", m_weaponTransform.pos.x, m_weaponTransform.pos.y, m_weaponTransform.pos.z);
-	ImGui::End();
-#endif // _DEBUG
 
 
 	m_mk23Model.m_model.Draw(arg_rasterize, arg_blasVec, m_weaponTransform);
