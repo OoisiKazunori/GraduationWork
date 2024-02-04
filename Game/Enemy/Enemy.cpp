@@ -147,16 +147,12 @@ void Enemy::Update(
 
 	//プレイヤーXZ座標
 	std::pair<float, float> l_pPos =
-		std::make_pair(arg_playerTransform.pos.x, arg_playerTransform.pos.z);
+		std::make_pair(
+			arg_playerTransform.pos.x,
+			arg_playerTransform.pos.z);
 
-	//視線範囲内か
-	m_isCombat = false;
-	if (CheckDistXZ(
-		l_pPos, EnemyConfig::eyeCheckDist) &&
-		CheckEye(arg_playerTransform.pos, arg_stageColliders))
-
-		//前フレーム座標(移動する前の座標)を保存。
-		m_prevPos = m_trans.pos;
+	//前フレーム座標(移動する前の座標)を保存。
+	m_prevPos = m_trans.pos;
 
 	//視線範囲内か
 	m_isCombat = false;
@@ -219,67 +215,6 @@ void Enemy::Update(
 		}
 	}
 
-	//戦闘中
-	else if (m_state == State::Combat)
-	{
-		//視線範囲内なら向きながら射撃
-		if (CheckEye(arg_playerTransform.pos, arg_stageColliders))
-		{
-			//プレイヤー方向
-			m_trans.quaternion = CalMoveQuaternion(arg_playerTransform.pos, m_trans.pos);
-
-			//射撃
-			++m_shotDelay;
-			if (SHOT_DELAY < m_shotDelay) {
-
-				arg_bulletMgr.lock()->
-					GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
-				m_shotDelay = 0;
-
-				//距離によって音を小さくする。
-				float distance = KazMath::Vec3<float>(arg_playerTransform.pos - m_trans.pos).Length();
-				float range = 1.0f - std::clamp(distance / SOUND_RANGE, 0.0f, 1.0f);
-				range = EasingMaker(In, Quad, range);
-
-				m_enemyShotSE.volume = DEFAULT_SHOT_VOLUME * range;
-				SoundManager::Instance()->
-					SoundPlayerWave(m_enemyShotSE, 0);
-			}
-		}
-
-		else
-		{
-			m_rate--;
-			if (m_rate < 0)
-			{
-				m_state = State::Patrol;
-				m_rate = MAX_RATE;
-			}
-		}
-	}
-
-	//回転
-	if (m_trans.pos != m_prevPos) {
-		DirectX::XMVECTOR l_quaternion =
-			CalMoveQuaternion(m_trans.pos, m_prevPos);
-		m_trans.quaternion = l_quaternion;
-	}
-
-
-	//if (m_state == State::Patrol ||
-	//	m_state == State::Warning) {
-	//	//RotateEye();
-	//}
-
-	//重力(仮)
-	if (!m_onGround) {
-		m_gravity -= GRAVITY;
-	}
-	else {
-		m_gravity = 0;
-	}
-	//m_trans.pos.y += m_gravity;
-
 	m_oldPos = m_trans.pos;
 
 	//判定(メッシュ)
@@ -326,12 +261,11 @@ void Enemy::Update(
 	//足跡(タイヤ痕)を書き込む。
 	WriteFootprint();
 
-
-
 	m_trans.GetFront();
-	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
-
-
+	m_inform.Update(
+		m_trans.pos,
+		arg_playerTransform,
+		m_state == State::Combat);
 
 	//正面方向にレイを飛ばして、照準線用のデータを計算する。
 	float minLength = (std::numeric_limits<float>::max)();
@@ -365,7 +299,6 @@ void Enemy::Update(
 
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 }
-
 
 void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
@@ -421,8 +354,7 @@ bool Enemy::IsInSight(
 
 void Enemy::CalcMoveVec()
 {
-	if (m_positions.size() <= 1) { return; }
-	if (!IsFixedTurret()) { return; }
+	if (IsFixedTurret()) { return; }
 	//m_inform.Draw(arg_rasterize);
 
 	KazMath::Vec3<float> l_firstPos;
@@ -503,7 +435,7 @@ void Enemy::WriteFootprint()
 
 void Enemy::Move()
 {
-	if (!IsFixedTurret()) { return; }
+	if (IsFixedTurret()) { return; }
 
 	std::pair<float, float> l_checkPos =
 		std::make_pair(m_nextPos.x, m_nextPos.z);
@@ -532,6 +464,8 @@ void Enemy::Patrol()
 	if (m_isCheckPoint)
 	{
 		m_delay++;
+		RotateEye(m_nextPos);
+
 		if (m_delay ==
 			CHECK_POINT_DELAY)
 		{
@@ -545,11 +479,6 @@ void Enemy::Patrol()
 	{
 		Move();
 	}
-}
-
-void Enemy::Death()
-{
-
 }
 
 void Enemy::Combat(
@@ -579,9 +508,21 @@ void Enemy::Combat(
 		arg_bulletMgr.lock()->
 			GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
 		m_shotDelay = 0;
+
+		//距離によって音を小さくする。
+		float distance = KazMath::Vec3<float>(arg_playerPos - m_trans.pos).Length();
+		float range = 1.0f - std::clamp(distance / SOUND_RANGE, 0.0f, 1.0f);
+		range = EasingMaker(In, Quad, range);
+
+		m_enemyShotSE.volume = DEFAULT_SHOT_VOLUME * range;
 		SoundManager::Instance()->
 			SoundPlayerWave(m_enemyShotSE, 0);
 	}
+}
+
+void Enemy::Death()
+{
+
 }
 
 DirectX::XMVECTOR Enemy::CalMoveQuaternion(
