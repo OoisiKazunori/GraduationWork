@@ -312,8 +312,15 @@ class ResultUI
 	int misssionClearTimer = 0;
 	int thxTimer = 0;
 	int toTileTimer = 0;
+
+	
+	int missionFailedTimer = 0;
+	int reStartTimer = 0;
+	bool isRestart = false;
 	
 public:
+	bool isMissionFailed = false;
+	bool isToReStart = false;
 	bool m_isClear = false;
 	bool isToTile = false;
 	ResultUI(DrawingByRasterize& arg_rasterize);
