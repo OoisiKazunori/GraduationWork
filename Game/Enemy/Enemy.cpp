@@ -70,11 +70,24 @@ void Enemy::SetData(
 			);
 	}
 
-	m_meshCol = std::make_shared<MeshCollision>();
-	m_meshCol->Setting(
-		m_enemyBox.get()->m_model.
-		m_modelInfo->modelData[0].vertexData,
-		m_trans);
+
+	for (auto& index : m_enemyBox.get()->m_model.m_modelInfo->modelData) {
+
+		m_meshCol.emplace_back(std::make_shared<MeshCollision>());
+		m_meshCol.back()->Setting(index.vertexData, m_trans);
+		m_meshColVertex.emplace_back(index.vertexData);
+
+	}
+	if (m_pedestal) {
+		for (auto& index : m_pedestal.get()->m_model.m_modelInfo->modelData) {
+
+			m_meshCol.emplace_back(std::make_shared<MeshCollision>());
+			m_meshCol.back()->Setting(index.vertexData, m_trans);
+			m_meshColVertex.emplace_back(index.vertexData);
+
+		}
+	}
+
 
 
 	m_line.Generate(arg_rasterize);
@@ -616,10 +629,10 @@ void Enemy::Collision(
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr)
 {
-	m_meshCol->Setting(
-		m_enemyBox.get()->m_model.
-		m_modelInfo->modelData[0].vertexData,
-		m_trans);
+	const int MESH_COUNT = static_cast<int>(m_meshCol.size());
+	for (int index = 0; index < MESH_COUNT; ++index) {
+		m_meshCol[index]->Setting(m_meshColVertex[index], m_trans);
+	}
 
 	//const float RAY_LENGTH = 8.0f;
 
@@ -710,9 +723,13 @@ void Enemy::Collision(
 	//}
 
 	//“G–{‘Ì‚Æ’e‚Ì“–‚½‚è”»’è‚ðs‚¤B
-	int hitCount =
-		arg_bulletMgr.lock()->
-		CheckMeshCollision(m_meshCol, true);
+	int hitCount = 0;
+
+	for (auto& index : m_meshCol) {
+
+		hitCount += arg_bulletMgr.lock()->CheckMeshCollision(index, true);
+
+	}
 	if (0 < hitCount) {
 		--m_hp;
 	}

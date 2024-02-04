@@ -27,7 +27,8 @@ private:
 	BasicDraw::BasicLineRender m_line;
 	std::array<KazMath::Vec3<float>, 2> m_lineOfSightPos;
 
-	std::shared_ptr<MeshCollision> m_meshCol;
+	std::vector<std::shared_ptr<MeshCollision>> m_meshCol;
+	std::vector<VertexData> m_meshColVertex;
 
 	bool m_isCombat;
 
