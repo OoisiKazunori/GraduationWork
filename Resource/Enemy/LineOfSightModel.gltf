@@ -64,29 +64,29 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 192,
+            "count" : 356,
             "max" : [
-                1,
-                0.03000004217028618,
-                0.029999999329447746
+                0.06740813702344894,
+                0.06703709810972214,
+                0.050000257790088654
             ],
             "min" : [
-                -1,
-                -0.03000004217028618,
-                -0.029999999329447746
+                -0.06740813702344894,
+                -0.06703709810972214,
+                -0.050000257790088654
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 192,
+            "count" : 356,
             "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 192,
+            "count" : 356,
             "type" : "VEC3"
         },
         {
@@ -99,26 +99,26 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 2304,
+            "byteLength" : 4272,
             "byteOffset" : 0,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 1536,
-            "byteOffset" : 2304,
+            "byteLength" : 2848,
+            "byteOffset" : 4272,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 2304,
-            "byteOffset" : 3840,
+            "byteLength" : 4272,
+            "byteOffset" : 7120,
             "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 744,
-            "byteOffset" : 6144,
+            "byteOffset" : 11392,
             "target" : 34963
         }
     ],
@@ -130,7 +130,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 6888,
+            "byteLength" : 12136,
             "uri" : "LineOfSightModel.bin"
         }
     ]

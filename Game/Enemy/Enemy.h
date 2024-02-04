@@ -22,9 +22,14 @@ private:
 	std::shared_ptr<
 		BasicDraw::BasicModelRender> m_pedestal;
 
-	std::shared_ptr<MeshCollision> m_meshCol;
-
+	//Æ€ü—p
+	std::shared_ptr<
+		BasicDraw::BasicModelRender> m_lineOfSight;
+	KazMath::Transform3D m_lineOfSightTransform;
 	BasicDraw::BasicLineRender m_line;
+	std::array<KazMath::Vec3<float>, 2> m_lineOfSightPos;
+
+	std::shared_ptr<MeshCollision> m_meshCol;
 
 	bool m_isCombat;
 
