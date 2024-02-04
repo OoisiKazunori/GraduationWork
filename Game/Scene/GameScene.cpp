@@ -38,7 +38,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
 	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf"),
 	m_intractUI(arg_rasterize),
-	m_todo(arg_rasterize)
+	m_todo(arg_rasterize),
+	m_interactFlag(false)
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -170,7 +171,11 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 		KazMath::Vec3<float>(-21.2f, 90.0f, -4.0f);
 	m_serverEmittData[5].m_emittPos =
 		KazMath::Vec3<float>(-84.2f, 90.0f, -6.0f);
+	m_keySound = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Server/Saver_SE_1.wav");
+	m_serverErrorSound = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Server/Saver_SE_2.wav");
 
+	m_keySound.volume = 0.5f;
+	m_serverErrorSound.volume = 0.5f;
 }
 
 GameScene::~GameScene()
@@ -321,20 +326,20 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 				m_bulletMgr->Update(m_stageManager.GetColliders());
 
-				/*static bool flag = false;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
+				//サーバーのインタラクト時に暫く経ったらサーバーエラーの音を出す
+				if (m_interactFlag)
 				{
-					if (flag) flag = false;
-					else flag = true;
+					m_serverErrorTime.UpdateTimer();
+					if (m_serverErrorTime.IsTimeUpOnTrigger())
+					{
+						SoundManager::Instance()->SoundPlayerWave(m_serverErrorSound, 0);
+
+						for (int i = 0; i < m_serverSmokeEmitter.size(); ++i)
+						{
+							m_serverSmokeEmitter[i].Init(m_serverEmittData[i]);
+						}
+					}
 				}
-				if (flag)
-				{
-					m_heartRateManager.Update(60);
-				}
-				else
-				{
-					m_heartRateManager.Update(120);
-				}*/
 				//nextステージへいくところを踏んだら
 				//プレイヤーとゴールの当たり判定
 				KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
@@ -357,10 +362,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
 							m_todo.NextTask();
 
-							for (int i = 0; i < m_serverSmokeEmitter.size(); ++i)
-							{
-								m_serverSmokeEmitter[i].Init(m_serverEmittData[i]);
-							}
+							SoundManager::Instance()->SoundPlayerWave(m_keySound, 0);
+							m_interactFlag = true;
+							m_serverErrorTime.Reset(120);
 						}
 					}
 					else
