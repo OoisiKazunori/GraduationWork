@@ -427,14 +427,14 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		{
 			m_resultManager.ShowResult();
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
+		/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
 		{
 			m_dangerManager.Update(true);
 		}
 		else
-		{
+		{*/
 			m_dangerManager.Update(false);
-		}
+		//}
 
 		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
 		++m_titleLogoExitTimer;

@@ -574,7 +574,7 @@ void GadgetUIManager::Init()
 void GadgetUIManager::Update()
 {
 	bool isDirty = false;
-	if (KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
+	/*if (KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
 	{
 		m_showUITime = c_ShowTime;
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
@@ -595,7 +595,7 @@ void GadgetUIManager::Update()
 			}
 			easeTimer = 0.0f;
 		}
-	}
+	}*/
 	if (isDirty)
 	{
 		EaseInit();
@@ -711,10 +711,10 @@ void HPUI::Init()
 void HPUI::Update(const int f_playerHP)
 {
 	//HPŒ¸‚ç‚·‚Æ‚«‚Í‚±‚±‚ðŽQÆI
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
+	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		HitDamage(10, 10);
-	}
+	}*/
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
@@ -1043,7 +1043,7 @@ IntractUI::IntractUI(DrawingByRasterize& arg_rasterize) :
 
 void IntractUI::Init()
 {
-	_fKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), 1.0f);
+	_fKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 25.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 25.0f, 720.0f / 2.0f), 1.0f);
 	_fKeyTex.SetColor(KazMath::Color(255, 255, 255, 0));
 	_fKeyTex.SetAddColor(KazMath::Color(0, 0, 0, 25));
 }
@@ -1064,7 +1064,7 @@ void IntractUI::Update()
 void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
 {
 	if (_fKeyTex.m_color.color.a < 30)return;
-	KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 45.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
+	KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 65.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
 	_fKeyTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, _fKeyTex.m_color);
 }
 
