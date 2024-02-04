@@ -22,6 +22,7 @@
 #include"../Footprint/FootprintMgr.h"
 #include "../Effect/StopMgr.h"
 #include "../BGM/BGMController.h"
+#include "../Player/PlayerStatus.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_isGoal) :
 	//DrawFuncHelperでのモデル読み込み
@@ -524,6 +525,27 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
 
 	BGMController::Instance()->Update();
+
+	//全ての敵を走査して、発見状態の敵が居るかどうかでBGMを変える。
+	if (0 < m_enemyManager->GetCombatStatusEnemyCount()) {
+
+		//まだ発見状態じゃなかったら
+		if (!PlayerStatus::Instance()->m_isFound) {
+
+			//ヒットストップをかける。
+			StopMgr::Instance()->HitStopStart({ 60, 0.1f });
+
+		}
+
+		PlayerStatus::Instance()->m_isFound = true;
+
+	}
+	else {
+
+		PlayerStatus::Instance()->m_isFound = false;
+
+	}
+
 }
 
 

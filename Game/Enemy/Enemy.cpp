@@ -3,6 +3,8 @@
 #include "../Footprint/FootprintMgr.h"
 #include "../Game/Bullet/BulletMgr.h"
 #include <limits>
+#include "../Player/PlayerStatus.h"
+#include "../Effect/StopMgr.h"
 
 Enemy::Enemy()
 {
@@ -319,6 +321,7 @@ void Enemy::Update(
 	m_sightRotation += 0.3f;
 
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
+
 }
 
 void Enemy::Draw(

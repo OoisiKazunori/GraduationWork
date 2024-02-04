@@ -255,8 +255,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	}
 
 	//BGM‚ðXVB
-	PlayerStatus::Instance()->m_isFound = m_isFoundToEnemy && 0.99f < StopMgr::Instance()->GetGameSpeed();
-	if (PlayerStatus::Instance()->m_isFound) {
+	if (PlayerStatus::Instance()->m_isFound && 0.99f < StopMgr::Instance()->GetGameSpeed()) {
 
 		BGMController::Instance()->ChangeBGM(BGMController::BGM::EMERGENCY);
 
@@ -270,12 +269,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 			BGMController::Instance()->ChangeBGM(BGMController::BGM::OUTSIDE);
 		}
 
-	}
-
-
-	if (DebugKey::Instance()->DebugKeyTrigger(DIK_I, "Hakken", "I")) {
-		m_isFoundToEnemy = !m_isFoundToEnemy;
-		StopMgr::Instance()->HitStopStart({ 120, 0.1f });
 	}
 
 	

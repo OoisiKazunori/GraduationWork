@@ -199,6 +199,7 @@ public:
 
 	void WriteFootprint();
 
+	bool IsCombat() { return m_state == State::Combat; }
 
 	//V‹K
 private:

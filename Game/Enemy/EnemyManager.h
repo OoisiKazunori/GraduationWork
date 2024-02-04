@@ -41,5 +41,8 @@ public:
 	void AddEnemyData(
 		int arg_enemyNum,
 		std::list<KazMath::Transform3D> arg_enemyList);
+
+	int GetCombatStatusEnemyCount();
+
 };
 

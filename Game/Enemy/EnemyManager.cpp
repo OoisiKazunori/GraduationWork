@@ -43,6 +43,16 @@ void EnemyManager::AddEnemyData(
 	m_enemys[arg_enemyNum]->Init(arg_enemyList);
 }
 
+int EnemyManager::GetCombatStatusEnemyCount()
+{
+	int count = 0;
+	for (auto& index : m_enemys) {
+		if (!index->IsCombat()) continue;
+		++count;
+	}
+	return count;
+}
+
 void EnemyManager::Update(
 	std::list<std::shared_ptr<MeshCollision>>
 	arg_stageColliders,
