@@ -1852,8 +1852,14 @@ namespace DrawFuncData
 		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
 		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMFLOAT4);
 
+		drawCallData.extraBufferArray.emplace_back();
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
 		drawCallData.pipelineData = lData;
 		drawCallData.drawInstanceCommandData.topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+
+		drawCallData.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 		return drawCallData;
 	}
 

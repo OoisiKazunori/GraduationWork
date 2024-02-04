@@ -30,8 +30,15 @@ float4 PSmain(VSOutput input) : SV_TARGET
     return color;
 }
 
-
-
+struct EchoData
+{
+	float3 m_pos;
+	float m_radius;
+	float m_alpha;
+	int m_isActive;
+    uint2 pad;
+};
+RWStructuredBuffer<EchoData> lightBuffer:register(u0);
 
 struct VSOutputWorld
 {
@@ -57,15 +64,30 @@ struct BasicDrawGBufferOutput
     float4 outline : SV_TARGET5;
     float4 outlineWorld : SV_TARGET6;
 };
+
 BasicDrawGBufferOutput GBufferPSmain(VSOutputWorld input) : SV_TARGET
 {
     BasicDrawGBufferOutput output;
-    output.albedo = color;
-    output.normal = float4(-1,-1,-1,1);
-    output.metalnessRoughness = float4(0,0,0,1);
-    output.world = float4(-1,-1,-1,1);
-    output.emissive = float4(0,0,0,1);
-    output.outline = float4(0,0,0,1);
-    output.outlineWorld = float4(0,0,0,1);
+    for(int i = 0;i < 256; ++i)
+    {
+        if(lightBuffer[i].m_isActive != 1)
+        {
+            continue;
+        }
+        float distanceNum = distance(lightBuffer[i].m_pos,input.worldPos);
+        //エコー範囲内なら描画する
+        if(distanceNum <= lightBuffer[i].m_radius)
+        {
+            output.albedo = color;
+            output.normal = float4(0,0,0,1);
+            output.metalnessRoughness = float4(0,0,0,1);
+            output.world = float4(0,0,0,1);
+            output.emissive = float4(0,0,0,1);
+            output.outline = color;
+            output.outlineWorld = float4(0,0,0,1);
+            return output;
+        }
+    }
+    discard;
     return output;
 }

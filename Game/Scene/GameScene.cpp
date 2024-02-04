@@ -700,13 +700,13 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
-
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
+
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 

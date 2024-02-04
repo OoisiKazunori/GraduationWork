@@ -380,6 +380,9 @@ void DrawFuncHelper::LineRender::Draw(DrawingByRasterize& arg_rasterize, Raytrac
 	DirectX::XMFLOAT4 color = arg_color.ConvertColorRateToXMFLOAT4();
 	m_drawCommand.extraBufferArray[1].bufferWrapper->TransData(&color, sizeof(DirectX::XMFLOAT4));
 
+	m_drawCommand.extraBufferArray.back() = EchoArray::Instance()->GetEchoMemoryStructuredBuffer();
+	m_drawCommand.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
 	arg_rasterize.ObjectRender(m_drawCommandData);
 }
 
