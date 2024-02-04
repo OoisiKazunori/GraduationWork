@@ -14,7 +14,7 @@ TurretFireEffect::TurretFireEffect(DrawingByRasterize& arg_rasterize) :
 	}
 }
 
-void TurretFireEffect::Init(const KazMath::Vec3<float>* arg_pos, float arg_radian, float arg_shotTimer)
+void TurretFireEffect::Init(const KazMath::Vec3<float>* arg_pos,const float *arg_radian, float arg_shotTimer)
 {
 	m_emittPos = arg_pos;
 	m_radian = arg_radian;
@@ -44,7 +44,7 @@ void TurretFireEffect::Update()
 	{
 		if (!obj.IsActive() && !m_stopFlag)
 		{
-			obj.Init(*m_emittPos, KazMath::AngleToRadian(m_radian));
+			obj.Init(*m_emittPos,*m_radian);
 			break;
 		}
 	}

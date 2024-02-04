@@ -32,12 +32,13 @@ private:
 
 private:
 	//êVãK
+	std::shared_ptr<TurretFireEffect> m_gunEffect;
 	std::list<KazMath::Transform3D> m_positions;
-	const int CHECK_POINT_DELAY = 240;
-	int m_currentPoint = 0;
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;
-	std::shared_ptr<TurretFireEffect> m_gunEffect;
+	const int CHECK_POINT_DELAY = 240;
+	int m_currentPoint = 0;
+	float m_radian = 0.0f;
 
 	//âﬂãé
 	std::vector<std::pair<int, int>> m_checkPointDelay;
@@ -65,7 +66,7 @@ private:
 	float m_gravity;
 	const float GRAVITY = 0.05f;
 
-	const  int MAX_RATE = 300;
+	const  int MAX_RATE = 120;
 	const int MAX_HP = 2;
 	int m_hp;
 	int m_rate;
