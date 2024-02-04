@@ -24,7 +24,7 @@ RESOURCE_HANDLE PipelineDuplicateBlocking::GeneratePipeline(const D3D12_GRAPHICS
 			continue;
 		}
 		//d•¡‚ğŠm”F‚µ‚½‚ç•Ô‚·
-		//return i;
+		return i;
 	}
 
 
