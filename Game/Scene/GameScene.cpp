@@ -396,14 +396,19 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		//リザルト出す
 		if (m_resultManager.GetResultShow() && !m_resultManager.m_isClear)
 		{
-			m_resultManager.Update();
-			if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
-			{
-				//タイトルに戻る
-				//m_sceneNum = 0;
+			//m_resultManager.Update();
+			//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+			//{
+			//	//タイトルに戻る
+			//	//m_sceneNum = 0;
+			//	m_sceneNum = 1;
+			//	StageSelectScene::startStageNum = 0;
+			//	//
+			//}
+			if (m_resultManager.isToTile)
+			{//9日までにここを修正する
 				m_sceneNum = 1;
 				StageSelectScene::startStageNum = 0;
-				//
 			}
 		}
 		else if (m_resultManager.GetResultShow() && m_resultManager.isToTile)

@@ -711,10 +711,10 @@ void HPUI::Init()
 void HPUI::Update(const int f_playerHP)
 {
 	//HP減らすときはここを参照！
-	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
 		HitDamage(10, 10);
-	}*/
+	}
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
@@ -917,6 +917,8 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
 	isToReStart = false;
 	missionFailedTimer = 0;
 	isMissionFailed = false;
+	reStartTimer = 0;
+	isRestart = false;
 }
 
 void ResultUI::Init()
@@ -946,13 +948,36 @@ void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 
 	if (m_isResultShow && !m_isClear)
 	{
+		const int waitTime = 45;
 		if (!isMissionFailed)
 		{
 			m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
 			m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
-		
-		
+			isMissionFailed = true;
 		}
+		if (m_missionFailedSp.GetPosEaseTimer() >= 1.0f && missionFailedTimer < waitTime && !isRestart)
+		{
+			missionFailedTimer++;
+			if (missionFailedTimer >= waitTime)
+			{
+				m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
+				m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f }, { 1280.0f / 2.0f, -200.0f }, 0.02f);
+				isRestart = true;
+				missionFailedTimer = 0;
+			}
+		}
+		else if (m_missionFailedSp.GetPosEaseTimer() >= 1.0f && missionFailedTimer < waitTime)
+		{
+			reStartTimer++;
+			if (reStartTimer >= waitTime)
+			{
+				//タイトルに行く
+				isToTile = true;
+				//9日までにここを修正する
+
+			}
+		}
+
 		m_missionFailedSp.Update();
 		m_missionFailedSp.Draw(arg_rasterize);
 		m_missionClearBack.Update();

@@ -315,7 +315,8 @@ class ResultUI
 
 	
 	int missionFailedTimer = 0;
-	
+	int reStartTimer = 0;
+	bool isRestart = false;
 	
 public:
 	bool isMissionFailed = false;
