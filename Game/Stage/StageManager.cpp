@@ -8,19 +8,22 @@ int StageNumCounter::stageNumCount = 0;
 
 StageManager::StageManager() :m_changeSceneTriggerFlag(false)
 {
-
+	birdSound1 = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Bird/Bird_SE_1_.wav");
+	birdSound2 = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Bird/Bird_SE_2_.wav");
+	birdSound3 = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Bird/Bird_SE_3_.wav");
 }
 
-void StageManager::Init(DrawingByRasterize& arg_rasterize, int f_stageNum)
+void StageManager::Init(DrawingByRasterize& arg_rasterize, int f_stageNum, bool f_isGoHome)
 {
 	m_nowStageNumber = f_stageNum;
 	m_changeSceneTriggerFlag = false;
+	isToHome = f_isGoHome;
 
 	//最初のステージはこちらで読み込む
 	AddMapDatas(arg_rasterize, f_stageNum);
 }
 
-void StageManager::Update(DrawingByRasterize& arg_rasterize)
+void StageManager::Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3D& f_playerPos)
 {
 	//if (m_nowStageNumber != m_nextStageNumber)
 	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_4))
@@ -68,7 +71,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 	static int bird2Ti = 500;
 	static int bird3Ti = 700;
 	//一ステージめだったら
-	if (m_nowStageNumber == 0)
+	if (m_nowStageNumber == 0 && !isToHome)
 	{
 		bird1Ti--;
 		bird2Ti--;
@@ -76,17 +79,52 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize)
 		if (bird1Ti <= 0)
 		{
 			bird1Ti = 300;
-			EchoArray::Instance()->Generate(m_Bird1->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
+			EchoArray::Instance()->Generate(m_Bird1->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 150.0f);
+			
+			auto leng = m_Bird1->m_transform.pos - f_playerPos.pos;
+			float hoge = leng.x + leng.y + leng.z;
+			hoge = hoge / 200.0f;
+			if (hoge < 0)
+			{
+				hoge = hoge * -1.0f;
+			}
+			hoge = (1.0f - hoge);
+			birdSound1.volume = 0.09f * hoge;
+			SoundManager::Instance()->SoundPlayerWave(birdSound1, 0);
 		}
 		if (bird2Ti <= 0)
 		{
 			bird2Ti = 500;
 			EchoArray::Instance()->Generate(m_Bird2->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
+			
+			auto leng = m_Bird2->m_transform.pos - f_playerPos.pos;
+			float hoge = leng.x + leng.y + leng.z;
+			hoge = hoge / 200.0f;
+			if (hoge < 0)
+			{
+				hoge = hoge * -1.0f;
+			}
+			hoge = (1.0f - hoge);
+			birdSound2.volume = 0.09f * hoge;
+			
+			SoundManager::Instance()->SoundPlayerWave(birdSound2, 0);
 		}
 		if (bird3Ti <= 0)
 		{
 			bird3Ti = 500;
 			EchoArray::Instance()->Generate(m_Bird3->m_transform.pos, 30.0f, Echo::COLOR::WHITE, 200.0f);
+			
+			auto leng = m_Bird3->m_transform.pos - f_playerPos.pos;
+			float hoge = leng.x + leng.y + leng.z;
+			hoge = hoge / 200.0f;
+			if (hoge < 0)
+			{
+				hoge = hoge * -1.0f;
+			}
+			hoge = (1.0f - hoge);
+			birdSound3.volume = 0.09f * hoge;
+
+			SoundManager::Instance()->SoundPlayerWave(birdSound3, 0);
 		}
 	}
 }

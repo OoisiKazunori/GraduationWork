@@ -60,7 +60,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_stageNum = f_mapNumber;
 	MapManager::Init();
 	int stageNumber = 0;
-	m_stageManager.Init(arg_rasterize, f_mapNumber);
+	m_stageManager.Init(arg_rasterize, f_mapNumber, f_isGoal);
 	if (f_mapNumber == 0 && !f_isGoal)
 	{
 		Menu::InitGetFileIndex();
@@ -149,7 +149,19 @@ void GameScene::Init()
 	}
 	else
 	{
-		m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+		if (m_stageNum == 0)
+		{
+			m_goalPoint.Init({m_stageManager.m_clip1->m_transform.pos.x,
+							  m_stageManager.m_clip1->m_transform.pos.y + 5.0f,
+							  m_stageManager.m_clip1->m_transform.pos.z,
+			});
+			isClip = true;
+		}
+		else
+		{
+			m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+			isClip = false;
+		}
 	}
 	FootprintMgr::Instance()->Init();
 	m_debugCameraFlag = false;
@@ -232,7 +244,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_turret.Update();
 			FootprintMgr::Instance()->Update();
 
-			m_stageManager.Update(arg_rasterize);
+			m_stageManager.Update(arg_rasterize, m_player->GetTransform());
 
 			if (m_HPBarManager.GetHP() > 0)
 			{
@@ -256,7 +268,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 				}
 
-				m_stageManager.Update(arg_rasterize);
+				m_stageManager.Update(arg_rasterize, m_player->GetTransform());
 				//auto hogehoge = m_stageManager.GetTurretPosition(0);
 
 				m_bulletMgr->Update(m_stageManager.GetColliders());
@@ -302,9 +314,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					}
 					else
 					{
-						StageSelectScene::startStageNum += 1;
-						m_sceneNum = 1;
-						m_isClear = true;
+						if (isClip)
+						{
+							
+						}
+						else
+						{
+							StageSelectScene::startStageNum += 1;
+							m_sceneNum = 1;
+							m_isClear = true;
+						}
 					}
 				}
 				else if (m_isToStartPos)
@@ -396,7 +415,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
 				//m_bulletMgr->Update(m_stageMeshCollision);
 
-				m_stageManager.Update(arg_rasterize);
+				m_stageManager.Update(arg_rasterize, m_player->GetTransform());
 
 				if (m_HPBarManager.GetHP() > 0)
 				{
@@ -419,7 +438,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 						m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 					}
 
-					m_stageManager.Update(arg_rasterize);
+					m_stageManager.Update(arg_rasterize, m_player->GetTransform());
 					m_bulletMgr->Update(m_stageManager.GetColliders());
 
 					/*static bool flag = false;
@@ -533,6 +552,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_todo.NextTask();
 					Menu::firstLookFile = true;
 					Menu::firstLookFileIndex = 0;
+					isClip = false;
+					m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
 				}
 			}
 		}
@@ -641,10 +662,12 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		if (!m_isTitle)
 		{
-			m_uiManager.Draw(arg_rasterize);
 			//m_gadgetMaanager.Draw(arg_rasterize);
-			m_HPBarManager.Draw(arg_rasterize);
 			//m_heartRateManager.Draw(arg_rasterize);
+
+
+			m_uiManager.Draw(arg_rasterize);
+			m_HPBarManager.Draw(arg_rasterize);
 			m_dangerManager.Draw(arg_rasterize);
 			m_intractUI.Draw(arg_rasterize);
 			m_goalPoint.Draw(arg_rasterize);

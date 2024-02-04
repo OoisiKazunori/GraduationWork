@@ -1,6 +1,7 @@
 #pragma once
 #include"StageModel.h"
 #include "../Game/Collision/MeshCollision.h"
+#include "../KazLibrary/Sound/SoundManager.h"
 
 class StageNumCounter
 {
@@ -27,8 +28,11 @@ private:
 	std::list<std::unique_ptr<StageModel>> m_turrets;
 
 	std::unique_ptr<StageModel> m_Bird1;
+	SoundData birdSound1;
 	std::unique_ptr<StageModel> m_Bird2;
+	SoundData birdSound2;
 	std::unique_ptr<StageModel> m_Bird3;
+	SoundData birdSound3;
 
 	std::list<std::unique_ptr<StageModel>> m_plane;
 
@@ -38,11 +42,12 @@ private:
 	//ステージ切り替え前に必ず呼び出してください
 	void ChangeScene(DrawingByRasterize& arg_rasterize);
 	std::unique_ptr<StageModel> m_goal;
+	bool isToHome = false;
 public:
 	StageManager();
 
-	void Init(DrawingByRasterize& arg_rasterize, int f_stageNum);
-	void Update(DrawingByRasterize& arg_rasterize);
+	void Init(DrawingByRasterize& arg_rasterize, int f_stageNum, bool f_isGoHome);
+	void Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3D &f_playerPos);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	//ステージが切り替わったトリガー
 	bool ChangeSceneTrigger();

@@ -113,6 +113,7 @@ private:
 	bool m_isTitle = true;
 
 	KazMath::Vec3<float>pos;
+	bool isClip;
 
 	//タイトル用
 	const KazMath::Vec3<float> TITLELOGO_POS = KazMath::Vec3<float>(-200.0f, -43.0f, 335.0f);
