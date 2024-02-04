@@ -891,7 +891,7 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
 	m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + 60.0f });
 	m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
 	m_missionFailedSp.SetScale({ 2.0f, 2.0f });
-	m_missionFailedSp.SetEasePosAddTime(0.04f);
+	m_missionFailedSp.SetEasePosAddTime(0.01f);
 	m_faliedColor = 100;
 
 	m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 0.0f });
@@ -914,6 +914,9 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
 	isMissionClear = false;
 	isThx = false;
 	isToTile = false;
+	isToReStart = false;
+	missionFailedTimer = 0;
+	isMissionFailed = false;
 }
 
 void ResultUI::Init()
@@ -943,6 +946,11 @@ void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 
 	if (m_isResultShow && !m_isClear)
 	{
+		if (!isMissionFailed)
+		{
+			m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
+			m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
+		}
 		m_faliedColor += 1;
 		m_missionFailedSp.m_color = { 255, 255, 255, m_faliedColor };
 		m_missionFailedSp.Update();
