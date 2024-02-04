@@ -6,6 +6,7 @@
 #include "../Game/AI/EnemyAIData.h"
 #include "../Game/Effect/InformEnemy.h"
 #include "../Game/Effect/TurretFireEffect.h"
+#include "../Effect/Smoke/SmokeEmitter.h"
 #include "../Game/Collision/MeshCollision.h"
 #include "../KazLibrary/Render/BasicDraw.h"
 #include "../KazLibrary/Sound/SoundManager.h"
@@ -33,6 +34,7 @@ private:
 private:
 	//êVãK
 	std::shared_ptr<TurretFireEffect> m_gunEffect;
+	std::shared_ptr<SmokeEmitter> m_smokeEffect;
 	std::list<KazMath::Transform3D> m_positions;
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;
