@@ -67,6 +67,35 @@ void DrawFuncHelper::TextureRender::Load(DrawingByRasterize& arg_rasterize, cons
 	};
 }
 
+void DrawFuncHelper::TextureRender::Load(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+{
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		m_drawCommand.renderTargetHandle = -1;
+	}
+	m_drawCommand = arg_drawCall;
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
+}
+
+void DrawFuncHelper::TextureRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_textureFilePass, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+{
+	if (arg_isUIFlag)
+	{
+		m_drawCommand.pipelineData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		m_drawCommand.renderTargetHandle = -1;
+	}
+	m_drawCommand = arg_drawCall;
+	m_drawCommandData = arg_rasterize.SetPipeline(m_drawCommand, arg_deletePipelineInScene);
+	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_textureFilePass);
+	Error();
+	m_textureSize =
+	{
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Width),
+		static_cast<float>(m_textureBuffer.bufferWrapper->GetBuffer().Get()->GetDesc().Height)
+	};
+}
+
 void DrawFuncHelper::TextureRender::operator=(const KazBufferHelper::BufferData& rhs)
 {
 	m_textureBuffer = rhs;

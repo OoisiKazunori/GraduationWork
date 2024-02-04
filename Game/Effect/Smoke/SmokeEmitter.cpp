@@ -27,6 +27,9 @@ void SmokeEmitter::Init(const EmittData& arg_emittData)
 
 	m_minScale = arg_emittData.m_minScale;
 	m_maxScale = arg_emittData.m_maxScale;
+
+	m_minActiveTime = arg_emittData.m_minActiveTime;
+	m_maxActiveTime = arg_emittData.m_maxActiveTime;
 }
 
 void SmokeEmitter::Update()
@@ -50,7 +53,7 @@ void SmokeEmitter::Update()
 			pos.x += KazMath::Rand<float>(m_range.x, -m_range.x);
 			pos.y += KazMath::Rand<float>(m_range.y, -m_range.y);
 			pos.z += KazMath::Rand<float>(m_range.z, -m_range.z);
-			m_smokeParticleArray[i].Init(pos, KazMath::Vec3<float>(scale, scale, scale), KazMath::Rand<float>(50.0f, 30.0f), m_color);
+			m_smokeParticleArray[i].Init(pos, KazMath::Vec3<float>(scale, scale, scale), KazMath::Rand<float>(m_maxActiveTime, m_minActiveTime), m_color);
 		}
 	}
 	++m_emittTimer;

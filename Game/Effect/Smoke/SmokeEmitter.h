@@ -11,6 +11,7 @@ public:
 	{
 		KazMath::Vec3<float> m_emittPos;
 		float m_minScale = 0.005f, m_maxScale = 0.01f;
+		float m_minActiveTime = 30, m_maxActiveTime = 50;
 		KazMath::Vec3<float> m_range;
 		int m_smokeTime;
 		bool m_loopFlag;
@@ -38,6 +39,7 @@ private:
 	float m_minScale, m_maxScale;
 	KazMath::Vec3<float>m_range;
 	int m_emittTimer, m_emittMaxTimer;
+	float m_minActiveTime, m_maxActiveTime;
 	bool m_loopFlag;
 
 	KazMath::Color m_color;

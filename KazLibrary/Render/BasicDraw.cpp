@@ -103,6 +103,16 @@ BasicDraw::BasicTextureRender::BasicTextureRender()
 {
 }
 
+void BasicDraw::BasicTextureRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+{
+	m_tex.Load(arg_rasterize, BasicDraw::SetTex(), arg_isUIFlag, arg_deletePipelineInScene);
+	m_tex.m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_filePass);
+	if (!arg_isUIFlag)
+	{
+		m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+	}
+}
+
 BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize& arg_rasterize) :
 	m_render(arg_rasterize, DrawFuncData::SetLine(DrawFuncData::GetBasicGBufferShader()))
 {

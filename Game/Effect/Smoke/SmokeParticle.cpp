@@ -6,7 +6,7 @@ SmokeParticle::SmokeParticle() :m_activeFlag(false)
 
 void SmokeParticle::Load(DrawingByRasterize& arg_rasterize)
 {
-	m_smokeRender.m_tex.Load(arg_rasterize, "Resource/Effect/Smoke.png", false);
+	m_smokeRender.Load(arg_rasterize, "Resource/Effect/Smoke.png", false);
 }
 
 void SmokeParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_scale, float arg_emittTimer, const KazMath::Color& arg_color)
@@ -22,7 +22,7 @@ void SmokeParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec
 	m_speed = KazMath::Rand<float>(0.1f, 0.01f);
 
 	m_angle = 0;
-	m_angleVel = KazMath::Rand<float>(0.5f, 0.1f);
+	m_angleVel = KazMath::Rand<float>(0.05f, 0.01f);
 
 	m_color = arg_color;
 }
