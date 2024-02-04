@@ -129,7 +129,46 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 		m_player->SetPosition(m_stageManager.GetGoalTransform().pos);
 		m_isTitle = false;
 	}
-	//EnemyDebugManager::Instance()->Init(arg_rasterize);
+
+
+	for (auto& obj : m_serverSmokeEmitter)
+	{
+		obj.Load(arg_rasterize);
+	}
+
+	SmokeEmitter::EmittData emittData;
+	emittData.m_emittPos =
+		KazMath::Vec3<float>(-39.7f, 92.0f, -12.0f);
+	emittData.m_range =
+		KazMath::Vec3<float>(2.0f, 1.0f, 6.0f);
+	emittData.m_smokeTime =
+		60 * 10;
+	emittData.m_loopFlag =
+		true;
+	emittData.m_color =
+		KazMath::Color(255, 255, 255, 255);
+	emittData.m_minScale = 0.001f;
+	emittData.m_maxScale = 0.1f;
+
+	emittData.m_minActiveTime = 60.0f;
+	emittData.m_maxActiveTime = 60.0f * 3.0f;
+	for (auto& obj : m_serverEmittData)
+	{
+		obj = emittData;
+	}
+
+	m_serverEmittData[0].m_emittPos =
+		KazMath::Vec3<float>(-39.7f, 92.0f, -12.0f);
+	m_serverEmittData[1].m_emittPos =
+		KazMath::Vec3<float>(-64.0f, 90.0f, -19.0f);
+	m_serverEmittData[2].m_emittPos =
+		KazMath::Vec3<float>(-84.0f, 90.0f, -46.0f);
+	m_serverEmittData[3].m_emittPos =
+		KazMath::Vec3<float>(-20.2f, 90.0f, -45.0f);
+	m_serverEmittData[4].m_emittPos =
+		KazMath::Vec3<float>(-21.2f, 90.0f, -4.0f);
+	m_serverEmittData[5].m_emittPos =
+		KazMath::Vec3<float>(-84.2f, 90.0f, -6.0f);
 
 }
 
@@ -174,8 +213,10 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
-		p = m_player->GetTransform().pos;
-		m_turret.Init(&p, KazMath::AngleToRadian(40.0f), 120.0f);
+		for (int i = 0; i < m_serverSmokeEmitter.size(); ++i)
+		{
+			m_serverSmokeEmitter[i].Init(m_serverEmittData[i]);
+		}
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_3, "rota", "DIK_3"))
 	{
@@ -233,6 +274,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			FootprintMgr::Instance()->Update();
 
 			m_stageManager.Update(arg_rasterize);
+
+			for (auto& obj : m_serverSmokeEmitter)
+			{
+				obj.Update();
+			}
+
 
 			if (m_HPBarManager.GetHP() > 0)
 			{
@@ -296,8 +343,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 							m_isToStartPos = true;
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
 							m_todo.NextTask();
-							//なんか見せるならフラグ立てるか
 
+							for (int i = 0; i < m_serverSmokeEmitter.size(); ++i)
+							{
+								m_serverSmokeEmitter[i].Init(m_serverEmittData[i]);
+							}
 						}
 					}
 					else
@@ -620,11 +670,13 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
+
 }
 
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
+
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
@@ -635,6 +687,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
+	for (auto& obj : m_serverSmokeEmitter)
+	{
+		obj.Draw(arg_rasterize, arg_blasVec);
+	}
 
 	m_menu.Draw(arg_rasterize);
 	if (!m_resultManager.GetResultShow() && !m_menu.GetIsMenuOpen())
