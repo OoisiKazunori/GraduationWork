@@ -153,6 +153,7 @@ void Menu::Update()
 						{
 							isSceneChangeTrigger = true;
 							SetSceneName(SceneName::SCENE_TUTORIAL);
+							SoundManager::Instance()->SoundPlayerWave(arrowSE, 0);
 							StageSelectScene::startStageNum = 0;
 							isSceneChange = true;
 							m_isMenuOpen = false;
@@ -160,6 +161,7 @@ void Menu::Update()
 						else if (nowSelectMenu == MenuOptions::File)
 						{
 							//ƒtƒ@ƒCƒ‹‚ðMenu‚ðŒ©‚¹‚éˆ—
+							SoundManager::Instance()->SoundPlayerWave(arrowSE, 0);
 							ShowFilesInit();
 						}
 						else if (nowSelectMenu == MenuOptions::ToEnd)
