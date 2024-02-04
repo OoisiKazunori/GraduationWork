@@ -389,8 +389,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 							/*m_isToStartPos = true;
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);*/
 							//ゲームクリア
-							StageSelectScene::startStageNum = 0;
-							m_sceneNum = 1;
+							
+							/*StageSelectScene::startStageNum = 0;
+							m_sceneNum = 1;*/
+							m_isClear = true;
+							//ここに演出のトリガーやフラグ入れるのも一興
+
 						}
 						else
 						{
@@ -538,18 +542,6 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				}
 				m_HPBarManager.Update(0);
 				//死んだときの更新
-				/*if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
-				{
-					m_resultManager.ShowResult();
-				}*/
-				/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
-				{
-					m_dangerManager.Update(true);
-				}*/
-				/*else
-				{
-					m_dangerManager.Update(false);
-				}*/
 
 			}
 			//リザルト出す
@@ -562,25 +554,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					//m_sceneNum = 0;
 					m_sceneNum = 1;
 					StageSelectScene::startStageNum = 0;
+					//
 				}
 			}
-
-			//auto hogehoge = MapManager::GetEnemyData(m_stageNum);
-
-			//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
-			//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
-
-
-
-			/*m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
-			m_goalPoint.Update();
-
-			FootprintMgr::Instance()->Update();*/
-
-			//EnemyDebugManager::Instance()->Update();
-			/*FieldAI::Instance()->DebugUpdate();
-			FieldAIDebugManager::Instance()->Update();*/
-
 		}
 
 		//クリップとの当たり判定
