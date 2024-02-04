@@ -1,6 +1,8 @@
 #pragma once
 #include "../UI/UI.h"
 #include "../KazLibrary/Scene/SceneData.h"
+#include "../KazLibrary/Sound/SoundManager.h"
+
 
 class MenuElement : public UI2DElement
 {
@@ -80,6 +82,10 @@ class Menu
 	void ShowFilesInit();
 	void ShowFilesDraw();
 
+	SoundData openSE;
+	SoundData closeSE;
+	SoundData paperSE;
+	SoundData arrowSE;
 public:
 	static bool firstLookFile;
 	static int firstLookFileIndex;

@@ -24,6 +24,10 @@ void Menu::Update()
 	//ファイルを初めて開いたとき
 	if (firstLookFile)
 	{
+		if (!m_isMenuOpen)
+		{
+			SoundManager::Instance()->SoundPlayerWave(paperSE, 0);
+		}
 		m_isMenuOpen = true;
 		if (firstLookFileIndex < 0)
 		{
@@ -35,6 +39,7 @@ void Menu::Update()
 			{
 				firstLookFile = false;
 				m_isMenuOpen = false;
+				SoundManager::Instance()->SoundPlayerWave(closeSE, 0);
 			}
 		}
 	}
@@ -46,6 +51,7 @@ void Menu::Update()
 			//メニューを開き始める
 			if (!m_isMenuOpen)
 			{
+				SoundManager::Instance()->SoundPlayerWave(openSE, 0);
 				MenuInit();
 			}
 			//メニュー閉じる
@@ -54,16 +60,19 @@ void Menu::Update()
 				//一気にメニューが閉じないようなシステム
 				if (!isLookFileList && !isLookFile)
 				{
+					SoundManager::Instance()->SoundPlayerWave(closeSE, 0);
 					MenuClose();
 				}
 				else if (isLookFileList && !isLookFile)
 				{
 					isLookFileList = false;
 					isLookFile = false;
+					SoundManager::Instance()->SoundPlayerWave(closeSE, 0);
 				}
 				else if (isLookFile)
 				{
 					isLookFile = false;
+					SoundManager::Instance()->SoundPlayerWave(closeSE, 0);
 				}
 			}
 		}
@@ -94,6 +103,7 @@ void Menu::Update()
 						}
 						nowSelectMenu = static_cast<MenuOptions>(nowNum);
 						m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
+						SoundManager::Instance()->SoundPlayerWave(arrowSE, 0);
 					}
 					else if (isLookFileList && !isLookFile)
 					{
@@ -102,6 +112,7 @@ void Menu::Update()
 						{
 							_selectFileIndex = 0;
 						}
+						SoundManager::Instance()->SoundPlayerWave(arrowSE, 0);
 					}
 				}
 				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_W) || KeyBoradInputManager::Instance()->InputTrigger(DIK_UP))
@@ -116,6 +127,7 @@ void Menu::Update()
 						}
 						nowSelectMenu = static_cast<MenuOptions>(nowNum);
 						m_selectBack.SetPosition({ (float)C_MenuBaseX, (float)C_MenuBaseY + (C_MenuDistanceY * nowNum) });
+						SoundManager::Instance()->SoundPlayerWave(arrowSE, 0);
 					}
 					else if (isLookFileList && !isLookFile)
 					{
@@ -124,6 +136,7 @@ void Menu::Update()
 						{
 							_selectFileIndex = C_FileCount - 1;
 						}
+						SoundManager::Instance()->SoundPlayerWave(arrowSE, 0);
 					}
 				}
 
@@ -133,6 +146,7 @@ void Menu::Update()
 					{
 						if (nowSelectMenu == MenuOptions::Return)
 						{
+							SoundManager::Instance()->SoundPlayerWave(closeSE, 0);
 							MenuClose();
 						}
 						else if (nowSelectMenu == MenuOptions::Totitle)
@@ -158,6 +172,7 @@ void Menu::Update()
 						if (_getFileIndex[_selectFileIndex])
 						{
 							isLookFile = true;
+							SoundManager::Instance()->SoundPlayerWave(paperSE, 0);
 						}
 						else
 						{
@@ -398,6 +413,14 @@ _files{
 	fileStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
 	toTitleStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
 	toEndStrTex.SetPosition({ 1280.0f + 500.0f, 720.0f / 2.0f });
+	openSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Menu/Menu_SE_1_.wav");
+	openSE.volume = 0.06f;
+	closeSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Menu/Menu_SE_2_.wav");
+	closeSE.volume = 0.06f;
+	paperSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Menu/Paper_SE_1_.wav");
+	paperSE.volume = 0.06f;
+	arrowSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/UI_Click.wav");
+	arrowSE.volume = 0.06f;
 }
 
 void Menu::GetFile(int f_index)
