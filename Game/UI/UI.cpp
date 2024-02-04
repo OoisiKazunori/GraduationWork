@@ -914,9 +914,9 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
 	isMissionClear = false;
 	isThx = false;
 	isToTile = false;
-	isToReStart = false;
-	missionFailedTimer = 0;
-	isMissionFailed = false;
+	//isToReStart = false;
+	//missionFailedTimer = 0;
+	//isMissionFailed = false;
 }
 
 void ResultUI::Init()
@@ -934,83 +934,83 @@ void ResultUI::Update()
 
 void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	if (m_spaceColor > C_spaceColorUpper || m_spaceColor < C_spaceColorUnder)
-	{
-		m_spaceAddColor = -m_spaceAddColor;
-	}
+	//if (m_spaceColor > C_spaceColorUpper || m_spaceColor < C_spaceColorUnder)
+	//{
+	//	m_spaceAddColor = -m_spaceAddColor;
+	//}
 
-	m_spaceColor += m_spaceAddColor;
-	/*m_pushSpaceSp.m_color = { 255, 255, 255, m_spaceColor };
-	m_pushSpaceSp.Draw(arg_rasterize);*/
-	//m_ResultStrSp.Draw(arg_rasterize);
+	//m_spaceColor += m_spaceAddColor;
+	///*m_pushSpaceSp.m_color = { 255, 255, 255, m_spaceColor };
+	//m_pushSpaceSp.Draw(arg_rasterize);*/
+	////m_ResultStrSp.Draw(arg_rasterize);
 
-	if (m_isResultShow && !m_isClear)
-	{
-		if (!isMissionFailed)
-		{
-			m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
-			m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
-		}
-		m_faliedColor += 1;
-		m_missionFailedSp.m_color = { 255, 255, 255, m_faliedColor };
-		m_missionFailedSp.Update();
-		m_missionFailedSp.Draw(arg_rasterize);
-		m_pushSpaceSp.m_color = { 255, 255, 255, m_spaceColor };
-		m_pushSpaceSp.Draw(arg_rasterize);
-		m_back.Draw(arg_rasterize);
-	}
-	else if (m_isClear)
-	{
-		const int waitTime = 45;
-		if (!isMissionClear)
-		{
-			m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 900.0f});
-			m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, {1280.0f / 2.0f, 720.0f / 2.0f}, 0.02f);
-			isMissionClear = true;
-		}
-		if (m_missionClearSp.GetPosEaseTimer() >= 1.0f && !isThx)
-		{
-			misssionClearTimer++;
-			if (misssionClearTimer >= waitTime)
-			{
-				m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
-				m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f }, { 1280.0f / 2.0f, -220.0f }, 0.02f);
-				m_thxStrSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
-				m_thxStrSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
-				isThx = true;
-			}
-		}
-		if (m_thxStrSp.GetPosEaseTimer() >= 1.0f && thxTimer < waitTime)
-		{
-			thxTimer++;
-			if (thxTimer >= waitTime)
-			{
-				m_thxStrSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
-				m_thxStrSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f }, { 1280.0f / 2.0f, -220.0f }, 0.02f);
-			}
-		}
-		else if (m_thxStrSp.GetPosEaseTimer() >= 1.0f)
-		{
-			toTileTimer++;
-			if (toTileTimer)
-			{
-				//タイトルに行く
-				isToTile = true;
-			}
-		}
-		if (isMissionClear)
-		{
-			m_missionClearSp.Update();
-			m_missionClearSp.Draw(arg_rasterize);
-		}
-		if (isThx)
-		{
-			m_thxStrSp.Update();
-			m_thxStrSp.Draw(arg_rasterize);
-		}
-		m_missionClearBack.Update();
-		m_missionClearBack.Draw(arg_rasterize);
-	}
+	//if (m_isResultShow && !m_isClear)
+	//{
+	//	if (!isMissionFailed)
+	//	{
+	//		m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
+	//		m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
+	//	}
+	//	m_faliedColor += 1;
+	//	m_missionFailedSp.m_color = { 255, 255, 255, m_faliedColor };
+	//	m_missionFailedSp.Update();
+	//	m_missionFailedSp.Draw(arg_rasterize);
+	//	m_pushSpaceSp.m_color = { 255, 255, 255, m_spaceColor };
+	//	m_pushSpaceSp.Draw(arg_rasterize);
+	//	m_back.Draw(arg_rasterize);
+	//}
+	//else if (m_isClear)
+	//{
+	//	const int waitTime = 45;
+	//	if (!isMissionClear)
+	//	{
+	//		m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 900.0f});
+	//		m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, {1280.0f / 2.0f, 720.0f / 2.0f}, 0.02f);
+	//		isMissionClear = true;
+	//	}
+	//	if (m_missionClearSp.GetPosEaseTimer() >= 1.0f && !isThx)
+	//	{
+	//		misssionClearTimer++;
+	//		if (misssionClearTimer >= waitTime)
+	//		{
+	//			m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	//			m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f }, { 1280.0f / 2.0f, -220.0f }, 0.02f);
+	//			m_thxStrSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
+	//			m_thxStrSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
+	//			isThx = true;
+	//		}
+	//	}
+	//	if (m_thxStrSp.GetPosEaseTimer() >= 1.0f && thxTimer < waitTime)
+	//	{
+	//		thxTimer++;
+	//		if (thxTimer >= waitTime)
+	//		{
+	//			m_thxStrSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	//			m_thxStrSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f }, { 1280.0f / 2.0f, -220.0f }, 0.02f);
+	//		}
+	//	}
+	//	else if (m_thxStrSp.GetPosEaseTimer() >= 1.0f)
+	//	{
+	//		toTileTimer++;
+	//		if (toTileTimer)
+	//		{
+	//			//タイトルに行く
+	//			isToTile = true;
+	//		}
+	//	}
+	//	if (isMissionClear)
+	//	{
+	//		m_missionClearSp.Update();
+	//		m_missionClearSp.Draw(arg_rasterize);
+	//	}
+	//	if (isThx)
+	//	{
+	//		m_thxStrSp.Update();
+	//		m_thxStrSp.Draw(arg_rasterize);
+	//	}
+	//	m_missionClearBack.Update();
+	//	m_missionClearBack.Draw(arg_rasterize);
+	//}
 }
 
 DangerUIManager::DangerUIManager(DrawingByRasterize& arg_rasterize) :

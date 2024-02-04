@@ -104,7 +104,7 @@ void Player::TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& a
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle)
+void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F)
 {
 
 	//動かす前の座標。
@@ -247,10 +247,10 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	UpdateReload();
 
 	//室内か外かを判断する。
-	if (KazMath::Vec3<float>(BGM_OUTDOOR_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
+	if (arg_is1F && KazMath::Vec3<float>(BGM_OUTDOOR_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
 		m_inRoom = false;
 	}
-	if (KazMath::Vec3<float>(BGM_ROOM_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
+	if (arg_is1F && KazMath::Vec3<float>(BGM_ROOM_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
 		m_inRoom = true;
 	}
 
