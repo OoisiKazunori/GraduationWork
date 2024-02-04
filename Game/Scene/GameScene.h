@@ -14,6 +14,7 @@
 #include"../KazLibrary/Render/BasicDraw.h"
 #include"../Game/Effect/TurretFireEffect.h"
 #include"../Game/Effect/InformEnemy.h"
+#include"../Game/Effect/Smoke/SmokeEmitter.h"
 
 class EnemyManager;
 class Player;
@@ -35,7 +36,7 @@ public:
 	void PreInit();
 	void Finalize();
 	void Input();
-	void Update(DrawingByRasterize &arg_rasterize);
+	void Update(DrawingByRasterize& arg_rasterize);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
 	int SceneChange();
@@ -46,6 +47,8 @@ public:
 	}
 
 private:
+	std::array<SmokeEmitter::EmittData, 6> m_serverEmittData;
+	std::array<SmokeEmitter, 6> m_serverSmokeEmitter;
 
 	//ÉJÉÅÉâ--------------------------
 	bool m_debugCameraFlag;
@@ -90,7 +93,7 @@ private:
 	KazMath::Transform3D m_axixTransform;
 
 	StageManager m_stageManager;
-	
+
 	WeponUIManager m_uiManager;
 	//GadgetUIManager m_gadgetMaanager;
 	HPUI m_HPBarManager;
@@ -98,7 +101,7 @@ private:
 	DangerUIManager m_dangerManager;
 	IntractUI m_intractUI;
 
-	std::array<BasicDraw::SilhouetteModelRender,2> m_silhoutteModelArray;
+	std::array<BasicDraw::SilhouetteModelRender, 2> m_silhoutteModelArray;
 	HeartRate m_heartRateManager;
 	Menu m_menu;
 	ToDoUI m_todo;

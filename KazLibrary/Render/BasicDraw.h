@@ -51,6 +51,8 @@ namespace BasicDraw
 		BasicTextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
 		BasicTextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
 		BasicTextureRender();
+
+		void Load(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag = false, bool arg_deletePipelineInScene = false);
 		DrawFuncHelper::TextureRender m_tex;
 	};
 
