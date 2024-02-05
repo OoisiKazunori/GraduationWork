@@ -34,6 +34,13 @@ Enemy::Enemy()
 
 	m_footprintSpan = 0;
 
+	//新規
+	m_moveVec = { 0.0f,0.0f,0.0f };
+	m_nextPos = { 0.0f,0.0f,0.0f };
+	m_currentPoint = 0;
+	m_radian = 0.0f;
+	m_checkEyeDelay = 0.0f;
+	m_distRate = 1.0f;
 }
 
 Enemy::~Enemy()
@@ -142,8 +149,6 @@ void Enemy::Init(
 	m_rate = MAX_RATE;
 	m_angle = 0.0f;
 
-	m_checkEyeDelay = MAX_EYE_DELAY;
-
 	m_shotDelay = 0;
 	m_isInSightFlag = false;
 
@@ -152,10 +157,13 @@ void Enemy::Init(
 	m_shotDelay = 0;
 	m_appearTimer = 0;
 
+	m_sightRotation = 0;
+
+	//新規
 	m_currentPoint = 0;
 	m_radian = 0.0f;
-
-	m_sightRotation = 0;
+	m_checkEyeDelay = 0.0f;
+	m_distRate = 1.0f;
 }
 
 void Enemy::Update(
@@ -182,26 +190,28 @@ void Enemy::Update(
 
 	//視線範囲内か
 	m_isCombat = false;
+	m_radian = atan2(
+		m_trans.GetFront().z, m_trans.GetFront().x);
+
 	if (IsInSight(arg_playerTransform.pos, arg_stageColliders))
 	{
-		m_checkEyeDelay--;
+		m_checkEyeDelay += 1.0f;
 		m_isInSightFlag = true;
-		m_radian = atan2(
-			m_trans.GetFront().z, m_trans.GetFront().x);
 
 		RotateEye(arg_playerTransform.pos);
 
 		//一定時間範囲内だったら
-		if (m_checkEyeDelay <= 0)
+		if (m_checkEyeDelay >=
+			MAX_EYE_DELAY * m_distRate)
 		{
 			m_rate = MAX_RATE;
-			m_checkEyeDelay = MAX_EYE_DELAY;
+			m_checkEyeDelay = 0;
 
 			//正面ベクトルを角度に
 			m_gunEffect->Init(
 				&m_trans.pos,
 				&m_radian,
-				static_cast<float>(MAX_RATE));
+				static_cast<float>(MAX_EYE_DELAY));
 
 			//発見時
 			if (m_state != State::Combat)
@@ -214,7 +224,9 @@ void Enemy::Update(
 	else
 	{
 		m_isInSightFlag = false;
-		m_checkEyeDelay = MAX_EYE_DELAY;
+		m_checkEyeDelay = 0.0f;
+		m_distRate = 1.0f;
+		m_gunEffect->Stop();
 
 		if (IsFixedTurret()) {
 			float l_rad =
@@ -398,9 +410,18 @@ bool Enemy::IsInSight(
 	std::pair<float, float> l_pPos =
 		std::make_pair(arg_playerPos.x, arg_playerPos.z);
 
-	if (CheckDistXZ(
-		l_pPos, EnemyConfig::eyeCheckDist) &&
+	bool l_isCheckDist = false;
+	float l_dist = std::sqrtf(
+		std::powf(m_trans.pos.x - l_pPos.first, 2.0f) +
+		std::powf(m_trans.pos.z - l_pPos.second, 2.0f));
+
+	if (l_dist < EnemyConfig::eyeCheckDist) {
+		l_isCheckDist = true;
+	}
+
+	if (l_isCheckDist &&
 		CheckEye(arg_playerPos, arg_stageColliders)) {
+		m_distRate = l_dist / EnemyConfig::eyeCheckDist;
 		return true;
 	}
 	return false;
@@ -539,6 +560,9 @@ void Enemy::Combat(
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
 	KazMath::Vec3<float> arg_playerPos)
 {
+	//プレイヤー方向(撃たないけど見続ける)
+	RotateEye(arg_playerPos);
+
 	if (!m_isInSightFlag)
 	{
 		m_rate--;
@@ -547,13 +571,8 @@ void Enemy::Combat(
 			m_state = State::Patrol;
 			m_rate = MAX_RATE;
 		}
-
-		//撃たないけど見続ける
 	}
 	else {
-		//プレイヤー方向
-		RotateEye(arg_playerPos);
-
 		m_rate = MAX_RATE;
 		m_shotDelay++;
 	}
@@ -633,10 +652,15 @@ void Enemy::RotateEye(
 	KazMath::Vec3<float> l_cross =
 		m_trans.GetFront().Cross(l_trans);
 	//2つのベクトルの内積(1.0fだと正面)
-	if (m_trans.GetFront().Dot(l_trans) < 1.0f)
+	float l_dot = m_trans.GetFront().Dot(l_trans);
+	if (l_dot < 1.0f)
 	{
+		l_dot = acosf(l_dot);
 		float l_rad =
-			DirectX::XMConvertToRadians(0.8f);
+			std::clamp(
+				DirectX::XMConvertToRadians(0.8f),
+				0.0f,
+				l_dot);
 
 		if (l_cross.y < 0.0f) {
 			l_rad *= -1.0f;

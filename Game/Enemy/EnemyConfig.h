@@ -10,7 +10,7 @@ namespace EnemyConfig
 	};
 
 	static int delay = 120;
-	static float speed = 0.3f;
+	static float speed = 0.15f;
 	static float eyeCheckDist = 25.0f;
 	static float soundCheckDist = 50.0f;
 }
