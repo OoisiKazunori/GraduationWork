@@ -1,7 +1,7 @@
 #include "UI.h"
 #include "../Input/Input.h"
 #include "../KazLibrary/Easing/easing.h"
-
+#include "../Player/PlayerStatus.h"
 
 int HPUI::m_hp = 100;
 int HPUI::m_redHP = 0;
@@ -373,7 +373,7 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 			KazMath::Transform2D l_trans;
 			if (isStoneInf)
 			{
-				m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
+				m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX ,
 					m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
 				m_StoneInf.Draw(arg_rasterize);
 
@@ -439,7 +439,7 @@ void WeponUIManager::Draw(DrawingByRasterize& arg_rasterize)
 				KazMath::Transform2D l_trans;
 				if (isStoneInf)
 				{
-					m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX - 4,
+					m_StoneInf.SetPosition({ m_nonWepon.GetNowPos().x + (float)c_BulletNumOffsetX,
 						m_nonWepon.GetNowPos().y + (float)c_BulletNumOffsetY });
 					m_StoneInf.Draw(arg_rasterize);
 
@@ -712,7 +712,6 @@ void HPUI::Init()
 
 void HPUI::Update(const int f_playerHP)
 {
-
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
@@ -734,12 +733,18 @@ void HPUI::Update(const int f_playerHP)
 			}
 		}
 	}
-	regeneTimer++;
-	if (regeneTimer > regeneStartTimer)
+	if (PlayerStatus::Instance()->m_isFound)
 	{
-		if (m_redHP > 0)m_redHP--;
-
-		else if (m_hp < MaxHP)m_hp++;
+		regeneTimer = 0;
+	}
+	else
+	{
+		regeneTimer++;
+		if (regeneTimer > regeneStartTimer)
+		{
+			if (m_redHP > 0)m_redHP--;
+			else if (m_hp < MaxHP)m_hp++;
+		}
 	}
 }
 
@@ -820,7 +825,7 @@ void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 	{
 		redWaitTime = 0;
 	}
-	regeneTimer = 0;
+	//regeneTimer = 0;
 }
 
 void HPUI::InitHP()
@@ -911,7 +916,7 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
 
 	m_thxStrSp.SetEasePosAddTime(0.01f);
 
-	m_missionClearBack.SetPosition({1280.0f / 2.0f, 720.0f / 2.0f});
+	m_missionClearBack.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
 	m_missionClearBack.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
 	m_missionClearBack.SetColorEaseEnd(KazMath::Color(255, 255, 255, 255));
 	m_missionClearBack.SetAddColor(KazMath::Color(0, 0, 0, 10));
@@ -998,8 +1003,8 @@ void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 		const int waitTime = 45;
 		if (!isMissionClear)
 		{
-			m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 900.0f});
-			m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, {1280.0f / 2.0f, 720.0f / 2.0f}, 0.02f);
+			m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
+			m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
 			isMissionClear = true;
 		}
 		if (m_missionClearSp.GetPosEaseTimer() >= 1.0f && !isThx)
@@ -1185,8 +1190,8 @@ ToDoUI::ToDoUI(DrawingByRasterize& arg_rasterize) :
 		UI2DElement(arg_rasterize, "Resource/UITexture/ToDo_Text1.png"),
 		UI2DElement(arg_rasterize, "Resource/UITexture/ToDo_Text2.png"),
 		UI2DElement(arg_rasterize, "Resource/UITexture/ToDo_Text3.png"),
-	},
-	_todo(arg_rasterize, "Resource/UITexture/ToDo.png")
+},
+_todo(arg_rasterize, "Resource/UITexture/ToDo.png")
 {
 	for (int i = 0; i < (int)ToDoList::ToDoMax; i++)
 	{
@@ -1204,7 +1209,7 @@ void ToDoUI::Init()
 
 void ToDoUI::Update()
 {
-	
+
 	if (true)//タイトルでない時的なフラグを入れる
 	{
 
