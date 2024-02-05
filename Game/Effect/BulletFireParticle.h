@@ -13,8 +13,8 @@ public:
 	void Init(
 		const KazMath::Vec3<float>& arg_emittPos,
 		float arg_radian,
-		const KazMath::Vec3<float>& arg_size = { 0.1f,0.1f,2.0f },
-		float arg_speed = 2.0f
+		const KazMath::Vec3<float>& arg_size = { 0.1f,0.1f,4.0f },
+		float arg_speed = 3.0f
 	);
 	void Finalize();
 	void Update();

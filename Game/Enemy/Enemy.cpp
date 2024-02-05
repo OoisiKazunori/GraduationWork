@@ -29,9 +29,6 @@ Enemy::Enemy()
 	m_rate = MAX_RATE;
 	m_angle = 0.0f;
 
-	m_enemyShotSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Shot_Player.wav");
-	m_enemyShotSE.volume = DEFAULT_SHOT_VOLUME;
-
 	m_footprintSpan = 0;
 
 	m_edgeColor = ACTIVE_COLOR;
@@ -44,6 +41,30 @@ Enemy::Enemy()
 	m_radian = 0.0f;
 	m_checkEyeDelay = 0.0f;
 	m_distRate = 1.0f;
+	m_isGunEffect = false;
+
+	//音
+	m_sounds[0] = SoundManager::Instance()->
+		SoundLoadWave("Resource/Sound/Enemy/Turret_SE_1_.wav");
+	m_sounds[1] = SoundManager::Instance()->
+		SoundLoadWave("Resource/Sound/Enemy/Turret_SE_2_.wav");
+	m_sounds[2] = SoundManager::Instance()->
+		SoundLoadWave("Resource/Sound/Enemy/Turret_SE_3_.wav");
+	m_sounds[3] = SoundManager::Instance()->
+		SoundLoadWave("Resource/Sound/Enemy/Turret_SE_4_.wav");
+	m_sounds[4] = SoundManager::Instance()->
+		SoundLoadWave("Resource/Sound/Enemy/Hit_SE_1_.wav");
+	for (int i = 0; i < m_sounds.size(); ++i)
+	{
+		m_sounds[i].volume = DEFAULT_SHOT_VOLUME;
+
+		SoundManager::Instance()->SoundPlayerWave(
+			m_sounds[i],
+			0
+		);
+		m_sounds[i].source->Stop();
+		m_isSounds[i] = false;
+	}
 }
 
 Enemy::~Enemy()
@@ -165,6 +186,12 @@ void Enemy::Init(
 	m_radian = 0.0f;
 	m_checkEyeDelay = 0.0f;
 	m_distRate = 1.0f;
+	m_isGunEffect = false;
+
+	SoundManager::Instance()->SoundPlayerWave(
+		m_sounds[Sounds::Turret_SE_2],
+		XAUDIO2_LOOP_INFINITE);
+	m_isSounds[Sounds::Turret_SE_2] = true;
 }
 
 void Enemy::Update(
@@ -204,12 +231,41 @@ void Enemy::Update(
 	m_radian = atan2(
 		m_trans.GetFront().z, m_trans.GetFront().x);
 
+	//戦闘中で線分の周転に敵がプレイヤーが居たら。
+	float shortestDistance = KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]).GetNormal().Dot(arg_playerTransform.pos - m_lineOfSightPos[0]) / KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]).Length();
+	float sphereDistance = ((KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]) * shortestDistance) - KazMath::Vec3<float>(arg_playerTransform.pos - m_lineOfSightPos[0])).Length();
+	if (m_state == State::Combat && sphereDistance < 4.0f && 0.0f < shortestDistance && shortestDistance < 1.0f) {
+		arg_hpUI.HitDamage(1, 1);
+	}
+
+	//音量変更
+	float distance =
+		KazMath::Vec3<float>(
+			arg_playerTransform.pos - m_trans.pos).Length();
+	float range = 1.0f - std::clamp(distance / SOUND_RANGE, 0.0f, 1.0f);
+	range = EasingMaker(In, Quad, range);
+	for (int i = 0; i < m_sounds.size(); ++i)
+	{
+		float l_vol = DEFAULT_SHOT_VOLUME * range;
+		if (arg_hpUI.GetHP() <= 0) {
+			l_vol = 0.0f;
+		}
+		m_sounds[i].source->SetVolume(l_vol);
+	}
+
+	//判定
 	if (IsInSight(arg_playerTransform.pos, arg_stageColliders))
 	{
 		m_checkEyeDelay += 1.0f;
 		m_isInSightFlag = true;
 
 		RotateEye(arg_playerTransform.pos);
+		if (!m_isSounds[Sounds::Turret_SE_3]) {
+			SoundManager::Instance()->SoundPlayerWave(
+				m_sounds[Sounds::Turret_SE_3],
+				XAUDIO2_LOOP_INFINITE);
+			m_isSounds[Sounds::Turret_SE_3] = true;
+		}
 
 		//一定時間範囲内だったら
 		if (m_checkEyeDelay >=
@@ -225,6 +281,7 @@ void Enemy::Update(
 				&m_firePos,
 				&m_radian,
 				static_cast<float>(MAX_EYE_DELAY));
+			m_isGunEffect = true;
 
 			//発見時
 			if (m_state != State::Combat)
@@ -239,7 +296,14 @@ void Enemy::Update(
 		m_isInSightFlag = false;
 		m_checkEyeDelay = 0.0f;
 		m_distRate = 1.0f;
+
 		m_gunEffect->Stop();
+		m_isGunEffect = false;
+
+		if (m_isSounds[Sounds::Turret_SE_3]) {
+			m_sounds[Sounds::Turret_SE_3].source->Stop();
+			m_isSounds[Sounds::Turret_SE_3] = false;
+		}
 
 		if (IsFixedTurret()) {
 			float l_rad =
@@ -355,13 +419,6 @@ void Enemy::Update(
 
 	}
 	m_sightRotation += 0.3f;
-
-	//戦闘中で線分の周転に敵がプレイヤーが居たら。
-	float shortestDistance = KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]).GetNormal().Dot(arg_playerTransform.pos - m_lineOfSightPos[0]) / KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]).Length();
-	float sphereDistance = ((KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]) * shortestDistance) - KazMath::Vec3<float>(arg_playerTransform.pos - m_lineOfSightPos[0])).Length();
-	if (m_state == State::Combat && sphereDistance < 4.0f && 0.0f < shortestDistance && shortestDistance < 1.0f) {
-		arg_hpUI.HitDamage(1, 1);
-	}
 
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 }
@@ -589,27 +646,39 @@ void Enemy::Combat(
 			m_state = State::Patrol;
 			m_rate = MAX_RATE;
 		}
+
+		//音
+		if (m_isSounds[Sounds::Turret_SE_1]) {
+			m_sounds[Sounds::Turret_SE_1].source->Stop();
+			m_isSounds[Sounds::Turret_SE_1] = false;
+		}
 	}
 	else {
 		m_rate = MAX_RATE;
 		m_shotDelay++;
+
+		if (!m_isGunEffect) {
+			m_gunEffect->Init(
+				&m_firePos,
+				&m_radian,
+				static_cast<float>(MAX_EYE_DELAY));
+			m_isGunEffect = true;
+		}
+
+		if (!m_isSounds[Sounds::Turret_SE_1]) {
+			SoundManager::Instance()->SoundPlayerWave(
+				m_sounds[Sounds::Turret_SE_1],
+				XAUDIO2_LOOP_INFINITE);
+			m_isSounds[Sounds::Turret_SE_1] = true;
+		}
 	}
 
 	//射撃
 	if (SHOT_DELAY < m_shotDelay) {
 
 		//arg_bulletMgr.lock()->
-		//	GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
+		//    GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
 		m_shotDelay = 0;
-
-		//距離によって音を小さくする。
-		float distance = KazMath::Vec3<float>(arg_playerPos - m_trans.pos).Length();
-		float range = 1.0f - std::clamp(distance / SOUND_RANGE, 0.0f, 1.0f);
-		range = EasingMaker(In, Quad, range);
-
-		m_enemyShotSE.volume = DEFAULT_SHOT_VOLUME * range;
-		SoundManager::Instance()->
-			SoundPlayerWave(m_enemyShotSE, 0);
 	}
 }
 
@@ -803,6 +872,10 @@ void Enemy::Collision(
 	}
 	if (0 < hitCount) {
 		--m_hp;
+
+		SoundManager::Instance()->
+			SoundPlayerWave(
+				m_sounds[Sounds::Hit_SE_1], 0);
 	}
 
 	//死亡
@@ -816,6 +889,12 @@ void Enemy::Collision(
 		l_emittData.m_smokeTime = 6000;
 		m_smokeEffect->Init(l_emittData);
 		m_state = State::Death;
+
+		m_sounds[Sounds::Turret_SE_2].source->Stop();
+		m_isSounds[Sounds::Turret_SE_2] = false;
+		SoundManager::Instance()->
+			SoundPlayerWave(
+				m_sounds[Sounds::Turret_SE_4], 0);
 	}
 }
 

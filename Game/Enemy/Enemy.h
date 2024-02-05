@@ -52,6 +52,20 @@ private:
 	float m_radian = 0.0f;
 	float m_checkEyeDelay = 0.0f;
 	float m_distRate = 1.0f;
+	bool m_isGunEffect = false;
+
+	std::array<SoundData, 5> m_sounds;
+	std::array<bool, 5> m_isSounds;
+	const float DEFAULT_SHOT_VOLUME = 0.05f;
+	const float SOUND_RANGE = 200.0f;	//‰¹‚Ì•·‚±‚¦‚é”ÍˆÍB
+	enum Sounds
+	{
+		Turret_SE_1,
+		Turret_SE_2,
+		Turret_SE_3,
+		Turret_SE_4,
+		Hit_SE_1
+	};
 
 	//‰ß‹
 	std::vector<std::pair<int, int>> m_checkPointDelay;
@@ -63,10 +77,6 @@ private:
 	int m_delay;
 	bool m_isCheckPoint;
 	bool m_onGround;
-
-	SoundData m_enemyShotSE;
-	const float DEFAULT_SHOT_VOLUME = 0.05f;
-	const float SOUND_RANGE = 200.0f;	//‰¹‚Ì•·‚±‚¦‚é”ÍˆÍB
 
 	std::vector<std::pair<float, float>> m_checkSoundPos;
 	int m_checkSoundCount;
