@@ -39,6 +39,7 @@ Enemy::Enemy()
 	//V‹K
 	m_moveVec = { 0.0f,0.0f,0.0f };
 	m_nextPos = { 0.0f,0.0f,0.0f };
+	m_firePos = { 0.0f,0.0f,0.0f };
 	m_currentPoint = 0;
 	m_radian = 0.0f;
 	m_checkEyeDelay = 0.0f;
@@ -159,6 +160,7 @@ void Enemy::Init(
 	m_sightRotation = 0;
 
 	//V‹K
+	m_firePos = m_trans.pos;
 	m_currentPoint = 0;
 	m_radian = 0.0f;
 	m_checkEyeDelay = 0.0f;
@@ -217,8 +219,10 @@ void Enemy::Update(
 			m_checkEyeDelay = 0;
 
 			//³–ÊƒxƒNƒgƒ‹‚ðŠp“x‚É
+			m_firePos = m_trans.pos;
+			m_firePos.y = m_trans.pos.y + 3.0f;
 			m_gunEffect->Init(
-				&m_trans.pos,
+				&m_firePos,
 				&m_radian,
 				static_cast<float>(MAX_EYE_DELAY));
 
@@ -413,7 +417,7 @@ void Enemy::Draw(
 	}
 
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0], m_lineOfSightPos[1], KazMath::Color(172, 50, 50, 255));
-	}
+}
 
 bool Enemy::IsInSight(
 	KazMath::Vec3<float>& arg_playerPos,
@@ -803,8 +807,11 @@ void Enemy::Collision(
 
 	//Ž€–S
 	if (m_hp <= 0) {
+		m_firePos = m_trans.pos;
+		m_firePos.y = m_trans.pos.y + 3.0f;
+
 		SmokeEmitter::EmittData l_emittData;
-		l_emittData.m_emittPos = m_trans.pos;
+		l_emittData.m_emittPos = m_firePos;
 		l_emittData.m_range = { 2.0f,3.0f,2.0f };
 		l_emittData.m_smokeTime = 6000;
 		m_smokeEffect->Init(l_emittData);
