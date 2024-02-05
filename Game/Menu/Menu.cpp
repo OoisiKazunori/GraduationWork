@@ -206,7 +206,9 @@ void Menu::Draw(DrawingByRasterize& arg_rasterize)
 			KazMath::Transform2D l_trans = { {1280.0f / 2.0f ,720.0f / 2.0f}, {1.0f, 1.0f} };
 			_files[firstLookFileIndex].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
 		}
+		_escTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, { {50.0f, 690.0f}, {0.5f, 0.5f} });
 		m_MenuBackTex.Draw(arg_rasterize);
+		
 		return;
 	}
 	if (!m_isMenuOpen) return;
@@ -253,6 +255,9 @@ void Menu::Draw(DrawingByRasterize& arg_rasterize)
 			_files[_selectFileIndex].m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans);
 		}
 	}
+	//_escTex.SetPosition({20.0f, 680.0f});
+	_escTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, {{50.0f, 690.0f}, {0.5f, 0.5f}});
+	//_escTex.Draw(arg_rasterize);
 	m_MenuBackTex.Draw(arg_rasterize);
 }
 
@@ -385,6 +390,7 @@ returnStrTex(arg_rasterize, "Resource/MenuTex/MenuReturn.png"),
 fileStrTex(arg_rasterize, "Resource/MenuTex/File.png"),
 toTitleStrTex(arg_rasterize, "Resource/MenuTex/MenuTitle.png"),
 toEndStrTex(arg_rasterize, "Resource/MenuTex/MenuEnd.png"),
+_escTex(arg_rasterize, "Resource/UITexture/ESC.png"),
 _fileMenus{
 	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name1.png"),
 	MenuElement(arg_rasterize, "Resource/MenuTex/File_Name2.png"),

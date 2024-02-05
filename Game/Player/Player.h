@@ -93,8 +93,7 @@ private:
 	const float FOOTPRINT_SPAN = 1;
 	bool m_footprintSide;
 
-	//BGMを室内用と室外用で切り替えるための変数
-	bool m_inRoom;
+	
 
 	//外と中のBGMを切り替える地点
 	const KazMath::Vec3<float> BGM_OUTDOOR_POS = KazMath::Vec3<float>(171.0f, -43.0f, 168.0f);
@@ -105,7 +104,8 @@ private:
 
 
 public:
-
+	//BGMを室内用と室外用で切り替えるための変数
+	bool m_inRoom;
 	Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos);
 
 	void Init();

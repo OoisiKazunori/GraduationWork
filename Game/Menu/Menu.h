@@ -33,6 +33,7 @@ class Menu
 	MenuElement fileStrTex;
 	MenuElement toTitleStrTex;
 	MenuElement toEndStrTex;
+	MenuElement _escTex;
 
 	static bool isGameEnd;
 

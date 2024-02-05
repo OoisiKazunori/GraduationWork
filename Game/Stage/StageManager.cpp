@@ -24,7 +24,7 @@ void StageManager::Init(DrawingByRasterize& arg_rasterize, int f_stageNum, bool 
 	AddMapDatas(arg_rasterize, f_stageNum);
 }
 
-void StageManager::Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3D& f_playerPos)
+void StageManager::Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3D& f_playerPos, bool f_isPLayerInside)
 {
 	//if (m_nowStageNumber != m_nextStageNumber)
 	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_4))
@@ -71,8 +71,9 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3
 	static int bird1Ti = 300;
 	static int bird2Ti = 500;
 	static int bird3Ti = 700;
+
 	//一ステージめだったら
-	if (m_nowStageNumber == 0 && !isToHome)
+	if (m_nowStageNumber == 0 && !isToHome && !f_isPLayerInside)
 	{
 		bird1Ti--;
 		bird2Ti--;
