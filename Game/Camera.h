@@ -21,7 +21,7 @@ private:
 	const float EYE_TARGET_DISTANCE = 20.0f;
 
 	//ƒJƒƒ‰‚ÌX•ûŒü‚Ì‰ñ“]—Ê‚Ì‰Šú’l
-	const float CAMERA_X_ANGLE_INIT_AMOUNT = 0.21f;
+	const float CAMERA_X_ANGLE_INIT_AMOUNT = 0.071f;
 	
 	float m_titleCameraMove;
 	const float TITLE_CAMERA_MOVE = 1.0f;

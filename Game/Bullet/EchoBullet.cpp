@@ -57,7 +57,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::WHITE);
 				--m_echoCount;
 
-				SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
+				//SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
 
 				m_isCollision = false;
 				isHit = true;
