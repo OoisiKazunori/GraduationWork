@@ -570,11 +570,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			}
 		}
 		m_todo.Update();
+		
+		m_titleLogoDrawTimer = std::clamp(m_titleLogoDrawTimer - 1, 0, TITLELOGO_DRAWTIMER);
+
 	}
 
 	//タイトル画面
 	else
 	{
+
+		m_titleLogoDrawTimer = TITLELOGO_DRAWTIMER;
 
 		//サイン波で動かす。
 		m_titleLogoSineTimer += 0.04f;
@@ -671,12 +676,13 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_turret.Draw(arg_rasterize, arg_blasVec);
 	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
 
-	//if (m_isTitle)
-	//{
+	if (0 < m_titleLogoDrawTimer)
+	{
 
-	m_titleLogoModel.m_model.DrawRasterize(arg_rasterize, m_titleLogoTransform);
-	m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
-	//}
+		m_titleLogoModel.m_model.DrawRasterize(arg_rasterize, m_titleLogoTransform);
+		m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
+		
+	}
 
 	//m_goalPoint.Draw(arg_rasterize);
 
