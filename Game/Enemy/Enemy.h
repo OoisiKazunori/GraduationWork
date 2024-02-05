@@ -9,10 +9,12 @@
 #include "../Game/Collision/MeshCollision.h"
 #include "../KazLibrary/Render/BasicDraw.h"
 #include "../KazLibrary/Sound/SoundManager.h"
+#include "../UI/UI.h"
 
 class MeshCollision;
 class BulletMgr;
 class InformEnemy;
+class Player;
 
 class Enemy
 {
@@ -112,7 +114,8 @@ public:
 		arg_stageColliders,
 		std::weak_ptr<BulletMgr> arg_bulletMgr,
 		KazMath::Transform3D arg_playerTransform,
-		std::weak_ptr<MeshCollision> arg_stageMeshCollision
+		std::weak_ptr<MeshCollision> arg_stageMeshCollision,
+		HPUI& arg_hpUI
 	);
 	void Draw(
 		DrawingByRasterize& arg_rasterize,

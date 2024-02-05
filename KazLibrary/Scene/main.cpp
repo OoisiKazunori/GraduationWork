@@ -137,7 +137,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ClipCursor(nullptr);
 			ShowCursor(true);
 		}
-#endif // _DEBUG
+#else
 //
 //#ifdef DEBUG
 		GetWindowRect(winApi.hwnd, &wrc);
@@ -152,7 +152,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		ClipCursor(&wrc);
 		//マウス非表示
 		ShowCursor(false);
-//#endif // _DEBUG
+#endif // _DEBUG
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();

@@ -283,7 +283,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
 					m_player->GetTransform(),
-					m_stageMeshCollision);
+					m_stageMeshCollision,
+					m_HPBarManager);
 
 				if (m_debugCameraFlag)
 				{
@@ -541,7 +542,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		if (!PlayerStatus::Instance()->m_isFound) {
 
 			//ヒットストップをかける。
-			StopMgr::Instance()->HitStopStart({ 60, 0.1f });
+			//StopMgr::Instance()->HitStopStart({ 60, 0.1f });
 
 		}
 
