@@ -690,7 +690,7 @@ HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
 	m_HPBarRed(arg_rasterize, "Resource/UITexture/HPBer3.png"),
 	m_HPFrame2(arg_rasterize, "Resource/UITexture/HPBer1.png")
 {
-	m_hp = MaxHP;
+	//m_hp = MaxHP;
 	m_hitDamage[0] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit01.wav");
 	m_hitDamage[0].volume = 0.1f;
 	m_hitDamage[1] = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/hit02.wav");
@@ -704,7 +704,7 @@ HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
 
 void HPUI::Init()
 {
-
+	m_hp = MaxHP;
 }
 
 

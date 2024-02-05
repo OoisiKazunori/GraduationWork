@@ -254,6 +254,7 @@ void GameScene::Init()
 							  m_stageManager.m_clip1->m_transform.pos.z,
 				});
 			isClip = true;
+			m_HPBarManager.Init();
 		}
 		else
 		{
