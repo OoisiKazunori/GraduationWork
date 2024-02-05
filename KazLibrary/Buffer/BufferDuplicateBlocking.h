@@ -76,6 +76,7 @@ public:
 		RootSignatureDataTest rootsignature;
 		std::vector<ShaderOptionData> shaderOption;
 		DrawFuncPipelineData::PipelineBlendModeEnum blendMode;
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc;
 
 		PipelineDuplicateData(RootSignatureDataTest ROOTSIGNATURE, std::vector<ShaderOptionData> OPTION, DrawFuncPipelineData::PipelineBlendModeEnum blend) :
 			rootsignature(ROOTSIGNATURE), shaderOption(OPTION), blendMode(blend)
