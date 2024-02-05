@@ -106,7 +106,7 @@ void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo
 
 		if (index.GetIsActive()) continue;
 
-		index.Generate(arg_pos, arg_maxRadius, arg_colorID, 600);
+		index.Generate(arg_pos, arg_maxRadius, arg_colorID, 360);
 
 		break;
 
@@ -116,7 +116,7 @@ void EchoArray::Generate(KazMath::Vec3<float> arg_pos, float arg_maxRadius, Echo
 
 		if (index.GetIsActive()) continue;
 
-		index.Generate(arg_pos, arg_maxRadius, arg_colorID, 600, true);
+		index.Generate(arg_pos, arg_maxRadius, arg_colorID, 360, true);
 
 		break;
 

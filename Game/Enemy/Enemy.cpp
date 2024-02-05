@@ -289,12 +289,8 @@ void Enemy::Update(
 	{
 		MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(checkHitTransform.pos, checkHitTransform.GetFront());
 
-		if (rayResult.m_isHit) {
-			int a = 0;
-		}
-
 		//Ç«Ç±Ç©Ç…ìñÇΩÇ¡ÇΩèÍçá
-		if (!(rayResult.m_isHit && 0 < rayResult.m_distance)) continue;
+		if (!(rayResult.m_isHit && 0 < rayResult.m_distance && rayResult.m_distance < EnemyConfig::eyeCheckDist)) continue;
 
 		//ãóó£Çî‰Ç◊ÇÈ
 		if (minLength < rayResult.m_distance) continue;
@@ -314,8 +310,10 @@ void Enemy::Update(
 	}
 	else {
 
-		m_lineOfSightPos[0] = KazMath::Vec3<float>();
-		m_lineOfSightPos[1] = KazMath::Vec3<float>();
+		m_lineOfSightPos[0] = checkHitTransform.pos;
+		m_lineOfSightPos[0].y -= 0.5f;
+		m_lineOfSightPos[1] = checkHitTransform.pos + m_trans.GetFront() * EnemyConfig::eyeCheckDist;
+		m_lineOfSightPos[1].y -= 0.5f;
 
 	}
 	m_sightRotation += 0.3f;
