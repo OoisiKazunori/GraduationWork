@@ -3,6 +3,7 @@
 #include "PatrolDraw.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 #include "../Game/Collision/MeshCollision.h"
+#include "../UI/UI.h"
 
 class EnemyData;
 
@@ -27,7 +28,8 @@ public:
 		arg_stageColliders,
 		std::weak_ptr<BulletMgr> arg_bulletMgr,
 		KazMath::Transform3D arg_playerTransform,
-		std::weak_ptr<MeshCollision> arg_stageMeshCollision);
+		std::weak_ptr<MeshCollision> arg_stageMeshCollision,
+		HPUI& arg_hpUI);
 	void Draw(
 		DrawingByRasterize& arg_rasterize,
 		Raytracing::BlasVector& arg_blasVec);

@@ -40,7 +40,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_titleLogoModel(arg_rasterize, "Resource/Title/", "TitleLogoModel.gltf"),
 	m_clickToStart(arg_rasterize, "Resource/Title/", "ClickToStartModel.gltf"),
 	m_intractUI(arg_rasterize),
-	m_todo(arg_rasterize)
+	m_todo(arg_rasterize),
+	m_interactFlag(false)
 {
 	/*
 	テクスチャやモデルの読み込みはTextureRenderやModelRenderのコンストラクタで読み込まれますが、
@@ -173,6 +174,61 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_serverEmittData[5].m_emittPos =
 		KazMath::Vec3<float>(-84.2f, 90.0f, -6.0f);
 
+	m_serverEmittData[6].m_emittPos =
+		KazMath::Vec3<float>(-52.9f, 91.7f, -41.8f);
+	m_serverEmittData[6].m_minScale = 0.005f;
+	m_serverEmittData[6].m_maxScale = 0.01f;
+	m_serverEmittData[6].m_minActiveTime = 30;
+	m_serverEmittData[6].m_maxActiveTime = 50;
+	m_serverEmittData[6].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[6].m_smokeTime = 60 * 10;
+
+
+	m_serverEmittData[7].m_emittPos =
+		KazMath::Vec3<float>(-48.9f, 92.0f, -42.8f);
+	m_serverEmittData[7].m_minScale = 0.005f;
+	m_serverEmittData[7].m_maxScale = 0.01f;
+	m_serverEmittData[7].m_minActiveTime = 30;
+	m_serverEmittData[7].m_maxActiveTime = 50;
+	m_serverEmittData[7].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[7].m_smokeTime = 60 * 10;
+
+	m_serverEmittData[8].m_emittPos =
+		KazMath::Vec3<float>(-55.9f, 92.0f, -42.8f);
+	m_serverEmittData[8].m_minScale = 0.005f;
+	m_serverEmittData[8].m_maxScale = 0.01f;
+	m_serverEmittData[8].m_minActiveTime = 30;
+	m_serverEmittData[8].m_maxActiveTime = 50;
+	m_serverEmittData[8].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[8].m_smokeTime = 60 * 10;
+
+
+	m_serverEmittData[9].m_emittPos =
+		KazMath::Vec3<float>(-56.9f, 91.0f, -42.8f);
+	m_serverEmittData[9].m_minScale = 0.005f;
+	m_serverEmittData[9].m_maxScale = 0.01f;
+	m_serverEmittData[9].m_minActiveTime = 30;
+	m_serverEmittData[9].m_maxActiveTime = 50;
+	m_serverEmittData[9].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[9].m_smokeTime = 60 * 10;
+
+	m_serverEmittData[10].m_emittPos =
+		KazMath::Vec3<float>(-46.9f, 91.0f, -43.8f);
+	m_serverEmittData[10].m_minScale = 0.005f;
+	m_serverEmittData[10].m_maxScale = 0.01f;
+	m_serverEmittData[10].m_minActiveTime = 30;
+	m_serverEmittData[10].m_maxActiveTime = 50;
+	m_serverEmittData[10].m_range = { 0.3f,0.1f,0.1f };
+	m_serverEmittData[10].m_smokeTime = 60 * 10;
+
+	m_keySound = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Server/Saver_SE_1.wav");
+	m_serverErrorSound = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Server/Saver_SE_2.wav");
+
+	m_keySound.volume = 0.5f;
+	m_serverErrorSound.volume = 0.5f;
+
+
+	m_emergencyTimer = 0.0f;
 }
 
 GameScene::~GameScene()
@@ -283,7 +339,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
 					m_player->GetTransform(),
-					m_stageMeshCollision);
+					m_stageMeshCollision,
+					m_HPBarManager);
 
 				if (m_debugCameraFlag)
 				{
@@ -298,6 +355,20 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 				m_bulletMgr->Update(m_stageManager.GetColliders());
 
+				//サーバーのインタラクト時に暫く経ったらサーバーエラーの音を出す
+				if (m_interactFlag)
+				{
+					m_serverErrorTime.UpdateTimer();
+					if (m_serverErrorTime.IsTimeUpOnTrigger())
+					{
+						SoundManager::Instance()->SoundPlayerWave(m_serverErrorSound, 0);
+
+						for (int i = 0; i < m_serverSmokeEmitter.size(); ++i)
+						{
+							m_serverSmokeEmitter[i].Init(m_serverEmittData[i]);
+						}
+					}
+				}
 				//nextステージへいくところを踏んだら
 				//プレイヤーとゴールの当たり判定
 				KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
@@ -320,10 +391,9 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);
 							m_todo.NextTask();
 
-							for (int i = 0; i < m_serverSmokeEmitter.size(); ++i)
-							{
-								m_serverSmokeEmitter[i].Init(m_serverEmittData[i]);
-							}
+							SoundManager::Instance()->SoundPlayerWave(m_keySound, 0);
+							m_interactFlag = true;
+							m_serverErrorTime.Reset(120);
 						}
 					}
 					else
@@ -537,20 +607,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	//全ての敵を走査して、発見状態の敵が居るかどうかでBGMを変える。
 	if (0 < m_enemyManager->GetCombatStatusEnemyCount()) {
 
-		//まだ発見状態じゃなかったら
-		if (!PlayerStatus::Instance()->m_isFound) {
-
-			//ヒットストップをかける。
-			StopMgr::Instance()->HitStopStart({ 60, 0.1f });
-
-		}
-
 		PlayerStatus::Instance()->m_isFound = true;
+		m_emergencyTimer = EMERGENCY_TIMER;
 
 	}
 	else {
 
-		PlayerStatus::Instance()->m_isFound = false;
+		m_emergencyTimer = std::clamp(m_emergencyTimer - 1.0f, 0.0f, EMERGENCY_TIMER);
+		if (m_emergencyTimer <= 0.0f) {
+			PlayerStatus::Instance()->m_isFound = false;
+		}
 
 	}
 

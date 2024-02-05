@@ -255,12 +255,14 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	}
 
 	//BGM‚ðXVB
-	if (PlayerStatus::Instance()->m_isFound && 0.99f < StopMgr::Instance()->GetGameSpeed()) {
+	if (PlayerStatus::Instance()->m_isFound) {
 
 		BGMController::Instance()->ChangeBGM(BGMController::BGM::EMERGENCY);
 
+
 	}
 	else {
+
 
 		if (m_inRoom) {
 			BGMController::Instance()->ChangeBGM(BGMController::BGM::INDOOR);
@@ -271,7 +273,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	}
 
-	
+
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_UP, "PlayerDebugMode", "UPKey")) {
 		m_isDebug = !m_isDebug;
 	}

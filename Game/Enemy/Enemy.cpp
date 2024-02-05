@@ -171,7 +171,8 @@ void Enemy::Update(
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
 	KazMath::Transform3D arg_playerTransform,
-	std::weak_ptr<MeshCollision> arg_stageMeshCollision)
+	std::weak_ptr<MeshCollision> arg_stageMeshCollision,
+	HPUI& arg_hpUI)
 {
 	//死んだら終了
 	if (IsDeath()) {
@@ -328,7 +329,6 @@ void Enemy::Update(
 		isHit = true;
 
 	}
-
 	if (isHit) {
 
 		m_lineOfSightPos[0] = checkHitTransform.pos;
@@ -346,6 +346,13 @@ void Enemy::Update(
 
 	}
 	m_sightRotation += 0.3f;
+
+	//戦闘中で線分の周転に敵がプレイヤーが居たら。
+	float shortestDistance = KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]).GetNormal().Dot(arg_playerTransform.pos - m_lineOfSightPos[0]) / KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]).Length();
+	float sphereDistance = ((KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]) * shortestDistance) - KazMath::Vec3<float>(arg_playerTransform.pos - m_lineOfSightPos[0])).Length();
+	if (m_state == State::Combat && sphereDistance < 4.0f && 0.0f < shortestDistance && shortestDistance < 1.0f) {
+		arg_hpUI.HitDamage(1, 1);
+	}
 
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
 
@@ -580,8 +587,8 @@ void Enemy::Combat(
 	//射撃
 	if (SHOT_DELAY < m_shotDelay) {
 
-		arg_bulletMgr.lock()->
-			GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
+		//arg_bulletMgr.lock()->
+		//	GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
 		m_shotDelay = 0;
 
 		//距離によって音を小さくする。

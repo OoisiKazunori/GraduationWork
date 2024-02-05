@@ -93,14 +93,14 @@ private:
 	const float FOOTPRINT_SPAN = 1;
 	bool m_footprintSide;
 
-	
-
 	//外と中のBGMを切り替える地点
 	const KazMath::Vec3<float> BGM_OUTDOOR_POS = KazMath::Vec3<float>(171.0f, -43.0f, 168.0f);
 	const KazMath::Vec3<float> BGM_ROOM_POS = KazMath::Vec3<float>(171.0f, -43.0f, 141.0f);
 	const float BGM_CHANGE_SPHERE_RADIUS = 5.0f;
 
 	bool m_isDebug = false;	//壁突き抜け高速移動するやつ。
+
+
 
 
 public:

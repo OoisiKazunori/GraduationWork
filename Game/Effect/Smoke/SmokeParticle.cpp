@@ -33,6 +33,9 @@ void SmokeParticle::Update()
 	{
 		return;
 	}
+
+	//m_transform.pos.x = m_baseTransform.pos.x + sinf(m_timer.GetTimeRate() * (DirectX::XM_2PI / 180.0f)) * 10.0f;
+
 	//è„è∏Ç∆âÒì]
 	m_transform.pos.y += m_speed;
 	m_angle += m_angleVel;
