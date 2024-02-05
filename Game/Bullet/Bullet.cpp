@@ -9,6 +9,7 @@ Bullet::Bullet(DrawingByRasterize& arg_rasterize)
 
 	m_line.Generate(arg_rasterize);
 
+	m_hitEffectEmitter.Load(arg_rasterize);
 }
 
 void Bullet::Init() {
@@ -44,6 +45,8 @@ void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders
 
 		Init();
 
+		m_hitEffectEmitter.Init(m_collisionEndPos);
+
 	}
 
 	for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
@@ -67,6 +70,8 @@ void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders
 
 	}
 
+	m_hitEffectEmitter.Update();
+
 }
 
 void Bullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec) {
@@ -77,6 +82,7 @@ void Bullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 	}
 	m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_bulletPos, m_bulletPos + m_dir * BULLET_LENGTH, bulletColor);
 
+	m_hitEffectEmitter.Draw(arg_rasterize, arg_blasVec);
 }
 
 bool Bullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision, bool arg_isEnemyObject)

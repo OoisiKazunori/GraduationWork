@@ -90,7 +90,7 @@ void BulletMgr::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageCollid
 
 	for (auto& index : m_echoBullet) {
 
-		if (!index->GetIsActive()) continue;
+		//if (!index->GetIsActive()) continue;
 
 		index->Update(arg_stageColliders);
 
@@ -110,7 +110,7 @@ void BulletMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	for (auto& index : m_echoBullet) {
 
-		if (!index->GetIsActive()) continue;
+		//if (!index->GetIsActive()) continue;
 
 		index->Draw(arg_rasterize, arg_blasVec);
 

@@ -10,7 +10,7 @@ EchoBullet::EchoBullet(DrawingByRasterize& arg_rasterize) :
 	m_echoSE.volume = 0.05f;
 
 	m_transform.scale = KazMath::Vec3<float>(10.0f, 10.0f, 10.0f);
-
+	m_hitEffectEmitter.Load(arg_rasterize);
 }
 
 void EchoBullet::Init()
@@ -34,7 +34,7 @@ void EchoBullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg
 
 void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders)
 {
-
+	m_hitEffectEmitter.Update();
 	if (!m_isActive) return;
 
 	//ìñÇΩÇËîªíËÇ™Ç‹ÇæèIÇÌÇ¡ÇƒÇ»Ç©Ç¡ÇΩÇÁ
@@ -62,7 +62,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				m_isCollision = false;
 				isHit = true;
 
-
+				m_hitEffectEmitter.Init(m_transform.pos + KazMath::Vec3<float>(0.0f, 0.0f, 0.0f));
 
 				Init();
 
@@ -88,19 +88,15 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				Init();
 
 			}
-
 		}
 
-
 	}
-
 }
 
 void EchoBullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
 	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
-
+	m_hitEffectEmitter.Draw(arg_rasterize, arg_blasVec);
 }
 
 bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision)

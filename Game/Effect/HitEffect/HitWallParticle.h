@@ -11,7 +11,7 @@ public:
 	HitWallParticle();
 
 	void Load(DrawingByRasterize& arg_rasterize);
-	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_vel);
+	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_vel, float arg_fallSpeed = 0.01f);
 	void Finalize();
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
@@ -19,6 +19,7 @@ public:
 private:
 	KazMath::Vec3<float>m_pos;
 	KazMath::Vec3<float>m_vel;
+	float m_fallSpeed;
 	bool m_activeFlag;
 	//パーティクルの軌跡
 	class Particle
