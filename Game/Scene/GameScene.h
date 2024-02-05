@@ -128,6 +128,10 @@ private:
 	//警戒が終わっても一定期間警戒BGMを流すための変数
 	float m_emergencyTimer;
 	const float EMERGENCY_TIMER = 300.0f;
+	
+	//一定時間経過したらタイトルロゴを消すためのタイマー
+	int m_titleLogoDrawTimer;
+	const int TITLELOGO_DRAWTIMER = 120;
 
 	//タイトル用
 	const KazMath::Vec3<float> TITLELOGO_POS = KazMath::Vec3<float>(-200.0f, -43.0f, 335.0f);
