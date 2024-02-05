@@ -124,6 +124,11 @@ private:
 	KazMath::Vec3<float>pos;
 	bool isClip;
 
+
+	//警戒が終わっても一定期間警戒BGMを流すための変数
+	float m_emergencyTimer;
+	const float EMERGENCY_TIMER = 300.0f;
+
 	//タイトル用
 	const KazMath::Vec3<float> TITLELOGO_POS = KazMath::Vec3<float>(-200.0f, -43.0f, 335.0f);
 	float m_titleLogoSineTimer;

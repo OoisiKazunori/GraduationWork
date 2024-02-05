@@ -226,6 +226,9 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 
 	m_keySound.volume = 0.5f;
 	m_serverErrorSound.volume = 0.5f;
+
+
+	m_emergencyTimer = 0.0f;
 }
 
 GameScene::~GameScene()
@@ -604,20 +607,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	//全ての敵を走査して、発見状態の敵が居るかどうかでBGMを変える。
 	if (0 < m_enemyManager->GetCombatStatusEnemyCount()) {
 
-		//まだ発見状態じゃなかったら
-		if (!PlayerStatus::Instance()->m_isFound) {
-
-			//ヒットストップをかける。
-			//StopMgr::Instance()->HitStopStart({ 60, 0.1f });
-
-		}
-
 		PlayerStatus::Instance()->m_isFound = true;
+		m_emergencyTimer = EMERGENCY_TIMER;
 
 	}
 	else {
 
-		PlayerStatus::Instance()->m_isFound = false;
+		m_emergencyTimer = std::clamp(m_emergencyTimer - 1.0f, 0.0f, EMERGENCY_TIMER);
+		if (m_emergencyTimer <= 0.0f) {
+			PlayerStatus::Instance()->m_isFound = false;
+		}
 
 	}
 
