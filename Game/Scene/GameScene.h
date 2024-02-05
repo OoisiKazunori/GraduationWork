@@ -47,8 +47,14 @@ public:
 	}
 
 private:
-	std::array<SmokeEmitter::EmittData, 6> m_serverEmittData;
-	std::array<SmokeEmitter, 6> m_serverSmokeEmitter;
+	std::array<SmokeEmitter::EmittData, 11> m_serverEmittData;
+	std::array<SmokeEmitter, 11> m_serverSmokeEmitter;
+
+	bool m_interactFlag;
+	KazMath::Timer m_serverErrorTime;
+	SoundData m_keySound;
+	SoundData m_serverErrorSound;
+
 
 	//ƒJƒƒ‰--------------------------
 	bool m_debugCameraFlag;
