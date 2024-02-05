@@ -16,7 +16,7 @@
 #include "../KazLibrary/Debug/DebugKey.h"
 #include "../BGM/BGMController.h"
 
-Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
+Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos, bool arg_toStartPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
 	m_collisionModel(arg_rasterize, "Resource/Player/Collision/", "collision.gltf"),
 	m_mk23Model(arg_rasterize, ModelLoader::Instance()->Load("Resource/Weapon/Mk23/", "Mk23.gltf"), DrawFuncData::SetDefferdRenderingModelAnimationAppearByEchoDepthAlways(ModelLoader::Instance()->Load("Resource/Weapon/Mk23/", "Mk23.gltf"))),
@@ -44,6 +44,9 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 
 	m_transform = f_startPos;
 	Init();
+
+
+	m_inRoom = arg_toStartPos;
 
 	m_transform.pos.y += 10.0f;
 }
@@ -264,7 +267,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	else {
 
 
-		if (m_inRoom) {
+		if (m_inRoom || !arg_is1F) {
 			BGMController::Instance()->ChangeBGM(BGMController::BGM::INDOOR);
 		}
 		else {
