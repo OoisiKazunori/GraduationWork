@@ -639,8 +639,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 
-
 	m_player->Draw(arg_rasterize, arg_blasVec);
+
 
 	for (auto& obj : m_serverSmokeEmitter)
 	{

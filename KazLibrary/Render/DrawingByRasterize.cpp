@@ -185,11 +185,13 @@ void DrawingByRasterize::GeneratePipeline()
 
 		//パイプラインの生成
 		result.pipelineData.pRootSignature = rootSignatureBufferMgr.GetBuffer(result.m_rootsignatureHandle).Get();
+		PipelineDuplicateBlocking::PipelineDuplicateData pipelineData(
+			rootSignatureGenerateData, callData->pipelineData.shaderDataArray, callData->pipelineData.blendMode
+		);
+		pipelineData.desc = result.pipelineData;
 		result.pipelineHandle = piplineBufferMgr.GeneratePipeline(
 			result.pipelineData,
-			PipelineDuplicateBlocking::PipelineDuplicateData(
-				rootSignatureGenerateData, callData->pipelineData.shaderDataArray, callData->pipelineData.blendMode
-			)
+			pipelineData
 		);
 		ErrorCheck(result.pipelineHandle, callData->callLocation);
 

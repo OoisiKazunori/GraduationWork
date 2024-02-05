@@ -39,6 +39,9 @@ Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPo
 	m_changeWeaponSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ChangeWeapon.wav");
 	m_changeWeaponSE.volume = 0.05f;
 
+	m_noBullet = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Player/Shot_SE_1_.wav");
+	m_noBullet.volume = 0.05f;
+
 	m_meshCollision = std::make_shared<MeshCollision>();
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 
@@ -285,8 +288,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
-
 	m_mk23Model.m_model.Draw(arg_rasterize, arg_blasVec, m_weaponTransform);
 	m_mk23MagModel.m_model.Draw(arg_rasterize, arg_blasVec, m_magTransform);
 }
@@ -362,7 +363,11 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 		//’e‚ð‚¤‚Â“ü—Í‚àŽó‚¯•t‚¯‚éB
 		if (!m_isReloadMotionNow && KeyBoradInputManager::Instance()->MouseInputTrigger(MOUSE_INPUT_LEFT) && SHOT_DELAY <= m_shotDelay) {
 
-			if (!WeponUIManager::GetCanShot()) return;
+			if (!WeponUIManager::GetCanShot()) {
+				SoundManager::Instance()->SoundPlayerWave(m_noBullet, 0);
+				return;
+			}
+
 			WeponUIManager::Shot();
 			//bool isEchoBullet = arg_weaponNumber == WeponUIManager::e_Echo;
 

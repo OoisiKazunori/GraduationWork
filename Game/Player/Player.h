@@ -56,6 +56,7 @@ private:
 	SoundData m_sonarSE;
 	SoundData m_adsSE;
 	SoundData m_changeWeaponSE;
+	SoundData m_noBullet;
 
 	//姿勢のステータス
 	enum class PlayerAttitude {
