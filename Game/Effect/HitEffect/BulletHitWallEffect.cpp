@@ -16,9 +16,14 @@ void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos)
 {
 	for (auto& obj : m_particle)
 	{
+		obj.Finalize();
 		//デバック用に一個しか出さない
-		obj.Init(arg_pos, KazMath::Vec3<float>(0.0f,0.0f,1.0f));
-		break;
+		obj.Init(arg_pos,
+			KazMath::Vec3<float>(
+				KazMath::Rand(1.0f, 0.0f),
+				KazMath::Rand(1.0f, 0.0f),
+				KazMath::Rand(1.0f, 0.0f)
+			));
 	}
 }
 

@@ -12,6 +12,7 @@ public:
 
 	void Load(DrawingByRasterize& arg_rasterize);
 	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_vel);
+	void Finalize();
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
 
@@ -27,6 +28,7 @@ private:
 
 		void Load(DrawingByRasterize& arg_rasterize);
 		void Init(const KazMath::Vec3<float>& arg_pos);
+		void Finalize();
 		void Update();
 		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
 
