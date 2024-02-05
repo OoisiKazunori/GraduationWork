@@ -229,10 +229,13 @@ class HPUI
 	static const int c_BaseUIY = c_UITexY / 2 + c_texOffset;
 	static int m_hp;
 	static int m_redHP;
-	const int MaxHP = 100;
+	const int MaxHP = 300;
 
 	static int redWaitTime;
 	static const int redTime = 1;
+
+	static int regeneTimer;
+	static const int regeneStartTimer = 60;
 public:
 	HPUI(DrawingByRasterize& arg_rasterize);
 
