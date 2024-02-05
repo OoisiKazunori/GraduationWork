@@ -288,8 +288,6 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
-
 	m_mk23Model.m_model.Draw(arg_rasterize, arg_blasVec, m_weaponTransform);
 	m_mk23MagModel.m_model.Draw(arg_rasterize, arg_blasVec, m_magTransform);
 }

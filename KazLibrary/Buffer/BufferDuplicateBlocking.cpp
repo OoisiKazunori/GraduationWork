@@ -23,6 +23,10 @@ RESOURCE_HANDLE PipelineDuplicateBlocking::GeneratePipeline(const D3D12_GRAPHICS
 		{
 			continue;
 		}
+		if (CHECK_DATA.desc.DepthStencilState.DepthFunc != duplicateDataArray[i].desc.DepthStencilState.DepthFunc)
+		{
+			continue;
+		}
 		//èdï°ÇämîFÇµÇΩÇÁï‘Ç∑
 		return i;
 	}
