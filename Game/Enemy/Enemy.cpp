@@ -174,6 +174,9 @@ void Enemy::Update(
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision,
 	HPUI& arg_hpUI)
 {
+	//銃演出
+	m_gunEffect->Update();
+
 	//死んだら終了
 	if (IsDeath()) {
 		Death();
@@ -262,9 +265,6 @@ void Enemy::Update(
 
 	//判定(メッシュ)
 	Collision(arg_stageColliders, arg_bulletMgr);
-
-	//銃演出
-	m_gunEffect->Update();
 
 	if (m_state != m_oldState)
 	{
@@ -355,14 +355,16 @@ void Enemy::Update(
 	}
 
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
-
 }
 
 void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
 	Raytracing::BlasVector& arg_blasVec)
 {
-	m_reaction.Draw(arg_rasterize, arg_blasVec);
+	if (m_state == State::Combat) {
+		m_reaction.Draw(arg_rasterize, arg_blasVec);
+	}
+
 #ifdef DEBUG
 	if (!m_inEcho)
 	{
@@ -387,26 +389,26 @@ void Enemy::Draw(
 	}
 
 	m_inform.Draw(arg_rasterize, arg_blasVec);
-
 	m_gunEffect->Draw(arg_rasterize, arg_blasVec);
-
-	if (0 < KazMath::Vec3<float>(m_lineOfSightPos[0] - m_lineOfSightPos[1]).Length()) {
-		KazMath::Transform3D transform = m_trans;
-		transform.Rotation(transform.GetFront(), m_sightRotation);
-		KazMath::Vec3<float> right = transform.GetRight() * 0.05f;
-		KazMath::Vec3<float> up = transform.GetUp() * 0.05f;
-		m_line[0].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] + right + up, m_lineOfSightPos[1] + right + up, KazMath::Color(172, 50, 50, 255));
-		m_line[1].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] - right + up, m_lineOfSightPos[1] - right + up, KazMath::Color(172, 50, 50, 255));
-		m_line[2].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] - right - up, m_lineOfSightPos[1] - right - up, KazMath::Color(172, 50, 50, 255));
-		m_line[3].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] + right - up, m_lineOfSightPos[1] + right - up, KazMath::Color(172, 50, 50, 255));
-	}
 
 	if (m_state == State::Death) {
 		m_smokeEffect->Draw(arg_rasterize, arg_blasVec);
 	}
+	else {
+		if (0 < KazMath::Vec3<float>(m_lineOfSightPos[0] - m_lineOfSightPos[1]).Length()) {
+			KazMath::Transform3D transform = m_trans;
+			transform.Rotation(transform.GetFront(), m_sightRotation);
+			KazMath::Vec3<float> right = transform.GetRight() * 0.05f;
+			KazMath::Vec3<float> up = transform.GetUp() * 0.05f;
+			m_line[0].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] + right + up, m_lineOfSightPos[1] + right + up, KazMath::Color(172, 50, 50, 255));
+			m_line[1].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] - right + up, m_lineOfSightPos[1] - right + up, KazMath::Color(172, 50, 50, 255));
+			m_line[2].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] - right - up, m_lineOfSightPos[1] - right - up, KazMath::Color(172, 50, 50, 255));
+			m_line[3].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] + right - up, m_lineOfSightPos[1] + right - up, KazMath::Color(172, 50, 50, 255));
+		}
+	}
 
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0], m_lineOfSightPos[1], KazMath::Color(172, 50, 50, 255));
-}
+	}
 
 bool Enemy::IsInSight(
 	KazMath::Vec3<float>& arg_playerPos,
@@ -798,7 +800,7 @@ void Enemy::Collision(
 	if (m_hp <= 0) {
 		SmokeEmitter::EmittData l_emittData;
 		l_emittData.m_emittPos = m_trans.pos;
-		l_emittData.m_range = { 1.0f,1.0f,1.0f };
+		l_emittData.m_range = { 2.0f,3.0f,2.0f };
 		l_emittData.m_smokeTime = 6000;
 		m_smokeEffect->Init(l_emittData);
 		m_state = State::Death;
