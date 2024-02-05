@@ -8,9 +8,9 @@ int HPUI::m_redHP = 0;
 
 int HPUI::redWaitTime = 0;
 
-int WeponUIManager::m_magazinSize = 10;
-int WeponUIManager::m_haveBulletNum = 20;
-int WeponUIManager::m_bulletCount = 10;
+int WeponUIManager::m_magazinSize = 5;
+int WeponUIManager::m_haveBulletNum = 10;
+int WeponUIManager::m_bulletCount = 5;
 int WeponUIManager::m_haveStone = 7;
 bool WeponUIManager::m_isCanShot = true;
 
@@ -684,6 +684,8 @@ UI2DElement& GadgetUIManager::GetUI(GadgetNumber f_gadget)
 	return m_nonGadget;
 }
 
+int HPUI::regeneTimer = 0;
+
 HPUI::HPUI(DrawingByRasterize& arg_rasterize) :
 	m_HPFrame(arg_rasterize, "Resource/UITexture/HPBer4.png"),
 	m_HPBar(arg_rasterize, "Resource/UITexture/HPBer2.png"),
@@ -731,6 +733,13 @@ void HPUI::Update(const int f_playerHP)
 				m_redHP = 0;
 			}
 		}
+	}
+	regeneTimer++;
+	if (regeneTimer > regeneStartTimer)
+	{
+		if (m_redHP > 0)m_redHP--;
+
+		else if (m_hp < MaxHP)m_hp++;
 	}
 }
 
@@ -811,6 +820,7 @@ void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 	{
 		redWaitTime = 0;
 	}
+	regeneTimer = 0;
 }
 
 void HPUI::InitHP()
