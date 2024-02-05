@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 #endif // _DEBUG
 //
-#ifdef DEBUG
+//#ifdef DEBUG
 		GetWindowRect(winApi.hwnd, &wrc);
 
 		//ぴったりだとちょっと画面からカーソルがはみ出るので、少し小さくする。
@@ -152,7 +152,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		ClipCursor(&wrc);
 		//マウス非表示
 		ShowCursor(false);
-#endif // _DEBUG
+//#endif // _DEBUG
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
