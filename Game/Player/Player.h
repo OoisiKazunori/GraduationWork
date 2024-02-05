@@ -106,7 +106,7 @@ private:
 public:
 	//BGM‚ğº“à—p‚ÆºŠO—p‚ÅØ‚è‘Ö‚¦‚é‚½‚ß‚Ì•Ï”
 	bool m_inRoom;
-	Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos);
+	Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos, bool arg_toStartPos);
 
 	void Init();
 
