@@ -710,11 +710,7 @@ void HPUI::Init()
 
 void HPUI::Update(const int f_playerHP)
 {
-	//HP減らすときはここを参照！
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
-	{
-		HitDamage(1, 1);
-	}
+
 	redWaitTime--;
 	if (redWaitTime < 0)
 	{
@@ -782,7 +778,11 @@ void HPUI::HitDamage(int f_mainDamage, int f_redZone)
 {
 	m_hp -= f_mainDamage;
 	int num = rand() % 4;
-	SoundManager::Instance()->SoundPlayerWave(m_hitDamage[num], 0);
+
+	//多段ヒットする形式なので、HPが10のとき刻みで声を出す。
+	if (m_hp % 10 == 0) {
+		SoundManager::Instance()->SoundPlayerWave(m_hitDamage[num], 0);
+	}
 	//m_hp -= m_redHP;
 	if (m_hp < 0)
 	{
