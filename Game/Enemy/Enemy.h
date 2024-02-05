@@ -42,7 +42,9 @@ private:
 	std::list<KazMath::Transform3D> m_positions;
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;
+	KazMath::Vec3<float> m_firePos;
 	const int CHECK_POINT_DELAY = 240;
+	const int MAX_HP = 4;
 	const float MAX_EYE_DELAY = 60.0f;
 	int m_currentPoint = 0;
 	float m_radian = 0.0f;
@@ -76,7 +78,6 @@ private:
 	const float GRAVITY = 0.05f;
 
 	const  int MAX_RATE = 120;
-	const int MAX_HP = 2;
 	int m_hp;
 	int m_rate;
 
