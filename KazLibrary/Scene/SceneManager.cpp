@@ -14,6 +14,7 @@
 #include"../Buffer/UavViewHandleMgr.h"
 #include"../Game/Echo/EchoArray.h"
 #include"../KazLibrary/Debug/DebugKey.h"
+#include"../Game/BGM/BGMController.h"
 
 SceneManager::SceneManager() :gameFirstInitFlag(false), m_firstFlameFlag(false)
 {
@@ -123,6 +124,8 @@ SceneManager::SceneManager() :gameFirstInitFlag(false), m_firstFlameFlag(false)
 	//通常エコー用構造体を設定。
 	EchoArray::Instance()->Setting();
 	m_rayPipeline->SetEchoStructuredBufferData(EchoArray::Instance()->GetEchoStructuredBuffer());
+
+	BGMController::Instance()->Setting();
 }
 
 SceneManager::~SceneManager()

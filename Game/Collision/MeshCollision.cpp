@@ -76,6 +76,7 @@ MeshCollision::CheckHitResult MeshCollision::CheckHitRay(KazMath::Vec3<float> ar
 		float impDistance = perpendicularLine / -dist;
 
 		if (std::isnan(impDistance))continue;
+		if (std::isinf(impDistance))continue;
 
 		//è’ìÀínì_
 		KazMath::Vec3<float> impactPoint = arg_origin + arg_direction * impDistance;

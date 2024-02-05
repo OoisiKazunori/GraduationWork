@@ -21,6 +21,8 @@
 #include"../KazLibrary/Debug/DebugKey.h"
 #include"../Footprint/FootprintMgr.h"
 #include "../Effect/StopMgr.h"
+#include "../BGM/BGMController.h"
+#include "../Player/PlayerStatus.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_isGoal) :
 	//DrawFuncHelperでのモデル読み込み
@@ -191,10 +193,10 @@ void GameScene::Init()
 	{
 		if (m_stageNum == 0)
 		{
-			m_goalPoint.Init({m_stageManager.m_clip1->m_transform.pos.x,
+			m_goalPoint.Init({ m_stageManager.m_clip1->m_transform.pos.x,
 							  m_stageManager.m_clip1->m_transform.pos.y + 5.0f,
 							  m_stageManager.m_clip1->m_transform.pos.z,
-			});
+				});
 			isClip = true;
 		}
 		else
@@ -248,35 +250,12 @@ void GameScene::Input()
 
 void GameScene::Update(DrawingByRasterize& arg_rasterize)
 {
-	/*
-	カメラを使用する際は下の関数を使用し、eye, target, upの値を入れることで計算できます
-	計算結果は描画情報に渡ります。
-	CameraMgr::Instance()->Camera({}, {}, {});
-	*/
-	//デバック用のカメラワーク(操作はBlenderと同じ)
-	//
-
-	/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
-	{
-		m_HPBarManager.HitDamage(10, 10);
-	}*/
-
-	//int l_num = m_stageManager.GetEnemyCount();
-	//m_stageManager.GetEnemyPositions(1);
 	if (!m_isTitle)
 	{
 		//メニューが開かれていない時に更新を通す
 		if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 		{
 			m_intractUI.isIntract = false;
-			//m_uiManager.Update();
-			//m_gadgetMaanager.Update();
-			//m_HPBarManager.Update(0);
-
-			//m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
-			//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-			//m_bulletMgr->Update(m_stageMeshCollision);
-
 			m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
 			m_stageManager.CheckInEcho(m_stageMeshCollision);
@@ -286,7 +265,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_turret.Update();
 			FootprintMgr::Instance()->Update();
 
-			m_stageManager.Update(arg_rasterize, m_player->GetTransform());
+			m_stageManager.Update(arg_rasterize, m_player->GetTransform(), m_player->m_inRoom);
 
 			for (auto& obj : m_serverSmokeEmitter)
 			{
@@ -298,9 +277,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			{
 				m_uiManager.Update(m_stageManager, m_player->GetTransform());
 
-				//m_gadgetMaanager.Update();
 
-				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager, m_isTitle);
+				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager, m_isTitle, m_stageNum == 0);
 				m_enemyManager->Update(
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
@@ -316,25 +294,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 				}
 
-				m_stageManager.Update(arg_rasterize, m_player->GetTransform());
-				//auto hogehoge = m_stageManager.GetTurretPosition(0);
+				m_stageManager.Update(arg_rasterize, m_player->GetTransform(), m_player->m_inRoom);
 
 				m_bulletMgr->Update(m_stageManager.GetColliders());
 
-				/*static bool flag = false;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
-				{
-					if (flag) flag = false;
-					else flag = true;
-				}
-				if (flag)
-				{
-					m_heartRateManager.Update(60);
-				}
-				else
-				{
-					m_heartRateManager.Update(120);
-				}*/
 				//nextステージへいくところを踏んだら
 				//プレイヤーとゴールの当たり判定
 				KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
@@ -367,7 +330,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					{
 						if (isClip)
 						{
-							
+
 						}
 						else
 						{
@@ -386,11 +349,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					{
 						if (StageSelectScene::startStageNum == 0)
 						{
-							/*m_isToStartPos = true;
-							m_goalPoint.Init(m_stageManager.m_player->m_transform.pos);*/
 							//ゲームクリア
-							StageSelectScene::startStageNum = 0;
-							m_sceneNum = 1;
+							m_isClear = true;
+							m_resultManager.ShowResult();
+							m_resultManager.SetClear();
+							//ここに演出のトリガーやフラグ入れるのも一興
+
 						}
 						else
 						{
@@ -403,38 +367,16 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 			}
 			m_HPBarManager.Update(0);
-			//死んだときの更新
-			/*if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
-			{
-				m_resultManager.ShowResult();
-			}*/
-			//dangerを出すのをいったん切る
-			/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
-			{
-				m_dangerManager.Update(true);
-			}
-			else
-			{
-				m_dangerManager.Update(false);
-			}*/
-
 		}
 
 		m_menu.Update();
-		m_HPBarManager.Update(0);
+		//m_HPBarManager.Update(0);
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
 		{
 			m_resultManager.ShowResult();
 		}
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
-		{
-			m_dangerManager.Update(true);
-		}
-		else
-		{
-			m_dangerManager.Update(false);
-		}
+		m_dangerManager.Update(false);
 
 		//タイトルロゴが消えるまでのタイマーを加算して、一定以上になったらタイトルロゴを消す処理を入れる。
 		++m_titleLogoExitTimer;
@@ -453,210 +395,106 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 		}
 		//リザルト出す
-		if (m_resultManager.GetResultShow())
+		if (m_resultManager.GetResultShow() && !m_resultManager.m_isClear)
 		{
-			//メニューが開かれていない時に更新を通す
-			if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
-			{
-				//m_uiManager.Update();
-				//m_gadgetMaanager.Update();
-				//m_HPBarManager.Update(0);
-
-				//m_player->Update(m_camera, m_stageMeshCollision, m_bulletMgr, m_stageManager.GetColliders());
-				//m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS());
-				//m_bulletMgr->Update(m_stageMeshCollision);
-
-				m_stageManager.Update(arg_rasterize, m_player->GetTransform());
-
-				if (m_HPBarManager.GetHP() > 0)
-				{
-					m_uiManager.Update(m_stageManager, m_player->GetTransform());
-					//m_gadgetMaanager.Update();
-
-					m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager, m_isTitle);
-					m_enemyManager->Update(
-						m_stageManager.GetColliders(),
-						m_bulletMgr,
-						m_player->GetTransform(),
-						m_stageMeshCollision);
-
-					if (m_debugCameraFlag)
-					{
-						m_debuCamera.Update();
-					}
-					else
-					{
-						m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
-					}
-
-					m_stageManager.Update(arg_rasterize, m_player->GetTransform());
-					m_bulletMgr->Update(m_stageManager.GetColliders());
-
-					/*static bool flag = false;
-					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_U))
-					{
-						if (flag) flag = false;
-						else flag = true;
-					}
-					if (flag)
-					{
-						m_heartRateManager.Update(60);
-					}
-					else
-					{
-						m_heartRateManager.Update(120);
-					}*/
-					//nextステージへいくところを踏んだら
-					//プレイヤーとゴールの当たり判定
-					KazMath::Vec3<float> goalPos = m_stageManager.GetGoalTransform().pos;
-					KazMath::Vec3<float> goalScale = m_stageManager.GetGoalTransform().scale;
-					KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
-					KazMath::Vec3<float> playerGoalDistane = goalPos - playerPos;
-					if (!m_isClear && fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.y) < goalScale.y && fabs(playerGoalDistane.z) < goalScale.z) {
-
-						//すべてのステージクリア
-						if (StageSelectScene::GetStartStageNum() == StageSelectScene::C_StageMaxNum - 1)
-						{
-							m_resultManager.ShowResult();
-							m_resultManager.SetClear();
-							StageSelectScene::startStageNum = 0;
-						}
-						else
-						{
-							StageSelectScene::startStageNum += 1;
-							if (StageSelectScene::startStageNum % 2 == 0)
-							{
-								m_sceneNum = 1;
-							}
-							else
-							{
-								m_sceneNum = 3;
-							}
-						}
-						m_isClear = true;
-					}
-				}
-				m_HPBarManager.Update(0);
-				//死んだときの更新
-				/*if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
-				{
-					m_resultManager.ShowResult();
-				}*/
-				/*if (KeyBoradInputManager::Instance()->InputTrigger(DIK_5))
-				{
-					m_dangerManager.Update(true);
-				}*/
-				/*else
-				{
-					m_dangerManager.Update(false);
-				}*/
-
+			//m_resultManager.Update();
+			//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
+			//{
+			//	//タイトルに戻る
+			//	//m_sceneNum = 0;
+			//	m_sceneNum = 1;
+			//	StageSelectScene::startStageNum = 0;
+			//	//
+			//}
+			if (m_resultManager.isToTile)
+			{//9日までにここを修正する
+				m_sceneNum = 1;
+				StageSelectScene::startStageNum = 0;
 			}
-			//リザルト出す
-			else if (m_resultManager.GetResultShow())
-			{
-				m_resultManager.Update();
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_SPACE))
-				{
-					//タイトルに戻る
-					//m_sceneNum = 0;
-					m_sceneNum = 1;
-					StageSelectScene::startStageNum = 0;
-				}
-			}
-
-			//auto hogehoge = MapManager::GetEnemyData(m_stageNum);
-
-			//int sam1 = MapManager::GetMapChips(m_stageNum, 0, 0);
-			//int sam2 = MapManager::GetMapChips(m_stageNum, 4, 8);
-
-
-
-			/*m_goalPoint.CalucurateDistance(m_player->GetTransform().pos);
-			m_goalPoint.Update();
-
-			FootprintMgr::Instance()->Update();*/
-
-			//EnemyDebugManager::Instance()->Update();
-			/*FieldAI::Instance()->DebugUpdate();
-			FieldAIDebugManager::Instance()->Update();*/
-
+		}
+		else if (m_resultManager.GetResultShow() && m_resultManager.isToTile)
+		{
+			m_sceneNum = 1;
+			StageSelectScene::startStageNum = 0;
 		}
 
 		//クリップとの当たり判定
-		KazMath::Vec3<float> clipPos;
-		KazMath::Vec3<float> goalScale = { 3.0f, 0.7f, 7.0f };
-		KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
-		KazMath::Vec3<float> playerGoalDistane;
-		if (m_stageManager.m_clip1)
+		if (!m_menu.GetIsMenuOpen())
 		{
-			clipPos = m_stageManager.m_clip1->m_transform.pos;
-			playerGoalDistane = clipPos - playerPos;
-			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			KazMath::Vec3<float> clipPos;
+			KazMath::Vec3<float> goalScale = { 3.0f, 0.7f, 7.0f };
+			KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
+			KazMath::Vec3<float> playerGoalDistane;
+			if (m_stageManager.m_clip1)
 			{
-				IntractUI::isIntract = true;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				clipPos = m_stageManager.m_clip1->m_transform.pos;
+				playerGoalDistane = clipPos - playerPos;
+				if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 				{
-					m_stageManager.m_clip1.reset();
-					//とった処理ここに入れる
-					Menu::GetFile(0);
-					m_todo.NextTask();
-					Menu::firstLookFile = true;
-					Menu::firstLookFileIndex = 0;
-					isClip = false;
-					m_stageManager.Erase1StageCol();
-					m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+					IntractUI::isIntract = true;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+					{
+						m_stageManager.m_clip1.reset();
+						//とった処理ここに入れる
+						Menu::GetFile(0);
+						m_todo.NextTask();
+						Menu::firstLookFile = true;
+						Menu::firstLookFileIndex = 0;
+						isClip = false;
+						m_stageManager.Erase1StageCol();
+						m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+					}
 				}
 			}
-		}
-		if (m_stageManager.m_clip2)
-		{
-			clipPos = m_stageManager.m_clip2->m_transform.pos;
-			playerGoalDistane = clipPos - playerPos;
-			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			if (m_stageManager.m_clip2)
 			{
-				IntractUI::isIntract = true;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				clipPos = m_stageManager.m_clip2->m_transform.pos;
+				playerGoalDistane = clipPos - playerPos;
+				if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 				{
-					m_stageManager.m_clip2.reset();
-					//とった処理ここに入れる
-					Menu::GetFile(1);
-					Menu::firstLookFile = true;
-					Menu::firstLookFileIndex = 1;
+					IntractUI::isIntract = true;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+					{
+						m_stageManager.m_clip2.reset();
+						//とった処理ここに入れる
+						Menu::GetFile(1);
+						Menu::firstLookFile = true;
+						Menu::firstLookFileIndex = 1;
+					}
 				}
 			}
-		}
-		if (m_stageManager.m_clip3)
-		{
-			clipPos = m_stageManager.m_clip3->m_transform.pos;
-			playerGoalDistane = clipPos - playerPos;
-			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			if (m_stageManager.m_clip3)
 			{
-				IntractUI::isIntract = true;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				clipPos = m_stageManager.m_clip3->m_transform.pos;
+				playerGoalDistane = clipPos - playerPos;
+				if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 				{
-					m_stageManager.m_clip3.reset();
-					//とった処理ここに入れる
-					Menu::GetFile(2);
-					Menu::firstLookFile = true;
-					Menu::firstLookFileIndex = 2;
+					IntractUI::isIntract = true;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+					{
+						m_stageManager.m_clip3.reset();
+						//とった処理ここに入れる
+						Menu::GetFile(2);
+						Menu::firstLookFile = true;
+						Menu::firstLookFileIndex = 2;
+					}
 				}
 			}
-		}
-		if (m_stageManager.m_clip4)
-		{
-			clipPos = m_stageManager.m_clip4->m_transform.pos;
-			playerGoalDistane = clipPos - playerPos;
-			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			if (m_stageManager.m_clip4)
 			{
-				IntractUI::isIntract = true;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				clipPos = m_stageManager.m_clip4->m_transform.pos;
+				playerGoalDistane = clipPos - playerPos;
+				if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 				{
-					m_stageManager.m_clip4.reset();
-					//とった処理ここに入れる
-					Menu::GetFile(3);
-					Menu::firstLookFile = true;
-					Menu::firstLookFileIndex = 3;
+					IntractUI::isIntract = true;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+					{
+						m_stageManager.m_clip4.reset();
+						//とった処理ここに入れる
+						Menu::GetFile(3);
+						Menu::firstLookFile = true;
+						Menu::firstLookFileIndex = 3;
+					}
 				}
 			}
 		}
@@ -694,12 +532,33 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
 
+	BGMController::Instance()->Update();
+
+	//全ての敵を走査して、発見状態の敵が居るかどうかでBGMを変える。
+	if (0 < m_enemyManager->GetCombatStatusEnemyCount()) {
+
+		//まだ発見状態じゃなかったら
+		if (!PlayerStatus::Instance()->m_isFound) {
+
+			//ヒットストップをかける。
+			StopMgr::Instance()->HitStopStart({ 60, 0.1f });
+
+		}
+
+		PlayerStatus::Instance()->m_isFound = true;
+
+	}
+	else {
+
+		PlayerStatus::Instance()->m_isFound = false;
+
+	}
+
 }
 
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
@@ -707,6 +566,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
+
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 

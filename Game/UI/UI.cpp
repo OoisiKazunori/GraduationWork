@@ -574,7 +574,7 @@ void GadgetUIManager::Init()
 void GadgetUIManager::Update()
 {
 	bool isDirty = false;
-	if (KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
+	/*if (KeyBoradInputManager::Instance()->InputState(DIK_LSHIFT))
 	{
 		m_showUITime = c_ShowTime;
 		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_E) && easeTimer > 0.6f)
@@ -595,7 +595,7 @@ void GadgetUIManager::Update()
 			}
 			easeTimer = 0.0f;
 		}
-	}
+	}*/
 	if (isDirty)
 	{
 		EaseInit();
@@ -713,7 +713,7 @@ void HPUI::Update(const int f_playerHP)
 	//HP減らすときはここを参照！
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_P))
 	{
-		HitDamage(10, 10);
+		HitDamage(1, 1);
 	}
 	redWaitTime--;
 	if (redWaitTime < 0)
@@ -876,7 +876,9 @@ void HeartRate::Draw(DrawingByRasterize& arg_rasterize)
 ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
 	m_back(arg_rasterize, "Resource/MenuTex/MenuBackTex.png"),
 	m_ResultStrSp(arg_rasterize, "Resource/UITexture/Result.png"),
-	m_missionClearSp(arg_rasterize, "Resource/UITexture/Succses.png"),
+	m_thxStrSp(arg_rasterize, "Resource/MenuTex/End_2.png"),
+	m_missionClearSp(arg_rasterize, "Resource/MenuTex/End_1.png"),
+	m_missionClearBack(arg_rasterize, "Resource/MenuTex/clearTex.png"),
 	m_missionFailedSp(arg_rasterize, "Resource/UITexture/Defeat.png"),
 	m_pushSpaceSp(arg_rasterize, "Resource/UITexture/PushSpace.png")
 {
@@ -888,14 +890,35 @@ ResultUI::ResultUI(DrawingByRasterize& arg_rasterize) :
 
 	m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f + 60.0f });
 	m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
-	m_missionFailedSp.SetScale({ 2.0f, 2.0f });
-	m_missionFailedSp.SetEasePosAddTime(0.04f);
+	m_missionFailedSp.SetScale({ 1.0f, 1.0f });
+	m_missionFailedSp.SetEasePosAddTime(0.01f);
 	m_faliedColor = 100;
 
 	m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 0.0f });
 	m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
-	m_missionClearSp.SetScale({ 2.0f, 2.0f });
-	m_missionClearSp.SetEasePosAddTime(0.5f);
+	m_missionClearSp.SetScale({ 1.0f, 1.0f });
+	m_missionClearSp.SetEasePosAddTime(0.01f);
+
+	m_thxStrSp.SetEasePosAddTime(0.01f);
+
+	m_missionClearBack.SetPosition({1280.0f / 2.0f, 720.0f / 2.0f});
+	m_missionClearBack.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f });
+	m_missionClearBack.SetColorEaseEnd(KazMath::Color(255, 255, 255, 255));
+	m_missionClearBack.SetAddColor(KazMath::Color(0, 0, 0, 10));
+	m_missionClearBack.m_color = KazMath::Color(255, 255, 255, 0);
+
+	misssionClearTimer = 0;
+	thxTimer = 0;
+	toTileTimer = 0;
+
+	isMissionClear = false;
+	isThx = false;
+	isToTile = false;
+	isToReStart = false;
+	missionFailedTimer = 0;
+	isMissionFailed = false;
+	reStartTimer = 0;
+	isRestart = false;
 }
 
 void ResultUI::Init()
@@ -919,23 +942,99 @@ void ResultUI::Draw(DrawingByRasterize& arg_rasterize)
 	}
 
 	m_spaceColor += m_spaceAddColor;
-	m_pushSpaceSp.m_color = { 255, 255, 255, m_spaceColor };
-	m_pushSpaceSp.Draw(arg_rasterize);
-	m_ResultStrSp.Draw(arg_rasterize);
+	/*m_pushSpaceSp.m_color = { 255, 255, 255, m_spaceColor };
+	m_pushSpaceSp.Draw(arg_rasterize);*/
+	//m_ResultStrSp.Draw(arg_rasterize);
 
 	if (m_isResultShow && !m_isClear)
 	{
-		m_faliedColor += 1;
-		m_missionFailedSp.m_color = { 255, 255, 255, m_faliedColor };
+		const int waitTime = 45;
+		if (!isMissionFailed)
+		{
+			m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
+			m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
+			isMissionFailed = true;
+		}
+		if (m_missionFailedSp.GetPosEaseTimer() >= 1.0f && missionFailedTimer < waitTime && !isRestart)
+		{
+			missionFailedTimer++;
+			if (missionFailedTimer >= waitTime)
+			{
+				m_missionFailedSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
+				m_missionFailedSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f }, { 1280.0f / 2.0f, -200.0f }, 0.02f);
+				isRestart = true;
+				missionFailedTimer = 0;
+			}
+		}
+		else if (m_missionFailedSp.GetPosEaseTimer() >= 1.0f && missionFailedTimer < waitTime)
+		{
+			reStartTimer++;
+			if (reStartTimer >= waitTime)
+			{
+				//タイトルに行く
+				isToTile = true;
+				//9日までにここを修正する
+
+			}
+		}
+
 		m_missionFailedSp.Update();
 		m_missionFailedSp.Draw(arg_rasterize);
+		m_missionClearBack.Update();
+		m_missionClearBack.Draw(arg_rasterize);
 	}
 	else if (m_isClear)
 	{
-		m_missionClearSp.Update();
-		m_missionClearSp.Draw(arg_rasterize);
+		const int waitTime = 45;
+		if (!isMissionClear)
+		{
+			m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 900.0f});
+			m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, {1280.0f / 2.0f, 720.0f / 2.0f}, 0.02f);
+			isMissionClear = true;
+		}
+		if (m_missionClearSp.GetPosEaseTimer() >= 1.0f && !isThx)
+		{
+			misssionClearTimer++;
+			if (misssionClearTimer >= waitTime)
+			{
+				m_missionClearSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
+				m_missionClearSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f }, { 1280.0f / 2.0f, -220.0f }, 0.02f);
+				m_thxStrSp.SetPosition({ 1280.0f / 2.0f, 900.0f });
+				m_thxStrSp.EasePosInit({ 1280.0f / 2.0f, 900.0f }, { 1280.0f / 2.0f, 720.0f / 2.0f }, 0.02f);
+				isThx = true;
+			}
+		}
+		if (m_thxStrSp.GetPosEaseTimer() >= 1.0f && thxTimer < waitTime)
+		{
+			thxTimer++;
+			if (thxTimer >= waitTime)
+			{
+				m_thxStrSp.SetPosition({ 1280.0f / 2.0f, 720.0f / 2.0f });
+				m_thxStrSp.EasePosInit({ 1280.0f / 2.0f, 720.0f / 2.0f }, { 1280.0f / 2.0f, -220.0f }, 0.02f);
+			}
+		}
+		else if (m_thxStrSp.GetPosEaseTimer() >= 1.0f)
+		{
+			toTileTimer++;
+			if (toTileTimer)
+			{
+				//タイトルに行く
+				isToTile = true;
+			}
+		}
+		if (isMissionClear)
+		{
+			m_missionClearSp.Update();
+			m_missionClearSp.Draw(arg_rasterize);
+		}
+		if (isThx)
+		{
+			m_thxStrSp.Update();
+			m_thxStrSp.Draw(arg_rasterize);
+		}
+		m_missionClearBack.Update();
+		m_missionClearBack.Draw(arg_rasterize);
 	}
-	m_back.Draw(arg_rasterize);
 }
 
 DangerUIManager::DangerUIManager(DrawingByRasterize& arg_rasterize) :
@@ -1043,7 +1142,7 @@ IntractUI::IntractUI(DrawingByRasterize& arg_rasterize) :
 
 void IntractUI::Init()
 {
-	_fKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 15.0f, 720.0f / 2.0f), 1.0f);
+	_fKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 25.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 25.0f, 720.0f / 2.0f), 1.0f);
 	_fKeyTex.SetColor(KazMath::Color(255, 255, 255, 0));
 	_fKeyTex.SetAddColor(KazMath::Color(0, 0, 0, 25));
 }
@@ -1064,7 +1163,7 @@ void IntractUI::Update()
 void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
 {
 	if (_fKeyTex.m_color.color.a < 30)return;
-	KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 45.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
+	KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 65.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
 	_fKeyTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, _fKeyTex.m_color);
 }
 

@@ -14,6 +14,7 @@
 #include "../Effect/StopMgr.h"
 #include "../KazLibrary/Easing/easing.h"
 #include "../KazLibrary/Debug/DebugKey.h"
+#include "../BGM/BGMController.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
@@ -61,6 +62,7 @@ void Player::Init()
 	m_footprintSpan = 0;
 	m_footprintSide = false;
 	m_isReloadMotionNow = false;
+	m_inRoom = false;
 
 }
 
@@ -102,7 +104,7 @@ void Player::TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& a
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle)
+void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F)
 {
 
 	//動かす前の座標。
@@ -244,15 +246,30 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//リロードの更新処理
 	UpdateReload();
 
-
-
-
-	if (DebugKey::Instance()->DebugKeyTrigger(DIK_I, "Hakken", "I")) {
-		m_isFoundToEnemy = !m_isFoundToEnemy;
-		StopMgr::Instance()->HitStopStart({ 120, 0.1f });
+	//室内か外かを判断する。
+	if (arg_is1F && KazMath::Vec3<float>(BGM_OUTDOOR_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
+		m_inRoom = false;
+	}
+	if (arg_is1F && KazMath::Vec3<float>(BGM_ROOM_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
+		m_inRoom = true;
 	}
 
-	PlayerStatus::Instance()->m_isFound = m_isFoundToEnemy;
+	//BGMを更新。
+	if (PlayerStatus::Instance()->m_isFound && 0.99f < StopMgr::Instance()->GetGameSpeed()) {
+
+		BGMController::Instance()->ChangeBGM(BGMController::BGM::EMERGENCY);
+
+	}
+	else {
+
+		if (m_inRoom) {
+			BGMController::Instance()->ChangeBGM(BGMController::BGM::INDOOR);
+		}
+		else {
+			BGMController::Instance()->ChangeBGM(BGMController::BGM::OUTSIDE);
+		}
+
+	}
 
 	
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_UP, "PlayerDebugMode", "UPKey")) {

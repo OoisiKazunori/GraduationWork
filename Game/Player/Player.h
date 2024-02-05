@@ -46,7 +46,7 @@ private:
 
 	//心音のタイマー
 	float m_heatbeatTimer;
-	const float HEARTBEAT_TIMER = 45;
+	const float HEARTBEAT_TIMER = 60;
 	const float HEARTBEAT_TIMER_FOUND = 32;
 	SoundData m_heartbeatSE;
 
@@ -93,18 +93,26 @@ private:
 	const float FOOTPRINT_SPAN = 1;
 	bool m_footprintSide;
 
-	bool m_isDebug = false;
+	
+
+	//外と中のBGMを切り替える地点
+	const KazMath::Vec3<float> BGM_OUTDOOR_POS = KazMath::Vec3<float>(171.0f, -43.0f, 168.0f);
+	const KazMath::Vec3<float> BGM_ROOM_POS = KazMath::Vec3<float>(171.0f, -43.0f, 141.0f);
+	const float BGM_CHANGE_SPHERE_RADIUS = 5.0f;
+
+	bool m_isDebug = false;	//壁突き抜け高速移動するやつ。
 
 
 public:
-
+	//BGMを室内用と室外用で切り替えるための変数
+	bool m_inRoom;
 	Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos);
 
 	void Init();
 
 	void TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& arg_rasterize, std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
 
-	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle);
+	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

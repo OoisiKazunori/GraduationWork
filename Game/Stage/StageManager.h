@@ -47,7 +47,7 @@ public:
 	StageManager();
 
 	void Init(DrawingByRasterize& arg_rasterize, int f_stageNum, bool f_isGoHome);
-	void Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3D &f_playerPos);
+	void Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3D &f_playerPos,bool f_isPLayerInside);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	//ステージが切り替わったトリガー
 	bool ChangeSceneTrigger();
@@ -65,6 +65,7 @@ public:
 
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions[m_nowStageNumber]; };
 	std::unique_ptr<StageModel> m_stage[3];
+	std::unique_ptr<StageModel> m_colStageCeiling[3];
 	std::unique_ptr<StageModel> m_colStage[4];
 	std::unique_ptr<StageModel> m_player;
 	KazMath::Transform3D GetGoalTransform();

@@ -287,6 +287,9 @@ class ResultUI
 	UI2DElement m_back;
 	//リザルトって書いてあるやつ
 	UI2DElement m_ResultStrSp;
+	//リザルトって書いてあるやつ
+	UI2DElement m_thxStrSp;
+	UI2DElement m_missionClearBack;
 	//ミッションクリア
 	UI2DElement m_missionClearSp;
 	//ミッション失敗
@@ -295,7 +298,7 @@ class ResultUI
 
 	bool m_isResultShow = false;
 
-	bool m_isClear = false;
+	
 
 	int m_faliedColor = 100;
 
@@ -303,7 +306,23 @@ class ResultUI
 	int m_spaceColor = 180;
 	const int C_spaceColorUnder = 180;
 	const int C_spaceColorUpper = 255;
+
+	bool isMissionClear = false;
+	bool isThx = false;
+	int misssionClearTimer = 0;
+	int thxTimer = 0;
+	int toTileTimer = 0;
+
+	
+	int missionFailedTimer = 0;
+	int reStartTimer = 0;
+	bool isRestart = false;
+	
 public:
+	bool isMissionFailed = false;
+	bool isToReStart = false;
+	bool m_isClear = false;
+	bool isToTile = false;
 	ResultUI(DrawingByRasterize& arg_rasterize);
 
 	void Init();
