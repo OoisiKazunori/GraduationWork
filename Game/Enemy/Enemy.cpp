@@ -174,6 +174,9 @@ void Enemy::Update(
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision,
 	HPUI& arg_hpUI)
 {
+	//銃演出
+	m_gunEffect->Update();
+
 	//死んだら終了
 	if (IsDeath()) {
 		Death();
@@ -262,9 +265,6 @@ void Enemy::Update(
 
 	//判定(メッシュ)
 	Collision(arg_stageColliders, arg_bulletMgr);
-
-	//銃演出
-	m_gunEffect->Update();
 
 	if (m_state != m_oldState)
 	{
@@ -355,7 +355,6 @@ void Enemy::Update(
 	}
 
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
-
 }
 
 void Enemy::Draw(
