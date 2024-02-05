@@ -6,6 +6,7 @@
 #include "../Game/AI/EnemyAIData.h"
 #include "../Game/Effect/InformEnemy.h"
 #include "../Game/Effect/TurretFireEffect.h"
+#include "../Effect/Smoke/SmokeEmitter.h"
 #include "../Game/Collision/MeshCollision.h"
 #include "../KazLibrary/Render/BasicDraw.h"
 #include "../KazLibrary/Sound/SoundManager.h"
@@ -27,13 +28,15 @@ private:
 	std::array<KazMath::Vec3<float>, 2> m_lineOfSightPos;
 	float m_sightRotation;	//Æ€ü‚ğ‚®‚é‚®‚é‰ñ“]‚³‚¹‚é—p
 
-	std::shared_ptr<MeshCollision> m_meshCol;
+	std::vector<std::shared_ptr<MeshCollision>> m_meshCol;
+	std::vector<VertexData> m_meshColVertex;
 
 	bool m_isCombat;
 
 private:
 	//V‹K
 	std::shared_ptr<TurretFireEffect> m_gunEffect;
+	std::shared_ptr<SmokeEmitter> m_smokeEffect;
 	std::list<KazMath::Transform3D> m_positions;
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;

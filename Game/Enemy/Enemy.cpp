@@ -72,13 +72,27 @@ void Enemy::SetData(
 			);
 	}
 
-	m_meshCol = std::make_shared<MeshCollision>();
-	m_meshCol->Setting(
-		m_enemyBox.get()->m_model.
-		m_modelInfo->modelData[0].vertexData,
-		m_trans);
+
+	for (auto& index : m_enemyBox.get()->m_model.m_modelInfo->modelData) {
+
+		m_meshCol.emplace_back(std::make_shared<MeshCollision>());
+		m_meshCol.back()->Setting(index.vertexData, m_trans);
+		m_meshColVertex.emplace_back(index.vertexData);
+
+	}
+	if (m_pedestal) {
+		for (auto& index : m_pedestal.get()->m_model.m_modelInfo->modelData) {
+
+			m_meshCol.emplace_back(std::make_shared<MeshCollision>());
+			m_meshCol.back()->Setting(index.vertexData, m_trans);
+			m_meshColVertex.emplace_back(index.vertexData);
+
+		}
+	}
 
 
+
+	//m_line.Generate(arg_rasterize);
 	for (auto& index : m_line) {
 		index.Generate(arg_rasterize);
 	}
@@ -90,6 +104,9 @@ void Enemy::SetData(
 
 	m_gunEffect =
 		std::make_shared<TurretFireEffect>(arg_rasterize);
+	m_smokeEffect =
+		std::make_shared<SmokeEmitter>();
+	m_smokeEffect->Load(arg_rasterize);
 }
 
 void Enemy::Init(
@@ -231,7 +248,7 @@ void Enemy::Update(
 	m_oldPos = m_trans.pos;
 
 	//判定(メッシュ)
-	//Collision(arg_stageColliders, arg_bulletMgr);
+	Collision(arg_stageColliders, arg_bulletMgr);
 
 	//銃演出
 	m_gunEffect->Update();
@@ -365,6 +382,11 @@ void Enemy::Draw(
 		m_line[3].m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0] + right - up, m_lineOfSightPos[1] + right - up, KazMath::Color(172, 50, 50, 255));
 	}
 
+	if (m_state == State::Death) {
+		m_smokeEffect->Draw(arg_rasterize, arg_blasVec);
+	}
+
+	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0], m_lineOfSightPos[1], KazMath::Color(172, 50, 50, 255));
 }
 
 bool Enemy::IsInSight(
@@ -554,7 +576,12 @@ void Enemy::Combat(
 
 void Enemy::Death()
 {
+	m_smokeEffect->Update();
 
+	if (IsFixedTurret())
+	{
+
+	}
 }
 
 DirectX::XMVECTOR Enemy::CalMoveQuaternion(
@@ -629,111 +656,120 @@ void Enemy::Collision(
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr)
 {
-
-	m_meshCol->Setting(
-		m_enemyBox.get()->m_model.
-		m_modelInfo->modelData[0].vertexData,
-		m_trans);
-
-	const float RAY_LENGTH = 8.0f;
-
-	//地面と当たり判定を行う。
-	m_onGround = false;
-
-	KazMath::Vec3<float> aaa = -m_trans.GetUp();
-
-	const float GROUND_RAY_OFFSET = 5.0f;
-	for (auto itr = arg_stageColliders.begin();
-		itr != arg_stageColliders.end(); ++itr) {
-
-		MeshCollision::CheckHitResult rayResult =
-			(*itr)->CheckHitRay(
-				m_trans.pos +
-				m_trans.GetUp() *
-				GROUND_RAY_OFFSET,
-				-m_trans.GetUp());
-
-		if (rayResult.m_isHit &&
-			0.0f < rayResult.m_distance &&
-			rayResult.m_distance <=
-			RAY_LENGTH + GROUND_RAY_OFFSET)
-		{
-			//押し戻し。
-			m_trans.pos +=
-				rayResult.m_normal *
-				(RAY_LENGTH + GROUND_RAY_OFFSET -
-					rayResult.m_distance);
-			m_onGround = true;
-		}
-
-		//当たり判定を計算。
-		rayResult = (*itr)->CheckHitRay(
-			m_trans.pos,
-			m_trans.GetFront());
-		if (rayResult.m_isHit &&
-			0.0f < rayResult.m_distance &&
-			rayResult.m_distance <= RAY_LENGTH)
-		{
-			//押し戻し。
-			m_trans.pos +=
-				rayResult.m_normal *
-				(RAY_LENGTH - rayResult.m_distance);
-		}
-
-		//後ろ方向
-		rayResult = (*itr)->CheckHitRay(
-			m_trans.pos,
-			-m_trans.GetFront());
-		if (rayResult.m_isHit &&
-			0.0f < rayResult.m_distance &&
-			rayResult.m_distance <= RAY_LENGTH)
-		{
-			//押し戻し。
-			m_trans.pos +=
-				rayResult.m_normal *
-				(RAY_LENGTH - rayResult.m_distance);
-		}
-
-		//右方向
-		rayResult = (*itr)->CheckHitRay(
-			m_trans.pos,
-			m_trans.GetRight());
-		if (rayResult.m_isHit &&
-			0.0f < rayResult.m_distance &&
-			rayResult.m_distance <= RAY_LENGTH)
-		{
-			//押し戻し。
-			m_trans.pos +=
-				rayResult.m_normal *
-				(RAY_LENGTH - rayResult.m_distance);
-		}
-
-		//左方向
-		rayResult = (*itr)->CheckHitRay(
-			m_trans.pos,
-			-m_trans.GetRight());
-		if (rayResult.m_isHit &&
-			0.0f < rayResult.m_distance &&
-			rayResult.m_distance <= RAY_LENGTH)
-		{
-			//押し戻し。
-			m_trans.pos +=
-				rayResult.m_normal *
-				(RAY_LENGTH - rayResult.m_distance);
-		}
+	const int MESH_COUNT = static_cast<int>(m_meshCol.size());
+	for (int index = 0; index < MESH_COUNT; ++index) {
+		m_meshCol[index]->Setting(m_meshColVertex[index], m_trans);
 	}
+
+	//const float RAY_LENGTH = 8.0f;
+
+	////地面と当たり判定を行う。
+	//m_onGround = false;
+
+	//KazMath::Vec3<float> aaa = -m_trans.GetUp();
+
+	//const float GROUND_RAY_OFFSET = 5.0f;
+	//for (auto itr = arg_stageColliders.begin();
+	//	itr != arg_stageColliders.end(); ++itr) {
+
+	//	MeshCollision::CheckHitResult rayResult =
+	//		(*itr)->CheckHitRay(
+	//			m_trans.pos +
+	//			m_trans.GetUp() *
+	//			GROUND_RAY_OFFSET,
+	//			-m_trans.GetUp());
+
+	//	if (rayResult.m_isHit &&
+	//		0.0f < rayResult.m_distance &&
+	//		rayResult.m_distance <=
+	//		RAY_LENGTH + GROUND_RAY_OFFSET)
+	//	{
+	//		//押し戻し。
+	//		m_trans.pos +=
+	//			rayResult.m_normal *
+	//			(RAY_LENGTH + GROUND_RAY_OFFSET -
+	//				rayResult.m_distance);
+	//		m_onGround = true;
+	//	}
+
+	//	//当たり判定を計算。
+	//	rayResult = (*itr)->CheckHitRay(
+	//		m_trans.pos,
+	//		m_trans.GetFront());
+	//	if (rayResult.m_isHit &&
+	//		0.0f < rayResult.m_distance &&
+	//		rayResult.m_distance <= RAY_LENGTH)
+	//	{
+	//		//押し戻し。
+	//		m_trans.pos +=
+	//			rayResult.m_normal *
+	//			(RAY_LENGTH - rayResult.m_distance);
+	//	}
+
+	//	//後ろ方向
+	//	rayResult = (*itr)->CheckHitRay(
+	//		m_trans.pos,
+	//		-m_trans.GetFront());
+	//	if (rayResult.m_isHit &&
+	//		0.0f < rayResult.m_distance &&
+	//		rayResult.m_distance <= RAY_LENGTH)
+	//	{
+	//		//押し戻し。
+	//		m_trans.pos +=
+	//			rayResult.m_normal *
+	//			(RAY_LENGTH - rayResult.m_distance);
+	//	}
+
+	//	//右方向
+	//	rayResult = (*itr)->CheckHitRay(
+	//		m_trans.pos,
+	//		m_trans.GetRight());
+	//	if (rayResult.m_isHit &&
+	//		0.0f < rayResult.m_distance &&
+	//		rayResult.m_distance <= RAY_LENGTH)
+	//	{
+	//		//押し戻し。
+	//		m_trans.pos +=
+	//			rayResult.m_normal *
+	//			(RAY_LENGTH - rayResult.m_distance);
+	//	}
+
+	//	//左方向
+	//	rayResult = (*itr)->CheckHitRay(
+	//		m_trans.pos,
+	//		-m_trans.GetRight());
+	//	if (rayResult.m_isHit &&
+	//		0.0f < rayResult.m_distance &&
+	//		rayResult.m_distance <= RAY_LENGTH)
+	//	{
+	//		//押し戻し。
+	//		m_trans.pos +=
+	//			rayResult.m_normal *
+	//			(RAY_LENGTH - rayResult.m_distance);
+	//	}
+	//}
 
 	//敵本体と弾の当たり判定を行う。
-	int hitCount = arg_bulletMgr.lock()->CheckMeshCollision(m_meshCol, true);
+	int hitCount = 0;
+
+	for (auto& index : m_meshCol) {
+
+		hitCount += arg_bulletMgr.lock()->CheckMeshCollision(index, true);
+
+	}
 	if (0 < hitCount) {
 		--m_hp;
-		//m_hp -= 50;
 	}
 
+	//死亡
 	if (m_hp <= 0) {
+		SmokeEmitter::EmittData l_emittData;
+		l_emittData.m_emittPos = m_trans.pos;
+		l_emittData.m_range = { 1.0f,1.0f,1.0f };
+		l_emittData.m_smokeTime = 6000;
+		m_smokeEffect->Init(l_emittData);
 		m_state = State::Death;
 	}
-
 }
 
 bool Enemy::CheckDistXZ(
