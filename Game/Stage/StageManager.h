@@ -65,6 +65,7 @@ public:
 
 	std::list<std::shared_ptr<MeshCollision>> GetColliders() { return m_collisions[m_nowStageNumber]; };
 	std::unique_ptr<StageModel> m_stage[3];
+	std::unique_ptr<StageModel> m_colStageCeiling[3];
 	std::unique_ptr<StageModel> m_colStage[4];
 	std::unique_ptr<StageModel> m_player;
 	KazMath::Transform3D GetGoalTransform();

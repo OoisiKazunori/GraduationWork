@@ -119,7 +119,7 @@ void StageManager::Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3
 void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
  	m_stage[m_nowStageNumber]->Draw(arg_rasterize, arg_blasVec);
-
+	m_colStageCeiling[m_nowStageNumber]->Draw(arg_rasterize, arg_blasVec);
 	if (m_clip1)
 	{
 		if (!Menu::GetNowGetFiles()[0])
@@ -326,10 +326,31 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 		m_colStage[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "Project_S_NewStage_Model_collision.gltf", true,
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		
 		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
 			auto collision = std::make_shared<MeshCollision>();
 			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
 			m_collisions[m_nowStageNumber].push_back(collision);
+		}
+
+		m_colStageCeiling[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "1StageCeiling.gltf", true,
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		for (auto& index : m_colStageCeiling[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting(index.vertexData, m_colStageCeiling[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
+		}
+		
+		if ((int)m_collisions[3].size() == 0)
+		{
+			m_colStage[3] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "1stagesaku.gltf", true,
+				DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+			for (auto& index : m_colStage[3]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+				auto collision = std::make_shared<MeshCollision>();
+				collision->Setting(index.vertexData, m_colStage[3]->m_transform);
+				m_collisions[0].push_back(collision);
+				m_collisions[3].push_back(collision);
+			}
 		}
 	}
 	else if (!m_stage[m_nowStageNumber] && m_nowStageNumber == 1)
@@ -341,6 +362,13 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 		for (auto& index : m_colStage[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
 			auto collision = std::make_shared<MeshCollision>();
 			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
+		}
+		m_colStageCeiling[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "2StageCeiling.gltf", true,
+			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+		for (auto& index : m_colStageCeiling[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+			auto collision = std::make_shared<MeshCollision>();
+			collision->Setting(index.vertexData, m_colStageCeiling[m_nowStageNumber]->m_transform);
 			m_collisions[m_nowStageNumber].push_back(collision);
 		}
 	}
@@ -355,16 +383,12 @@ void StageManager::AddMapDatas(DrawingByRasterize& arg_rasterize, int f_stageNum
 			collision->Setting(index.vertexData, m_colStage[m_nowStageNumber]->m_transform);
 			m_collisions[m_nowStageNumber].push_back(collision);
 		}
-	}
-	if ((int)m_collisions[3].size() == 0)
-	{
-		m_colStage[3] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "1stagesaku.gltf", true,
+		m_colStageCeiling[m_nowStageNumber] = std::make_unique<StageModel>(arg_rasterize, "Resource/Stage/Stage/", "3StageCeiling.gltf", true,
 			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
-		for (auto& index : m_colStage[3]->m_stageModelRender.m_model.m_modelInfo->modelData) {
+		for (auto& index : m_colStageCeiling[m_nowStageNumber]->m_stageModelRender.m_model.m_modelInfo->modelData) {
 			auto collision = std::make_shared<MeshCollision>();
-			collision->Setting(index.vertexData, m_colStage[3]->m_transform);
-			m_collisions[0].push_back(collision);
-			m_collisions[3].push_back(collision);
+			collision->Setting(index.vertexData, m_colStageCeiling[m_nowStageNumber]->m_transform);
+			m_collisions[m_nowStageNumber].push_back(collision);
 		}
 	}
 }
