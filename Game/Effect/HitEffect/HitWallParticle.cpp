@@ -15,7 +15,7 @@ void HitWallParticle::Load(DrawingByRasterize& arg_rasterize)
 void HitWallParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_vel, float arg_fallSpeed)
 {
 	m_pos = arg_pos;
-	m_vel = arg_vel * 0.1f;
+	m_vel = arg_vel * 0.2f;
 	m_emitterTime = 0;
 	m_activeFlag = true;
 	m_fallSpeed = arg_fallSpeed;
@@ -36,7 +36,7 @@ void HitWallParticle::Update()
 		return;
 	}
 	m_pos += m_vel;
-	m_vel.y += -m_fallSpeed;
+	//m_vel.y += -m_fallSpeed;
 
 	for (auto& obj : m_particle)
 	{
@@ -54,7 +54,17 @@ void HitWallParticle::Update()
 	{
 		obj.Update();
 	}
-	if (40 <= m_emitterTime)
+
+	int i = 0;
+	for (auto& obj : m_particle)
+	{
+		obj.Update();
+		if (!obj.IsActive())
+		{
+			++i;
+		}
+	}
+	if (m_particle.size() <= i)
 	{
 		m_activeFlag = false;
 	}
@@ -90,7 +100,7 @@ void HitWallParticle::Particle::Init(const KazMath::Vec3<float>& arg_pos)
 	m_transform.scale = { 0.0f,0.0f,0.0f };
 	m_transform.pos = arg_pos;
 	m_lerpTransform.pos = m_transform.pos;
-	m_time.Reset(30.0f);
+	m_time.Reset(5.0f);
 }
 
 void HitWallParticle::Particle::Finalize()
@@ -104,7 +114,7 @@ void HitWallParticle::Particle::Update()
 	{
 		return;
 	}
-	KazMath::Larp(m_transform.scale, &m_lerpTransform.scale, 0.3f);
+	KazMath::Larp(m_transform.scale, &m_lerpTransform.scale, 0.4f);
 	if (m_lerpTransform.scale.x <= 0.0f || m_time.UpdateTimer())
 	{
 		m_activeFlag = false;
