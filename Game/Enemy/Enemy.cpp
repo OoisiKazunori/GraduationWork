@@ -362,7 +362,10 @@ void Enemy::Draw(
 	DrawingByRasterize& arg_rasterize,
 	Raytracing::BlasVector& arg_blasVec)
 {
-	m_reaction.Draw(arg_rasterize, arg_blasVec);
+	if (m_state == State::Combat) {
+		m_reaction.Draw(arg_rasterize, arg_blasVec);
+	}
+
 #ifdef DEBUG
 	if (!m_inEcho)
 	{
@@ -406,7 +409,7 @@ void Enemy::Draw(
 	}
 
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0], m_lineOfSightPos[1], KazMath::Color(172, 50, 50, 255));
-}
+	}
 
 bool Enemy::IsInSight(
 	KazMath::Vec3<float>& arg_playerPos,
