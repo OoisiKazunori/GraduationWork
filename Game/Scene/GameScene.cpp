@@ -265,7 +265,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			m_turret.Update();
 			FootprintMgr::Instance()->Update();
 
-			m_stageManager.Update(arg_rasterize, m_player->GetTransform());
+			m_stageManager.Update(arg_rasterize, m_player->GetTransform(), m_player->m_inRoom);
 
 			for (auto& obj : m_serverSmokeEmitter)
 			{
@@ -294,7 +294,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 					m_camera->Update(m_player->GetTransform(), m_stageMeshCollision, m_player->GetIsADS(), m_isTitle);
 				}
 
-				m_stageManager.Update(arg_rasterize, m_player->GetTransform());
+				m_stageManager.Update(arg_rasterize, m_player->GetTransform(), m_player->m_inRoom);
 
 				m_bulletMgr->Update(m_stageManager.GetColliders());
 
@@ -419,79 +419,82 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		}
 
 		//クリップとの当たり判定
-		KazMath::Vec3<float> clipPos;
-		KazMath::Vec3<float> goalScale = { 3.0f, 0.7f, 7.0f };
-		KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
-		KazMath::Vec3<float> playerGoalDistane;
-		if (m_stageManager.m_clip1)
+		if (!m_menu.GetIsMenuOpen())
 		{
-			clipPos = m_stageManager.m_clip1->m_transform.pos;
-			playerGoalDistane = clipPos - playerPos;
-			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			KazMath::Vec3<float> clipPos;
+			KazMath::Vec3<float> goalScale = { 3.0f, 0.7f, 7.0f };
+			KazMath::Vec3<float> playerPos = m_player->GetTransform().pos;
+			KazMath::Vec3<float> playerGoalDistane;
+			if (m_stageManager.m_clip1)
 			{
-				IntractUI::isIntract = true;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				clipPos = m_stageManager.m_clip1->m_transform.pos;
+				playerGoalDistane = clipPos - playerPos;
+				if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 				{
-					m_stageManager.m_clip1.reset();
-					//とった処理ここに入れる
-					Menu::GetFile(0);
-					m_todo.NextTask();
-					Menu::firstLookFile = true;
-					Menu::firstLookFileIndex = 0;
-					isClip = false;
-					m_stageManager.Erase1StageCol();
-					m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+					IntractUI::isIntract = true;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+					{
+						m_stageManager.m_clip1.reset();
+						//とった処理ここに入れる
+						Menu::GetFile(0);
+						m_todo.NextTask();
+						Menu::firstLookFile = true;
+						Menu::firstLookFileIndex = 0;
+						isClip = false;
+						m_stageManager.Erase1StageCol();
+						m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+					}
 				}
 			}
-		}
-		if (m_stageManager.m_clip2)
-		{
-			clipPos = m_stageManager.m_clip2->m_transform.pos;
-			playerGoalDistane = clipPos - playerPos;
-			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			if (m_stageManager.m_clip2)
 			{
-				IntractUI::isIntract = true;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				clipPos = m_stageManager.m_clip2->m_transform.pos;
+				playerGoalDistane = clipPos - playerPos;
+				if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 				{
-					m_stageManager.m_clip2.reset();
-					//とった処理ここに入れる
-					Menu::GetFile(1);
-					Menu::firstLookFile = true;
-					Menu::firstLookFileIndex = 1;
+					IntractUI::isIntract = true;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+					{
+						m_stageManager.m_clip2.reset();
+						//とった処理ここに入れる
+						Menu::GetFile(1);
+						Menu::firstLookFile = true;
+						Menu::firstLookFileIndex = 1;
+					}
 				}
 			}
-		}
-		if (m_stageManager.m_clip3)
-		{
-			clipPos = m_stageManager.m_clip3->m_transform.pos;
-			playerGoalDistane = clipPos - playerPos;
-			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			if (m_stageManager.m_clip3)
 			{
-				IntractUI::isIntract = true;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				clipPos = m_stageManager.m_clip3->m_transform.pos;
+				playerGoalDistane = clipPos - playerPos;
+				if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 				{
-					m_stageManager.m_clip3.reset();
-					//とった処理ここに入れる
-					Menu::GetFile(2);
-					Menu::firstLookFile = true;
-					Menu::firstLookFileIndex = 2;
+					IntractUI::isIntract = true;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+					{
+						m_stageManager.m_clip3.reset();
+						//とった処理ここに入れる
+						Menu::GetFile(2);
+						Menu::firstLookFile = true;
+						Menu::firstLookFileIndex = 2;
+					}
 				}
 			}
-		}
-		if (m_stageManager.m_clip4)
-		{
-			clipPos = m_stageManager.m_clip4->m_transform.pos;
-			playerGoalDistane = clipPos - playerPos;
-			if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
+			if (m_stageManager.m_clip4)
 			{
-				IntractUI::isIntract = true;
-				if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+				clipPos = m_stageManager.m_clip4->m_transform.pos;
+				playerGoalDistane = clipPos - playerPos;
+				if (fabs(playerGoalDistane.x) < goalScale.x && fabs(playerGoalDistane.z) < goalScale.z)
 				{
-					m_stageManager.m_clip4.reset();
-					//とった処理ここに入れる
-					Menu::GetFile(3);
-					Menu::firstLookFile = true;
-					Menu::firstLookFileIndex = 3;
+					IntractUI::isIntract = true;
+					if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+					{
+						m_stageManager.m_clip4.reset();
+						//とった処理ここに入れる
+						Menu::GetFile(3);
+						Menu::firstLookFile = true;
+						Menu::firstLookFileIndex = 3;
+					}
 				}
 			}
 		}

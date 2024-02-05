@@ -47,7 +47,7 @@ public:
 	StageManager();
 
 	void Init(DrawingByRasterize& arg_rasterize, int f_stageNum, bool f_isGoHome);
-	void Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3D &f_playerPos);
+	void Update(DrawingByRasterize& arg_rasterize, KazMath::Transform3D &f_playerPos,bool f_isPLayerInside);
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	//ステージが切り替わったトリガー
 	bool ChangeSceneTrigger();
