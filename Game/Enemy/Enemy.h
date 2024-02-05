@@ -24,6 +24,8 @@ private:
 		BasicDraw::BasicModelRender> m_enemyBox;
 	std::shared_ptr<
 		BasicDraw::BasicModelRender> m_pedestal;
+	std::shared_ptr<
+		BasicDraw::BasicModelRender> m_collision;
 
 	//照準線用
 	std::array<BasicDraw::BasicLineRender, 4> m_line;
@@ -105,6 +107,10 @@ private:
 
 	//敵の位置を画面に表示するやつ。
 	InformEnemy m_inform;
+
+	KazMath::Color m_edgeColor;
+	const KazMath::Color DEAD_COLOR = KazMath::Color(39, 39, 39, 255);
+	const KazMath::Color ACTIVE_COLOR = KazMath::Color(172, 50, 50, 255);
 
 public:
 	Enemy();

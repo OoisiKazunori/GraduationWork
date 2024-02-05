@@ -109,7 +109,7 @@ bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollisi
 	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_dir);
 	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED) {
 
-		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::BLUE);
+		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::WHITE);
 		Init();
 		return true;
 

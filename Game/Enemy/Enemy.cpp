@@ -34,6 +34,8 @@ Enemy::Enemy()
 
 	m_footprintSpan = 0;
 
+	m_edgeColor = ACTIVE_COLOR;
+
 	//新規
 	m_moveVec = { 0.0f,0.0f,0.0f };
 	m_nextPos = { 0.0f,0.0f,0.0f };
@@ -78,23 +80,20 @@ void Enemy::SetData(
 				"Pedestal.gltf"
 			);
 	}
+	m_collision =
+		std::make_unique<BasicDraw::BasicModelRender>(
+			arg_rasterize,
+			"Resource/Enemy/",
+			"Collision.gltf"
+		);
 
 
-	for (auto& index : m_enemyBox.get()->m_model.m_modelInfo->modelData) {
+	for (auto& index : m_collision.get()->m_model.m_modelInfo->modelData) {
 
 		m_meshCol.emplace_back(std::make_shared<MeshCollision>());
 		m_meshCol.back()->Setting(index.vertexData, m_trans);
 		m_meshColVertex.emplace_back(index.vertexData);
 
-	}
-	if (m_pedestal) {
-		for (auto& index : m_pedestal.get()->m_model.m_modelInfo->modelData) {
-
-			m_meshCol.emplace_back(std::make_shared<MeshCollision>());
-			m_meshCol.back()->Setting(index.vertexData, m_trans);
-			m_meshColVertex.emplace_back(index.vertexData);
-
-		}
 	}
 
 
@@ -177,6 +176,12 @@ void Enemy::Update(
 	//死んだら終了
 	if (IsDeath()) {
 		Death();
+
+		//死んだときの色に近づける。
+		m_edgeColor.color.x += static_cast<int>((DEAD_COLOR.color.x - m_edgeColor.color.x) / 10.0f);
+		m_edgeColor.color.y += static_cast<int>((DEAD_COLOR.color.y - m_edgeColor.color.y) / 10.0f);
+		m_edgeColor.color.z += static_cast<int>((DEAD_COLOR.color.z - m_edgeColor.color.z) / 10.0f);
+
 		return;
 	}
 
@@ -373,7 +378,7 @@ void Enemy::Draw(
 
 	m_enemyBox->m_model.DrawRasterize(
 		arg_rasterize,
-		m_trans, KazMath::Color(172, 50, 50, 255));
+		m_trans, m_edgeColor);
 
 	if (IsFixedTurret())
 	{
@@ -383,7 +388,7 @@ void Enemy::Draw(
 
 		m_pedestal->m_model.DrawRasterize(
 			arg_rasterize,
-			l_trans, KazMath::Color(172, 50, 50, 255));
+			l_trans, m_edgeColor);
 	}
 
 	m_inform.Draw(arg_rasterize, arg_blasVec);
