@@ -15,6 +15,7 @@
 #include"../Game/Effect/TurretFireEffect.h"
 #include"../Game/Effect/InformEnemy.h"
 #include"../Game/Effect/Smoke/SmokeEmitter.h"
+#include"../Game/Effect/HitEffect/BulletHitWallEffect.h"
 
 class EnemyManager;
 class Player;
@@ -47,6 +48,9 @@ public:
 	}
 
 private:
+	BulletHitWallEffect m_emitter;
+
+
 	std::array<SmokeEmitter::EmittData, 6> m_serverEmittData;
 	std::array<SmokeEmitter, 6> m_serverSmokeEmitter;
 

@@ -173,6 +173,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize, int f_mapNumber, bool f_
 	m_serverEmittData[5].m_emittPos =
 		KazMath::Vec3<float>(-84.2f, 90.0f, -6.0f);
 
+	m_emitter.Load(arg_rasterize);
 }
 
 GameScene::~GameScene()
@@ -228,10 +229,7 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
-		for (int i = 0; i < m_serverSmokeEmitter.size(); ++i)
-		{
-			m_serverSmokeEmitter[i].Init(m_serverEmittData[i]);
-		}
+		m_emitter.Init({ -195.0f,-43.0f,308.0f });
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_3, "rota", "DIK_3"))
 	{
@@ -550,13 +548,13 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		PlayerStatus::Instance()->m_isFound = false;
 
 	}
-
+	m_emitter.Update();
 }
 
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
+	m_emitter.Draw(arg_rasterize, arg_blasVec);
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
