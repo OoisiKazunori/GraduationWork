@@ -229,7 +229,7 @@ class HPUI
 	static const int c_BaseUIY = c_UITexY / 2 + c_texOffset;
 	static int m_hp;
 	static int m_redHP;
-	const int MaxHP = 100;
+	const int MaxHP = 1000;
 
 	static int redWaitTime;
 	static const int redTime = 1;
