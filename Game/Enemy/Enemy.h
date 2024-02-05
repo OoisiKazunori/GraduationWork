@@ -43,8 +43,11 @@ private:
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;
 	const int CHECK_POINT_DELAY = 240;
+	const float MAX_EYE_DELAY = 60.0f;
 	int m_currentPoint = 0;
 	float m_radian = 0.0f;
+	float m_checkEyeDelay = 0.0f;
+	float m_distRate = 1.0f;
 
 	//‰ß‹Ž
 	std::vector<std::pair<int, int>> m_checkPointDelay;
@@ -76,10 +79,6 @@ private:
 	const int MAX_HP = 2;
 	int m_hp;
 	int m_rate;
-
-	//ƒoƒŒ‚é‚Ü‚Å‚ÌŽžŠÔ
-	const int MAX_EYE_DELAY = 120;
-	int m_checkEyeDelay;
 
 	//‚Ç‚¤‚µ‚æ‚¤
 	float m_angle = 0.0f;
