@@ -544,8 +544,8 @@ void Enemy::Combat(
 	//ËŒ‚
 	if (SHOT_DELAY < m_shotDelay) {
 
-		arg_bulletMgr.lock()->
-			GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
+		//arg_bulletMgr.lock()->
+		//	GenerateEnemyBullet(m_trans.pos, m_trans.GetFront());
 		m_shotDelay = 0;
 
 		//‹——£‚É‚æ‚Á‚Ä‰¹‚ğ¬‚³‚­‚·‚éB
