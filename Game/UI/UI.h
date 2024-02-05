@@ -235,7 +235,7 @@ class HPUI
 	static const int redTime = 1;
 
 	static int regeneTimer;
-	static const int regeneStartTimer = 60;
+	static const int regeneStartTimer = 120;
 public:
 	HPUI(DrawingByRasterize& arg_rasterize);
 
