@@ -507,6 +507,8 @@ void Enemy::Combat(
 			m_state = State::Patrol;
 			m_rate = MAX_RATE;
 		}
+
+		//Œ‚‚½‚È‚¢‚¯‚ÇŒ©‘±‚¯‚é
 	}
 	else {
 		//ƒvƒŒƒCƒ„[•ûŒü

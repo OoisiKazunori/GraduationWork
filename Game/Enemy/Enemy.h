@@ -74,7 +74,7 @@ private:
 	int m_rate;
 
 	//ƒoƒŒ‚é‚Ü‚Å‚ÌŽžŠÔ
-	const int MAX_EYE_DELAY = 120;
+	const int MAX_EYE_DELAY = 60;
 	int m_checkEyeDelay;
 
 	//‚Ç‚¤‚µ‚æ‚¤
