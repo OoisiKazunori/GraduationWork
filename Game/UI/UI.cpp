@@ -8,11 +8,14 @@ int HPUI::m_redHP = 0;
 
 int HPUI::redWaitTime = 0;
 
-int WeponUIManager::m_magazinSize = 5;
-int WeponUIManager::m_haveBulletNum = 10;
-int WeponUIManager::m_bulletCount = 5;
+int WeponUIManager::m_magazinSize = C_magazinSize;
+int WeponUIManager::m_haveBulletNum = C_startBulletCount;
+int WeponUIManager::m_bulletCount = C_magazinSize;
 int WeponUIManager::m_haveStone = 7;
 bool WeponUIManager::m_isCanShot = true;
+
+int WeponUIManager::stageStartBullet = 0;
+int WeponUIManager::stageStartMAgazin = 0;
 
 bool WeponUIManager::isStoneInf = true;
 
@@ -228,6 +231,25 @@ bool WeponUIManager::CanReload()
 	return m_bulletCount < m_magazinSize && 0 < m_haveBulletNum;
 }
 
+void WeponUIManager::ResetBullet()
+{
+	m_magazinSize = C_magazinSize;
+	m_haveBulletNum = C_startBulletCount;
+	m_bulletCount = C_magazinSize;
+}
+
+void WeponUIManager::SetNowBullet()
+{
+	stageStartBullet = m_bulletCount;
+	stageStartMAgazin = m_haveBulletNum;
+}
+
+void WeponUIManager::ReCallBullet()
+{
+	m_bulletCount = stageStartBullet;
+	m_haveBulletNum = stageStartMAgazin;
+}
+
 void WeponUIManager::Init()
 {
 	m_nowWepon = e_NonWepon;
@@ -236,6 +258,8 @@ void WeponUIManager::Init()
 	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 1 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
+
+
 	EaseInit();
 }
 

@@ -255,10 +255,12 @@ void GameScene::Init()
 				});
 			isClip = true;
 			m_HPBarManager.Init();
+			m_uiManager.ResetBullet();
 		}
 		else
 		{
 			m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+			m_uiManager.SetNowBullet();
 			isClip = false;
 		}
 	}
@@ -478,9 +480,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			//	//
 			//}
 			if (m_resultManager.isToTile)
-			{//9日までにここを修正する
+			{
+				//9日までにここを修正する
 				m_sceneNum = 1;
-				StageSelectScene::startStageNum = 0;
+				m_HPBarManager.Init();
+				m_uiManager.ReCallBullet();
+				//StageSelectScene::startStageNum = 0;
 			}
 		}
 		else if (m_resultManager.GetResultShow() && m_resultManager.isToTile)

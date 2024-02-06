@@ -89,10 +89,16 @@ private:
 	static const int c_BulletNumOffsetX = 85;
 	static const int c_BulletNumOffsetY = 30;
 
+	static const int C_magazinSize = 5;
+	static const int C_startBulletCount = 10;
+
 	static int m_magazinSize;
 	static int m_haveBulletNum;
 	static int m_bulletCount;
 	static bool m_isCanShot;
+
+	static int stageStartBullet;
+	static int stageStartMAgazin;
 
 	static int m_haveStone;
 
@@ -121,7 +127,11 @@ public:
 	void GetStone(int f_getStone) { m_haveStone += f_getStone; };
 	void GetMagazin(int f_getStone) { m_haveBulletNum += f_getStone; };
 	WeponNumber GetNowWepon() { return m_nowWepon; };
-
+	void ResetBullet();
+	//ステージ切り替わるたび呼ぶ
+	void SetNowBullet();
+	//死んだときに弾を元に戻す
+	void ReCallBullet();
 	//好きなタイミングで武器追加
 	void AddWepon(WeponNumber f_wepon);
 
