@@ -23,16 +23,16 @@ void EchoEdge::Generate(const KazBufferHelper::BufferData& arg_outlineBuffer)
 	m_bufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 	//エコー配列
 	m_bufferArray.emplace_back();
-	m_bufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+	m_bufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 	m_bufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
 	//Outline処理済みの描画
 	m_bufferArray.emplace_back(arg_outlineBuffer);
 	m_bufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-	m_bufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX2;
+	m_bufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 	//出力
 	m_bufferArray.emplace_back(m_outputBuffer);
 	m_bufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-	m_bufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX3;
+	m_bufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX2;
 
 	m_computeEdge.Generate(
 		ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/EchoEdge/" + "Edge.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE),
@@ -43,7 +43,7 @@ void EchoEdge::Generate(const KazBufferHelper::BufferData& arg_outlineBuffer)
 void EchoEdge::Compute()
 {
 	m_computeEdge.m_extraBufferArray[1] = *EchoArray::Instance()->GetEchoStructuredBuffer();
-	m_computeEdge.m_extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+	m_computeEdge.m_extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 	m_computeEdge.m_extraBufferArray[1].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 
 
