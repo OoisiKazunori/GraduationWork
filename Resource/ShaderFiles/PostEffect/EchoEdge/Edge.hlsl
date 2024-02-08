@@ -24,13 +24,7 @@ float4 SamplingPixel(Texture2D<float4> arg_texture, uint2 arg_uv)
 void main(uint3 DTid : SV_DispatchThreadID)
 {
     float4 color = float4(1,1,1,1);
-
     float4 inputC = Input[DTid.xy];
-    float4 outputC = Output[DTid.xy];
-
-    outputC = inputC * float4(1,0,0,1);
-    //デバック向けに色を変える
-    Output[DTid.xy] = outputC;
 
     //エコー配列のエッジの検出------------------------
     //エコーの円の中に入っているかの判定を取る
@@ -56,4 +50,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
     }
     //エッジ部分のUVずらし------------------------
 
+
+    //デバック向けに色を変える
+    Output[DTid.xy] = inputC * color;
 }
