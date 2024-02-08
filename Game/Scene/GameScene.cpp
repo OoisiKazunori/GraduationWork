@@ -631,15 +631,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	//メモリ増加の確認--------------------------------
-	//m_stageManager.Draw(arg_rasterize, arg_blasVec);
-	//FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
-
 	//関係なし--------------------------------
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
+	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
@@ -682,8 +679,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	
 	//m_goalPoint.Draw(arg_rasterize);
 
-	//足跡はここに置く
-
+	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 	//m_menu.Draw(arg_rasterize);
 	//m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));
