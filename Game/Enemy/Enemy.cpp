@@ -520,6 +520,8 @@ void Enemy::Kill()
 
 void Enemy::Damage(int arg_damage)
 {
+	m_state = State::Combat;
+
 	m_hp = std::clamp(m_hp - arg_damage, 0, 1000);
 	SoundManager::Instance()->
 		SoundPlayerWave(
