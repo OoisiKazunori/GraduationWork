@@ -299,7 +299,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		float enemyDistance = KazMath::Vec3<float>(m_transform.pos - (index->GetPos())).Length();
 		if (KILL_RANGE < enemyDistance) continue;
 
-		IntractUI::isIntract = true;
+		IntractUI::isAttackIntract = true;
 
 		if (m_isMeleeTrigger) {
 			index->Damage(1);
