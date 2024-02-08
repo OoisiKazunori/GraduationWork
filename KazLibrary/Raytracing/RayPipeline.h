@@ -12,6 +12,7 @@
 #include "DirectXCommon/DirectX12.h"
 #include "Helper/KazBufferHelper.h"
 #include "Helper/Compute.h"
+#include "../Game/Effect/EchoEdge/EchoEdge.h"
 
 namespace PostEffect {
 	class LensFlare;
@@ -94,6 +95,8 @@ namespace Raytracing {
 		//アウトライン合成用
 		ComputeShader m_outlineComposeShader;
 		ComputeShader m_outlineCleanShader;
+
+		EchoEdge m_echoEdge;
 
 	public:
 

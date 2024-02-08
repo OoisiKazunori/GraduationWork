@@ -55,7 +55,7 @@ namespace PostEffect {
 		//アウトラインを書き込む
 		void Apply();
 
-		KazBufferHelper::BufferData GetOutputAlbedoTexture() { return m_outputAlbedoTexture; }
+		const KazBufferHelper::BufferData &GetOutputAlbedoTexture() { return m_outputAlbedoTexture; }
 		KazBufferHelper::BufferData GetOutputEmissiveTexture() { return m_outputEmissiveTexture; }
 
 		void SetOutlineCenterPos(KazMath::Vec3<float> arg_outlineCenterPos) { m_outlineData.m_outlineCenter = arg_outlineCenterPos; }

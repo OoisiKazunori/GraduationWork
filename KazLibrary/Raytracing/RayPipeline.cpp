@@ -184,13 +184,18 @@ namespace Raytracing {
 		m_outlineNoiseConstBufferData = KazBufferHelper::SetConstBufferData(sizeof(OutlineNoiseData));
 		m_outlineNoiseConstBufferData.bufferWrapper->TransData(&m_outlineNoiseData, sizeof(OutlineNoiseData));
 
+		//エコーの端部分のゆがみ
+		{
+			m_echoEdge.Generate(GBufferMgr::Instance()->m_outline->GetOutputAlbedoTexture());
+		}
+
 		//アウトライン合成用シェーダー
 		{
 			std::vector<KazBufferHelper::BufferData>extraBuffer =
 			{
 				 GBufferMgr::Instance()->GetRayTracingBuffer(),
 				 GBufferMgr::Instance()->GetLensFlareBuffer(),
-				 GBufferMgr::Instance()->m_outline->GetOutputAlbedoTexture(),
+				m_echoEdge.GetOutputBuffer(),
 				 GBufferMgr::Instance()->m_outline->GetOutputEmissiveTexture(),
 				 m_outlineNoiseConstBufferData
 			};
@@ -206,15 +211,7 @@ namespace Raytracing {
 			extraBuffer[4].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 			m_outlineComposeShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "ComposeOutline.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
 		}
-		{
-			//std::vector<KazBufferHelper::BufferData>extraBuffer =
-			//{
-			//	 GBufferMgr::Instance()->m_outlineBuffer,
-			//};
-			//extraBuffer[0].rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-			//extraBuffer[0].rootParamType = GRAPHICS_PRAMTYPE_TEX;
-			//m_outlineCleanShader.Generate(ShaderOptionData(KazFilePathName::RelativeShaderPath + "PostEffect/Outline/" + "BlackOut.hlsl", "main", "cs_6_4", SHADER_TYPE_COMPUTE), extraBuffer);
-		}
+
 
 	}
 
@@ -338,12 +335,19 @@ namespace Raytracing {
 
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
+
+
 		/*===== 書き込んだアウトラインを合成 =====*/
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Outline");
 
 		//アウトラインを計算
 		GBufferMgr::Instance()->m_outline->Apply();
+
+		/*===== エコーのエッジの湾曲 =====*/
+		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "EchoEdge");
+		m_echoEdge.Compute();
+		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 		//アウトラインをGBufferに書き込むと同時にノイズをかける。
 		DispatchData dispatchData;
@@ -359,6 +363,13 @@ namespace Raytracing {
 
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
+
+
+		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Outline");
+
+
+
+		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 		/*===== コピーコマンドを積む =====*/
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Lensflare");
