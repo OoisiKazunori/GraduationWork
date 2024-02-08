@@ -23,5 +23,8 @@ private:
 	bool m_activeFlag;
 	float m_angle, m_angleVel;
 	KazMath::Color m_color;
+
+	KazMath::Timer m_xEaseTime;
+	float m_xVel;
 };
 
