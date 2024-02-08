@@ -16,7 +16,7 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
 
 private:
-	std::array<HitWallParticle,5> m_particle;
+	std::array<HitWallParticle,6> m_particle;
 
 };
 

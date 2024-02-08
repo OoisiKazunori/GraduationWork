@@ -21,9 +21,8 @@ void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos)
 	const int size = static_cast<int>(m_particle.size());
 	for (int i = 0; i < m_particle.size(); ++i)
 	{
-		int offset = 0;
-		const int angle = 90;
-		float radian = -KazMath::AngleToRadian(40 + (i + offset) * (angle / size));
+		const int angle = 180;
+		float radian = -KazMath::AngleToRadian(i * (angle / size));
 		v.emplace_back(KazMath::Vec3<float>(cosf(radian), sinf(radian), KazMath::Rand<float>(1.0f, 0.0f)));
 		vRadian.emplace_back(radian);
 	}
@@ -32,11 +31,16 @@ void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos)
 	for (auto& obj : m_particle)
 	{
 		obj.Finalize();
-		//デバック用に一個しか出さない
+		KazMath::Vec2<float>posXZ(arg_pos.x, arg_pos.z);
+		KazMath::Vec2<float>rPos(posXZ + v[i].ConvertVec2() * 5.0f);
+		KazMath::Vec2<float>vec = posXZ - rPos;
+		vec.Normalize();
+		float radius = atan2(vec.y, vec.x);
+
 		obj.Init(arg_pos,
 			v[i],
-			vRadian[i],
-			KazMath::Rand(1.0f, 0.1f)
+			radius,
+			KazMath::Rand(1.0f, 0.5f)
 		);
 		++i;
 	}

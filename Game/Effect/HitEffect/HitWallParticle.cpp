@@ -12,18 +12,19 @@ void HitWallParticle::Load(DrawingByRasterize& arg_rasterize)
 void HitWallParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_vel, float arg_radian, float arg_fallSpeed)
 {
 	m_pos = arg_pos;
-	m_vel = arg_vel * 0.2f;
-	const float SCALE = 0.01f;
+	m_vel = arg_vel * 0.1f;
+	const float SCALE = 0.05f;
 	m_transform.scale = { SCALE,SCALE,SCALE };
-	m_transform.Rotation({ 0.0f,0.0f,1.0f }, arg_radian);
+	m_transform.Rotation({ 0.0f,0.0f,1.0f }, -arg_radian + KazMath::AngleToRadian(90.0f));
 	m_lerpTransform = m_transform;
 	m_activeFlag = true;
-	m_fallSpeed = arg_fallSpeed;
-	m_time.Reset(10.0f);
+	m_fallSpeed = 1.0f;
+	m_time.Reset(60.0f);
 }
 
 void HitWallParticle::Finalize()
 {
+	m_transform.quaternion = DirectX::XMQuaternionIdentity();
 }
 
 void HitWallParticle::Update()
