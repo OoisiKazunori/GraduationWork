@@ -6,6 +6,7 @@ class InformEnemy
 {
 public:
 	InformEnemy();
+	void Init();
 	void Load(DrawingByRasterize &arg_rasterize);
 	void Update(const KazMath::Vec3<float> & arg_enemyPos, KazMath::Transform3D & arg_playerTransform, bool arg_inSight);
 	void Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blas);
