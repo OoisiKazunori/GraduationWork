@@ -225,6 +225,7 @@ public:
 
 	void Kill();
 	void Damage(int arg_damage);
+	bool IsDead() { return m_hp <= 0; }
 
 	//V‹K
 private:

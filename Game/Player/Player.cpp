@@ -294,6 +294,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//敵の方向を走査して、敵の真後ろに居たらステルスキルをやる。
 	for (auto& index : arg_enemyManager.lock()->GetEnemy()) {
 
+		if (index->IsDead())continue;
+		if (arg_weaponNumber != WeponUIManager::e_Hundgun) continue;
+
 		//まずは座標でステルスキルをできるかを判断する。
 		const float KILL_RANGE = 10.0f;
 		float enemyDistance = KazMath::Vec3<float>(m_transform.pos - (index->GetPos())).Length();
