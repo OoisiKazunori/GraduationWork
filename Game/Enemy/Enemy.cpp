@@ -732,8 +732,6 @@ void Enemy::Death()
 		m_isSounds[Sounds::Turret_SE_3] = false;
 		m_sounds[Sounds::Turret_SE_1].source->Stop();
 		m_isSounds[Sounds::Turret_SE_1] = false;
-
-		m_trans.Rotation({ 0.0f,1.0f,1.0f }, KazMath::AngleToRadian(360.0f));
 	}
 }
 
