@@ -441,8 +441,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			}
 			m_HPBarManager.Update(0);
 		}
-
-		m_menu.Update();
+		if (m_HPBarManager.GetHP() > 0)
+		{
+			m_menu.Update();
+		}
 		//m_HPBarManager.Update(0);
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
@@ -637,6 +639,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
+	if (m_resultManager.GetResultShow())
+	{
+		m_resultManager.Draw(arg_rasterize);
+	}
+
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
@@ -699,10 +706,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);
 
-	if (m_resultManager.GetResultShow())
-	{
-		m_resultManager.Draw(arg_rasterize);
-	}
 
 	DebugKey::Instance()->DrawImGui();
 }

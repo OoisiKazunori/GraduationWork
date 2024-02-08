@@ -749,7 +749,7 @@ void HPUI::Update(const int f_playerHP)
 			else
 			{
 				redWaitTime = 1;
-				m_redHP -= 2;
+				m_redHP -= 4;
 			}
 			if (m_redHP < 0)
 			{

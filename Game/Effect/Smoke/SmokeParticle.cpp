@@ -1,4 +1,5 @@
 #include "SmokeParticle.h"
+#include"../KazLibrary/Easing/easing.h"
 
 SmokeParticle::SmokeParticle() :m_activeFlag(false)
 {
@@ -24,7 +25,18 @@ void SmokeParticle::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec
 	m_angle = 0;
 	m_angleVel = KazMath::Rand<float>(0.05f, 0.01f);
 
+	if (KazMath::Rand<int>(2, 0) == 0)
+	{
+		m_xVel = 1.0f;
+	}
+	else
+	{
+		m_xVel = -1.0f;
+	}
+
 	m_color = arg_color;
+
+	m_xEaseTime.Reset(60.0f);
 }
 
 void SmokeParticle::Update()
@@ -35,6 +47,8 @@ void SmokeParticle::Update()
 	}
 
 	//m_transform.pos.x = m_baseTransform.pos.x + sinf(m_timer.GetTimeRate() * (DirectX::XM_2PI / 180.0f)) * 10.0f;
+	m_xEaseTime.UpdateTimer();
+	m_transform.pos.x = m_baseTransform.pos.x + EasingMaker(Out, Exp, m_xEaseTime.GetTimeRate()) * (0.5f * m_xVel);
 
 	//è„è∏Ç∆âÒì]
 	m_transform.pos.y += m_speed;
