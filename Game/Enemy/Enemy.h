@@ -223,6 +223,9 @@ public:
 
 	bool IsCombat() { return m_state == State::Combat; }
 
+	void Kill();
+	void Damage(int arg_damage);
+
 	//V‹K
 private:
 	void Move();

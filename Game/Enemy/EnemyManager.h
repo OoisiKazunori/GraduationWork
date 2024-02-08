@@ -10,7 +10,7 @@ class EnemyData;
 class EnemyManager
 {
 private:
-	std::vector<std::unique_ptr<Enemy>> m_enemys;
+	std::vector<std::shared_ptr<Enemy>> m_enemys;
 	std::vector<PatrolData> m_patrolDatas;
 	std::shared_ptr<PatrolConfig> m_config;
 
@@ -45,6 +45,8 @@ public:
 		std::list<KazMath::Transform3D> arg_enemyList);
 
 	int GetCombatStatusEnemyCount();
+
+	std::vector<std::shared_ptr<Enemy>> GetEnemy() { return m_enemys; }
 
 };
 

@@ -502,6 +502,24 @@ bool Enemy::IsInSight(
 	return false;
 }
 
+void Enemy::Kill()
+{
+
+	m_hp = 0;
+	SoundManager::Instance()->
+		SoundPlayerWave(
+			m_sounds[Sounds::Hit_SE_1], 0);
+
+}
+
+void Enemy::Damage(int arg_damage)
+{
+	m_hp = std::clamp(m_hp - arg_damage, 0, 1000);
+	SoundManager::Instance()->
+		SoundPlayerWave(
+			m_sounds[Sounds::Hit_SE_1], 0);
+}
+
 void Enemy::CalcMoveVec()
 {
 	if (IsFixedTurret()) { return; }

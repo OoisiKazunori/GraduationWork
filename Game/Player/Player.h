@@ -3,6 +3,7 @@
 #include"../UI/UI.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/UI.h"
+#include"../Game/Enemy/EnemyManager.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -113,6 +114,7 @@ private:
 	const float MELEE_PHASE1 = 3.0f;
 	const float MELEE_PHASE2 = 20.0f;
 	const float MELEE_PHASE3 = 15.0f;
+	bool m_isMeleeTrigger;
 
 
 public:
@@ -124,7 +126,7 @@ public:
 
 	void TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& arg_rasterize, std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
 
-	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F);
+	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F, std::weak_ptr<EnemyManager> arg_enemyManager);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

@@ -15,6 +15,7 @@
 #include "../KazLibrary/Easing/easing.h"
 #include "../KazLibrary/Debug/DebugKey.h"
 #include "../BGM/BGMController.h"
+#include "../Game/UI/UI.h"
 
 Player::Player(DrawingByRasterize& arg_rasterize, KazMath::Transform3D f_startPos, bool arg_toStartPos) :
 	m_model(arg_rasterize, "Resource/Test/Virus/", "virus_cur.gltf"),
@@ -111,7 +112,7 @@ void Player::TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& a
 	m_meshCollision->Setting(m_collisionModel.m_model.m_modelInfo->modelData[0].vertexData, m_transform);
 }
 
-void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F)
+void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F, std::weak_ptr<EnemyManager> arg_enemyManager)
 {
 
 	//動かす前の座標。
@@ -290,6 +291,22 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 		m_isDebug = !m_isDebug;
 	}
 
+	//敵の方向を走査して、敵の真後ろに居たらステルスキルをやる。
+	for (auto& index : arg_enemyManager.lock()->GetEnemy()) {
+
+		//まずは座標でステルスキルをできるかを判断する。
+		const float KILL_RANGE = 10.0f;
+		float enemyDistance = KazMath::Vec3<float>(m_transform.pos - (index->GetPos())).Length();
+		if (KILL_RANGE < enemyDistance) continue;
+
+		IntractUI::isIntract = true;
+
+		if (m_isMeleeTrigger) {
+			index->Damage(1);
+		}
+
+	}
+
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -408,9 +425,10 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 			//WeponUIManager::Reload();
 		}
 
-		//マウスホイールを押されたら近接攻撃。
-		if (KeyBoradInputManager::Instance()->MouseInputTrigger(MouseInputNumber::MOUSE_INPUT_MIDDLE) && !m_isMeleeMotionNow) {
+		m_isMeleeTrigger = false;
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_V) && !m_isMeleeMotionNow) {
 			m_isMeleeMotionNow = true;
+			m_isMeleeTrigger = true;
 			m_meleeMotionPhase = MELEE_MOTION::PHASE_1;
 			m_meleeTimer = 0.0f;
 		}
@@ -595,7 +613,7 @@ void Player::UpdateMelee()
 		m_meleeMotionTransform.pos = m_transform.GetFront() * (easingAmount * FORWARD);
 
 		m_meleeMotionTransform.quaternion = DirectX::XMQuaternionIdentity();
-		m_meleeMotionTransform.Rotation(m_transform.GetRight(), (- DirectX::XM_PI * 0.25f) * easingAmount);
+		m_meleeMotionTransform.Rotation(m_transform.GetRight(), (-DirectX::XM_PI * 0.25f) * easingAmount);
 		m_meleeMotionTransform.Rotation(m_transform.GetFront(), (DirectX::XM_PI * 0.1f) * easingAmount);
 
 		if (MELEE_PHASE1 <= m_meleeTimer) {
@@ -638,7 +656,7 @@ void Player::UpdateMelee()
 			m_meleeMotionTransform.quaternion = DirectX::XMQuaternionIdentity();
 		}
 	}
-		break;
+	break;
 	default:
 		break;
 	}
