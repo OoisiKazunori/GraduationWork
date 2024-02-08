@@ -255,10 +255,12 @@ void GameScene::Init()
 				});
 			isClip = true;
 			m_HPBarManager.Init();
+			m_uiManager.ResetBullet();
 		}
 		else
 		{
 			m_goalPoint.Init(m_stageManager.GetGoalTransform().pos);
+			m_uiManager.SetNowBullet();
 			isClip = false;
 		}
 	}
@@ -313,6 +315,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 		{
 			m_intractUI.isIntract = false;
+			m_intractUI.isAttackIntract = false;
+
 			m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
 			m_stageManager.CheckInEcho(m_stageMeshCollision);
@@ -335,7 +339,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 				m_uiManager.Update(m_stageManager, m_player->GetTransform());
 
 
-				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager, m_isTitle, m_stageNum == 0);
+				m_player->Update(m_camera, m_uiManager.GetNowWepon(), m_bulletMgr, m_throwableObjectController, m_stageManager.GetColliders(), m_HPBarManager, m_isTitle, m_stageNum == 0, m_enemyManager);
 				m_enemyManager->Update(
 					m_stageManager.GetColliders(),
 					m_bulletMgr,
@@ -439,8 +443,10 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			}
 			m_HPBarManager.Update(0);
 		}
-
-		m_menu.Update();
+		if (m_HPBarManager.GetHP() > 0)
+		{
+			m_menu.Update();
+		}
 		//m_HPBarManager.Update(0);
 		//死んだときの更新
 		if (m_HPBarManager.GetHP() <= 0 && m_HPBarManager.RedHP() <= 0)
@@ -478,9 +484,12 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			//	//
 			//}
 			if (m_resultManager.isToTile)
-			{//9日までにここを修正する
+			{
+				//9日までにここを修正する
 				m_sceneNum = 1;
-				StageSelectScene::startStageNum = 0;
+				m_HPBarManager.Init();
+				m_uiManager.ReCallBullet();
+				//StageSelectScene::startStageNum = 0;
 			}
 		}
 		else if (m_resultManager.GetResultShow() && m_resultManager.isToTile)
@@ -607,7 +616,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
-
+	m_intractUI.oldAttackIsIntract = m_intractUI.isAttackIntract;
 	BGMController::Instance()->Update();
 
 	//全ての敵を走査して、発見状態の敵が居るかどうかでBGMを変える。
@@ -631,6 +640,11 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
+
+	if (m_resultManager.GetResultShow())
+	{
+		m_resultManager.Draw(arg_rasterize);
+	}
 
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
@@ -694,10 +708,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 	m_throwableObjectController->Draw(arg_rasterize, arg_blasVec);
 
-	if (m_resultManager.GetResultShow())
-	{
-		m_resultManager.Draw(arg_rasterize);
-	}
 
 	DebugKey::Instance()->DrawImGui();
 }

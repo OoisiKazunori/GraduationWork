@@ -39,7 +39,7 @@ void EnemyManager::AddEnemyData(
 	int arg_enemyNum,
 	std::list<KazMath::Transform3D> arg_enemyList)
 {
-	m_enemys.emplace_back(std::make_unique<Enemy>());
+	m_enemys.emplace_back(std::make_shared<Enemy>());
 	m_enemys[arg_enemyNum]->Init(arg_enemyList);
 }
 

@@ -3,11 +3,13 @@
 #include"../UI/UI.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../Game/UI/UI.h"
+#include"../Game/Enemy/EnemyManager.h"
 
 class MeshCollision;
 class BulletMgr;
 class Camera;
 class ThrowableObjectController;
+class Enemy;
 
 class Player {
 
@@ -24,6 +26,8 @@ private:
 	KazMath::Vec3<float> m_weaponPosOffset;		//銃のモデルを配置するオフセット。ADSしている位置を基準としてADSしていない位置にずらしたりするときに使用する。
 	KazMath::Vec3<float> m_gunReaction;
 	const float GUN_REACTION = 0.25f;
+
+	std::weak_ptr<Enemy> m_meleeEnemy;
 
 	bool m_onGround;
 	bool m_isADS;		//銃を構えている状態か？
@@ -101,7 +105,19 @@ private:
 
 	bool m_isDebug = false;	//壁突き抜け高速移動するやつ。
 
-
+	//近接攻撃に関する変数
+	enum class MELEE_MOTION {
+		PHASE_1,
+		PHASE_2,
+		PHASE_3,
+	}m_meleeMotionPhase;
+	bool m_isMeleeMotionNow;		//近接攻撃中
+	KazMath::Transform3D m_meleeMotionTransform;
+	float m_meleeTimer;
+	const float MELEE_PHASE1 = 3.0f;
+	const float MELEE_PHASE2 = 20.0f;
+	const float MELEE_PHASE3 = 15.0f;
+	bool m_isMeleeTrigger;
 
 
 public:
@@ -113,7 +129,7 @@ public:
 
 	void TitleUpdate(std::weak_ptr<Camera> arg_camera, DrawingByRasterize& arg_rasterize, std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
 
-	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F);
+	void Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<BulletMgr> arg_bulletMgr, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController, std::list<std::shared_ptr<MeshCollision>> f_stageColliders, HPUI& arg_hpUI, bool arg_isTitle, bool arg_is1F, std::weak_ptr<EnemyManager> arg_enemyManager);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
@@ -126,6 +142,7 @@ private:
 
 	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController);
 	void UpdateReload();
+	void UpdateMelee();
 	void Rotate(std::weak_ptr<Camera> arg_camera);
 	void Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
 	float GetMoveSpeed();

@@ -89,10 +89,16 @@ private:
 	static const int c_BulletNumOffsetX = 85;
 	static const int c_BulletNumOffsetY = 30;
 
+	static const int C_magazinSize = 5;
+	static const int C_startBulletCount = 10;
+
 	static int m_magazinSize;
 	static int m_haveBulletNum;
 	static int m_bulletCount;
 	static bool m_isCanShot;
+
+	static int stageStartBullet;
+	static int stageStartMAgazin;
 
 	static int m_haveStone;
 
@@ -111,7 +117,7 @@ private:
 	WeponNumber m_nowWepon;
 
 	SoundData m_changeWeaponSE;
-
+	SoundData m_getBulletSE;
 public:
 
 	WeponUIManager(DrawingByRasterize& arg_rasterize);
@@ -119,9 +125,13 @@ public:
 	void Update(StageManager& f_stageManager, KazMath::Transform3D& f_playerTrans);
 	void Draw(DrawingByRasterize& arg_rasterize);
 	void GetStone(int f_getStone) { m_haveStone += f_getStone; };
-	void GetMagazin(int f_getStone) { m_haveBulletNum += f_getStone; };
+	void GetMagazin(int f_getStone);
 	WeponNumber GetNowWepon() { return m_nowWepon; };
-
+	void ResetBullet();
+	//ステージ切り替わるたび呼ぶ
+	void SetNowBullet();
+	//死んだときに弾を元に戻す
+	void ReCallBullet();
 	//好きなタイミングで武器追加
 	void AddWepon(WeponNumber f_wepon);
 
@@ -339,9 +349,13 @@ public:
 class IntractUI
 {
 	UI2DElement _fKeyTex;
+	UI2DElement _vKeyTex;
 public:
 	static bool isIntract;
 	static bool oldIsIntract;
+
+	static bool isAttackIntract;
+	static bool oldAttackIsIntract;
 	IntractUI(DrawingByRasterize& arg_rasterize);
 	void Init();
 	void Update();

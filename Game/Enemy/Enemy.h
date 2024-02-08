@@ -223,6 +223,10 @@ public:
 
 	bool IsCombat() { return m_state == State::Combat; }
 
+	void Kill();
+	void Damage(int arg_damage);
+	bool IsDead() { return m_hp <= 0; }
+
 	//V‹K
 private:
 	void Move();
