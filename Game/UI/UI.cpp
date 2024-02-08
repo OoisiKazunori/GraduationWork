@@ -1171,11 +1171,14 @@ void DangerUIManager::Draw(DrawingByRasterize& arg_rasterize)
 }
 
 bool IntractUI::isIntract = false;
-
 bool IntractUI::oldIsIntract = false;
 
+bool IntractUI::isAttackIntract = false;
+bool IntractUI::oldAttackIsIntract = false;
+
 IntractUI::IntractUI(DrawingByRasterize& arg_rasterize) :
-	_fKeyTex(arg_rasterize, "Resource/UITexture/F.png")
+	_fKeyTex(arg_rasterize, "Resource/UITexture/F.png"),
+	_vKeyTex(arg_rasterize, "Resource/MenuTex/V.png")
 {
 }
 
@@ -1184,6 +1187,9 @@ void IntractUI::Init()
 	_fKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 25.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 25.0f, 720.0f / 2.0f), 1.0f);
 	_fKeyTex.SetColor(KazMath::Color(255, 255, 255, 0));
 	_fKeyTex.SetAddColor(KazMath::Color(0, 0, 0, 25));
+	_vKeyTex.EasePosInit(KazMath::Vec2<float>(1280.0f / 2.0f + 25.0f, 720.0f / 2.0f), KazMath::Vec2<float>(1280.0f / 2.0f + 25.0f, 720.0f / 2.0f), 1.0f);
+	_vKeyTex.SetColor(KazMath::Color(255, 255, 255, 0));
+	_vKeyTex.SetAddColor(KazMath::Color(0, 0, 0, 25));
 }
 
 void IntractUI::Update()
@@ -1197,13 +1203,31 @@ void IntractUI::Update()
 		_fKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 0));
 	}
 	_fKeyTex.Update();
+
+	if (IntractUI::isAttackIntract)
+	{
+		_vKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 255));
+	}
+	else
+	{
+		_vKeyTex.SetColorEaseEnd(KazMath::Color(255, 255, 255, 0));
+	}
+	_vKeyTex.Update();
 }
 
 void IntractUI::Draw(DrawingByRasterize& arg_rasterize)
 {
-	if (_fKeyTex.m_color.color.a < 30)return;
-	KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 65.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
-	_fKeyTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, _fKeyTex.m_color);
+	if (_fKeyTex.m_color.color.a > 30)
+	{
+		KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 65.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
+		_fKeyTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, _fKeyTex.m_color);
+	}
+
+	if (_vKeyTex.m_color.color.a > 30)
+	{
+		KazMath::Transform2D l_trans = KazMath::Transform2D(KazMath::Vec2<float>(1280.0f / 2.0f + 65.0f, 720.0f / 2.0f), KazMath::Vec2<float>(0.3f, 0.3f));
+		_vKeyTex.m_2DSprite.m_tex.Draw2D(arg_rasterize, l_trans, _vKeyTex.m_color);
+	}
 }
 
 ToDoUI::ToDoList ToDoUI::_nowTask = ToDoList::LookFile;

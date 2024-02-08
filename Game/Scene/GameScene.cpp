@@ -315,6 +315,8 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		if (!m_menu.GetIsMenuOpen() && !m_resultManager.GetResultShow())
 		{
 			m_intractUI.isIntract = false;
+			m_intractUI.isAttackIntract = false;
+
 			m_throwableObjectController->Update(m_player->GetTransform(), m_camera->GetShotQuaternion().GetFront(), m_stageManager.GetColliders());
 
 			m_stageManager.CheckInEcho(m_stageMeshCollision);
@@ -614,7 +616,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 	m_intractUI.Update();
 	m_intractUI.oldIsIntract = m_intractUI.isIntract;
-
+	m_intractUI.oldAttackIsIntract = m_intractUI.isAttackIntract;
 	BGMController::Instance()->Update();
 
 	//全ての敵を走査して、発見状態の敵が居るかどうかでBGMを変える。

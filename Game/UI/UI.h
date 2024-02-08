@@ -349,9 +349,13 @@ public:
 class IntractUI
 {
 	UI2DElement _fKeyTex;
+	UI2DElement _vKeyTex;
 public:
 	static bool isIntract;
 	static bool oldIsIntract;
+
+	static bool isAttackIntract;
+	static bool oldAttackIsIntract;
 	IntractUI(DrawingByRasterize& arg_rasterize);
 	void Init();
 	void Update();
