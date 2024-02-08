@@ -199,6 +199,7 @@ void SceneManager::Update()
 	if (Menu::IsSceneChange())
 	{
 		m_nextSceneNumber = Menu::GetNextSceneName();
+		m_nowSceneNumber = -1;
 	}
 	m_sceneChange->Update();
 	//Scene内での描画情報で生成された場合の生成
