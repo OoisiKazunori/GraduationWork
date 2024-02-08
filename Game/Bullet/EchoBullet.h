@@ -2,6 +2,7 @@
 #include <Render/BasicDraw.h>
 #include "../KazLibrary/Math/KazMath.h"
 #include "../KazLibrary/Sound/SoundManager.h"
+#include "../Game/Effect/HitEffect/BulletHitWallEffect.h"
 
 class MeshCollision;
 
@@ -24,7 +25,7 @@ private:
 	const int DESAPPEAR_TIMER = 60;
 
 	SoundData m_echoSE;
-
+	BulletHitWallEffect m_hitEffectEmitter;
 public:
 
 	EchoBullet(DrawingByRasterize& arg_rasterize);

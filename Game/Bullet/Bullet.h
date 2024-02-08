@@ -1,6 +1,7 @@
 #pragma once
 #include <Render/BasicDraw.h>
 #include "../KazLibrary/Math/KazMath.h"
+#include "../Game/Effect/HitEffect/BulletHitWallEffect.h"
 
 class MeshCollision;
 
@@ -23,6 +24,8 @@ private:
 
 	const float BULLET_SPEED = 20.0f;	//描画にのみ使用する弾の移動速度。当たり判定は射出地点からめっちゃ遠くにレイを飛ばす形式なので、これは使わない。
 	const float BULLET_LENGTH = 20.0f;	//弾の大きさ。描画でのみ使用する。
+
+	BulletHitWallEffect m_hitEffectEmitter;
 
 public:
 

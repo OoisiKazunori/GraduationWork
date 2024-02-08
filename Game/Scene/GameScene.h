@@ -15,6 +15,7 @@
 #include"../Game/Effect/TurretFireEffect.h"
 #include"../Game/Effect/InformEnemy.h"
 #include"../Game/Effect/Smoke/SmokeEmitter.h"
+#include"../Game/Effect/HitEffect/BulletHitWallEffect.h"
 
 class EnemyManager;
 class Player;
@@ -55,6 +56,7 @@ private:
 	SoundData m_keySound;
 	SoundData m_serverErrorSound;
 
+	BulletHitWallEffect m_emitter;
 
 	//ÉJÉÅÉâ--------------------------
 	bool m_debugCameraFlag;

@@ -287,10 +287,7 @@ void GameScene::Input()
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
 	{
-		for (int i = 0; i < m_serverSmokeEmitter.size(); ++i)
-		{
-			m_serverSmokeEmitter[i].Init(m_serverEmittData[i]);
-		}
+		m_emitter.Init({ -195.0f,-43.0f,308.0f });
 	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_3, "rota", "DIK_3"))
 	{
@@ -641,7 +638,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		}
 
 	}
-
+	m_emitter.Update();
 }
 
 
@@ -653,11 +650,12 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_resultManager.Draw(arg_rasterize);
 	}
 
+	m_emitter.Draw(arg_rasterize, arg_blasVec);
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
-	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
-
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
+
+	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
