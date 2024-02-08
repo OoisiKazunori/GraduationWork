@@ -297,7 +297,7 @@ void DrawFuncHelper::ModelRender::Draw(DrawingByRasterize& arg_rasterize, Raytra
 	//ƒŒƒCƒgƒŒ•`‰æ–½—ß
 	for (auto& obj : m_drawCommand.m_raytracingData.m_blas)
 	{
-		arg_blasVec.Add(obj, arg_trasform3D.GetMat());
+		//arg_blasVec.Add(obj, arg_trasform3D.GetMat());
 	}
 }
 
