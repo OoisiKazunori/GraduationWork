@@ -46,7 +46,7 @@ void Menu::Update()
 	else
 	{
 		//メニューのOnOff
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE) && !m_isNowOpen && !m_isNowClose)
 		{
 			//メニューを開き始める
 			if (!m_isMenuOpen)
@@ -300,6 +300,7 @@ void Menu::UpdateClose()
 	if (m_nonSelectBack[(int)MenuOptions::OptionsMax - 1].GetPosEaseTimer() >= 0.999f)
 	{
 		m_isMenuOpen = false;
+		m_isNowClose = false;
 	}
 }
 
