@@ -156,8 +156,9 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 
 	m_changeWeaponSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/ChangeWeapon.wav");
 	m_changeWeaponSE.volume = 0.05f;
-
-
+	m_getBulletSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/UI_Click.wav");
+	m_getBulletSE.volume = 0.08f;
+	
 	m_slash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
 	m_stoneSlash.SetScale(KazMath::Vec2<float>(0.9f, 0.9f));
 
@@ -261,6 +262,12 @@ void WeponUIManager::Init()
 
 
 	EaseInit();
+}
+
+void WeponUIManager::GetMagazin(int f_getStone)
+{
+	m_haveBulletNum += f_getStone;
+	SoundManager::Instance()->SoundPlayerWave(m_getBulletSE, 0);
 }
 
 void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& f_playerTrans)

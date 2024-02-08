@@ -117,7 +117,7 @@ private:
 	WeponNumber m_nowWepon;
 
 	SoundData m_changeWeaponSE;
-
+	SoundData m_getBulletSE;
 public:
 
 	WeponUIManager(DrawingByRasterize& arg_rasterize);
@@ -125,7 +125,7 @@ public:
 	void Update(StageManager& f_stageManager, KazMath::Transform3D& f_playerTrans);
 	void Draw(DrawingByRasterize& arg_rasterize);
 	void GetStone(int f_getStone) { m_haveStone += f_getStone; };
-	void GetMagazin(int f_getStone) { m_haveBulletNum += f_getStone; };
+	void GetMagazin(int f_getStone);
 	WeponNumber GetNowWepon() { return m_nowWepon; };
 	void ResetBullet();
 	//ステージ切り替わるたび呼ぶ
