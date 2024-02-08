@@ -1,16 +1,16 @@
 #include "BasicDraw.h"
 
-DrawFuncData::DrawCallData BasicDraw::SetModel(const std::shared_ptr<ModelInfomation>& arg_modelInfomation)
+DrawFuncData::DrawCallData BasicDraw::SetModel(const std::shared_ptr<ModelInfomation> &arg_modelInfomation)
 {
 	return DrawFuncData::SetDefferdRenderingModelAnimationAppearByEcho(arg_modelInfomation);
 }
 
-DrawFuncData::DrawCallData BasicDraw::SetInstanceModel(const std::shared_ptr<ModelInfomation>& arg_modelInfomation)
+DrawFuncData::DrawCallData BasicDraw::SetInstanceModel(const std::shared_ptr<ModelInfomation> &arg_modelInfomation)
 {
 	return DrawFuncData::SetDefferdRenderingModelAnimationInstance(arg_modelInfomation, false);
 }
 
-DrawFuncData::DrawCallData BasicDraw::SetTex()
+DrawFuncData::DrawCallData BasicDraw::SetTex(bool arg_z)
 {
 	DrawFuncData::PipelineGenerateData lData;
 	lData.desc = DrawFuncPipelineData::SetTex();
@@ -24,24 +24,27 @@ DrawFuncData::DrawCallData BasicDraw::SetTex()
 	{
 		lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
 	}
-
+	if (arg_z)
+	{
+		lData.desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	}
 	return DrawFuncData::SetSpriteAlphaData(lData);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deletePipelineInScene) :
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName, bool arg_deletePipelineInScene) :
 	m_model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_deletePipelineInScene)
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize &arg_rasterize, const std::shared_ptr<ModelInfomation> &arg_modelInfomation, const DrawFuncData::DrawCallData &arg_drawCall, bool arg_deletePipelineInScene)
 {
 	std::shared_ptr<ModelInfomation>model(arg_modelInfomation);
 	m_model.Load(model, arg_drawCall);
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
 }
 
-BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize& arg_rasterize, bool arg_deletePipelineInScene)
+BasicDraw::BasicModelRender::BasicModelRender(DrawingByRasterize &arg_rasterize, bool arg_deletePipelineInScene)
 {
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
 }
@@ -50,21 +53,21 @@ BasicDraw::BasicModelRender::BasicModelRender()
 {
 }
 
-void BasicDraw::BasicModelRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName)
+void BasicDraw::BasicModelRender::Load(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName)
 {
 	std::shared_ptr<ModelInfomation>model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName));
 	m_model.Load(model, BasicDraw::SetModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
-void BasicDraw::BasicModelRender::Load(DrawingByRasterize& arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
+void BasicDraw::BasicModelRender::Load(DrawingByRasterize &arg_rasterize, const std::shared_ptr<ModelInfomation> &arg_modelInfomation, const DrawFuncData::DrawCallData &arg_drawCall)
 {
 	std::shared_ptr<ModelInfomation>model(arg_modelInfomation);
 	m_model.Load(model, arg_drawCall);
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag, bool arg_deletePipelineInScene) :
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize &arg_rasterize, const std::string &arg_filePass, bool arg_isUIFlag, bool arg_deletePipelineInScene) :
 	m_tex(arg_rasterize, arg_filePass, BasicDraw::SetTex(), arg_isUIFlag, arg_deletePipelineInScene)
 {
 	if (!arg_isUIFlag)
@@ -73,7 +76,7 @@ BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_raster
 	}
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, const char* arg_filePass, bool arg_isUIFlag, bool arg_deletePipelineInScene) :
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize &arg_rasterize, const char *arg_filePass, bool arg_isUIFlag, bool arg_deletePipelineInScene) :
 	m_tex(arg_rasterize, arg_filePass, BasicDraw::SetTex(), arg_isUIFlag, arg_deletePipelineInScene)
 {
 	if (!arg_isUIFlag)
@@ -82,7 +85,7 @@ BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_raster
 	}
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene) :m_tex(arg_rasterize, BasicDraw::SetTex(), arg_isUIFlag, arg_deletePipelineInScene)
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize &arg_rasterize, bool arg_isUIFlag, bool arg_deletePipelineInScene) :m_tex(arg_rasterize, BasicDraw::SetTex(), arg_isUIFlag, arg_deletePipelineInScene)
 {
 	if (!arg_isUIFlag)
 	{
@@ -90,7 +93,7 @@ BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_raster
 	}
 }
 
-BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize& arg_rasterize, const DrawFuncData::DrawCallData& arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+BasicDraw::BasicTextureRender::BasicTextureRender(DrawingByRasterize &arg_rasterize, const DrawFuncData::DrawCallData &arg_drawCall, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 	:m_tex(arg_rasterize, arg_drawCall, arg_isUIFlag, arg_deletePipelineInScene)
 {
 	if (!arg_isUIFlag)
@@ -103,7 +106,7 @@ BasicDraw::BasicTextureRender::BasicTextureRender()
 {
 }
 
-void BasicDraw::BasicTextureRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_filePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
+void BasicDraw::BasicTextureRender::Load(DrawingByRasterize &arg_rasterize, const std::string &arg_filePass, bool arg_isUIFlag, bool arg_deletePipelineInScene)
 {
 	m_tex.Load(arg_rasterize, BasicDraw::SetTex(), arg_isUIFlag, arg_deletePipelineInScene);
 	m_tex.m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_filePass);
@@ -113,7 +116,14 @@ void BasicDraw::BasicTextureRender::Load(DrawingByRasterize& arg_rasterize, cons
 	}
 }
 
-BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize& arg_rasterize) :
+void BasicDraw::BasicTextureRender::Load(bool arg_z, DrawingByRasterize &arg_rasterize, const std::string &arg_filePass)
+{
+	m_tex.Load(arg_rasterize, BasicDraw::SetTex(arg_z), false, false);
+	m_tex.m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer(arg_filePass);
+	m_tex.m_drawCommand.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+}
+
+BasicDraw::BasicLineRender::BasicLineRender(DrawingByRasterize &arg_rasterize) :
 	m_render(arg_rasterize, DrawFuncData::SetLine(DrawFuncData::GetBasicGBufferShader()))
 {
 }
@@ -122,12 +132,12 @@ BasicDraw::BasicLineRender::BasicLineRender()
 {
 }
 
-void BasicDraw::BasicLineRender::Generate(DrawingByRasterize& arg_rasterize)
+void BasicDraw::BasicLineRender::Generate(DrawingByRasterize &arg_rasterize)
 {
 	m_render.Generate(arg_rasterize, DrawFuncData::SetLine(DrawFuncData::GetBasicGBufferShader()));
 }
 
-BasicDraw::SilhouetteModelRender::SilhouetteModelRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deletePipelineInScene)
+BasicDraw::SilhouetteModelRender::SilhouetteModelRender(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName, bool arg_deletePipelineInScene)
 	: m_modelSilhouette(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
 	m_modelSilhouette.m_drawCommandData = arg_rasterize.SetPipeline(m_modelSilhouette.m_drawCommand, arg_deletePipelineInScene);
@@ -137,14 +147,14 @@ BasicDraw::SilhouetteModelRender::SilhouetteModelRender()
 {
 }
 
-void BasicDraw::SilhouetteModelRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName)
+void BasicDraw::SilhouetteModelRender::Load(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName)
 {
 	std::shared_ptr<ModelInfomation>model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName));
 	m_modelSilhouette.Load(model, DrawFuncData::SetDefferdRenderingModelAnimationOutline(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
 	m_modelSilhouette.m_drawCommandData = arg_rasterize.SetPipeline(m_modelSilhouette.m_drawCommand);
 }
 
-void BasicDraw::SilhouetteModelRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec, KazMath::Transform3D& arg_trasform3D, const KazMath::Color& arg_addColor, float arg_timeScale)
+void BasicDraw::SilhouetteModelRender::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVec, KazMath::Transform3D &arg_trasform3D, const KazMath::Color &arg_addColor, float arg_timeScale)
 {
 	m_modelSilhouette.m_drawCommand.extraBufferArray[4] = GBufferMgr::Instance()->GetEyePosBuffer();
 	m_modelSilhouette.m_drawCommand.extraBufferArray[4].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
@@ -153,7 +163,7 @@ void BasicDraw::SilhouetteModelRender::Draw(DrawingByRasterize& arg_rasterize, R
 	//m_model.Draw(arg_rasterize, arg_blasVec, arg_trasform3D);
 }
 
-BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName, bool arg_deletePipelineInScene)
+BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName, bool arg_deletePipelineInScene)
 	:m_model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName), BasicDraw::SetInstanceModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)))
 {
 	m_model.m_drawCommand.drawIndexInstanceCommandData.drawIndexInstancedData.instanceCount = 10000;
@@ -161,7 +171,7 @@ BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize
 }
 
 
-BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize& arg_rasterize, bool arg_deletePipelineInScene)
+BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender(DrawingByRasterize &arg_rasterize, bool arg_deletePipelineInScene)
 {
 	m_model.m_drawCommand.drawIndexInstanceCommandData.drawIndexInstancedData.instanceCount = 10000;
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand, arg_deletePipelineInScene);
@@ -171,7 +181,7 @@ BasicDraw::BasicModelInstanceRender::BasicModelInstanceRender()
 {
 }
 
-void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize& arg_rasterize, const std::string& arg_fileDir, const std::string& arg_fileName)
+void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize &arg_rasterize, const std::string &arg_fileDir, const std::string &arg_fileName)
 {
 	std::shared_ptr<ModelInfomation>model(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName));
 	m_model.Load(model, BasicDraw::SetInstanceModel(ModelLoader::Instance()->Load(arg_fileDir, arg_fileName)));
@@ -179,7 +189,7 @@ void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize& arg_rasterize
 	m_model.m_drawCommandData = arg_rasterize.SetPipeline(m_model.m_drawCommand);
 }
 
-void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize& arg_rasterize, const std::shared_ptr<ModelInfomation>& arg_modelInfomation, const DrawFuncData::DrawCallData& arg_drawCall)
+void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize &arg_rasterize, const std::shared_ptr<ModelInfomation> &arg_modelInfomation, const DrawFuncData::DrawCallData &arg_drawCall)
 {
 	std::shared_ptr<ModelInfomation>model(arg_modelInfomation);
 	m_model.Load(model, arg_drawCall);
@@ -190,7 +200,7 @@ void BasicDraw::BasicModelInstanceRender::Load(DrawingByRasterize& arg_rasterize
 void BasicDraw::BasicModelInstanceRender::UploadTransformMatrix(std::vector<KazMath::Transform3D> arg_transform)
 {
 	std::vector<DirectX::XMMATRIX>matrixArray;
-	for (auto& obj : arg_transform)
+	for (auto &obj : arg_transform)
 	{
 		matrixArray.emplace_back(obj.GetMat());
 	}
@@ -206,7 +216,7 @@ void BasicDraw::BasicModelInstanceRender::UploadTransformMatrix(std::vector<KazM
 void BasicDraw::BasicModelInstanceRender::UploadColor(std::vector<KazMath::Color> arg_color)
 {
 	std::vector<DirectX::XMFLOAT4>colorArray;
-	for (auto& obj : arg_color)
+	for (auto &obj : arg_color)
 	{
 		colorArray.emplace_back(obj.ConvertColorRateToXMFLOAT4());
 	}
@@ -214,7 +224,7 @@ void BasicDraw::BasicModelInstanceRender::UploadColor(std::vector<KazMath::Color
 	m_vramColorBuffer.bufferWrapper->CopyBuffer(m_uploadColorBuffer.bufferWrapper);
 }
 
-void BasicDraw::BasicModelInstanceRender::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blas)
+void BasicDraw::BasicModelInstanceRender::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blas)
 {
 	m_compute.Compute({ m_dispatchNum,1,1 });
 	m_model.Draw(arg_rasterize, arg_blas, KazMath::Transform3D());

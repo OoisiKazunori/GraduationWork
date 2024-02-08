@@ -127,6 +127,7 @@
     <ClCompile Include="Game\Effect\BulletFireParticle.cpp" />
     <ClCompile Include="Game\Effect\EchoEdge\EchoEdge.cpp" />
     <ClCompile Include="Game\Effect\HitEffect\BulletHitWallEffect.cpp" />
+    <ClCompile Include="Game\Effect\HitEffect\HitCircle.cpp" />
     <ClCompile Include="Game\Effect\HitEffect\HitWallParticle.cpp" />
     <ClCompile Include="Game\Effect\InformEnemy.cpp" />
     <ClCompile Include="Game\Effect\MuzzleFlash.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Game\Effect\BulletFireParticle.h" />
     <ClInclude Include="Game\Effect\EchoEdge\EchoEdge.h" />
     <ClInclude Include="Game\Effect\HitEffect\BulletHitWallEffect.h" />
+    <ClInclude Include="Game\Effect\HitEffect\HitCircle.h" />
     <ClInclude Include="Game\Effect\HitEffect\HitWallParticle.h" />
     <ClInclude Include="Game\Effect\InformEnemy.h" />
     <ClInclude Include="Game\Effect\MuzzleFlash.h" />

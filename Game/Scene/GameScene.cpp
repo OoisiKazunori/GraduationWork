@@ -646,9 +646,9 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_emitter.Draw(arg_rasterize, arg_blasVec);
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
-	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
-
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
+
+	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
 
