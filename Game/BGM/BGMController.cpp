@@ -14,7 +14,7 @@ void BGMController::Setting()
 		index.m_soundData.source->Stop();
 	}
 
-	m_isTermination = false;
+	m_isTermination = true;
 
 }
 
