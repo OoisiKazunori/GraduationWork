@@ -101,7 +101,18 @@ private:
 
 	bool m_isDebug = false;	//•Ç“Ë‚«”²‚¯‚‘¬ˆÚ“®‚·‚é‚â‚ÂB
 
-
+	//‹ßÚUŒ‚‚ÉŠÖ‚·‚é•Ï”
+	enum class MELEE_MOTION {
+		PHASE_1,
+		PHASE_2,
+		PHASE_3,
+	}m_meleeMotionPhase;
+	bool m_isMeleeMotionNow;		//‹ßÚUŒ‚’†
+	KazMath::Transform3D m_meleeMotionTransform;
+	float m_meleeTimer;
+	const float MELEE_PHASE1 = 3.0f;
+	const float MELEE_PHASE2 = 20.0f;
+	const float MELEE_PHASE3 = 15.0f;
 
 
 public:
@@ -126,6 +137,7 @@ private:
 
 	void Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> arg_bulletMgr, WeponUIManager::WeponNumber arg_weaponNumber, std::weak_ptr<ThrowableObjectController> arg_throwableObjectController);
 	void UpdateReload();
+	void UpdateMelee();
 	void Rotate(std::weak_ptr<Camera> arg_camera);
 	void Collision(std::list<std::shared_ptr<MeshCollision>> f_stageColliders);
 	float GetMoveSpeed();

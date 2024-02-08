@@ -69,6 +69,7 @@ void Player::Init()
 	m_footprintSide = false;
 	m_isReloadMotionNow = false;
 	m_inRoom = false;
+	m_isMeleeMotionNow = false;
 
 }
 
@@ -202,7 +203,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	m_weaponTransform.pos += baseWeaponOffsetPos;
 	m_weaponTransform.pos += m_gunReaction;
 	m_weaponTransform.pos += m_reloadMotionTransform.pos;
+	m_weaponTransform.pos += m_meleeMotionTransform.pos;
 	m_weaponTransform.quaternion = DirectX::XMQuaternionMultiply(m_weaponTransform.quaternion, m_reloadMotionTransform.quaternion);
+	m_weaponTransform.quaternion = DirectX::XMQuaternionMultiply(m_weaponTransform.quaternion, m_meleeMotionTransform.quaternion);
 
 	//マガジンの位置も決める。
 	m_magTransform = m_weaponTransform;
@@ -251,6 +254,9 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 	//リロードの更新処理
 	UpdateReload();
+
+	//近接攻撃の更新処理
+	UpdateMelee();
 
 	//室内か外かを判断する。
 	if (arg_is1F && KazMath::Vec3<float>(BGM_OUTDOOR_POS - m_transform.pos).Length() <= BGM_CHANGE_SPHERE_RADIUS) {
@@ -400,6 +406,13 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 			m_reloadMotionTimer = 0;
 
 			//WeponUIManager::Reload();
+		}
+
+		//マウスホイールを押されたら近接攻撃。
+		if (KeyBoradInputManager::Instance()->MouseInputTrigger(MouseInputNumber::MOUSE_INPUT_MIDDLE) && !m_isMeleeMotionNow) {
+			m_isMeleeMotionNow = true;
+			m_meleeMotionPhase = MELEE_MOTION::PHASE_1;
+			m_meleeTimer = 0.0f;
 		}
 
 
@@ -556,6 +569,75 @@ void Player::UpdateReload()
 			m_isReloadMotionNow = false;
 
 		}
+		break;
+	default:
+		break;
+	}
+
+}
+
+void Player::UpdateMelee()
+{
+
+	if (!m_isMeleeMotionNow) return;
+
+	const float FORWARD = 1.5f;
+
+	switch (m_meleeMotionPhase)
+	{
+	case Player::MELEE_MOTION::PHASE_1:
+	{
+
+		m_meleeTimer = std::clamp(m_meleeTimer + 1.0f, 0.0f, MELEE_PHASE1);
+
+		float easingAmount = EasingMaker(In, Exp, m_meleeTimer / MELEE_PHASE1);
+		m_meleeMotionTransform.pos = KazMath::Vec3<float>();
+		m_meleeMotionTransform.pos = m_transform.GetFront() * (easingAmount * FORWARD);
+
+		m_meleeMotionTransform.quaternion = DirectX::XMQuaternionIdentity();
+		m_meleeMotionTransform.Rotation(m_transform.GetRight(), (- DirectX::XM_PI * 0.25f) * easingAmount);
+		m_meleeMotionTransform.Rotation(m_transform.GetFront(), (DirectX::XM_PI * 0.1f) * easingAmount);
+
+		if (MELEE_PHASE1 <= m_meleeTimer) {
+			m_meleeTimer = 0.0f;
+			m_meleeMotionPhase = MELEE_MOTION::PHASE_2;
+		}
+
+	}
+	break;
+	case Player::MELEE_MOTION::PHASE_2:
+	{
+		m_meleeTimer = std::clamp(m_meleeTimer + 1.0f, 0.0f, MELEE_PHASE2);
+
+		float easingAmount = EasingMaker(In, Sine, m_meleeTimer / MELEE_PHASE2);
+		m_meleeMotionTransform.pos = m_transform.GetFront() * FORWARD;
+
+		if (MELEE_PHASE2 <= m_meleeTimer) {
+			m_meleeTimer = 0.0f;
+			m_meleeMotionPhase = MELEE_MOTION::PHASE_3;
+		}
+	}
+	break;
+	case Player::MELEE_MOTION::PHASE_3:
+	{
+		m_meleeTimer = std::clamp(m_meleeTimer + 1.0f, 0.0f, MELEE_PHASE3);
+
+		float easingAmount = EasingMaker(In, Sine, m_meleeTimer / MELEE_PHASE3);
+		m_meleeMotionTransform.pos = m_transform.GetFront() * FORWARD;
+		m_meleeMotionTransform.pos -= m_transform.GetFront() * (easingAmount * FORWARD);
+
+		m_meleeMotionTransform.quaternion = DirectX::XMQuaternionIdentity();
+		m_meleeMotionTransform.Rotation(m_transform.GetRight(), (-DirectX::XM_PI * 0.25f));
+		m_meleeMotionTransform.Rotation(m_transform.GetFront(), (DirectX::XM_PI * 0.1f));
+		m_meleeMotionTransform.Rotation(m_transform.GetRight(), (DirectX::XM_PI * 0.25f) * easingAmount);
+		m_meleeMotionTransform.Rotation(m_transform.GetFront(), (-DirectX::XM_PI * 0.1f) * easingAmount);
+
+		if (MELEE_PHASE3 <= m_meleeTimer) {
+			m_meleeTimer = 0.0f;
+			m_isMeleeMotionNow = false;
+			m_meleeMotionTransform.quaternion = DirectX::XMQuaternionIdentity();
+		}
+	}
 		break;
 	default:
 		break;
