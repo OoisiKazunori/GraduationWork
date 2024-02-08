@@ -132,6 +132,7 @@
     <ClCompile Include="Game\Effect\Smoke\SmokeEmitter.cpp" />
     <ClCompile Include="Game\Effect\Smoke\SmokeParticle.cpp" />
     <ClCompile Include="Game\BGM\BGMController.cpp" />
+    <ClCompile Include="Game\Effect\EchoEdge\EchoEdge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="Game\Effect\Smoke\SmokeEmitter.h" />
     <ClInclude Include="Game\Effect\Smoke\SmokeParticle.h" />
     <ClInclude Include="Game\BGM\BGMController.h" />
+    <ClInclude Include="Game\Effect\EchoEdge\EchoEdge.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

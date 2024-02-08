@@ -1,6 +1,9 @@
 #include "DrawingByRasterize.h"
 #include"../KazLibrary/DirectXCommon/DirectX12CmdList.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
+#include<iostream>
+#include<algorithm>
+#include<vector>
 
 //テスト用、パイプラインのハンドル順にソートをかける
 int int_cmpr(const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
@@ -244,24 +247,27 @@ void DrawingByRasterize::ReleasePipelineInScene()
 
 void DrawingByRasterize::ObjectRender(const DrawFuncData::DrawData* arg_drawData)
 {
-	m_stackDataArray.emplace_back(arg_drawData);
+	m_stackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
 }
 
 void DrawingByRasterize::UIRender(const DrawFuncData::DrawData* arg_drawData)
 {
-	m_uiStackDataArray.emplace_back(arg_drawData);
+	m_uiStackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
 }
 
 void DrawingByRasterize::StaticUIRender(const DrawFuncData::DrawData* arg_drawData)
 {
-	m_staticUiStackDataArray.emplace_back(arg_drawData);
+	m_staticUiStackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
 }
 
 void DrawingByRasterize::SortAndRender()
 {
 	//ソート処理
 	//レンダーターゲット順にソートをかける。
-	m_stackDataArray.sort([](const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
+	std::sort(
+		m_stackDataArray.begin(),
+		m_stackDataArray.end(),
+		[](const std::shared_ptr<DrawFuncData::DrawData> &a, const std::shared_ptr<DrawFuncData::DrawData> &b)
 		{
 			RESOURCE_HANDLE aHandle = a->renderTargetHandle, bHandle = b->renderTargetHandle;
 			if (aHandle < bHandle)
@@ -285,11 +291,15 @@ void DrawingByRasterize::SortAndRender()
 	DrawCall(m_stackDataArray);
 
 	m_stackDataArray.clear();
+	m_stackDataArray.shrink_to_fit();
 }
 
 void DrawingByRasterize::UISortAndRender()
 {
-	m_uiStackDataArray.sort([](const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
+	std::sort(
+		m_uiStackDataArray.begin(),
+		m_uiStackDataArray.end(),
+		[](const std::shared_ptr<DrawFuncData::DrawData>& a, const std::shared_ptr<DrawFuncData::DrawData>& b)
 		{
 			RESOURCE_HANDLE aHandle = a->renderTargetHandle, bHandle = b->renderTargetHandle;
 			if (aHandle < bHandle)
@@ -309,11 +319,15 @@ void DrawingByRasterize::UISortAndRender()
 	DrawCall(m_uiStackDataArray);
 
 	m_uiStackDataArray.clear();
+	m_uiStackDataArray.shrink_to_fit();
 }
 
 void DrawingByRasterize::StaticSortAndRender()
 {
-	m_staticUiStackDataArray.sort([](const DrawFuncData::DrawData* a, const DrawFuncData::DrawData* b)
+	std::sort(
+		m_staticUiStackDataArray.begin(),
+		m_staticUiStackDataArray.end(),
+		[](const std::shared_ptr<DrawFuncData::DrawData>& a, const std::shared_ptr<DrawFuncData::DrawData>& b)
 		{
 			RESOURCE_HANDLE aHandle = a->renderTargetHandle, bHandle = b->renderTargetHandle;
 			if (aHandle < bHandle)
@@ -410,6 +424,7 @@ void DrawingByRasterize::StaticSortAndRender()
 	}
 
 	m_staticUiStackDataArray.clear();
+	m_staticUiStackDataArray.shrink_to_fit();
 }
 
 const DrawFuncData::DrawData* DrawingByRasterize::GenerateSceneChangePipeline(DrawFuncData::DrawCallData* arg_drawCall)
@@ -718,7 +733,7 @@ std::string DrawingByRasterize::ErrorMail(const std::source_location& DRAW_SOURC
 	return lFileNameString + "ファイルの" + lFunctionString + "関数の" + lLine + "行目の" + lColumn + "文字目に書かれている描画クラスで生成された情報に問題があります";
 }
 
-void DrawingByRasterize::DrawCall(const std::list<const DrawFuncData::DrawData*> arg_drawCall)
+void DrawingByRasterize::DrawCall(const std::vector<std::shared_ptr<DrawFuncData::DrawData>> arg_drawCall)
 {
 	RESOURCE_HANDLE preRenderTargetHandle = -1;
 	RESOURCE_HANDLE preDepthHandle = -1;

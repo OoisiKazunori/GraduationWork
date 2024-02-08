@@ -208,9 +208,7 @@ void SceneManager::Update()
 	}
 
 	//シーンが切り替わった最初のフレームのみ更新する。
-	if (!m_firstFlameFlag){
-		m_blasVector.Update();
-	}
+	m_blasVector.Update();
 
 	//fpsを制限(今回は60fps)
 	FpsManager::RegulateFps(60);

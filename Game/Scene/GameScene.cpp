@@ -650,11 +650,9 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_bulletMgr->Draw(arg_rasterize, arg_blasVec);
 
-	//ここにあるのはデラが描画したい者たち
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
-
 
 	for (auto& obj : m_serverSmokeEmitter)
 	{
@@ -680,28 +678,22 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	}
 
 
-	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
-
 	if (m_isTitle)
 	{
 		m_titleTrans.pos = { 1280.0f / 2.0f,720.0f / 2.0f - 200.0f };
 		//m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
 	}
 	m_turret.Draw(arg_rasterize, arg_blasVec);
-	m_axis.m_model.Draw(arg_rasterize, arg_blasVec, m_axixTransform);
-
+	
 	if (0 < m_titleLogoDrawTimer)
 	{
-
 		m_titleLogoModel.m_model.DrawRasterize(arg_rasterize, m_titleLogoTransform);
 		m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
-		
 	}
-
+	
 	//m_goalPoint.Draw(arg_rasterize);
 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
-
 	//m_menu.Draw(arg_rasterize);
 	//m_menu.Draw(arg_rasterize);
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, KazMath::Color(255, 0, 0, 255));

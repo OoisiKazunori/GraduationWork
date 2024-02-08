@@ -181,7 +181,7 @@ void StageManager::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVecto
 	{
 		(*l_cylinderItr)->Draw(arg_rasterize, arg_blasVec);
 	}
-
+	
 	for (auto itr = m_plane.begin(); itr != m_plane.end(); itr++)
 	{
 		(*itr)->Draw(arg_rasterize, arg_blasVec);
