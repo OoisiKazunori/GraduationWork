@@ -192,6 +192,8 @@ void Enemy::Init(
 		m_sounds[Sounds::Turret_SE_2],
 		XAUDIO2_LOOP_INFINITE);
 	m_isSounds[Sounds::Turret_SE_2] = true;
+
+	m_inform.Init();
 }
 
 void Enemy::Update(
@@ -213,6 +215,9 @@ void Enemy::Update(
 		m_edgeColor.color.x += static_cast<int>((DEAD_COLOR.color.x - m_edgeColor.color.x) / 10.0f);
 		m_edgeColor.color.y += static_cast<int>((DEAD_COLOR.color.y - m_edgeColor.color.y) / 10.0f);
 		m_edgeColor.color.z += static_cast<int>((DEAD_COLOR.color.z - m_edgeColor.color.z) / 10.0f);
+
+
+		m_inform.Update(m_trans.pos, arg_playerTransform, false);
 
 		return;
 	}

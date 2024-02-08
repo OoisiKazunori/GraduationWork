@@ -6,6 +6,11 @@ InformEnemy::InformEnemy()
 {
 }
 
+void InformEnemy::Init()
+{
+	m_alpha = 0;
+}
+
 void InformEnemy::Load(DrawingByRasterize& arg_rasterize)
 {
 	m_circle.m_tex.Load(arg_rasterize, "Resource/Inform/Ring.png", true);

@@ -19,8 +19,8 @@ private:
 	bool m_isPredictedObject;
 
 	SoundData m_objectSE;
-	const float DEFAULT_SE_VOLUME = 0.05f;
-	const float SOUND_RANGE = 200.0f;	//‰¹‚Ì•·‚±‚¦‚é”ÍˆÍB
+	const float DEFAULT_SE_VOLUME = 0.1f;
+	const float SOUND_RANGE = 400.0f;	//‰¹‚Ì•·‚±‚¦‚é”ÍˆÍB
 
 	//‰¼’u‚«•Ï”
 	int m_exitTimer;
