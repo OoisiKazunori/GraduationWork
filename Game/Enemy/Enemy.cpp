@@ -191,6 +191,7 @@ void Enemy::Init(
 	SoundManager::Instance()->SoundPlayerWave(
 		m_sounds[Sounds::Turret_SE_2],
 		XAUDIO2_LOOP_INFINITE);
+	m_sounds[Sounds::Turret_SE_2].source->SetVolume(0.0f);
 	m_isSounds[Sounds::Turret_SE_2] = true;
 }
 
