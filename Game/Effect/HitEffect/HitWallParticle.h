@@ -11,7 +11,7 @@ public:
 	HitWallParticle();
 
 	void Load(DrawingByRasterize& arg_rasterize);
-	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_vel, float arg_fallSpeed = 0.01f);
+	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>& arg_vel,float arg_radian, float arg_fallSpeed = 0.01f);
 	void Finalize();
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
@@ -21,29 +21,11 @@ private:
 	KazMath::Vec3<float>m_vel;
 	float m_fallSpeed;
 	bool m_activeFlag;
-	//パーティクルの軌跡
-	class Particle
-	{
-	public:
-		Particle();
 
-		void Load(DrawingByRasterize& arg_rasterize);
-		void Init(const KazMath::Vec3<float>& arg_pos);
-		void Finalize();
-		void Update();
-		void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
+	KazMath::Transform3D m_transform;
+	KazMath::Transform3D m_lerpTransform;
+	BasicDraw::BasicTextureRender m_render;
+	KazMath::Timer m_time;
 
-		bool IsActive();
-
-	private:
-		KazMath::Transform3D m_transform;
-		KazMath::Transform3D m_lerpTransform;
-		BasicDraw::BasicTextureRender m_render;
-		bool m_activeFlag;
-		KazMath::Timer m_time;
-	};
-	std::array<Particle, 15> m_particle;
-
-	int m_emitterTime;
 };
 

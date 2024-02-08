@@ -15,23 +15,17 @@ void BulletHitWallEffect::Load(DrawingByRasterize& arg_rasterize)
 void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos)
 {
 	std::vector<KazMath::Vec3<float>>v;
+	std::vector<float>vRadian;
 	int angle = 0;
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(0)), KazMath::AngleToRadian(0), 1.0f));
-	//v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian(360)), KazMath::AngleToRadian(360), 1.0f));
 
 	const int size = static_cast<int>(m_particle.size());
 	for (int i = 0; i < m_particle.size(); ++i)
 	{
-		int offset = KazMath::Rand<int>(10, -10);
-		v.emplace_back(KazMath::Vec3<float>(cosf(KazMath::AngleToRadian((i + offset) * (360 / size))), sinf(KazMath::AngleToRadian((i + offset) * (360 / size))), KazMath::Rand<float>(1.0f, 0.0f)));
+		int offset = 0;
+		const int angle = 90;
+		float radian = -KazMath::AngleToRadian(40 + (i + offset) * (angle / size));
+		v.emplace_back(KazMath::Vec3<float>(cosf(radian), sinf(radian), KazMath::Rand<float>(1.0f, 0.0f)));
+		vRadian.emplace_back(radian);
 	}
 
 	int i = 0;
@@ -41,7 +35,8 @@ void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos)
 		//デバック用に一個しか出さない
 		obj.Init(arg_pos,
 			v[i],
-			KazMath::Rand(0.01f, 0.0001f)
+			vRadian[i],
+			KazMath::Rand(1.0f, 0.1f)
 		);
 		++i;
 	}
