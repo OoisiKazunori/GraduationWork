@@ -9,6 +9,7 @@ class MeshCollision;
 class BulletMgr;
 class Camera;
 class ThrowableObjectController;
+class Enemy;
 
 class Player {
 
@@ -25,6 +26,8 @@ private:
 	KazMath::Vec3<float> m_weaponPosOffset;		//銃のモデルを配置するオフセット。ADSしている位置を基準としてADSしていない位置にずらしたりするときに使用する。
 	KazMath::Vec3<float> m_gunReaction;
 	const float GUN_REACTION = 0.25f;
+
+	std::weak_ptr<Enemy> m_meleeEnemy;
 
 	bool m_onGround;
 	bool m_isADS;		//銃を構えている状態か？

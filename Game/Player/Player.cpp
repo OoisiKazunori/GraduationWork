@@ -222,7 +222,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 	//心音のタイマー
 	m_heatbeatTimer += 1.0f * StopMgr::Instance()->GetGameSpeed();
 	float heartBeatTimer = HEARTBEAT_TIMER;
-	float heartBeatRange = 40.0f;
+	float heartBeatRange = 30.0f;
 	if (m_isFoundToEnemy) {
 		heartBeatTimer = HEARTBEAT_TIMER_FOUND;
 		heartBeatRange = 90.0f;
@@ -301,9 +301,17 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 		IntractUI::isAttackIntract = true;
 
-		if (m_isMeleeTrigger) {
-			index->Damage(1);
+		m_isMeleeTrigger = false;
+		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_V) && !m_isMeleeMotionNow) {
+			m_isMeleeMotionNow = true;
+			m_isMeleeTrigger = true;
+			m_meleeMotionPhase = MELEE_MOTION::PHASE_1;
+			m_meleeTimer = 0.0f;
+
+			m_meleeEnemy = index;
+			break;
 		}
+
 
 	}
 
@@ -425,13 +433,7 @@ void Player::Input(std::weak_ptr<Camera> arg_camera, std::weak_ptr<BulletMgr> ar
 			//WeponUIManager::Reload();
 		}
 
-		m_isMeleeTrigger = false;
-		if (KeyBoradInputManager::Instance()->InputTrigger(DIK_V) && !m_isMeleeMotionNow) {
-			m_isMeleeMotionNow = true;
-			m_isMeleeTrigger = true;
-			m_meleeMotionPhase = MELEE_MOTION::PHASE_1;
-			m_meleeTimer = 0.0f;
-		}
+
 
 
 		break;
@@ -619,6 +621,7 @@ void Player::UpdateMelee()
 		if (MELEE_PHASE1 <= m_meleeTimer) {
 			m_meleeTimer = 0.0f;
 			m_meleeMotionPhase = MELEE_MOTION::PHASE_2;
+			m_meleeEnemy.lock()->Damage(1);
 		}
 
 	}

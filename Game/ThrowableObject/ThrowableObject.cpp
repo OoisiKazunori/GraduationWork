@@ -74,7 +74,7 @@ void ThrowableObject::Update(std::list<std::shared_ptr<MeshCollision>> f_stageCo
 			MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos, KazMath::Vec3<float>(m_transform.pos - prevPos).GetNormal());
 			if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= KazMath::Vec3<float>(m_transform.pos - prevPos).Length()) {
 
-				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::WHITE);
+				EchoArray::Instance()->Generate(m_transform.pos, 15.0f, Echo::COLOR::WHITE);
 				Init();
 
 
