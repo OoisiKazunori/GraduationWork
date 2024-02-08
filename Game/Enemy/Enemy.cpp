@@ -42,6 +42,8 @@ Enemy::Enemy()
 	m_checkEyeDelay = 0.0f;
 	m_distRate = 1.0f;
 	m_isGunEffect = false;
+	m_isHit = false;
+	m_isRotate = false;
 
 	//音
 	m_sounds[0] = SoundManager::Instance()->
@@ -75,26 +77,25 @@ Enemy::~Enemy()
 void Enemy::SetData(
 	DrawingByRasterize& arg_rasterize)
 {
-	if (m_positions.size() > 1)
+	//モデルデータ代入
+	m_enemyBox =
+		std::make_unique<BasicDraw::BasicModelRender>(
+			arg_rasterize,
+			"Resource/Enemy/",
+			"Gun.gltf"
+		);
+
+	if (!IsFixedTurret())
 	{
-		//モデルデータ代入
-		m_enemyBox =
+		m_pedestal =
 			std::make_unique<BasicDraw::BasicModelRender>(
 				arg_rasterize,
 				"Resource/Enemy/",
-				"Move_Turret.gltf"
+				"Move_Pedestal.gltf"
 			);
 	}
 	else
 	{
-		//モデルデータ代入
-		m_enemyBox =
-			std::make_unique<BasicDraw::BasicModelRender>(
-				arg_rasterize,
-				"Resource/Enemy/",
-				"Gun.gltf"
-			);
-
 		m_pedestal =
 			std::make_unique<BasicDraw::BasicModelRender>(
 				arg_rasterize,
@@ -149,6 +150,8 @@ void Enemy::Init(
 		break;
 	}
 	CalcMoveVec();
+	m_trans.quaternion =
+		CalMoveQuaternion(m_nextPos, m_trans.pos);
 
 	m_state = State::Patrol;
 	m_delayNum = 0;
@@ -187,6 +190,8 @@ void Enemy::Init(
 	m_checkEyeDelay = 0.0f;
 	m_distRate = 1.0f;
 	m_isGunEffect = false;
+	m_isHit = false;
+	m_isRotate = false;
 
 	SoundManager::Instance()->SoundPlayerWave(
 		m_sounds[Sounds::Turret_SE_2],
@@ -267,6 +272,7 @@ void Enemy::Update(
 	{
 		m_checkEyeDelay += 1.0f;
 		m_isInSightFlag = true;
+		m_isRotate = true;
 
 		RotateEye(arg_playerTransform.pos);
 		if (!m_isSounds[Sounds::Turret_SE_3]) {
@@ -334,16 +340,8 @@ void Enemy::Update(
 		Combat(arg_bulletMgr, arg_playerTransform.pos);
 	}
 
-	//移動方向を向く(移動タレット限定)
-	if (!IsFixedTurret()) {
-		if (m_trans.pos != m_prevPos) {
-			DirectX::XMVECTOR l_quaternion =
-				CalMoveQuaternion(m_trans.pos, m_prevPos);
-			m_trans.quaternion = l_quaternion;
-		}
-	}
-
 	m_oldPos = m_trans.pos;
+	m_pedestalTrans = m_trans;
 
 	//判定(メッシュ)
 	Collision(arg_stageColliders, arg_bulletMgr);
@@ -457,16 +455,15 @@ void Enemy::Draw(
 		arg_rasterize,
 		m_trans, m_edgeColor);
 
-	if (IsFixedTurret())
-	{
-		KazMath::Transform3D l_trans;
-		l_trans.scale = m_trans.scale;
-		l_trans.pos = m_trans.pos;
-
-		m_pedestal->m_model.DrawRasterize(
-			arg_rasterize,
-			l_trans, m_edgeColor);
+	KazMath::Transform3D l_trans;
+	l_trans.scale = m_trans.scale;
+	l_trans.pos = m_trans.pos;
+	if (!IsFixedTurret()) {
+		l_trans.quaternion = m_pedestalTrans.quaternion;
 	}
+	m_pedestal->m_model.DrawRasterize(
+		arg_rasterize,
+		l_trans, m_edgeColor);
 
 	m_inform.Draw(arg_rasterize, arg_blasVec);
 	m_gunEffect->Draw(arg_rasterize, arg_blasVec);
@@ -488,7 +485,7 @@ void Enemy::Draw(
 	}
 
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0], m_lineOfSightPos[1], KazMath::Color(172, 50, 50, 255));
-}
+	}
 
 bool Enemy::IsInSight(
 	KazMath::Vec3<float>& arg_playerPos,
@@ -528,6 +525,12 @@ void Enemy::Kill()
 
 void Enemy::StelsDamage(int arg_damage)
 {
+	if (!m_isSounds[Sounds::Turret_SE_3]) {
+		SoundManager::Instance()->SoundPlayerWave(
+			m_sounds[Sounds::Turret_SE_3],
+			XAUDIO2_LOOP_INFINITE);
+		m_isSounds[Sounds::Turret_SE_3] = true;
+	}
 	m_state = State::Combat;
 
 	m_hp = std::clamp(m_hp - arg_damage, 0, 1000);
@@ -651,6 +654,7 @@ void Enemy::Patrol()
 	{
 		m_delay++;
 		RotateEye(m_nextPos);
+		m_stelsKillFlag = false;
 
 		if (m_delay ==
 			CHECK_POINT_DELAY)
@@ -663,7 +667,12 @@ void Enemy::Patrol()
 	//通常
 	else
 	{
-		Move();
+		if (m_isRotate) {
+			m_isRotate = RotateEye(m_nextPos);
+		}
+		else {
+			Move();
+		}
 	}
 }
 
@@ -673,6 +682,8 @@ void Enemy::Combat(
 {
 	//プレイヤー方向(撃たないけど見続ける)
 	RotateEye(arg_playerPos);
+	m_stelsKillFlag = true;
+	m_isRotate = true;
 
 	if (!m_isInSightFlag)
 	{
@@ -681,6 +692,8 @@ void Enemy::Combat(
 		{
 			m_state = State::Patrol;
 			m_rate = MAX_RATE;
+			m_isHit = false;
+			m_stelsKillFlag = false;
 		}
 
 		//音
@@ -693,6 +706,12 @@ void Enemy::Combat(
 		m_rate = MAX_RATE;
 		m_shotDelay++;
 
+		if (m_isHit) {
+			m_isCombat = true;
+			m_isHit = false;
+		}
+
+		//射撃演出
 		if (!m_isGunEffect) {
 			m_gunEffect->Init(
 				&m_firePos,
@@ -701,6 +720,7 @@ void Enemy::Combat(
 			m_isGunEffect = true;
 		}
 
+		//音
 		if (!m_isSounds[Sounds::Turret_SE_1]) {
 			SoundManager::Instance()->SoundPlayerWave(
 				m_sounds[Sounds::Turret_SE_1],
@@ -722,10 +742,21 @@ void Enemy::Death()
 {
 	m_smokeEffect->Update();
 
-	if (IsFixedTurret())
+	if (m_deathTurretTimer < 1.0f)
 	{
+		float l_frame = 1.0f / 60.0f;
+		m_deathTurretTimer += l_frame;
+		if (m_deathTurretTimer > 1.0f) {
+			m_deathTurretTimer = 1.0f;
+		}
 
+		float l_rad = DirectX::XMConvertToRadians(1.7f);
+		l_rad *= EasingMaker(In, Quad, m_deathTurretTimer);
+		m_trans.Rotation(
+			m_pedestalTrans.GetRight(),
+			l_rad);
 	}
+
 	if (IsDead())
 	{
 		m_sounds[Sounds::Turret_SE_3].source->Stop();
@@ -768,7 +799,7 @@ DirectX::XMVECTOR Enemy::CalMoveQuaternion(
 		cross.z }, angle);
 }
 
-void Enemy::RotateEye(
+bool Enemy::RotateEye(
 	KazMath::Vec3<float>& arg_playerPos)
 {
 	//敵からプレイヤー方向
@@ -783,9 +814,9 @@ void Enemy::RotateEye(
 		m_trans.GetFront().Cross(l_trans);
 	//2つのベクトルの内積(1.0fだと正面)
 	float l_dot = m_trans.GetFront().Dot(l_trans);
-	if (l_dot < 1.0f)
+	if (l_dot < 0.99999f)
 	{
-		float add = 0.8f;
+		float add = 1.0f;
 		if (m_stelsKillFlag)
 		{
 			add = 5.0f;
@@ -809,7 +840,11 @@ void Enemy::RotateEye(
 				KazMath::Vec3<float>(0, 1, 0),
 				l_rad);
 		}
+
+		return true;
 	}
+
+	return false;
 }
 
 //-----判定系-----//
@@ -922,6 +957,11 @@ void Enemy::Collision(
 	if (0 < hitCount) {
 		--m_hp;
 
+		if (m_state == State::Patrol) {
+			m_isHit = true;
+		}
+		m_state = State::Combat;
+
 		SoundManager::Instance()->
 			SoundPlayerWave(
 				m_sounds[Sounds::Hit_SE_1], 0);
@@ -934,7 +974,7 @@ void Enemy::Collision(
 
 		SmokeEmitter::EmittData l_emittData;
 		l_emittData.m_emittPos = m_firePos;
-		l_emittData.m_range = { 2.0f,3.0f,2.0f };
+		l_emittData.m_range = { 1.0f,0.1f,1.0f };
 		l_emittData.m_smokeTime = 6000;
 		m_smokeEffect->Init(l_emittData);
 		m_state = State::Death;

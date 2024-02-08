@@ -45,6 +45,7 @@ private:
 	KazMath::Vec3<float> m_moveVec;
 	KazMath::Vec3<float> m_nextPos;
 	KazMath::Vec3<float> m_firePos;
+	KazMath::Transform3D m_pedestalTrans;
 	const int CHECK_POINT_DELAY = 240;
 	const int MAX_HP = 4;
 	const float MAX_EYE_DELAY = 60.0f;
@@ -52,7 +53,10 @@ private:
 	float m_radian = 0.0f;
 	float m_checkEyeDelay = 0.0f;
 	float m_distRate = 1.0f;
+	float m_deathTurretTimer = 0.0f;
 	bool m_isGunEffect = false;
+	bool m_isHit = false;
+	bool m_isRotate = false;
 
 	std::array<SoundData, 5> m_sounds;
 	std::array<bool, 5> m_isSounds;
@@ -178,7 +182,7 @@ private:
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
 		std::weak_ptr<BulletMgr> arg_bulletMgr);
-	void RotateEye(
+	bool RotateEye(
 		KazMath::Vec3<float>& arg_playerPos);
 	bool CheckDistXZ(
 		std::pair<float, float> arg_checkPos, float arg_dist);
