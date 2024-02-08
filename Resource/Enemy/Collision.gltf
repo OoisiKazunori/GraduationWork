@@ -15,25 +15,12 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "\u7acb\u65b9\u4f53"
-        }
-    ],
-    "materials" : [
-        {
-            "doubleSided" : true,
-            "name" : "\u30de\u30c6\u30ea\u30a2\u30eb",
-            "pbrMetallicRoughness" : {
-                "baseColorTexture" : {
-                    "index" : 0
-                },
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.5
-            }
+            "name" : "ICO\u7403"
         }
     ],
     "meshes" : [
         {
-            "name" : "\u7acb\u65b9\u4f53.002",
+            "name" : "ICO\u7403",
             "primitives" : [
                 {
                     "attributes" : {
@@ -41,96 +28,76 @@
                         "TEXCOORD_0" : 1,
                         "NORMAL" : 2
                     },
-                    "indices" : 3,
-                    "material" : 0
+                    "indices" : 3
                 }
             ]
-        }
-    ],
-    "textures" : [
-        {
-            "sampler" : 0,
-            "source" : 0
-        }
-    ],
-    "images" : [
-        {
-            "mimeType" : "image/png",
-            "name" : "Enemy",
-            "uri" : "Enemy.png"
         }
     ],
     "accessors" : [
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 56,
+            "count" : 240,
             "max" : [
-                0.7715170979499817,
-                1.7116358280181885,
-                0.9592582583427429
+                0.9510578513145447,
+                1.6707468032836914,
+                0.9999999403953552
             ],
             "min" : [
-                -0.7605480551719666,
-                -0.0031805038452148438,
-                -1.0817927122116089
+                -0.9510578513145447,
+                -0.3292531967163086,
+                -0.9999999403953552
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 56,
+            "count" : 240,
             "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 56,
+            "count" : 240,
             "type" : "VEC3"
         },
         {
             "bufferView" : 3,
             "componentType" : 5123,
-            "count" : 84,
+            "count" : 240,
             "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 672,
+            "byteLength" : 2880,
             "byteOffset" : 0,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 448,
-            "byteOffset" : 672,
+            "byteLength" : 1920,
+            "byteOffset" : 2880,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 672,
-            "byteOffset" : 1120,
+            "byteLength" : 2880,
+            "byteOffset" : 4800,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 168,
-            "byteOffset" : 1792,
+            "byteLength" : 480,
+            "byteOffset" : 7680,
             "target" : 34963
-        }
-    ],
-    "samplers" : [
-        {
-            "magFilter" : 9729,
-            "minFilter" : 9987
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 1960,
+            "byteLength" : 8160,
             "uri" : "Collision.bin"
         }
     ]
