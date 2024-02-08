@@ -624,7 +624,7 @@ void Player::UpdateMelee()
 		if (MELEE_PHASE1 <= m_meleeTimer) {
 			m_meleeTimer = 0.0f;
 			m_meleeMotionPhase = MELEE_MOTION::PHASE_2;
-			m_meleeEnemy.lock()->Damage(1);
+			m_meleeEnemy.lock()->StelsDamage(1);
 		}
 
 	}

@@ -195,6 +195,8 @@ void Enemy::Init(
 	m_isSounds[Sounds::Turret_SE_2] = true;
 
 	m_inform.Init();
+
+	m_stelsKillFlag = false;
 }
 
 void Enemy::Update(
@@ -240,7 +242,8 @@ void Enemy::Update(
 	//戦闘中で線分の周転に敵がプレイヤーが居たら。
 	float shortestDistance = KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]).GetNormal().Dot(arg_playerTransform.pos - m_lineOfSightPos[0]) / KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]).Length();
 	float sphereDistance = ((KazMath::Vec3<float>(m_lineOfSightPos[1] - m_lineOfSightPos[0]) * shortestDistance) - KazMath::Vec3<float>(arg_playerTransform.pos - m_lineOfSightPos[0])).Length();
-	if (m_state == State::Combat && sphereDistance < 4.0f && 0.0f < shortestDistance && shortestDistance < 1.0f) {
+	if (m_state == State::Combat && sphereDistance < 4.0f && 0.0f < shortestDistance && shortestDistance < 1.0f)
+	{
 		arg_hpUI.HitDamage(1, 1);
 	}
 
@@ -445,6 +448,11 @@ void Enemy::Draw(
 #else
 #endif // DEBUG
 
+	if (IsDeath())
+	{
+		bool debug = false;
+	}
+
 	m_enemyBox->m_model.DrawRasterize(
 		arg_rasterize,
 		m_trans, m_edgeColor);
@@ -518,7 +526,7 @@ void Enemy::Kill()
 
 }
 
-void Enemy::Damage(int arg_damage)
+void Enemy::StelsDamage(int arg_damage)
 {
 	m_state = State::Combat;
 
@@ -526,6 +534,8 @@ void Enemy::Damage(int arg_damage)
 	SoundManager::Instance()->
 		SoundPlayerWave(
 			m_sounds[Sounds::Hit_SE_1], 0);
+
+	m_stelsKillFlag = true;
 }
 
 void Enemy::CalcMoveVec()
@@ -722,6 +732,8 @@ void Enemy::Death()
 		m_isSounds[Sounds::Turret_SE_3] = false;
 		m_sounds[Sounds::Turret_SE_1].source->Stop();
 		m_isSounds[Sounds::Turret_SE_1] = false;
+
+		m_trans.Rotation({ 0.0f,1.0f,1.0f }, KazMath::AngleToRadian(360.0f));
 	}
 }
 
@@ -775,10 +787,16 @@ void Enemy::RotateEye(
 	float l_dot = m_trans.GetFront().Dot(l_trans);
 	if (l_dot < 1.0f)
 	{
+		float add = 0.8f;
+		if (m_stelsKillFlag)
+		{
+			add = 5.0f;
+		}
+
 		l_dot = acosf(l_dot);
 		float l_rad =
 			std::clamp(
-				DirectX::XMConvertToRadians(0.8f),
+				DirectX::XMConvertToRadians(add),
 				0.0f,
 				l_dot);
 

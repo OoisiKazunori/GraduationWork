@@ -72,6 +72,7 @@ private:
 	KazMath::Transform3D m_trans;
 	KazMath::Vec3<float> m_prevPos;	//前フレーム座標
 	State m_state, m_oldState;
+	bool m_stelsKillFlag;
 	int m_delayNum;
 	//int m_count;
 	int m_delay;
@@ -224,7 +225,7 @@ public:
 	bool IsCombat() { return m_state == State::Combat; }
 
 	void Kill();
-	void Damage(int arg_damage);
+	void StelsDamage(int arg_damage);
 	bool IsDead() { return m_hp <= 0; }
 
 	//新規
