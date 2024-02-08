@@ -42,16 +42,16 @@ public:
 
 	const DrawFuncData::DrawData* GenerateSceneChangePipeline(DrawFuncData::DrawCallData*arg_drawCall);
 private:
-
+	std::vector<std::shared_ptr<int>>l;
 	//事前生成向け-----
 	//描画生成命令のキュー
-	std::list<DrawFuncData::DrawCallData*>m_drawCallStackDataArray;
+	std::vector<DrawFuncData::DrawCallData*>m_drawCallStackDataArray;
 	//描画命令のデータ
 	std::vector<std::unique_ptr<DrawFuncData::DrawData>>m_drawCallArray;
 	//描画命令のキュー
-	std::list<const DrawFuncData::DrawData*>m_stackDataArray;
-	std::list<const DrawFuncData::DrawData*>m_uiStackDataArray;
-	std::list<const DrawFuncData::DrawData*>m_staticUiStackDataArray;
+	std::vector<std::shared_ptr<DrawFuncData::DrawData>>m_stackDataArray;
+	std::vector<std::shared_ptr<DrawFuncData::DrawData>>m_uiStackDataArray;
+	std::vector<std::shared_ptr<DrawFuncData::DrawData>>m_staticUiStackDataArray;
 	//削除された描画情報のハンドル
 	std::vector<int>m_deleteHandleArray;
 	//削除されたハンドルから描画パイプライン生成ハンドル
@@ -124,5 +124,5 @@ private:
 
 	std::string ErrorMail(const std::source_location& DRAW_SOURCE_LOCATION);
 
-	void DrawCall(const std::list<const DrawFuncData::DrawData*> arg_drawCall);
+	void DrawCall(const std::vector<std::shared_ptr<DrawFuncData::DrawData>> arg_drawCall);
 };

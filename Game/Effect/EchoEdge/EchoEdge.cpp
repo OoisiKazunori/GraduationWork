@@ -46,7 +46,6 @@ void EchoEdge::Compute()
 	m_computeEdge.m_extraBufferArray[1].rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 	m_computeEdge.m_extraBufferArray[1].rootParamType = GRAPHICS_PRAMTYPE_DATA;
 
-
 	m_bufferArray[0].bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
 	DispatchData dispatchData;

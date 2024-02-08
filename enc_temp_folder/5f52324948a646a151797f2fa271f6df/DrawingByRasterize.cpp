@@ -247,17 +247,17 @@ void DrawingByRasterize::ReleasePipelineInScene()
 
 void DrawingByRasterize::ObjectRender(const DrawFuncData::DrawData* arg_drawData)
 {
-	m_stackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
+	//m_stackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
 }
 
 void DrawingByRasterize::UIRender(const DrawFuncData::DrawData* arg_drawData)
 {
-	m_uiStackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
+	//m_uiStackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
 }
 
 void DrawingByRasterize::StaticUIRender(const DrawFuncData::DrawData* arg_drawData)
 {
-	m_staticUiStackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
+	//m_staticUiStackDataArray.emplace_back(std::make_shared<DrawFuncData::DrawData>(*arg_drawData));
 }
 
 void DrawingByRasterize::SortAndRender()
