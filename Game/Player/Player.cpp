@@ -296,6 +296,7 @@ void Player::Update(std::weak_ptr<Camera> arg_camera, WeponUIManager::WeponNumbe
 
 		if (index->IsDead())continue;
 		if (arg_weaponNumber != WeponUIManager::e_Hundgun) continue;
+		if (m_isReloadMotionNow)continue;
 
 		//まずは座標でステルスキルをできるかを判断する。
 		const float KILL_RANGE = 10.0f;

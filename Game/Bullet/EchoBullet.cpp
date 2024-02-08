@@ -27,7 +27,7 @@ void EchoBullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg
 	m_isCollision = true;
 	m_transform.pos = arg_pos;
 	m_dir = arg_dir;
-	m_echoCount = ECHO_COUNT;
+	m_echoCount = 0;
 	m_echoSpan = 0.0f;
 	m_disappearTimer = 0;
 }
@@ -40,35 +40,39 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 	//当たり判定がまだ終わってなかったら
 	if (m_isCollision) {
 
-		//弾を動かす。
-		m_transform.pos += m_dir * BULLET_SPEED * StopMgr::Instance()->GetGameSpeed();
-
 		bool isHit = false;
 		for (auto itr = arg_stageColliders.begin(); itr != arg_stageColliders.end(); ++itr) {
 
 			//進行方向にレイを飛ばして当たり判定を行う。
 			MeshCollision::CheckHitResult rayResult = (*itr)->CheckHitRay(m_transform.pos, m_dir);
-			if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED) {
+			if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED * 500.0f) {
 
 				//当たっていたらその位置に弾を設定してエコーを出す状態に遷移させる。
 				m_transform.pos = rayResult.m_position;
 
 				//まずは最初にエコーを出す。
 				EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::WHITE);
-				--m_echoCount;
+				++m_echoCount;
+
+				if (1 < m_echoCount) {
+					Init();
+				}
 
 				//SoundManager::Instance()->SoundPlayerWave(m_echoSE, 0);
 
-				m_isCollision = false;
+				//m_isCollision = false;
 				isHit = true;
 
 
 
-				Init();
+				//Init();
 
 			}
 
 		}
+
+		//弾を動かす。
+		//m_transform.pos += m_dir * BULLET_SPEED * StopMgr::Instance()->GetGameSpeed();
 
 	}
 	else {
@@ -107,7 +111,7 @@ bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollisi
 {
 
 	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_dir);
-	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED) {
+	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED * 500.0f) {
 
 		EchoArray::Instance()->Generate(m_transform.pos, 40.0f, Echo::COLOR::WHITE);
 		Init();
