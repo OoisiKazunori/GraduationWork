@@ -486,7 +486,14 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			if (m_resultManager.isToTile)
 			{
 				//9日までにここを修正する
-				m_sceneNum = 1;
+				if (m_isToStartPos)
+				{
+					m_sceneNum = 3;
+				}
+				else
+				{
+					m_sceneNum = 1;
+				}
 				m_HPBarManager.Init();
 				m_uiManager.ReCallBullet();
 				//StageSelectScene::startStageNum = 0;
