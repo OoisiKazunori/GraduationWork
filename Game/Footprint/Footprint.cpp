@@ -40,7 +40,7 @@ void Footprint::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//アルファが0になったら描画しない。
 	if (easingAmount <= 0.05f) return;
 
-	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform, KazMath::Color(static_cast<int>(93 * easingAmount), static_cast<int>(44 * easingAmount), static_cast<int>(44 * easingAmount), 255));
+	m_model.m_model.DrawRasterize(arg_rasterize, m_transform, KazMath::Color(static_cast<int>(93 * easingAmount), static_cast<int>(44 * easingAmount), static_cast<int>(44 * easingAmount), 255));
 
 
 	//m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform, KazMath::Color(93, 44, 44, 4));

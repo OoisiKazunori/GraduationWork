@@ -46,10 +46,12 @@ void main(uint3 DTid : SV_DispatchThreadID)
         //円内かつ縁部分なら演出を有効にする
         if(inRadiusFlag && isNearToEdgeFlag)
         {
-           color = float4(1,0,0,1);
+           color = float4(1,1,1,1);
         }
     }
+
     //エッジ部分のUVずらし------------------------
+
 
 
     //デバック向けに色を変える
