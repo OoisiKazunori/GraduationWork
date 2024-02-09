@@ -185,12 +185,12 @@ WeponUIManager::WeponUIManager(DrawingByRasterize& arg_rasterize) :
 
 void WeponUIManager::Shot()
 {
-	if (m_isCanShot)
+	if (m_bulletCount > 0)
 	{
 		m_bulletCount--;
 		if (m_bulletCount <= 0)
 		{
-			m_isCanShot = false;
+			//m_isCanShot = false;
 		}
 	}
 }
@@ -203,7 +203,7 @@ void WeponUIManager::Reload()
 		m_haveBulletNum -= m_magazinSize - m_bulletCount;
 		m_bulletCount += m_magazinSize - m_bulletCount;
 
-		m_isCanShot = true;
+		//m_isCanShot = true;
 	}
 	else if (0 < m_haveBulletNum)
 	{
@@ -212,13 +212,13 @@ void WeponUIManager::Reload()
 			int hoge = m_magazinSize - m_bulletCount;
 			m_bulletCount += hoge;
 			m_haveBulletNum -= hoge;
-			m_isCanShot = true;
+			//m_isCanShot = true;
 		}
 		else
 		{
 			m_bulletCount += m_haveBulletNum;
 			m_haveBulletNum = 0;
-			m_isCanShot = true;
+			//m_isCanShot = true;
 		}
 	}
 	else
@@ -259,7 +259,7 @@ void WeponUIManager::Init()
 	m_haveWepons.push_back({ WeponNumber::e_Hundgun, 1 });
 	m_nowSelectWeponNumber = 0;
 	m_showUITime = 0;
-
+	//m_isCanShot = true;
 
 	EaseInit();
 }
@@ -272,6 +272,10 @@ void WeponUIManager::GetMagazin(int f_getStone)
 
 void WeponUIManager::Update(StageManager& f_stageManager, KazMath::Transform3D& f_playerTrans)
 {
+	if (m_bulletCount > 0)
+	{
+		m_isCanShot = true;
+	}
 	bool isDirty = false;
 
 
