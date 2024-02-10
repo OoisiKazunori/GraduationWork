@@ -18,10 +18,10 @@ void DebugKey::CountReset()
 
 bool DebugKey::DebugKeyTrigger(int KEY, const std::string& KEY_NAME, const std::string& KEY_NUM)
 {
-//#ifdef  _DEBUG
+#ifdef  _DEBUG
 	CheckKey(KEY, KEY_NAME, KEY_NUM);
 	return KeyBoradInputManager::Instance()->InputTrigger(KEY);
-//#endif //  DEBUG
+#endif //  DEBUG
 	return false;
 }
 
