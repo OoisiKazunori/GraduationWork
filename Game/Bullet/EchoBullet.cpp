@@ -106,7 +106,6 @@ void EchoBullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector&
 
 bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision)
 {
-
 	MeshCollision::CheckHitResult rayResult = arg_meshCollision.lock()->CheckHitRay(m_transform.pos, m_dir);
 	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= BULLET_SPEED * 500.0f) {
 
@@ -115,7 +114,5 @@ bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollisi
 		return true;
 
 	}
-
 	return false;
-
 }
