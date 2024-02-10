@@ -99,8 +99,9 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 
 void EchoBullet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
 	m_hitEffectEmitter.Draw(arg_rasterize, arg_blasVec);
+	if (!m_isActive) return;
+	m_model.m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
 }
 
 bool EchoBullet::CheckMeshCollision(std::weak_ptr<MeshCollision> arg_meshCollision)
