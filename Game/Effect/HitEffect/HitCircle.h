@@ -11,19 +11,20 @@ public:
 	HitCircle();
 
 	void Load(DrawingByRasterize& arg_rasterize);
-	void Init(const KazMath::Vec3<float>& arg_pos, float m_timer, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255));
+	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>* arg_playerPos, float m_timer, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255));
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
 
 
 private:
 	KazMath::Vec3<float>m_pos;
+	const KazMath::Vec3<float>* m_playerPos;
 	KazMath::Vec3<float>m_vel;
 	float m_fallSpeed;
 	bool m_activeFlag;
 
-	KazMath::Transform2D m_transform;
-	KazMath::Transform2D m_baseTransform;
+	KazMath::Transform3D m_transform;
+	KazMath::Transform3D m_baseTransform;
 	BasicDraw::BasicTextureRender m_render;
 	KazMath::Timer m_time;
 

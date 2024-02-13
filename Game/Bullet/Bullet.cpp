@@ -31,7 +31,7 @@ void Bullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir
 
 }
 
-void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders) {
+void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders, KazMath::Transform3D& arg_playerTransform) {
 
 	if (!m_isActive) return;
 
@@ -45,7 +45,7 @@ void Bullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders
 
 		Init();
 
-		m_hitEffectEmitter.Init(m_collisionEndPos);
+		m_hitEffectEmitter.Init(m_collisionEndPos, &arg_playerTransform.pos);
 
 	}
 

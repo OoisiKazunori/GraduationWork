@@ -56,8 +56,6 @@ private:
 	SoundData m_keySound;
 	SoundData m_serverErrorSound;
 
-	BulletHitWallEffect m_emitter;
-
 	//ƒJƒƒ‰--------------------------
 	bool m_debugCameraFlag;
 	DebugCamera m_debuCamera;

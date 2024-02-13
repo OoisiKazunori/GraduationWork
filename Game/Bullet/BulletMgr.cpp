@@ -78,19 +78,20 @@ void BulletMgr::GenerateEnemyBullet(KazMath::Vec3<float> arg_pos, KazMath::Vec3<
 
 }
 
-void BulletMgr::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders) {
+void BulletMgr::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders, KazMath::Transform3D& arg_playerTransform)
+{
 
 	for (auto& index : m_bullet) {
 
 		if (!index->GetIsActive()) continue;
 
-		index->Update(arg_stageColliders);
+		index->Update(arg_stageColliders, arg_playerTransform);
 
 	}
 
 	for (auto& index : m_echoBullet) {
 
-		index->Update(arg_stageColliders);
+		index->Update(arg_stageColliders, arg_playerTransform);
 
 	}
 

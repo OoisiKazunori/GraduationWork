@@ -209,7 +209,7 @@ void Enemy::Update(
 	std::list<std::shared_ptr<MeshCollision>>
 	arg_stageColliders,
 	std::weak_ptr<BulletMgr> arg_bulletMgr,
-	KazMath::Transform3D arg_playerTransform,
+	KazMath::Transform3D &arg_playerTransform,
 	std::weak_ptr<MeshCollision> arg_stageMeshCollision,
 	HPUI& arg_hpUI)
 {
@@ -219,7 +219,7 @@ void Enemy::Update(
 	//‘Ì—ÍŒ¸‚Á‚½‚ç
 	if (m_hp != m_oldHp)
 	{
-		m_hitEffect.Init(m_trans.pos + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f), KazMath::Color(255, 0, 0, 255));
+		m_hitEffect.Init(m_trans.pos + KazMath::Vec3<float>(0.0f, 2.5f, 0.0f), &arg_playerTransform.pos, KazMath::Color(255, 0, 0, 255));
 	}
 	m_oldHp = m_hp;
 	m_hitEffect.Update();

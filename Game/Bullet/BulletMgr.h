@@ -27,7 +27,7 @@ public:
 	void Genrate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir, bool arg_isEcho = false);
 	void GenerateEnemyBullet(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir);
 
-	void Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders);
+	void Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders, KazMath::Transform3D& arg_playerTransform);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

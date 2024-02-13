@@ -285,10 +285,6 @@ void GameScene::Input()
 	{
 		m_debugCameraFlag = !m_debugCameraFlag;
 	}
-	if (DebugKey::Instance()->DebugKeyTrigger(DIK_2, "ShotEffect", "DIK_2"))
-	{
-		m_emitter.Init({ -195.0f,-43.0f,308.0f });
-	}
 	if (DebugKey::Instance()->DebugKeyTrigger(DIK_3, "rota", "DIK_3"))
 	{
 		m_turret.Stop();
@@ -355,7 +351,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 
 				m_stageManager.Update(arg_rasterize, m_player->GetTransform(), m_player->m_inRoom);
 
-				m_bulletMgr->Update(m_stageManager.GetColliders());
+				m_bulletMgr->Update(m_stageManager.GetColliders(), m_player->GetTransform());
 
 				//サーバーのインタラクト時に暫く経ったらサーバーエラーの音を出す
 				if (m_interactFlag)
@@ -583,7 +579,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 			}
 		}
 		m_todo.Update();
-		
+
 		m_titleLogoDrawTimer = std::clamp(m_titleLogoDrawTimer - 1, 0, TITLELOGO_DRAWTIMER);
 
 	}
@@ -636,9 +632,7 @@ void GameScene::Update(DrawingByRasterize& arg_rasterize)
 		if (m_emergencyTimer <= 0.0f) {
 			PlayerStatus::Instance()->m_isFound = false;
 		}
-
 	}
-	m_emitter.Update();
 }
 
 
@@ -650,7 +644,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		m_resultManager.Draw(arg_rasterize);
 	}
 
-	m_emitter.Draw(arg_rasterize, arg_blasVec);
 	m_enemyManager->Draw(arg_rasterize, arg_blasVec);
 
 	m_stageManager.Draw(arg_rasterize, arg_blasVec);
@@ -689,13 +682,13 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		//m_titleTex.m_tex.Draw2D(arg_rasterize, m_titleTrans);
 	}
 	m_turret.Draw(arg_rasterize, arg_blasVec);
-	
+
 	if (0 < m_titleLogoDrawTimer)
 	{
 		m_titleLogoModel.m_model.DrawRasterize(arg_rasterize, m_titleLogoTransform);
 		m_clickToStart.m_model.DrawRasterize(arg_rasterize, m_clickToStartTransform);
 	}
-	
+
 	//m_goalPoint.Draw(arg_rasterize);
 
 	FootprintMgr::Instance()->Draw(arg_rasterize, arg_blasVec);

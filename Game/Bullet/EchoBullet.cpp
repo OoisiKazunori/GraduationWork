@@ -32,7 +32,7 @@ void EchoBullet::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg
 	m_disappearTimer = 0;
 }
 
-void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders)
+void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColliders, KazMath::Transform3D& arg_playerTransform)
 {
 	m_hitEffectEmitter.Update();
 	if (!m_isActive) return;
@@ -63,7 +63,7 @@ void EchoBullet::Update(std::list<std::shared_ptr<MeshCollision>> arg_stageColli
 				//m_isCollision = false;
 				isHit = true;
 
-				m_hitEffectEmitter.Init(m_transform.pos + KazMath::Vec3<float>(0.0f, 0.0f, 0.0f));
+				m_hitEffectEmitter.Init(m_transform.pos, &arg_playerTransform.pos);
 
 				//Init();
 

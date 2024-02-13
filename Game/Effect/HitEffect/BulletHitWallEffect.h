@@ -12,13 +12,13 @@ public:
 	BulletHitWallEffect();
 
 	void Load(DrawingByRasterize& arg_rasterize);
-	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255));
+	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>* arg_playerPos, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255));
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
 
 private:
-	std::array<HitWallParticle,3> m_particle;
-	std::array<HitCircle,2> m_hitCircle;
+	std::array<HitWallParticle, 3> m_particle;
+	std::array<HitCircle, 2> m_hitCircle;
 
 };
 

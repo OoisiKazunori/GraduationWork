@@ -140,7 +140,7 @@ public:
 		std::list<std::shared_ptr<MeshCollision>>
 		arg_stageColliders,
 		std::weak_ptr<BulletMgr> arg_bulletMgr,
-		KazMath::Transform3D arg_playerTransform,
+		KazMath::Transform3D &arg_playerTransform,
 		std::weak_ptr<MeshCollision> arg_stageMeshCollision,
 		HPUI& arg_hpUI
 	);

@@ -16,7 +16,7 @@ void BulletHitWallEffect::Load(DrawingByRasterize& arg_rasterize)
 	}
 }
 
-void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Color& arg_color)
+void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Vec3<float>* arg_playerPos, const KazMath::Color& arg_color)
 {
 	std::vector<KazMath::Vec3<float>>v;
 	std::vector<float>vRadian;
@@ -50,8 +50,8 @@ void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos, const KazMat
 		++i;
 	}
 
-	m_hitCircle[0].Init(arg_pos, 10.0f, arg_color);
-	m_hitCircle[1].Init(arg_pos, 40.0f, arg_color);
+	m_hitCircle[0].Init(arg_pos, arg_playerPos, 10.0f, arg_color);
+	m_hitCircle[1].Init(arg_pos, arg_playerPos, 40.0f, arg_color);
 
 }
 
