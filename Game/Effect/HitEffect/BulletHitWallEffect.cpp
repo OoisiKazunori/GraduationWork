@@ -4,19 +4,19 @@ BulletHitWallEffect::BulletHitWallEffect()
 {
 }
 
-void BulletHitWallEffect::Load(DrawingByRasterize &arg_rasterize)
+void BulletHitWallEffect::Load(DrawingByRasterize& arg_rasterize)
 {
-	for (auto &obj : m_particle)
+	for (auto& obj : m_particle)
 	{
 		obj.Load(arg_rasterize);
 	}
-	for (auto &obj : m_hitCircle)
+	for (auto& obj : m_hitCircle)
 	{
 		obj.Load(arg_rasterize);
 	}
 }
 
-void BulletHitWallEffect::Init(const KazMath::Vec3<float> &arg_pos)
+void BulletHitWallEffect::Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Color& arg_color)
 {
 	std::vector<KazMath::Vec3<float>>v;
 	std::vector<float>vRadian;
@@ -33,7 +33,7 @@ void BulletHitWallEffect::Init(const KazMath::Vec3<float> &arg_pos)
 	}
 
 	int i = 0;
-	for (auto &obj : m_particle)
+	for (auto& obj : m_particle)
 	{
 		obj.Finalize();
 		KazMath::Vec2<float>posXZ(arg_pos.x, arg_pos.z);
@@ -50,8 +50,8 @@ void BulletHitWallEffect::Init(const KazMath::Vec3<float> &arg_pos)
 		++i;
 	}
 
-	m_hitCircle[0].Init(arg_pos, 10.0f);
-	m_hitCircle[1].Init(arg_pos, 40.0f);
+	m_hitCircle[0].Init(arg_pos, 10.0f, arg_color);
+	m_hitCircle[1].Init(arg_pos, 40.0f, arg_color);
 
 }
 
@@ -61,19 +61,19 @@ void BulletHitWallEffect::Update()
 	//{
 	//	obj.Update();
 	//}
-	for (auto &obj : m_hitCircle)
+	for (auto& obj : m_hitCircle)
 	{
 		obj.Update();
 	}
 }
 
-void BulletHitWallEffect::Draw(DrawingByRasterize &arg_rasterize, Raytracing::BlasVector &arg_blasVector)
+void BulletHitWallEffect::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector)
 {
 	//for (auto &obj : m_particle)
 	//{
 	//	obj.Draw(arg_rasterize, arg_blasVector);
 	//}
-	for (auto &obj : m_hitCircle)
+	for (auto& obj : m_hitCircle)
 	{
 		obj.Draw(arg_rasterize, arg_blasVector);
 	}

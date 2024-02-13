@@ -11,6 +11,7 @@
 #include "../KazLibrary/Render/BasicDraw.h"
 #include "../KazLibrary/Sound/SoundManager.h"
 #include "../UI/UI.h"
+#include"../Game/Effect/HitEffect/BulletHitWallEffect.h"
 
 class MeshCollision;
 class BulletMgr;
@@ -95,7 +96,7 @@ private:
 	const float GRAVITY = 0.05f;
 
 	const  int MAX_RATE = 120;
-	int m_hp;
+	int m_hp,m_oldHp;
 	int m_rate;
 
 	//‚Ç‚¤‚µ‚æ‚¤
@@ -127,6 +128,8 @@ private:
 	KazMath::Color m_edgeColor;
 	const KazMath::Color DEAD_COLOR = KazMath::Color(39, 39, 39, 255);
 	const KazMath::Color ACTIVE_COLOR = KazMath::Color(172, 50, 50, 255);
+
+	BulletHitWallEffect m_hitEffect;
 
 public:
 	Enemy();

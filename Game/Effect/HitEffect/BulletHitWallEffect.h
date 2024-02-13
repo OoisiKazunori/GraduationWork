@@ -12,7 +12,7 @@ public:
 	BulletHitWallEffect();
 
 	void Load(DrawingByRasterize& arg_rasterize);
-	void Init(const KazMath::Vec3<float>& arg_pos);
+	void Init(const KazMath::Vec3<float>& arg_pos, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255));
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVector);
 

@@ -136,6 +136,7 @@ void Enemy::SetData(
 	m_smokeEffect =
 		std::make_shared<SmokeEmitter>();
 	m_smokeEffect->Load(arg_rasterize);
+	m_hitEffect.Load(arg_rasterize);
 }
 
 void Enemy::Init(
@@ -215,6 +216,14 @@ void Enemy::Update(
 	//èeââèo
 	m_gunEffect->Update();
 
+	//ëÃóÕå∏Ç¡ÇΩÇÁ
+	if (m_hp != m_oldHp)
+	{
+		m_hitEffect.Init(m_trans.pos + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f), KazMath::Color(255, 0, 0, 255));
+	}
+	m_oldHp = m_hp;
+	m_hitEffect.Update();
+
 	//éÄÇÒÇæÇÁèIóπ
 	if (IsDeath()) {
 		Death();
@@ -223,7 +232,6 @@ void Enemy::Update(
 		m_edgeColor.color.x += static_cast<int>((DEAD_COLOR.color.x - m_edgeColor.color.x) / 10.0f);
 		m_edgeColor.color.y += static_cast<int>((DEAD_COLOR.color.y - m_edgeColor.color.y) / 10.0f);
 		m_edgeColor.color.z += static_cast<int>((DEAD_COLOR.color.z - m_edgeColor.color.z) / 10.0f);
-
 
 		m_inform.Update(m_trans.pos, arg_playerTransform, false);
 
@@ -428,6 +436,7 @@ void Enemy::Update(
 	m_sightRotation += 0.3f;
 
 	m_inform.Update(m_trans.pos, arg_playerTransform, m_state == State::Combat);
+
 }
 
 void Enemy::Draw(
@@ -467,6 +476,7 @@ void Enemy::Draw(
 
 	m_inform.Draw(arg_rasterize, arg_blasVec);
 	m_gunEffect->Draw(arg_rasterize, arg_blasVec);
+	m_hitEffect.Draw(arg_rasterize, arg_blasVec);
 
 	if (m_state == State::Death) {
 		m_smokeEffect->Draw(arg_rasterize, arg_blasVec);
@@ -485,7 +495,7 @@ void Enemy::Draw(
 	}
 
 	//m_line.m_render.Draw(arg_rasterize, arg_blasVec, m_lineOfSightPos[0], m_lineOfSightPos[1], KazMath::Color(172, 50, 50, 255));
-	}
+}
 
 bool Enemy::IsInSight(
 	KazMath::Vec3<float>& arg_playerPos,
